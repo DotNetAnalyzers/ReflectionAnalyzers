@@ -26,10 +26,27 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.TryGetMethodName(out var name) &&
-                name == "GetMethod" &&
-                context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var target))
+                invocation.TryGetMethodName(out var targetName) &&
+                targetName == "GetMethod" &&
+                invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
+                context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var getMethod) &&
+                getMethod == KnownSymbol.Type.GetMethod &&
+                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var type))
             {
+                if (argumentList.Arguments.TryFirst(out var nameArg) &&
+                    nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var reflectionTargetName))
+                {
+                    if (type.TryFindFirstMethodRecursive(reflectionTargetName, out var reflectionTarget))
+                    {
+
+                    }
+                    else
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL003GetMethodTargetDoesNotExist.Descriptor, nameArg.GetLocation(), type, reflectionTargetName));
+                    }
+                }
             }
         }
     }
