@@ -6,15 +6,12 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <CodeAnalysisRuleSet>ReflectionAnalyzers.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\ReflectionAnalyzers.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
-
-  <Import Project="..\.paket\Paket.Restore.targets" />
-
   <ItemGroup>
     <ProjectReference Include="..\ReflectionAnalyzers\ReflectionAnalyzers.csproj" />
   </ItemGroup>
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
