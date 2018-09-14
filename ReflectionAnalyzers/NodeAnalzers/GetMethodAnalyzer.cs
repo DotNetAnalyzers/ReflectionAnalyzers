@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL002InvokeDiscardReturnValue.Descriptor);
+            REFL003GetMethodTargetDoesNotExist.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
