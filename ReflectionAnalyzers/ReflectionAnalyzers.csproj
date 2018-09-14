@@ -5,5 +5,10 @@
     <CodeAnalysisRuleSet>ReflectionAnalyzers.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\ReflectionAnalyzers.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
