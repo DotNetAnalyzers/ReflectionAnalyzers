@@ -4,7 +4,7 @@
     <TargetFramework>net461</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    <CodeAnalysisRuleSet>ReflectionAnalyzers.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>ReflectionAnalyzers.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,4 +13,8 @@
   </PropertyGroup>
 
   <Import Project="..\.paket\Paket.Restore.targets" />
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReflectionAnalyzers\ReflectionAnalyzers.csproj" />
+  </ItemGroup>
 </Project>
