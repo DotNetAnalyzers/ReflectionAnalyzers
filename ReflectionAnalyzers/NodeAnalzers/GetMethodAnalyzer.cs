@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Reflection;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -12,7 +13,8 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL003GetMethodTargetDoesNotExist.Descriptor);
+            REFL003GetMethodTargetDoesNotExist.Descriptor,
+            REFL005GetMethodWrongBindingFlags.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -36,18 +38,48 @@ namespace ReflectionAnalyzers
                 context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var type))
             {
                 if (argumentList.Arguments.TryFirst(out var nameArg) &&
-                    nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var reflectionTargetName))
+                    nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name))
                 {
-                    if (type.TryFindFirstMethodRecursive(reflectionTargetName, out var reflectionTarget))
+                    if (type.TryFindFirstMethodRecursive(name, out var method))
                     {
+                        if (type.TryFindSingleMethodRecursive(name, out method))
+                        {
+                            if (method.DeclaredAccessibility != Accessibility.Public)
+                            {
+                                if (argumentList.Arguments.Count == 1)
+                                {
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, nameArg.GetLocation(), type, name));
+                                }
 
+                                if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags) &&
+                                    !flags.HasFlag(BindingFlags.NonPublic))
+                                {
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, flagsArg.GetLocation(), type, name));
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL003GetMethodTargetDoesNotExist.Descriptor, nameArg.GetLocation(), type, reflectionTargetName));
+                        context.ReportDiagnostic(Diagnostic.Create(REFL003GetMethodTargetDoesNotExist.Descriptor, nameArg.GetLocation(), type, name));
                     }
                 }
             }
+        }
+
+        private static bool TryGetBindingFlags(IMethodSymbol getMethod, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            if (getMethod.TryFindParameter(KnownSymbol.BindingFlags, out var bindingFlagsParameter) &&
+                invocation.TryFindArgument(bindingFlagsParameter, out flagsArg) &&
+                context.SemanticModel.TryGetConstantValue(flagsArg.Expression, context.CancellationToken, out int value))
+            {
+                flags = (BindingFlags)value;
+                return true;
+            }
+
+            flagsArg = null;
+            flags = default(BindingFlags);
+            return false;
         }
     }
 }

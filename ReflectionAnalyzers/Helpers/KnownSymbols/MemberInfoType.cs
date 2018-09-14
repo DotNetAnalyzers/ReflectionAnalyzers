@@ -1,11 +1,12 @@
 namespace ReflectionAnalyzers
 {
+    using System.Reflection;
     using Gu.Roslyn.AnalyzerExtensions;
 
     internal class MemberInfoType : QualifiedType
     {
         internal MemberInfoType()
-            : base("System.Reflection.MemberInfo")
+            : base(typeof(MemberInfo).FullName)
         {
         }
     }

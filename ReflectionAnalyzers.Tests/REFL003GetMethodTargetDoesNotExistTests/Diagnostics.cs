@@ -23,7 +23,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage("The type RoslynSandbox.Foo does not have a method named Foo"), code);
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage("The type RoslynSandbox.Foo does not have a method named Foo."), code);
         }
     }
 }

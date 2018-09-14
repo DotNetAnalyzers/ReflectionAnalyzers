@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System.Reflection;
     using Gu.Roslyn.AnalyzerExtensions;
 
     internal static class KnownSymbol
@@ -9,6 +10,7 @@ namespace ReflectionAnalyzers
         internal static readonly QualifiedType Boolean = Create("System.Boolean", "bool");
 
         internal static readonly TypeType Type = new TypeType();
+        internal static readonly QualifiedType BindingFlags = Create(typeof(BindingFlags).FullName);
         internal static readonly MemberInfoType MemberInfo = new MemberInfoType();
         internal static readonly MethodInfoType MethodInfo = new MethodInfoType();
 
