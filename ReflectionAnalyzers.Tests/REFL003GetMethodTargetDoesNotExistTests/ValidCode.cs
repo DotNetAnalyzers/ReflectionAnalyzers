@@ -26,7 +26,29 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetBar()
+        public void GetToStringOverridden()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString));
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
+
+        [Test]
+        public void GetMethodInSameType()
         {
             var code = @"
 namespace RoslynSandbox
@@ -47,7 +69,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetBarOverloaded()
+        public void GetOverloadedMethodInSameType()
         {
             var code = @"
 namespace RoslynSandbox
@@ -70,7 +92,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void UnknownType()
+        public void GetMethodWhenUnknownType()
         {
             var code = @"
 namespace RoslynSandbox
@@ -85,6 +107,26 @@ namespace RoslynSandbox
         }
     }
 }";
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
+
+        [TestCase("get_Bar")]
+        [TestCase("set_Bar")]
+        public void GetPropertyMethods(string name)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(""get_Bar"");
+        }
+
+        public int Bar { get; set; }
+    }
+}".AssertReplace("get_Bar", name);
             AnalyzerAssert.Valid(Analyzer, code);
         }
     }
