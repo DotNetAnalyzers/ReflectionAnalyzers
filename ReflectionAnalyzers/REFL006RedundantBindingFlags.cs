@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "The binding flags can be more precise.",
-            messageFormat: "The binding flags can be more precise. Expected {0}.",
+            messageFormat: "The binding flags can be more precise.{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,

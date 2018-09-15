@@ -10,6 +10,70 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL008");
 
         [Test]
+        public void GetToString()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString)↓);
+        }
+    }
+}";
+            var message = "Specify binding flags for better performance and less fragile code. Expected: BindingFlags.Public | BindingFlags.Instance.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
+
+        [Test]
+        public void GetReferenceEquals()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(ReferenceEquals)↓);
+        }
+    }
+}";
+            var message = "Specify binding flags for better performance and less fragile code. Expected: BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
+
+        [Test]
+        public void GetPrivate()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar)↓);
+        }
+
+        private void Bar()
+        {
+        }
+    }
+}";
+            var message = "Specify binding flags for better performance and less fragile code. Expected: BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
+
+        [Test]
         public void GetPublicInstance()
         {
             var code = @"
@@ -29,7 +93,8 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage("Specify binding flags for better performance and clearer less fragile code. Expected BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly."), code);
+            var message = "Specify binding flags for better performance and less fragile code. Expected: BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [Test]
@@ -52,7 +117,8 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage("Specify binding flags for better performance and clearer less fragile code. Expected BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly."), code);
+            var message = "Specify binding flags for better performance and less fragile code. Expected: BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }
 }

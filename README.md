@@ -24,7 +24,7 @@ Analyzers checking System.Reflection
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL008.md">REFL008</a></td>
-    <td>Specify binding flags for better performance and clearer less fragile code.</td>
+    <td>Specify binding flags for better performance and less fragile code.</td>
   </tr>
 <table>
 <!-- end generated table -->

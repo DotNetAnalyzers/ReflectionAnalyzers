@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL006");
 
         [Test]
-        public void GetToStringRedundantStatic()
+        public void GetToString()
         {
             var code = @"
 namespace RoslynSandbox
@@ -21,15 +21,15 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance);
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic.WithMessage("The binding flags can be more precise. Expected BindingFlags.Public | BindingFlags.Instance."), code);
+            AnalyzerAssert.Valid(Analyzer, code);
         }
 
         [Test]
-        public void GetReferenceEqualsRedundantInstance()
+        public void GetReferenceEquals()
         {
             var code = @"
 namespace RoslynSandbox
@@ -40,7 +40,7 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
         }
     }
 }";
@@ -59,7 +59,7 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
         private void Bar()

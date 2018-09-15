@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "There is no member matching the name and binding flags.",
-            messageFormat: "There is no member matching the name and binding flags.",
+            messageFormat: "There is no member matching the name and binding flags.{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
