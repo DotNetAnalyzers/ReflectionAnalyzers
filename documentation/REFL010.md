@@ -1,5 +1,5 @@
 # REFL010
-## Prefer the generic extension method GetCustomAttribute<T>.
+## Prefer the generic extension method `GetCustomAttribute<T>`.
 
 <!-- start generated table -->
 <table>
@@ -28,7 +28,7 @@
 
 ## Description
 
-Prefer the generic extension method GetCustomAttribute<T>.
+Prefer the generic extension method `GetCustomAttribute<T>`.
 
 ## Motivation
 
