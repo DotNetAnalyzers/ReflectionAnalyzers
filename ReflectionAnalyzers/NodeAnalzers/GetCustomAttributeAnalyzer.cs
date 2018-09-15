@@ -31,22 +31,21 @@ namespace ReflectionAnalyzers
                 target.Parameters.Length == 2 &&
                 target.Parameters[1].Type == KnownSymbol.Type &&
                 invocation.TryFindArgument(target.Parameters[0], out var memberArg) &&
+                memberArg.Expression is ExpressionSyntax member &&
                 invocation.TryFindArgument(target.Parameters[1], out var typeArg) &&
-                typeArg.Expression is TypeOfExpressionSyntax typeOf)
+                typeArg.Expression is TypeOfExpressionSyntax typeOf &&
+                typeOf.Type is TypeSyntax type &&
+                invocation.Parent?.IsEither(SyntaxKind.CastExpression, SyntaxKind.AsExpression) == true)
             {
-                if (invocation.Parent?.IsEither(SyntaxKind.CastExpression, SyntaxKind.AsExpression) == true)
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            REFL010PreferGenericGetCustomAttribute.Descriptor,
-                            invocation.GetLocation(),
-                            ImmutableDictionary.CreateRange(new[]
-                            {
-                                new KeyValuePair<string, string>(nameof(ExpressionSyntax), memberArg.Expression.ToString()),
-                                new KeyValuePair<string, string>(nameof(TypeSyntax), typeOf.Type.ToString()),
-                            })));
-                }
-
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        REFL010PreferGenericGetCustomAttribute.Descriptor,
+                        invocation.GetLocation(),
+                        ImmutableDictionary.CreateRange(new[]
+                        {
+                            new KeyValuePair<string, string>(nameof(ExpressionSyntax), member.ToString()),
+                            new KeyValuePair<string, string>(nameof(TypeSyntax), type.ToString()),
+                        })));
             }
         }
     }

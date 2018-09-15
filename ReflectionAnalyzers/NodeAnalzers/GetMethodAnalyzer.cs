@@ -44,7 +44,6 @@ namespace ReflectionAnalyzers
                 if (targetType.TryFindFirstMethodRecursive(targetName, out var target))
                 {
                     if (targetType.TryFindSingleMethodRecursive(targetName, out target))
-
                     {
                         if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
                         {
