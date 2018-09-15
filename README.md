@@ -23,6 +23,10 @@ Analyzers checking System.Reflection
     <td>The binding flags can be more precise.</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL007.md">REFL007</a></td>
+    <td>The binding flags are not in the expected order.</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL008.md">REFL008</a></td>
     <td>Specify binding flags for better performance and less fragile code.</td>
   </tr>

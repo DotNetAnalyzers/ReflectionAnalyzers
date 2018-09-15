@@ -16,6 +16,7 @@ namespace ReflectionAnalyzers.Codefixes
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL005WrongBindingFlags.DiagnosticId,
             REFL006RedundantBindingFlags.DiagnosticId,
+            REFL007BindingFlagsOrder.DiagnosticId,
             REFL008MissingBindingFlags.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)

@@ -16,6 +16,7 @@ namespace ReflectionAnalyzers
             REFL003MemberDoesNotExist.Descriptor,
             REFL005WrongBindingFlags.Descriptor,
             REFL006RedundantBindingFlags.Descriptor,
+            REFL007BindingFlagsOrder.Descriptor,
             REFL008MissingBindingFlags.Descriptor);
 
         /// <inheritdoc/>
@@ -73,6 +74,21 @@ namespace ReflectionAnalyzers
                                             : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
                                         messageArg));
                             }
+
+                            if (HasWrongOrder(flagsArg) == true)
+                            {
+                                var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
+                                    ? $" Expected: {expectedFlags.ToDisplayString()}."
+                                    : null;
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        REFL007BindingFlagsOrder.Descriptor,
+                                        flagsArg.GetLocation(),
+                                        messageArg == null
+                                            ? ImmutableDictionary<string, string>.Empty
+                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
+                                        messageArg));
+                            }
                         }
                         else
                         {
@@ -106,7 +122,7 @@ namespace ReflectionAnalyzers
                    context.SemanticModel.TryGetConstantValue(flagsArg.Expression, context.CancellationToken, out flags);
         }
 
-        private static bool TryGetExpectedFlags(IMethodSymbol target, ITypeSymbol targetType, out BindingFlags flags)
+        private static bool TryGetExpectedFlags(ISymbol target, ITypeSymbol targetType, out BindingFlags flags)
         {
             flags = 0;
             if (target.DeclaredAccessibility == Accessibility.Public)
@@ -139,7 +155,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        private static bool HasWrongFlags(IMethodSymbol target, ITypeSymbol targetType, BindingFlags flags)
+        private static bool HasWrongFlags(ISymbol target, ITypeSymbol targetType, BindingFlags flags)
         {
             return (target.DeclaredAccessibility != Accessibility.Public &&
                     !flags.HasFlagFast(BindingFlags.NonPublic)) ||
@@ -156,7 +172,7 @@ namespace ReflectionAnalyzers
                     !flags.HasFlagFast(BindingFlags.FlattenHierarchy));
         }
 
-        private static bool HasRedundantFlag(IMethodSymbol target, ITypeSymbol targetType, BindingFlags flags)
+        private static bool HasRedundantFlag(ISymbol target, ITypeSymbol targetType, BindingFlags flags)
         {
             return (target.DeclaredAccessibility == Accessibility.Public &&
                     flags.HasFlagFast(BindingFlags.NonPublic)) ||
@@ -173,6 +189,36 @@ namespace ReflectionAnalyzers
                    (!Equals(target.ContainingType, targetType) &&
                     flags.HasFlagFast(BindingFlags.DeclaredOnly)) ||
                    flags.HasFlagFast(BindingFlags.IgnoreCase);
+        }
+
+        private static bool? HasWrongOrder(ArgumentSyntax flags)
+        {
+            if (flags.Expression is BinaryExpressionSyntax binary)
+            {
+                if (binary.IsKind(SyntaxKind.BitwiseOrExpression) &&
+                    binary.Left is MemberAccessExpressionSyntax lm &&
+                    binary.Right is MemberAccessExpressionSyntax rm)
+                {
+                    return !IsEither(lm, BindingFlags.Public, BindingFlags.NonPublic) &&
+                           !IsEither(rm, BindingFlags.Static, BindingFlags.Instance);
+                }
+            }
+
+            return null;
+            bool IsEither(ExpressionSyntax expression, BindingFlags flag1, BindingFlags flag2)
+            {
+                switch (expression)
+                {
+                    case IdentifierNameSyntax identifierName:
+                        return identifierName.Identifier.ValueText is string name &&
+                               (name == flag1.Name() ||
+                                name == flag2.Name());
+                    case MemberAccessExpressionSyntax memberAccess:
+                        return IsEither(memberAccess.Name, flag1, flag2);
+                    default:
+                        return false;
+                }
+            }
         }
     }
 }
