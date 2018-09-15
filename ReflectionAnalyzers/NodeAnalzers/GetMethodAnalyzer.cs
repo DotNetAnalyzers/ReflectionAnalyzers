@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using System.Reflection;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
@@ -14,6 +15,7 @@ namespace ReflectionAnalyzers
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL003MemberDoesNotExist.Descriptor,
+            REFL004AmbiguousMatch.Descriptor,
             REFL005WrongBindingFlags.Descriptor,
             REFL006RedundantBindingFlags.Descriptor,
             REFL007BindingFlagsOrder.Descriptor,
@@ -42,6 +44,7 @@ namespace ReflectionAnalyzers
                 if (targetType.TryFindFirstMethodRecursive(targetName, out var target))
                 {
                     if (targetType.TryFindSingleMethodRecursive(targetName, out target))
+
                     {
                         if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
                         {
@@ -100,6 +103,14 @@ namespace ReflectionAnalyzers
                                         ? ImmutableDictionary<string, string>.Empty
                                         : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
                                     messageArg));
+                        }
+                    }
+                    else
+                    {
+                        if (argumentList.Arguments.Count == 1 &&
+                            targetType.GetMembers(targetName).Count(x => x.DeclaredAccessibility == Accessibility.Public) > 1)
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, nameArg.GetLocation()));
                         }
                     }
                 }

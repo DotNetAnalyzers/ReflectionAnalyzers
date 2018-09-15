@@ -23,7 +23,8 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage("The type RoslynSandbox.Foo does not have a member named Foo."), code);
+            var message = "The type RoslynSandbox.Foo does not have a member named Foo.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [Test]
