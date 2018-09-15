@@ -10,6 +10,7 @@ namespace ReflectionAnalyzers
         internal static readonly QualifiedType Boolean = Create("System.Boolean", "bool");
 
         internal static readonly TypeType Type = new TypeType();
+        internal static readonly AttributeType Attribute = new AttributeType();
         internal static readonly QualifiedType BindingFlags = Create(typeof(BindingFlags).FullName);
         internal static readonly MemberInfoType MemberInfo = new MemberInfoType();
         internal static readonly MethodInfoType MethodInfo = new MethodInfoType();

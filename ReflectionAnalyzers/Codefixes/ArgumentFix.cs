@@ -31,7 +31,7 @@ namespace ReflectionAnalyzers.Codefixes
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",
                         (editor, _) => editor.ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
-                        this.GetType().FullName,
+                        nameof(ArgumentFix),
                         diagnostic);
                 }
                 else if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
@@ -43,7 +43,7 @@ namespace ReflectionAnalyzers.Codefixes
                             argumentList,
                             argumentList.AddArguments(
                                 SyntaxFactory.Argument(SyntaxFactory.ParseExpression(argumentString)))),
-                        this.GetType().FullName,
+                        nameof(ArgumentFix),
                         diagnostic);
                 }
             }

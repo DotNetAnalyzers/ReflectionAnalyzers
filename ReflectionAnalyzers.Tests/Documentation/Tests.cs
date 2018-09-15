@@ -55,17 +55,24 @@ namespace ReflectionAnalyzers.Tests.Documentation
         [TestCaseSource(nameof(DescriptorsWithDocs))]
         public void Title(DescriptorInfo descriptorInfo)
         {
-            Assert.AreEqual(File.ReadLines(descriptorInfo.DocFileName).Skip(1).First(), $"## {descriptorInfo.Descriptor.Title}");
+            var expected = $"## {descriptorInfo.Descriptor.Title}";
+            var actual = File.ReadLines(descriptorInfo.DocFileName).Skip(1).First().Replace("`", string.Empty);
+            Assert.AreEqual(expected, actual);
         }
 
         [TestCaseSource(nameof(DescriptorsWithDocs))]
         public void Description(DescriptorInfo descriptorInfo)
         {
-            var expected = File.ReadLines(descriptorInfo.DocFileName)
-                               .SkipWhile(l => !l.StartsWith("## Description"))
-                               .Skip(1)
-                               .FirstOrDefault(l => !string.IsNullOrWhiteSpace(l));
-            var actual = descriptorInfo.Descriptor.Description.ToString().Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).First();
+            var expected = descriptorInfo.Descriptor
+                                         .Description
+                                         .ToString()
+                                         .Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
+                                         .First();
+            var actual = File.ReadLines(descriptorInfo.DocFileName)
+                             .SkipWhile(l => !l.StartsWith("## Description"))
+                             .Skip(1)
+                             .FirstOrDefault(l => !string.IsNullOrWhiteSpace(l))
+                            ?.Replace("`", string.Empty);
 
             DumpIfDebug(expected);
             DumpIfDebug(actual);

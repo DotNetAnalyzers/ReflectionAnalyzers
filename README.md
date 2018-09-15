@@ -34,5 +34,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL008.md">REFL008</a></td>
     <td>Specify binding flags for better performance and less fragile code.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL010.md">REFL010</a></td>
+    <td>Prefer the generic extension method GetCustomAttribute<T>.</td>
+  </tr>
 <table>
 <!-- end generated table -->
