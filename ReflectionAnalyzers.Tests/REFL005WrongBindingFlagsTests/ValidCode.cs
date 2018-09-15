@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
 {
-    using System.Reflection;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
@@ -51,7 +50,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic.WithMessage(""), code);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]

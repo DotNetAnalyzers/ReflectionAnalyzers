@@ -30,7 +30,6 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-
                 invocation.ArgumentList is ArgumentListSyntax argumentList &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
@@ -93,17 +92,11 @@ namespace ReflectionAnalyzers
 
         private static bool TryGetBindingFlags(IMethodSymbol getMethod, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ArgumentSyntax flagsArg, out BindingFlags flags)
         {
-            if (getMethod.TryFindParameter(KnownSymbol.BindingFlags, out var bindingFlagsParameter) &&
-                invocation.TryFindArgument(bindingFlagsParameter, out flagsArg) &&
-                context.SemanticModel.TryGetConstantValue(flagsArg.Expression, context.CancellationToken, out int value))
-            {
-                flags = (BindingFlags)value;
-                return true;
-            }
-
             flagsArg = null;
             flags = default(BindingFlags);
-            return false;
+            return getMethod.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
+                   invocation.TryFindArgument(parameter, out flagsArg) &&
+                   context.SemanticModel.TryGetConstantValue(flagsArg.Expression, context.CancellationToken, out flags);
         }
 
         private static bool TryGetExpectedFlags(IMethodSymbol target, ITypeSymbol targetType, out BindingFlags flags)
