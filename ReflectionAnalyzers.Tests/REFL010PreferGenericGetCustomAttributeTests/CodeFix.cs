@@ -77,24 +77,5 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
-
-        [Test]
-        public void NoCastNoFix()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System;
-
-    class Foo
-    {
-        public Foo()
-        {
-            var attribute = ↓Attribute.GetCustomAttribute(typeof(Foo), typeof(ObsoleteAttribute));
-        }
-    }
-}";
-            AnalyzerAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
-        }
     }
 }
