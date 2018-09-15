@@ -9,7 +9,7 @@
   </tr>
   <tr>
     <td>Severity</td>
-    <td>Warning</td>
+    <td>Hidden</td>
   </tr>
   <tr>
     <td>Enabled</td>
@@ -32,11 +32,11 @@ The binding flags are not in the expected order.
 
 ## Motivation
 
-ADD MOTIVATION HERE
+Not a very useful analyzer fix. Consistency is the only motivation.
 
 ## How to fix violations
 
-ADD HOW TO FIX VIOLATIONS HERE
+Use the code fix.
 
 <!-- start generated config severity -->
 ## Configure severity

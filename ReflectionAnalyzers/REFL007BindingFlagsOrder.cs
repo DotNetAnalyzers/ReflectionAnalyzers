@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
             title: "The binding flags are not in the expected order.",
             messageFormat: "The binding flags are not in the expected order.{0}",
             category: AnalyzerCategory.SystemReflection,
-            defaultSeverity: DiagnosticSeverity.Warning,
+            defaultSeverity: DiagnosticSeverity.Hidden,
             isEnabledByDefault: true,
             description: "The binding flags are not in the expected order.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
