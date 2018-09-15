@@ -75,19 +75,16 @@ namespace ReflectionAnalyzers
                                         messageArg));
                             }
 
-                            if (HasWrongOrder(flagsArg) == true)
+                            if (TryGetExpectedFlags(target, targetType, out var expectedBindingFlags) &&
+                                flags == expectedBindingFlags &&
+                                HasWrongOrder(flagsArg))
                             {
-                                var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                    ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                    : null;
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
                                         REFL007BindingFlagsOrder.Descriptor,
                                         flagsArg.GetLocation(),
-                                        messageArg == null
-                                            ? ImmutableDictionary<string, string>.Empty
-                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
-                                        messageArg));
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedBindingFlags.ToDisplayString()),
+                                        $" Expected: {expectedBindingFlags.ToDisplayString()}."));
                             }
                         }
                         else
@@ -191,7 +188,7 @@ namespace ReflectionAnalyzers
                    flags.HasFlagFast(BindingFlags.IgnoreCase);
         }
 
-        private static bool? HasWrongOrder(ArgumentSyntax flags)
+        private static bool HasWrongOrder(ArgumentSyntax flags)
         {
             if (flags.Expression is BinaryExpressionSyntax binary)
             {
@@ -199,12 +196,12 @@ namespace ReflectionAnalyzers
                     binary.Left is MemberAccessExpressionSyntax lm &&
                     binary.Right is MemberAccessExpressionSyntax rm)
                 {
-                    return !IsEither(lm, BindingFlags.Public, BindingFlags.NonPublic) &&
-                           !IsEither(rm, BindingFlags.Static, BindingFlags.Instance);
+                    return IsEither(lm, BindingFlags.Static, BindingFlags.Instance) &&
+                           IsEither(rm, BindingFlags.Public, BindingFlags.NonPublic);
                 }
             }
 
-            return null;
+            return false;
             bool IsEither(ExpressionSyntax expression, BindingFlags flag1, BindingFlags flag2)
             {
                 switch (expression)
