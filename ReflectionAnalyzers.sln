@@ -33,6 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{1C271AF2
 		README.md = README.md
 		documentation\REFL002.md = documentation\REFL002.md
 		documentation\REFL003.md = documentation\REFL003.md
+		documentation\REFL004.md = documentation\REFL004.md
 		documentation\REFL005.md = documentation\REFL005.md
 		documentation\REFL006.md = documentation\REFL006.md
 		documentation\REFL007.md = documentation\REFL007.md

@@ -54,31 +54,6 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetBarOverloaded()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System.Reflection;
-
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar));
-        }
-
-        public void Bar()
-        {
-        }
-
-        public int Bar(int i) => i;
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
-        }
-
-        [Test]
         public void UnknownType()
         {
             var code = @"

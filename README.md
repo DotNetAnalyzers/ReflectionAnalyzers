@@ -15,6 +15,10 @@ Analyzers checking System.Reflection
     <td>The member does not exist.</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL004.md">REFL004</a></td>
+    <td>More than one member is matching the criteria.</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL005.md">REFL005</a></td>
     <td>There is no member matching the name and binding flags.</td>
   </tr>
