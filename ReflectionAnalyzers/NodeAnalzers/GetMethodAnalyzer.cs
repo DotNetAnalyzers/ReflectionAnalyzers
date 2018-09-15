@@ -34,67 +34,65 @@ namespace ReflectionAnalyzers
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getMethod) &&
-                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var targetType))
+                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var targetType) &&
+                argumentList.Arguments.TryFirst(out var nameArg) &&
+                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var targetName))
             {
-                if (argumentList.Arguments.TryFirst(out var nameArg) &&
-                    nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var targetName))
+                if (targetType.TryFindFirstMethodRecursive(targetName, out var target))
                 {
-                    if (targetType.TryFindFirstMethodRecursive(targetName, out var target))
+                    if (targetType.TryFindSingleMethodRecursive(targetName, out target))
                     {
-                        if (targetType.TryFindSingleMethodRecursive(targetName, out target))
+                        if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
                         {
-                            if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
-                            {
-                                if (HasWrongFlags(target, targetType, flags))
-                                {
-                                    var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                        ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                        : null;
-                                    context.ReportDiagnostic(
-                                        Diagnostic.Create(
-                                            REFL005WrongBindingFlags.Descriptor,
-                                            flagsArg.GetLocation(),
-                                            messageArg == null
-                                                ? ImmutableDictionary<string, string>.Empty
-                                                : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
-                                            messageArg));
-                                }
-
-                                if (HasRedundantFlag(target, targetType, flags))
-                                {
-                                    var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                        ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                        : null;
-                                    context.ReportDiagnostic(
-                                        Diagnostic.Create(
-                                            REFL006RedundantBindingFlags.Descriptor,
-                                            flagsArg.GetLocation(),
-                                            messageArg == null
-                                                ? ImmutableDictionary<string, string>.Empty
-                                                : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
-                                            messageArg));
-                                }
-                            }
-                            else
+                            if (HasWrongFlags(target, targetType, flags))
                             {
                                 var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
                                     ? $" Expected: {expectedFlags.ToDisplayString()}."
                                     : null;
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
-                                        REFL008MissingBindingFlags.Descriptor,
-                                        argumentList.CloseParenToken.GetLocation(),
+                                        REFL005WrongBindingFlags.Descriptor,
+                                        flagsArg.GetLocation(),
                                         messageArg == null
                                             ? ImmutableDictionary<string, string>.Empty
-                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
+                                        messageArg));
+                            }
+
+                            if (HasRedundantFlag(target, targetType, flags))
+                            {
+                                var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
+                                    ? $" Expected: {expectedFlags.ToDisplayString()}."
+                                    : null;
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        REFL006RedundantBindingFlags.Descriptor,
+                                        flagsArg.GetLocation(),
+                                        messageArg == null
+                                            ? ImmutableDictionary<string, string>.Empty
+                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
                                         messageArg));
                             }
                         }
+                        else
+                        {
+                            var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
+                                ? $" Expected: {expectedFlags.ToDisplayString()}."
+                                : null;
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL008MissingBindingFlags.Descriptor,
+                                    argumentList.CloseParenToken.GetLocation(),
+                                    messageArg == null
+                                        ? ImmutableDictionary<string, string>.Empty
+                                        : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                    messageArg));
+                        }
                     }
-                    else
-                    {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
-                    }
+                }
+                else
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
                 }
             }
         }
