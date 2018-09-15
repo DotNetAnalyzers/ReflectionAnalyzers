@@ -27,6 +27,23 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void GetReferenceEquals()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(ReferenceEquals));
+        }
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
         public void GetToStringOverridden()
         {
             var code = @"
