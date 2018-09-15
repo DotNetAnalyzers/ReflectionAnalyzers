@@ -15,7 +15,8 @@ namespace ReflectionAnalyzers.Codefixes
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL005WrongBindingFlags.DiagnosticId,
-            REFL006RedundantBindingFlags.DiagnosticId);
+            REFL006RedundantBindingFlags.DiagnosticId,
+            REFL008MissingBindingFlags.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
@@ -24,11 +25,23 @@ namespace ReflectionAnalyzers.Codefixes
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument) &&
-                    diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expression))
+                    diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionString))
                 {
                     context.RegisterCodeFix(
-                        $"Change to: {expression}.",
-                        (editor, _) => editor.ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expression)),
+                        $"Change to: {expressionString}.",
+                        (editor, _) => editor.ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
+                        this.GetType().FullName,
+                        diagnostic);
+                }
+                else if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
+                     diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
+                {
+                    context.RegisterCodeFix(
+                        $"Change to: {argumentString}.",
+                        (editor, _) => editor.ReplaceNode(
+                            argumentList,
+                            argumentList.AddArguments(
+                                SyntaxFactory.Argument(SyntaxFactory.ParseExpression(argumentString)))),
                         this.GetType().FullName,
                         diagnostic);
                 }

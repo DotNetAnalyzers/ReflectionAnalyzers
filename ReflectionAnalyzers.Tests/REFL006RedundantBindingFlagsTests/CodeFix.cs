@@ -47,7 +47,6 @@ namespace RoslynSandbox
 }";
 
             var message = "The binding flags can be more precise. Expected: BindingFlags.Public | BindingFlags.Instance.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
@@ -85,7 +84,6 @@ namespace RoslynSandbox
     }
 }";
             var message = "The binding flags can be more precise. Expected: BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
@@ -131,7 +129,6 @@ namespace RoslynSandbox
     }
 }";
             var message = "The binding flags can be more precise. Expected: BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }

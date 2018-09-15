@@ -77,14 +77,17 @@ namespace ReflectionAnalyzers
                             }
                             else
                             {
-                                var message = TryGetExpectedFlags(target, targetType, out var expectedFlags)
+                                var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
                                     ? $" Expected: {expectedFlags.ToDisplayString()}."
                                     : null;
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
                                         REFL008MissingBindingFlags.Descriptor,
                                         argumentList.CloseParenToken.GetLocation(),
-                                        message));
+                                        messageArg == null
+                                            ? ImmutableDictionary<string, string>.Empty
+                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                        messageArg));
                             }
                         }
                     }
