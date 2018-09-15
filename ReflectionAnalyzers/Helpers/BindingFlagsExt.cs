@@ -29,10 +29,10 @@ namespace ReflectionAnalyzers
                 {
                     if (stringBuilder.Length != 0)
                     {
-                        stringBuilder.Append(" | ");
+                        _ = stringBuilder.Append(" | ");
                     }
 
-                    stringBuilder.Append("BindingFlags.").Append(flag.Name());
+                    _ = stringBuilder.Append("BindingFlags.").Append(flag.Name());
                 }
             }
         }

@@ -29,40 +29,38 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.TryGetMethodName(out var targetName) &&
-                targetName == "GetMethod" &&
+
                 invocation.ArgumentList is ArgumentListSyntax argumentList &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var getMethod) &&
-                getMethod == KnownSymbol.Type.GetMethod &&
+                invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getMethod) &&
                 context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var targetType))
             {
                 if (argumentList.Arguments.TryFirst(out var nameArg) &&
-                    nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name))
+                    nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var targetName))
                 {
-                    if (targetType.TryFindFirstMethodRecursive(name, out var target))
+                    if (targetType.TryFindFirstMethodRecursive(targetName, out var target))
                     {
-                        if (targetType.TryFindSingleMethodRecursive(name, out target))
+                        if (targetType.TryFindSingleMethodRecursive(targetName, out target))
                         {
                             if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
                             {
                                 if (target.DeclaredAccessibility != Accessibility.Public &&
                                     !flags.HasFlag(BindingFlags.NonPublic))
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, name));
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
                                 }
 
                                 if (target.IsStatic &&
                                     !flags.HasFlag(BindingFlags.Static))
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, name));
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
                                 }
 
                                 if (!target.IsStatic &&
                                     !flags.HasFlag(BindingFlags.Instance))
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, name));
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
                                 }
                             }
                             else
@@ -74,14 +72,14 @@ namespace ReflectionAnalyzers
 
                                 if (target.DeclaredAccessibility != Accessibility.Public)
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, nameArg.GetLocation(), targetType, name));
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, nameArg.GetLocation(), targetType, targetName));
                                 }
                             }
                         }
                     }
                     else
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, name));
+                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
                     }
                 }
             }

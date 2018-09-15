@@ -1,9 +1,17 @@
+// ReSharper disable ReturnValueOfPureMethodIsNotUsed
 namespace ValidCode
 {
     using System;
     using System.Reflection;
 
-    public class GetMethod : GetMethod.Base
+    public class Base
+    {
+        protected static void ProtectedStatic() { }
+
+        protected void ProtectedInstance() { }
+    }
+
+    public class GetMethod : Base
     {
         public GetMethod(Type unknownType)
         {
@@ -15,7 +23,7 @@ namespace ValidCode
             typeof(GetMethod).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
             typeof(GetMethod).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
             typeof(GetMethod).GetMethod(nameof(ProtectedStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            typeof(GetMethod).GetMethod(nameof(ProtectedInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+            typeof(GetMethod).GetMethod(nameof(this.ProtectedInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 
 
             unknownType.GetMethod("Bar", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
@@ -47,11 +55,6 @@ namespace ValidCode
 
         private void PrivateInstanceMethod() { }
 
-        public class Base
-        {
-            protected static void ProtectedStatic() { }
 
-            protected void ProtectedInstance() { }
-        }
     }
 }
