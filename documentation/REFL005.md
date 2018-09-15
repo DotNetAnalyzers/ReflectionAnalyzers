@@ -1,5 +1,5 @@
 # REFL005
-## There is no method matching the name and binding flags.
+## There is no member matching the name and binding flags.
 
 <!-- start generated table -->
 <table>
@@ -28,7 +28,7 @@
 
 ## Description
 
-There is no method matching the name and binding flags.
+There is no member matching the name and binding flags.
 
 ## Motivation
 
@@ -47,21 +47,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL005 // There is no method matching the name and binding flags.
+#pragma warning disable REFL005 // There is no member matching the name and binding flags.
 Code violating the rule here
-#pragma warning restore REFL005 // There is no method matching the name and binding flags.
+#pragma warning restore REFL005 // There is no member matching the name and binding flags.
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL005 // There is no method matching the name and binding flags.
+#pragma warning disable REFL005 // There is no member matching the name and binding flags.
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL005:There is no method matching the name and binding flags.", 
+    "REFL005:There is no member matching the name and binding flags.", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

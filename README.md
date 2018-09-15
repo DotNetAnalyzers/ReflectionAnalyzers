@@ -16,7 +16,7 @@ Analyzers checking System.Reflection
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL005.md">REFL005</a></td>
-    <td>There is no method matching the name and binding flags.</td>
+    <td>There is no member matching the name and binding flags.</td>
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL008.md">REFL008</a></td>

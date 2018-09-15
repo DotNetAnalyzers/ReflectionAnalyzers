@@ -8,12 +8,12 @@ namespace ReflectionAnalyzers
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "There is no method matching the name and binding flags.",
-            messageFormat: "There is no method matching the name and binding flags.",
+            title: "There is no member matching the name and binding flags.",
+            messageFormat: "There is no member matching the name and binding flags.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "There is no method matching the name and binding flags.",
+            description: "There is no member matching the name and binding flags.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }
