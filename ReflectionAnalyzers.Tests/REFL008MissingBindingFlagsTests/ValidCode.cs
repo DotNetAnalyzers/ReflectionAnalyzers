@@ -7,6 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL008");
 
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Public)")]
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Static |BindingFlags.Public)")]
@@ -25,7 +26,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetMethod(nameof(this.ToString))", call);
-            AnalyzerAssert.Valid(Analyzer, code);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -48,7 +49,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, code);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -73,7 +74,7 @@ namespace RoslynSandbox
         public int Bar(int i) => i;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, code);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -93,7 +94,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, code);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

@@ -7,9 +7,10 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL006");
 
         [Test]
-        public void GetToString(string call)
+        public void GetToStringRedundantStatic()
         {
             var code = @"
 namespace RoslynSandbox
@@ -20,10 +21,29 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
         }
     }
-}".AssertReplace("GetMethod(nameof(this.ToString))", call);
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic.WithMessage("The binding flags can be more precise. Expected BindingFlags.Public | BindingFlags.Instance."), code);
+        }
+
+        [Test]
+        public void GetReferenceEqualsRedundantInstance()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+        }
+    }
+}";
             AnalyzerAssert.Valid(Analyzer, code);
         }
 
@@ -39,37 +59,12 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
         }
 
         private void Bar()
         {
         }
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
-        }
-
-        [Test]
-        public void GetBarOverloaded()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System.Reflection;
-
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance);
-        }
-
-        public void Bar()
-        {
-        }
-
-        public int Bar(int i) => i;
     }
 }";
             AnalyzerAssert.Valid(Analyzer, code);

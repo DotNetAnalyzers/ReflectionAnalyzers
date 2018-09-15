@@ -19,6 +19,10 @@ Analyzers checking System.Reflection
     <td>There is no member matching the name and binding flags.</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL006.md">REFL006</a></td>
+    <td>The binding flags can be more precise.</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL008.md">REFL008</a></td>
     <td>Specify binding flags for better performance and clearer less fragile code.</td>
   </tr>

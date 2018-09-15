@@ -14,8 +14,9 @@ namespace ReflectionAnalyzers
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL003MemberDoesNotExist.Descriptor,
-            REFL008MissingBindingFlags.Descriptor,
-            REFL005WrongBindingFlags.Descriptor);
+            REFL005WrongBindingFlags.Descriptor,
+            REFL006RedundantBindingFlags.Descriptor,
+            REFL008MissingBindingFlags.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -45,22 +46,54 @@ namespace ReflectionAnalyzers
                         {
                             if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
                             {
-                                if (target.DeclaredAccessibility != Accessibility.Public &&
-                                    !flags.HasFlag(BindingFlags.NonPublic))
+                                if (target.DeclaredAccessibility != Accessibility.Public)
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    if (!flags.HasFlagFast(BindingFlags.NonPublic))
+                                    {
+                                        context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    }
+
+                                    if (flags.HasFlagFast(BindingFlags.Public))
+                                    {
+                                        context.ReportDiagnostic(Diagnostic.Create(REFL006RedundantBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    }
+                                }
+                                else
+                                {
+                                    if (!flags.HasFlagFast(BindingFlags.Public))
+                                    {
+                                        context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    }
+
+                                    if (flags.HasFlagFast(BindingFlags.NonPublic))
+                                    {
+                                        context.ReportDiagnostic(Diagnostic.Create(REFL006RedundantBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    }
                                 }
 
-                                if (target.IsStatic &&
-                                    !flags.HasFlag(BindingFlags.Static))
+                                if (target.IsStatic)
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
-                                }
+                                    if (!flags.HasFlagFast(BindingFlags.Static))
+                                    {
+                                        context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    }
 
-                                if (!target.IsStatic &&
-                                    !flags.HasFlag(BindingFlags.Instance))
+                                    if (flags.HasFlagFast(BindingFlags.Instance))
+                                    {
+                                        context.ReportDiagnostic(Diagnostic.Create(REFL006RedundantBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    }
+                                }
+                                else
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    if (!flags.HasFlagFast(BindingFlags.Instance))
+                                    {
+                                        context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    }
+
+                                    if (flags.HasFlagFast(BindingFlags.Static))
+                                    {
+                                        context.ReportDiagnostic(Diagnostic.Create(REFL006RedundantBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, targetName));
+                                    }
                                 }
                             }
                             else
