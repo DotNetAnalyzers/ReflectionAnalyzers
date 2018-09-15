@@ -28,6 +28,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{1575C8DB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ValidCode", "ValidCode\ValidCode.csproj", "{DDA5D6EE-FB0C-4443-81B2-CA8ED0C064C8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{1C271AF2-C36F-4734-BBC6-89B969FEDDA2}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		documentation\REFL002.md = documentation\REFL002.md
+		documentation\REFL003.md = documentation\REFL003.md
+		documentation\REFL005.md = documentation\REFL005.md
+		documentation\REFL008.md = documentation\REFL008.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
