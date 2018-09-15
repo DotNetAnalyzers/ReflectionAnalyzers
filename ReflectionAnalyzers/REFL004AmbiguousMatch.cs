@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL004GetMethodAmbiguousMatch
+    internal static class REFL004AmbiguousMatch
     {
         public const string DiagnosticId = "REFL004";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "There is more than one method matching the criteria.",
-            messageFormat: "There is more than one method matching the criteria.",
+            title: "More than one member is matching the criteria.",
+            messageFormat: "More than one member is matching the criteria. {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "There is more than one method matching the criteria.",
+            description: "More than one member is matching the criteria.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL003GetMethodTargetDoesNotExistTests
+namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -7,13 +7,18 @@ namespace ReflectionAnalyzers.Tests.REFL003GetMethodTargetDoesNotExistTests
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL005");
 
-        [Test]
-        public void GetToString()
+        [TestCase("GetMethod(nameof(this.ToString))")]
+        [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Public)")]
+        [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Static |BindingFlags.Public)")]
+        public void GetToString(string call)
         {
             var code = @"
 namespace RoslynSandbox
 {
+    using System.Reflection;
+
     class Foo
     {
         public Foo()
@@ -21,46 +26,26 @@ namespace RoslynSandbox
             var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString));
         }
     }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
+}".AssertReplace("GetMethod(nameof(this.ToString))", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
-        public void GetToStringOverridden()
+        public void GetPrivate()
         {
             var code = @"
 namespace RoslynSandbox
 {
+    using System.Reflection;
+
     class Foo
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString));
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
-        }
-
-        [Test]
-        public void GetMethodInSameType()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar));
-        }
-
-        public void Bar()
+        private void Bar()
         {
         }
     }
@@ -69,11 +54,13 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetOverloadedMethodInSameType()
+        public void GetBarOverloaded()
         {
             var code = @"
 namespace RoslynSandbox
 {
+    using System.Reflection;
+
     class Foo
     {
         public Foo()
@@ -92,12 +79,13 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodWhenUnknownType()
+        public void UnknownType()
         {
             var code = @"
 namespace RoslynSandbox
 {
     using System;
+    using System.Reflection;
 
     class Foo
     {
@@ -107,26 +95,6 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, code);
-        }
-
-        [TestCase("get_Bar")]
-        [TestCase("set_Bar")]
-        public void GetPropertyMethods(string name)
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(""get_Bar"");
-        }
-
-        public int Bar { get; set; }
-    }
-}".AssertReplace("get_Bar", name);
             AnalyzerAssert.Valid(Analyzer, code);
         }
     }

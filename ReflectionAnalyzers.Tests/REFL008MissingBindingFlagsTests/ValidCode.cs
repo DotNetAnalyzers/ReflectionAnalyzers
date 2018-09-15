@@ -1,6 +1,5 @@
-namespace ReflectionAnalyzers.Tests.REFL005GetMethodWrongBindingFlagsTests
+namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
 {
-    using System.Reflection;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
@@ -9,7 +8,6 @@ namespace ReflectionAnalyzers.Tests.REFL005GetMethodWrongBindingFlagsTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
 
-        [TestCase("GetMethod(nameof(this.ToString))")]
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Public)")]
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Static |BindingFlags.Public)")]
         public void GetToString(string call)

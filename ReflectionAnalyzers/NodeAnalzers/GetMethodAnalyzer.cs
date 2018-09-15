@@ -13,8 +13,9 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL003GetMethodTargetDoesNotExist.Descriptor,
-            REFL005GetMethodWrongBindingFlags.Descriptor);
+            REFL003MemberDoesNotExist.Descriptor,
+            REFL008MissingBindingFlags.Descriptor,
+            REFL005WrongBindingFlags.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -35,44 +36,52 @@ namespace ReflectionAnalyzers
                 memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
                 context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var getMethod) &&
                 getMethod == KnownSymbol.Type.GetMethod &&
-                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var type))
+                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var targetType))
             {
                 if (argumentList.Arguments.TryFirst(out var nameArg) &&
                     nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name))
                 {
-                    if (type.TryFindFirstMethodRecursive(name, out var method))
+                    if (targetType.TryFindFirstMethodRecursive(name, out var target))
                     {
-                        if (type.TryFindSingleMethodRecursive(name, out method))
+                        if (targetType.TryFindSingleMethodRecursive(name, out target))
                         {
                             if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
                             {
-                                if (method.DeclaredAccessibility != Accessibility.Public &&
+                                if (target.DeclaredAccessibility != Accessibility.Public &&
                                     !flags.HasFlag(BindingFlags.NonPublic))
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, flagsArg.GetLocation(), type, name));
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, name));
                                 }
 
-                                if (method.IsStatic &&
+                                if (target.IsStatic &&
                                     !flags.HasFlag(BindingFlags.Static))
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, flagsArg.GetLocation(), type, name));
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, name));
                                 }
 
-                                if (!method.IsStatic &&
+                                if (!target.IsStatic &&
                                     !flags.HasFlag(BindingFlags.Instance))
                                 {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, flagsArg.GetLocation(), type, name));
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, flagsArg.GetLocation(), targetType, name));
                                 }
                             }
-                            else if (method.DeclaredAccessibility != Accessibility.Public)
+                            else
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, nameArg.GetLocation(), type, name));
+                                if (TryGetExpectedFlags(target, targetType, out var expectedFlags))
+                                {
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL008MissingBindingFlags.Descriptor, argumentList.CloseParenToken.GetLocation(), expectedFlags.ToDisplayString()));
+                                }
+
+                                if (target.DeclaredAccessibility != Accessibility.Public)
+                                {
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005WrongBindingFlags.Descriptor, nameArg.GetLocation(), targetType, name));
+                                }
                             }
                         }
                     }
                     else
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL003GetMethodTargetDoesNotExist.Descriptor, nameArg.GetLocation(), type, name));
+                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, name));
                     }
                 }
             }
@@ -91,6 +100,39 @@ namespace ReflectionAnalyzers
             flagsArg = null;
             flags = default(BindingFlags);
             return false;
+        }
+
+        private static bool TryGetExpectedFlags(IMethodSymbol target, ITypeSymbol targetType, out BindingFlags flags)
+        {
+            flags = 0;
+            if (target.DeclaredAccessibility == Accessibility.Public)
+            {
+                flags |= BindingFlags.Public;
+            }
+            else
+            {
+                flags |= BindingFlags.NonPublic;
+            }
+
+            if (target.IsStatic)
+            {
+                flags |= BindingFlags.Static;
+            }
+            else
+            {
+                flags |= BindingFlags.Instance;
+            }
+
+            if (Equals(target.ContainingType, targetType))
+            {
+                flags |= BindingFlags.DeclaredOnly;
+            }
+            else
+            {
+                flags |= BindingFlags.FlattenHierarchy;
+            }
+
+            return true;
         }
     }
 }

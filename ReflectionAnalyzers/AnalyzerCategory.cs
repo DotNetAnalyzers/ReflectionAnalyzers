@@ -1,4 +1,4 @@
-﻿namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers
 {
     internal static class AnalyzerCategory
     {

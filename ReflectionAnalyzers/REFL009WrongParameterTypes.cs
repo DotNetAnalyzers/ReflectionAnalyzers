@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL005GetMethodWrongBindingFlags
+    internal static class REFL009WrongParameterTypes
     {
-        public const string DiagnosticId = "REFL005";
+        public const string DiagnosticId = "REFL009";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "There is no method matching the name and binding flags.",
-            messageFormat: "There is no method matching the name and binding flags.",
+            title: "There is no method matching the types.",
+            messageFormat: "There is no method matching the types.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "There is no method matching the name and binding flags.",
+            description: "There is no method matching the types.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }

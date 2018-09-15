@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL005GetMethodWrongBindingFlagsTests
+namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;

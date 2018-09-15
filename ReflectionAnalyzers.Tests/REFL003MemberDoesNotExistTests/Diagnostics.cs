@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL003GetMethodTargetDoesNotExistTests
+namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -23,7 +23,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage("The type RoslynSandbox.Foo does not have a method named Foo."), code);
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage("The type RoslynSandbox.Foo does not have a member named Foo."), code);
         }
 
         [Test]
