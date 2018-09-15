@@ -14,7 +14,8 @@ namespace ReflectionAnalyzers.Codefixes
     internal class ArgumentFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL005WrongBindingFlags.DiagnosticId);
+            REFL005WrongBindingFlags.DiagnosticId,
+            REFL006RedundantBindingFlags.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
