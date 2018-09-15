@@ -44,18 +44,29 @@ namespace ReflectionAnalyzers
                     {
                         if (type.TryFindSingleMethodRecursive(name, out method))
                         {
-                            if (method.DeclaredAccessibility != Accessibility.Public)
+                            if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
                             {
-                                if (argumentList.Arguments.Count == 1)
-                                {
-                                    context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, nameArg.GetLocation(), type, name));
-                                }
-
-                                if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags) &&
+                                if (method.DeclaredAccessibility != Accessibility.Public &&
                                     !flags.HasFlag(BindingFlags.NonPublic))
                                 {
                                     context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, flagsArg.GetLocation(), type, name));
                                 }
+
+                                if (method.IsStatic &&
+                                    !flags.HasFlag(BindingFlags.Static))
+                                {
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, flagsArg.GetLocation(), type, name));
+                                }
+
+                                if (!method.IsStatic &&
+                                    !flags.HasFlag(BindingFlags.Instance))
+                                {
+                                    context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, flagsArg.GetLocation(), type, name));
+                                }
+                            }
+                            else if (method.DeclaredAccessibility != Accessibility.Public)
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(REFL005GetMethodWrongBindingFlags.Descriptor, nameArg.GetLocation(), type, name));
                             }
                         }
                     }
