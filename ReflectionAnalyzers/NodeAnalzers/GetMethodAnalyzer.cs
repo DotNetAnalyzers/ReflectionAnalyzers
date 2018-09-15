@@ -47,14 +47,17 @@ namespace ReflectionAnalyzers
                             {
                                 if (HasWrongFlags(target, targetType, flags))
                                 {
-                                    var message = TryGetExpectedFlags(target, targetType, out var expectedFlags)
+                                    var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
                                         ? $" Expected: {expectedFlags.ToDisplayString()}."
                                         : null;
                                     context.ReportDiagnostic(
                                         Diagnostic.Create(
                                             REFL005WrongBindingFlags.Descriptor,
                                             flagsArg.GetLocation(),
-                                            message));
+                                            messageArg == null
+                                                ? ImmutableDictionary<string, string>.Empty
+                                                : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
+                                            messageArg));
                                 }
 
                                 if (HasRedundantFlag(target, targetType, flags))
