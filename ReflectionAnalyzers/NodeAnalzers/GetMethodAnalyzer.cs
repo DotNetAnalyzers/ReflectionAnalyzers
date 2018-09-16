@@ -202,6 +202,13 @@ namespace ReflectionAnalyzers
                             continue;
                         }
 
+                        if (member.IsStatic &&
+                            !current.Equals(targetType) &&
+                            !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                        {
+                            continue;
+                        }
+
                         if (target == null)
                         {
                             target = member;
