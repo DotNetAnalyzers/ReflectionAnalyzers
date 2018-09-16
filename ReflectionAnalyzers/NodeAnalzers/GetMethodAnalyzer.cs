@@ -34,14 +34,14 @@ namespace ReflectionAnalyzers
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList &&
-                TryGetX(context, out var getX, out var targetType, out var nameArg) &&
+                TryGetX(context, out var targetType, out var nameArg, out var flagsArg, out var flags) &&
                 nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var targetName))
             {
                 if (targetType.TryFindFirstMethodRecursive(targetName, out var target))
                 {
                     if (targetType.TryFindSingleMethodRecursive(targetName, out target))
                     {
-                        if (TryGetBindingFlags(getX, invocation, context, out var flagsArg, out var flags))
+                        if (flagsArg != null)
                         {
                             if (HasWrongFlags(target, targetType, flags))
                             {
@@ -116,19 +116,22 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetX(SyntaxNodeAnalysisContext context, out IMethodSymbol getX, out ITypeSymbol targetType, out ArgumentSyntax nameArg)
+        private static bool TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out ArgumentSyntax flagsArg, out BindingFlags flags)
         {
-            getX = null;
             targetType = null;
             nameArg = null;
+            flagsArg = null;
+            flags = 0;
             return context.Node is InvocationExpressionSyntax invocation &&
                    invocation.ArgumentList is ArgumentListSyntax argumentList &&
                    invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                    memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                   invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out getX) &&
+                   invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getX) &&
                    IsKnownSignature(getX, out var nameParameter) &&
                    invocation.TryFindArgument(nameParameter, out nameArg) &&
-                   context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out targetType);
+                   context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out targetType) &&
+                   (TryGetFlagsFromArgument(out flagsArg, out flags) ||
+                    TryGetDefaultFlags(out flags));
 
             bool IsKnownSignature(IMethodSymbol candidate, out IParameterSymbol nameParameterSymbol)
             {
@@ -138,6 +141,38 @@ namespace ReflectionAnalyzers
                        (candidate.Parameters.Length == 2 &&
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameterSymbol) &&
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
+            }
+
+            bool TryGetFlagsFromArgument(out ArgumentSyntax argument, out BindingFlags bindingFlags)
+            {
+                argument = null;
+                bindingFlags = 0;
+                return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
+                       invocation.TryFindArgument(parameter, out argument) &&
+                       context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
+            }
+
+            bool TryGetDefaultFlags(out BindingFlags defaultFlags)
+            {
+                switch (getX.MetadataName)
+                {
+                    case "GetField":
+                    case "GetFields":
+                    case "GetEvent":
+                    case "GetEvents":
+                    case "GetMethod":
+                    case "GetMethods":
+                    case "GetMember":
+                    case "GetMembers":
+                    case "GetNestedTypes":
+                    case "GetProperty":
+                    case "GetProperties":
+                        defaultFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
+                        return true;
+                }
+
+                defaultFlags = (BindingFlags)0;
+                return false;
             }
         }
 
