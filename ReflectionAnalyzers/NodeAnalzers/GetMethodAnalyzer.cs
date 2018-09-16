@@ -150,7 +150,7 @@ namespace ReflectionAnalyzers
             flagsArg = null;
             flags = 0;
             if (context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                invocation.ArgumentList != null &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getX) &&
