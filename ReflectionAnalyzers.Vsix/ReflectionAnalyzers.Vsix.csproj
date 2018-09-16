@@ -1,22 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.props')" Label="Paket" />
   <PropertyGroup>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{70EF0905-05EB-4FB4-8CA3-02B5D28EE998}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ReflectionAnalyzers.Vsix</RootNamespace>
-    <AssemblyName>ReflectionAnalyzers.Vsix</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFramework>net461</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
     <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
@@ -28,98 +18,17 @@
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ReflectionAnalyzers.Vsix.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>ReflectionAnalyzers.Vsix.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\ReflectionAnalyzers\ReflectionAnalyzers.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="ReflectionAnalyzers.Vsix.ruleset" />
-    <None Include="source.extension.vsixmanifest">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ReflectionAnalyzers\ReflectionAnalyzers.csproj">
-      <Project>{a6ccbee9-f9ba-49f2-a126-44e0aa687367}</Project>
-      <Name>ReflectionAnalyzers</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <Import Project="..\packages\build\Microsoft.VisualStudio.SDK.Analyzers\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\packages\build\Microsoft.VisualStudio.SDK.Analyzers\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" Label="Paket" />
-  <ItemGroup>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.SDK.Analyzers\analyzers\cs\Microsoft.VisualStudio.SDK.Analyzers.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-  </ItemGroup>
   <Import Project="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Label="Paket" />
-  <ItemGroup>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\cs\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\de\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\es\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\fr\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\it\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\ja\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\ko\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\pl\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\pt-BR\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\ru\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\tr\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\zh-Hans\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-    <Analyzer Include="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\analyzers\cs\zh-Hant\Microsoft.VisualStudio.Threading.Analyzers.resources.dll">
-      <Paket>True</Paket>
-    </Analyzer>
-  </ItemGroup>
   <Import Project="..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets')" Label="Paket" />
 </Project>
