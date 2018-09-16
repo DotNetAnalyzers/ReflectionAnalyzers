@@ -34,18 +34,14 @@ namespace ReflectionAnalyzers
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getMethod) &&
-                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var targetType) &&
-                argumentList.Arguments.TryFirst(out var nameArg) &&
+                TryGetX(context, out var getX, out var targetType, out var nameArg) &&
                 nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var targetName))
             {
                 if (targetType.TryFindFirstMethodRecursive(targetName, out var target))
                 {
                     if (targetType.TryFindSingleMethodRecursive(targetName, out target))
                     {
-                        if (TryGetBindingFlags(getMethod, invocation, context, out var flagsArg, out var flags))
+                        if (TryGetBindingFlags(getX, invocation, context, out var flagsArg, out var flags))
                         {
                             if (HasWrongFlags(target, targetType, flags))
                             {
@@ -117,6 +113,31 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
                 }
+            }
+        }
+
+        private static bool TryGetX(SyntaxNodeAnalysisContext context, out IMethodSymbol getX, out ITypeSymbol targetType, out ArgumentSyntax nameArg)
+        {
+            getX = null;
+            targetType = null;
+            nameArg = null;
+            return context.Node is InvocationExpressionSyntax invocation &&
+                   invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                   invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                   memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
+                   invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out getX) &&
+                   IsKnownSignature(getX, out var nameParameter) &&
+                   invocation.TryFindArgument(nameParameter, out nameArg) &&
+                   context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out targetType);
+
+            bool IsKnownSignature(IMethodSymbol candidate, out IParameterSymbol nameParameterSymbol)
+            {
+                // I don't know how binder works so limiting checks to what I know.
+                return (candidate.Parameters.TrySingle(out nameParameterSymbol) &&
+                        nameParameterSymbol.Type == KnownSymbol.String) ||
+                       (candidate.Parameters.Length == 2 &&
+                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameterSymbol) &&
+                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
             }
         }
 
