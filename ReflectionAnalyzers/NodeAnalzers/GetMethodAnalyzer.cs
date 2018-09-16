@@ -62,18 +62,6 @@ namespace ReflectionAnalyzers
                                             : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
                                         messageArg));
                             }
-
-                            if (TryGetExpectedFlags(target, targetType, out var expectedBindingFlags) &&
-                                flags == expectedBindingFlags &&
-                                HasWrongOrder(flagsArg))
-                            {
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL007BindingFlagsOrder.Descriptor,
-                                        flagsArg.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedBindingFlags.ToDisplayString()),
-                                        $" Expected: {expectedBindingFlags.ToDisplayString()}."));
-                            }
                         }
                         else
                         {
@@ -133,6 +121,19 @@ namespace ReflectionAnalyzers
                         break;
                     case GetXResult.Unknown:
                         break;
+                }
+
+                if (flagsArg != null &&
+                    TryGetExpectedFlags(target, targetType, out var expectedBindingFlags) &&
+                    flags == expectedBindingFlags &&
+                    HasWrongOrder(flagsArg))
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL007BindingFlagsOrder.Descriptor,
+                            flagsArg.GetLocation(),
+                            ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedBindingFlags.ToDisplayString()),
+                            $" Expected: {expectedBindingFlags.ToDisplayString()}."));
                 }
             }
         }
@@ -356,6 +357,12 @@ namespace ReflectionAnalyzers
         private static bool TryGetExpectedFlags(ISymbol target, ITypeSymbol targetType, out BindingFlags flags)
         {
             flags = 0;
+            if (target is null ||
+                targetType is null)
+            {
+                return false;
+            }
+
             if (target.DeclaredAccessibility == Accessibility.Public)
             {
                 flags |= BindingFlags.Public;
@@ -424,31 +431,9 @@ namespace ReflectionAnalyzers
 
         private static bool HasWrongOrder(ArgumentSyntax flags)
         {
-            if (flags.Expression is BinaryExpressionSyntax binary)
+            using (var walker = BindingFlagsOrderWalker.Borrow(flags))
             {
-                if (binary.IsKind(SyntaxKind.BitwiseOrExpression) &&
-                    binary.Left is MemberAccessExpressionSyntax lm &&
-                    binary.Right is MemberAccessExpressionSyntax rm)
-                {
-                    return IsEither(lm, BindingFlags.Static, BindingFlags.Instance) &&
-                           IsEither(rm, BindingFlags.Public, BindingFlags.NonPublic);
-                }
-            }
-
-            return false;
-            bool IsEither(ExpressionSyntax expression, BindingFlags flag1, BindingFlags flag2)
-            {
-                switch (expression)
-                {
-                    case IdentifierNameSyntax identifierName:
-                        return identifierName.Identifier.ValueText is string name &&
-                               (name == flag1.Name() ||
-                                name == flag2.Name());
-                    case MemberAccessExpressionSyntax memberAccess:
-                        return IsEither(memberAccess.Name, flag1, flag2);
-                    default:
-                        return false;
-                }
+                return walker.IsInWrongOrder();
             }
         }
     }

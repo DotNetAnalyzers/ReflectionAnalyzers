@@ -12,8 +12,11 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
         private static readonly CodeFixProvider Fix = new ArgumentFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL007");
 
-        [TestCase("BindingFlags.Instance | BindingFlags.Public")]
-        public void GetToString(string flags)
+        [TestCase("this.Static",      "BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public",      "BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.GetHashCode", "BindingFlags.Instance | BindingFlags.Public",    "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("this.Private",     "BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        public void GetMethod(string method, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -24,11 +27,19 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), ↓BindingFlags.Public | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), ↓BindingFlags.Public | BindingFlags.Static);
         }
-    }
-}".AssertReplace("BindingFlags.Public | BindingFlags.Instance", flags);
 
+        public static int Static() => 0;
+
+        public int Public() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private int Private() => 0;
+    }
+}".AssertReplace("nameof(this.Public)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
             var fixedCode = @"
 namespace RoslynSandbox
 {
@@ -38,12 +49,21 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
-    }
-}";
 
-            var message = "The binding flags are not in the expected order. Expected: BindingFlags.Public | BindingFlags.Instance.";
+        public static int Static() => 0;
+
+        public int Public() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private int Private() => 0;
+    }
+}".AssertReplace("nameof(this.Public)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
+
+            var message = $"The binding flags are not in the expected order. Expected: {expected}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }
