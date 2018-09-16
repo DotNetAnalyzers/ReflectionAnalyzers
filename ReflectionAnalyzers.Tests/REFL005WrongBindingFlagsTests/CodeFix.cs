@@ -95,11 +95,11 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [TestCase("BindingFlags.Public | BindingFlags.Static")]
-        [TestCase("BindingFlags.NonPublic | BindingFlags.Instance")]
-        [TestCase("BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        public void GetPublicInstanceMethod(string flags)
+        [TestCase("GetMethod(nameof(this.Bar), ↓BindingFlags.Public | BindingFlags.Static)", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("GetMethod(nameof(this.Bar), ↓BindingFlags.NonPublic | BindingFlags.Instance)", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("GetMethod(nameof(this.Bar), ↓BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("GetMethod(nameof(this.Bar), ↓BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        public void GetMethod(string call, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -117,7 +117,7 @@ namespace RoslynSandbox
         {
         }
     }
-}".AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
+}".AssertReplace("GetMethod(nameof(this.Bar), ↓BindingFlags.Public | BindingFlags.Static)", call);
             var fixedCode = @"
 namespace RoslynSandbox
 {
@@ -134,8 +134,8 @@ namespace RoslynSandbox
         {
         }
     }
-}";
-            var message = "There is no member matching the name and binding flags. Expected: BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly.";
+}".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
+            var message = $"There is no member matching the name and binding flags. Expected: {expected}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
