@@ -101,5 +101,47 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"Bar\")", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("GetProperty(nameof(Static), BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("GetProperty(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic)")]
+        [TestCase("GetProperty(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetProperty(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)")]
+        [TestCase("GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.Instance)")]
+        [TestCase("GetProperty(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.Static)")]
+        [TestCase("GetProperty(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.NonPublic)")]
+        [TestCase("GetProperty(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetProperty(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("GetProperty(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetProperty(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.NonPublic)")]
+        [TestCase("GetProperty(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetProperty(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase)")]
+        public void GetProperty(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+        public static int Static => 0;
+
+        public int Public => 0;
+
+        private static int PrivateStatic => 0;
+
+        private int Private => 0;
+    }
+}".AssertReplace("GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

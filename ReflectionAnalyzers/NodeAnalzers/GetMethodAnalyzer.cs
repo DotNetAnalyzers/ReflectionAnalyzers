@@ -153,7 +153,8 @@ namespace ReflectionAnalyzers
                 invocation.ArgumentList != null &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getX) &&
+                (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getX) ||
+                 invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context, out getX)) &&
                 IsKnownSignature(getX, out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out nameArg) &&
                 nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out targetName) &&
