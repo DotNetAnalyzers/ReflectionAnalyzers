@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
-    using System.Linq;
     using System.Reflection;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
@@ -12,6 +11,15 @@ namespace ReflectionAnalyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class GetMethodAnalyzer : DiagnosticAnalyzer
     {
+        private enum GetXResult
+        {
+            Unknown,
+            Single,
+            None,
+            Ambiguous,
+            OtherFlags,
+        }
+
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL003MemberDoesNotExist.Descriptor,
@@ -33,31 +41,13 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList is ArgumentListSyntax argumentList &&
-                TryGetX(context, out var targetType, out var nameArg, out var flagsArg, out var flags) &&
-                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var targetName))
+                invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                if (targetType.TryFindFirstMethodRecursive(targetName, out var target))
+                switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var flags))
                 {
-                    if (targetType.TryFindSingleMethodRecursive(targetName, out target))
-                    {
+                    case GetXResult.Single:
                         if (flagsArg != null)
                         {
-                            if (HasWrongFlags(target, targetType, flags))
-                            {
-                                var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                    ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                    : null;
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL005WrongBindingFlags.Descriptor,
-                                        flagsArg.GetLocation(),
-                                        messageArg == null
-                                            ? ImmutableDictionary<string, string>.Empty
-                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
-                                        messageArg));
-                            }
-
                             if (HasRedundantFlag(target, targetType, flags))
                             {
                                 var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
@@ -99,39 +89,147 @@ namespace ReflectionAnalyzers
                                         : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
                                     messageArg));
                         }
-                    }
-                    else
-                    {
-                        if (argumentList.Arguments.Count == 1 &&
-                            targetType.GetMembers(targetName).Count(x => x.DeclaredAccessibility == Accessibility.Public) > 1)
+
+                        break;
+                    case GetXResult.OtherFlags:
+                        if (flagsArg != null)
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, nameArg.GetLocation()));
+                            if (HasWrongFlags(target, targetType, flags))
+                            {
+                                var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
+                                    ? $" Expected: {expectedFlags.ToDisplayString()}."
+                                    : null;
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        REFL005WrongBindingFlags.Descriptor,
+                                        flagsArg.GetLocation(),
+                                        messageArg == null
+                                            ? ImmutableDictionary<string, string>.Empty
+                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
+                                        messageArg));
+                            }
                         }
-                    }
-                }
-                else
-                {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
+                        else
+                        {
+                            var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
+                                ? $" Expected: {expectedFlags.ToDisplayString()}."
+                                : null;
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL008MissingBindingFlags.Descriptor,
+                                    argumentList.CloseParenToken.GetLocation(),
+                                    messageArg == null
+                                        ? ImmutableDictionary<string, string>.Empty
+                                        : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                    messageArg));
+                        }
+                        break;
+                    case GetXResult.None:
+                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
+                        break;
+                    case GetXResult.Ambiguous:
+                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, nameArg.GetLocation()));
+                        break;
+                    case GetXResult.Unknown:
+                        break;
                 }
             }
         }
 
-        private static bool TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        /// <summary>
+        /// Handles GetField, GetEvent, GetMember, GetMethod...
+        /// </summary>
+        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
         {
             targetType = null;
             nameArg = null;
+            targetName = null;
+            target = null;
             flagsArg = null;
             flags = 0;
-            return context.Node is InvocationExpressionSyntax invocation &&
-                   invocation.ArgumentList is ArgumentListSyntax argumentList &&
-                   invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                   memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                   invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getX) &&
-                   IsKnownSignature(getX, out var nameParameter) &&
-                   invocation.TryFindArgument(nameParameter, out nameArg) &&
-                   context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out targetType) &&
-                   (TryGetFlagsFromArgument(out flagsArg, out flags) ||
-                    TryGetDefaultFlags(out flags));
+            if (context.Node is InvocationExpressionSyntax invocation &&
+                invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
+                invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getX) &&
+                IsKnownSignature(getX, out var nameParameter) &&
+                invocation.TryFindArgument(nameParameter, out nameArg) &&
+                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out targetName) &&
+                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out targetType) &&
+                (TryGetFlagsFromArgument(out flagsArg, out flags) ||
+                 TryGetDefaultFlags(out flags)))
+            {
+                if (flags.HasFlagFast(BindingFlags.DeclaredOnly))
+                {
+                    foreach (var member in targetType.GetMembers(targetName))
+                    {
+                        if (!MatchesFlags(member, flags))
+                        {
+                            continue;
+                        }
+
+                        if (target == null)
+                        {
+                            target = member;
+                        }
+                        else if (IsAmbiguous(target, member))
+                        {
+                            return GetXResult.Ambiguous;
+                        }
+                        else
+                        {
+                            return GetXResult.Unknown;
+                        }
+                    }
+
+                    if (target == null)
+                    {
+                        return targetType.TryFindFirstMemberRecursive(targetName, out target)
+                            ? GetXResult.OtherFlags
+                            : GetXResult.None;
+                    }
+
+                    return GetXResult.Single;
+                }
+
+                var current = targetType;
+                while (current != null)
+                {
+                    foreach (var member in current.GetMembers(targetName))
+                    {
+                        if (!MatchesFlags(member, flags))
+                        {
+                            continue;
+                        }
+
+                        if (target == null)
+                        {
+                            target = member;
+                        }
+                        else if (IsAmbiguous(target, member))
+                        {
+                            return GetXResult.Ambiguous;
+                        }
+                        else
+                        {
+                            return GetXResult.Unknown;
+                        }
+                    }
+
+                    current = current.BaseType;
+                }
+
+                if (target == null)
+                {
+                    return targetType.TryFindFirstMemberRecursive(targetName, out target)
+                        ? GetXResult.OtherFlags
+                        : GetXResult.None;
+                }
+
+                return GetXResult.Single;
+            }
+
+            return GetXResult.Unknown;
 
             bool IsKnownSignature(IMethodSymbol candidate, out IParameterSymbol nameParameterSymbol)
             {
@@ -173,6 +271,43 @@ namespace ReflectionAnalyzers
 
                 defaultFlags = (BindingFlags)0;
                 return false;
+            }
+
+            bool MatchesFlags(ISymbol candidate, BindingFlags filter)
+            {
+                if (candidate.IsStatic &&
+                    !filter.HasFlagFast(BindingFlags.Static))
+                {
+                    return false;
+                }
+
+                if (!candidate.IsStatic &&
+                    !filter.HasFlagFast(BindingFlags.Instance))
+                {
+                    return false;
+                }
+
+                if (candidate.DeclaredAccessibility == Accessibility.Public &&
+                    !filter.HasFlagFast(BindingFlags.Public))
+                {
+                    return false;
+                }
+
+                if (candidate.DeclaredAccessibility != Accessibility.Public &&
+                    !filter.HasFlagFast(BindingFlags.NonPublic))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            bool IsAmbiguous(ISymbol member1, ISymbol member2)
+            {
+                return getX.Parameters.Length == 1 &&
+                       getX.Parameters.TrySingle(out var parameter) &&
+                       parameter.Type == KnownSymbol.String &&
+                       member1.DeclaredAccessibility == Accessibility.Public && member2.DeclaredAccessibility == Accessibility.Public;
             }
         }
 

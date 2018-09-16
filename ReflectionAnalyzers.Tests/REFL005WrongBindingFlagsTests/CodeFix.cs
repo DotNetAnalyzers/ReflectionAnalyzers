@@ -95,8 +95,11 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [Test]
-        public void GetInstanceBindingFlagsStatic()
+        [TestCase("BindingFlags.Public | BindingFlags.Static")]
+        [TestCase("BindingFlags.NonPublic | BindingFlags.Instance")]
+        [TestCase("BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        public void GetPublicInstanceMethod(string flags)
         {
             var code = @"
 namespace RoslynSandbox
@@ -107,14 +110,14 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), ↓BindingFlags.Static | BindingFlags.Public);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), ↓BindingFlags.Public | BindingFlags.Static);
         }
 
         public void Bar()
         {
         }
     }
-}";
+}".AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
             var fixedCode = @"
 namespace RoslynSandbox
 {

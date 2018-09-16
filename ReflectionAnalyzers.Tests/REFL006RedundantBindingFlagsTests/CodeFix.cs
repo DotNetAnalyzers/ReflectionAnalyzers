@@ -52,7 +52,6 @@ namespace RoslynSandbox
 
         [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.Instance")]
         [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.NonPublic")]
-        [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.DeclaredOnly")]
         [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase")]
         public void GetReferenceEquals(string flags)
         {
