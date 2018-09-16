@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Codefixes
     [Shared]
     internal class UseGenericGetCustomAttributeFix : DocumentEditorCodeFixProvider
     {
-        private static readonly UsingDirectiveSyntax Using = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
+        private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL010PreferGenericGetCustomAttribute.DiagnosticId);
@@ -33,7 +33,7 @@ namespace ReflectionAnalyzers.Codefixes
                         case CastExpressionSyntax castExpression:
                             context.RegisterCodeFix(
                                 "Use Generic",
-                                (editor, _) => editor.AddUsing(Using)
+                                (editor, _) => editor.AddUsing(SystemReflection)
                                                      .ReplaceNode(
                                                          castExpression,
                                                          SyntaxFactory.ParseExpression($"{member}.GetCustomAttribute<{type}>()")),
@@ -43,7 +43,7 @@ namespace ReflectionAnalyzers.Codefixes
                         case BinaryExpressionSyntax binary when binary.IsKind(SyntaxKind.AsExpression):
                             context.RegisterCodeFix(
                                 "Use Generic",
-                                (editor, _) => editor.AddUsing(Using)
+                                (editor, _) => editor.AddUsing(SystemReflection)
                                                      .ReplaceNode(
                                                          binary,
                                                          SyntaxFactory.ParseExpression($"{member}.GetCustomAttribute<{type}>()")),

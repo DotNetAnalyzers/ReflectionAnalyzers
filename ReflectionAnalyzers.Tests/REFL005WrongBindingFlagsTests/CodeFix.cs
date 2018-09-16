@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
     internal class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
-        private static readonly CodeFixProvider Fix = new ArgumentFix();
+        private static readonly CodeFixProvider Fix = new BindingFlagsFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL005");
 
         [TestCase("Static",           "BindingFlags.Public | BindingFlags.Instance",                                "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]

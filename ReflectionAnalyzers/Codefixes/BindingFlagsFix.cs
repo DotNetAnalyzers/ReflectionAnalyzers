@@ -9,10 +9,12 @@ namespace ReflectionAnalyzers.Codefixes
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ArgumentFix))]
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(BindingFlagsFix))]
     [Shared]
-    internal class ArgumentFix : DocumentEditorCodeFixProvider
+    internal class BindingFlagsFix : DocumentEditorCodeFixProvider
     {
+        private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
+
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL005WrongBindingFlags.DiagnosticId,
             REFL006RedundantBindingFlags.DiagnosticId,
@@ -30,8 +32,9 @@ namespace ReflectionAnalyzers.Codefixes
                 {
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",
-                        (editor, _) => editor.ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
-                        nameof(ArgumentFix),
+                        (editor, _) => editor.AddUsing(SystemReflection)
+                                             .ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
+                        nameof(BindingFlagsFix),
                         diagnostic);
                 }
                 else if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
@@ -39,11 +42,12 @@ namespace ReflectionAnalyzers.Codefixes
                 {
                     context.RegisterCodeFix(
                         $"Add argument: {argumentString}.",
-                        (editor, _) => editor.ReplaceNode(
-                            argumentList,
-                            argumentList.AddArguments(
-                                SyntaxFactory.Argument(SyntaxFactory.ParseExpression(argumentString)))),
-                        nameof(ArgumentFix),
+                        (editor, _) => editor.AddUsing(SystemReflection)
+                                             .ReplaceNode(
+                                                 argumentList,
+                                                 argumentList.AddArguments(
+                                                     SyntaxFactory.Argument(SyntaxFactory.ParseExpression(argumentString)))),
+                        nameof(BindingFlagsFix),
                         diagnostic);
                 }
             }
