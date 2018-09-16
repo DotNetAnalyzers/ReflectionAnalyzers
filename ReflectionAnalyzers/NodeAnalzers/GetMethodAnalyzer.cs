@@ -117,7 +117,7 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
                         break;
                     case GetXResult.Ambiguous:
-                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, nameArg.GetLocation()));
+                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, argumentList.GetLocation()));
                         break;
                     case GetXResult.Unknown:
                         break;
@@ -174,13 +174,9 @@ namespace ReflectionAnalyzers
                         {
                             target = member;
                         }
-                        else if (IsAmbiguous(target, member))
-                        {
-                            return GetXResult.Ambiguous;
-                        }
                         else
                         {
-                            return GetXResult.Unknown;
+                            return GetXResult.Ambiguous;
                         }
                     }
 
@@ -219,13 +215,9 @@ namespace ReflectionAnalyzers
                         {
                             // continue
                         }
-                        else if (IsAmbiguous(target, member))
-                        {
-                            return GetXResult.Ambiguous;
-                        }
                         else
                         {
-                            return GetXResult.Unknown;
+                            return GetXResult.Ambiguous;
                         }
                     }
 
@@ -313,14 +305,6 @@ namespace ReflectionAnalyzers
                 }
 
                 return true;
-            }
-
-            bool IsAmbiguous(ISymbol member1, ISymbol member2)
-            {
-                return getX.Parameters.Length == 1 &&
-                       getX.Parameters.TrySingle(out var parameter) &&
-                       parameter.Type == KnownSymbol.String &&
-                       member1.DeclaredAccessibility == Accessibility.Public && member2.DeclaredAccessibility == Accessibility.Public;
             }
 
             bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
