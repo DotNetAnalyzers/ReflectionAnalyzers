@@ -153,8 +153,7 @@ namespace ReflectionAnalyzers
                 invocation.ArgumentList != null &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context, out var getX) ||
-                 invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context, out getX)) &&
+                TryGetTarget(out var getX) &&
                 IsKnownSignature(getX, out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out nameArg) &&
                 nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out targetName) &&
@@ -236,6 +235,16 @@ namespace ReflectionAnalyzers
             }
 
             return GetXResult.Unknown;
+
+            bool TryGetTarget(out IMethodSymbol result)
+            {
+                return invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetField, context, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetMember, context, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetMethod,   context, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetNestedType,   context, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context, out result);
+            }
 
             bool IsKnownSignature(IMethodSymbol candidate, out IParameterSymbol nameParameterSymbol)
             {
