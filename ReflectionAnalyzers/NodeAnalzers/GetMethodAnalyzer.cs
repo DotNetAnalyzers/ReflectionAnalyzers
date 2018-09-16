@@ -214,6 +214,10 @@ namespace ReflectionAnalyzers
                         {
                             target = member;
                         }
+                        else if (IsOverriding(target, member))
+                        {
+                            // continue
+                        }
                         else if (IsAmbiguous(target, member))
                         {
                             return GetXResult.Ambiguous;
@@ -316,6 +320,27 @@ namespace ReflectionAnalyzers
                        getX.Parameters.TrySingle(out var parameter) &&
                        parameter.Type == KnownSymbol.String &&
                        member1.DeclaredAccessibility == Accessibility.Public && member2.DeclaredAccessibility == Accessibility.Public;
+            }
+
+            bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
+            {
+                if (symbol.IsOverride)
+                {
+                    switch (symbol)
+                    {
+                        case IEventSymbol eventSymbol:
+                            return Equals(eventSymbol.OverriddenEvent, candidateBase) ||
+                                   IsOverriding(eventSymbol.OverriddenEvent, candidateBase);
+                        case IMethodSymbol method:
+                            return Equals(method.OverriddenMethod, candidateBase) ||
+                                   IsOverriding(method.OverriddenMethod, candidateBase);
+                        case IPropertySymbol property:
+                            return Equals(property.OverriddenProperty, candidateBase) ||
+                                   IsOverriding(property.OverriddenProperty, candidateBase);
+                    }
+                }
+
+                return false;
             }
         }
 

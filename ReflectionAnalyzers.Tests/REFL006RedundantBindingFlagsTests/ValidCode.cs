@@ -9,8 +9,13 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL006");
 
-        [Test]
-        public void GetToString()
+        [TestCase("GetMethod(Static, BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(ReferenceEquals, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("GetMethod(this.Public, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(this.ToString, BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(this.GetHashCode, BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(this.Private, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -21,53 +26,19 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
         }
+
+        public static int Static() => 0;
+
+        public int Public() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private int Private() => 0;
     }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
-        }
-
-        [Test]
-        public void GetReferenceEquals()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System.Reflection;
-
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-        }
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
-        }
-
-        [Test]
-        public void GetPrivate()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System.Reflection;
-
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance);
-        }
-
-        private void Bar()
-        {
-        }
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
+}".AssertReplace("GetMethod(nameof(this.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
         [TestCase("GetMethod(\"Bar\")")]
