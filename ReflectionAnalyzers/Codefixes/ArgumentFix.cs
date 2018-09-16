@@ -38,7 +38,7 @@ namespace ReflectionAnalyzers.Codefixes
                      diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {
                     context.RegisterCodeFix(
-                        $"Change to: {argumentString}.",
+                        $"Add argument: {argumentString}.",
                         (editor, _) => editor.ReplaceNode(
                             argumentList,
                             argumentList.AddArguments(

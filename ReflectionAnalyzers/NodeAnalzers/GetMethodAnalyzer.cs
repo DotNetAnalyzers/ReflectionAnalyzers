@@ -112,17 +112,18 @@ namespace ReflectionAnalyzers
                         else
                         {
                             var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                : null;
+                                 ? $" Expected: {expectedFlags.ToDisplayString()}."
+                                 : null;
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
-                                    REFL008MissingBindingFlags.Descriptor,
+                                    REFL005WrongBindingFlags.Descriptor,
                                     argumentList.CloseParenToken.GetLocation(),
                                     messageArg == null
                                         ? ImmutableDictionary<string, string>.Empty
                                         : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
                                     messageArg));
                         }
+
                         break;
                     case GetXResult.None:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
