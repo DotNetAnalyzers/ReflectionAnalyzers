@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers
 {
-    using System;
     using Gu.Roslyn.AnalyzerExtensions;
 
     internal class TypeType : QualifiedType
@@ -13,7 +12,7 @@ namespace ReflectionAnalyzers
         internal readonly QualifiedMethod GetProperty;
 
         internal TypeType()
-            : base(typeof(Type).FullName)
+            : base("System.Type")
         {
             this.GetEvent = new QualifiedMethod(this, nameof(this.GetEvent));
             this.GetField = new QualifiedMethod(this, nameof(this.GetField));
