@@ -16,9 +16,11 @@ namespace ValidCode
         public GetMethod(Type unknownType)
         {
             typeof(GetMethod).GetMethod(nameof(PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            typeof(GetMethod).GetMethod(nameof(PublicPrivateStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
             typeof(GetMethod).GetMethod(nameof(this.PublicInstanceMethod), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             typeof(GetMethod).GetMethod(nameof(PrivateStaticMethod), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
             typeof(GetMethod).GetMethod(nameof(this.PrivateInstanceMethod), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            typeof(GetMethod).GetMethod(nameof(this.PublicPrivateStaticMethod), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
 
             typeof(GetMethod).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
             typeof(GetMethod).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance);
@@ -47,14 +49,16 @@ namespace ValidCode
             unknownType.GetMethod("Bar", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
         }
 
-        public static void PublicStaticMethod() { }
+        public static int PublicStaticMethod() => 0;
 
-        public void PublicInstanceMethod() { }
+        public static int PublicPrivateStaticMethod() => 0;
 
-        private static void PrivateStaticMethod() { }
+        public int PublicInstanceMethod() => 0;
 
-        private void PrivateInstanceMethod() { }
+        private static int PrivateStaticMethod() => 0;
 
+        private int PrivateInstanceMethod() => 0;
 
+        private static int PublicPrivateStaticMethod(int i) => i;
     }
 }

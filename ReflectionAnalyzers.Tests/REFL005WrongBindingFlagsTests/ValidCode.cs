@@ -64,11 +64,11 @@ namespace RoslynSandbox
 
         public override string ToString() => string.Empty;
 
-        private static int StaticPublicPrivate() => 0;
+        private static int StaticPublicPrivate(int i) => i;
 
         private int Private() => 0;
 
-        private int PublicPrivate() => 0;
+        private int PublicPrivate(int i) => i;
     }
 }".AssertReplace("GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
