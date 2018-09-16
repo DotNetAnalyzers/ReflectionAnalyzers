@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.TryGetTarget(KnownSymbol.Attribute.GetCustomAttribute, context, out var target) &&
+                invocation.TryGetTarget(KnownSymbol.Attribute.GetCustomAttribute, context.SemanticModel, context.CancellationToken, out var target) &&
                 target.Parameters.Length == 2 &&
                 target.Parameters[1].Type == KnownSymbol.Type &&
                 invocation.TryFindArgument(target.Parameters[0], out var memberArg) &&

@@ -238,12 +238,12 @@ namespace ReflectionAnalyzers
 
             bool TryGetTarget(out IMethodSymbol result)
             {
-                return invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetField, context, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetMember, context, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetMethod,   context, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetNestedType,   context, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context, out result);
+                return invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context.SemanticModel, context.CancellationToken, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetField, context.SemanticModel, context.CancellationToken, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out result) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out result);
             }
 
             bool IsKnownSignature(IMethodSymbol candidate, out IParameterSymbol nameParameterSymbol)
