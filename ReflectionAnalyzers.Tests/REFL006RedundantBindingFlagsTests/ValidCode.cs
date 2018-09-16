@@ -70,8 +70,16 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, code);
         }
 
-        [Test]
-        public void UnknownTypeNoFlags()
+        [TestCase("GetMethod(\"Bar\")")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static)")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void GetMethodUnknownType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -86,28 +94,8 @@ namespace RoslynSandbox
             var methodInfo = type.GetMethod(""Bar"");
         }
     }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
-        }
-
-        [Test]
-        public void UnknownTypeStaticAndInstance()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System;
-    using System.Reflection;
-
-    class Foo
-    {
-        public Foo(Type type)
-        {
-            var methodInfo = type.GetMethod(""Bar"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-        }
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, code);
+}".AssertReplace("GetMethod(\"Bar\")", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

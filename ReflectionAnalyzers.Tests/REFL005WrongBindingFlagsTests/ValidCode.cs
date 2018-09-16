@@ -13,6 +13,16 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
         [TestCase("GetMethod(nameof(this.Public, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase))")]
         [TestCase("GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.StaticPublicPrivate))")]
+        [TestCase("GetMethod(nameof(this.StaticPublicPrivate), BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("GetMethod(nameof(this.StaticPublicPrivate), BindingFlags.NonPublic | BindingFlags.Static)")]
+        [TestCase("GetMethod(nameof(this.StaticPublicPrivate), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.StaticPublicPrivate), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.PublicPrivate))")]
+        [TestCase("GetMethod(nameof(this.PublicPrivate), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.PublicPrivate), BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.PublicPrivate), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.PublicPrivate), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.ToString))")]
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Public)")]
@@ -41,11 +51,19 @@ namespace RoslynSandbox
 
         public static int Static() => 0;
 
+        public static int StaticPublicPrivate() => 0;
+
         public int Public() => 0;
+
+        public int PublicPrivate() => 0;
 
         public override string ToString() => string.Empty;
 
+        private static int StaticPublicPrivate() => 0;
+
         private int Private() => 0;
+
+        private int PublicPrivate() => 0;
     }
 }".AssertReplace("GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
@@ -76,7 +94,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetMethod(\"Bar\")", call);
-            AnalyzerAssert.Valid(Analyzer, code);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }
