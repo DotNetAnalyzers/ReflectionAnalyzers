@@ -11,8 +11,22 @@ namespace ReflectionAnalyzers
         internal static readonly TypeType Type = new TypeType();
         internal static readonly AttributeType Attribute = new AttributeType();
         internal static readonly QualifiedType BindingFlags = Create("System.Reflection.BindingFlags");
+        internal static readonly ConstructorInfoType ConstructorInfo = new ConstructorInfoType();
+        internal static readonly EventInfoType EventInfo = new EventInfoType();
+        internal static readonly FieldInfoType FieldInfo = new FieldInfoType();
+        internal static readonly LocalVariableInfoType LocalVariableInfo = new LocalVariableInfoType();
+        internal static readonly ManifestResourceInfoType ManifestResourceInfo = new ManifestResourceInfoType();
         internal static readonly MemberInfoType MemberInfo = new MemberInfoType();
         internal static readonly MethodInfoType MethodInfo = new MethodInfoType();
+        internal static readonly ParameterInfoType ParameterInfo = new ParameterInfoType();
+        internal static readonly PropertyInfoType PropertyInfo = new PropertyInfoType();
+        internal static readonly RuntimeConstructorInfoType RuntimeConstructorInfo = new RuntimeConstructorInfoType();
+        internal static readonly RuntimeEventInfoType RuntimeEventInfo = new RuntimeEventInfoType();
+        internal static readonly RuntimeFieldInfoType RuntimeFieldInfo = new RuntimeFieldInfoType();
+        internal static readonly RuntimeMethodInfoType RuntimeMethodInfo = new RuntimeMethodInfoType();
+        internal static readonly RuntimeParameterInfoType RuntimeParameterInfo = new RuntimeParameterInfoType();
+        internal static readonly RuntimePropertyInfoType RuntimePropertyInfo = new RuntimePropertyInfoType();
+        internal static readonly TypeInfoType TypeInfo = new TypeInfoType();
 
         private static QualifiedType Create(string qualifiedName, string alias = null)
         {

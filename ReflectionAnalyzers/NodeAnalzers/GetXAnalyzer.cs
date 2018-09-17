@@ -17,6 +17,7 @@ namespace ReflectionAnalyzers
             None,
             Ambiguous,
             OtherFlags,
+            WrongType,
         }
 
         /// <inheritdoc/>
@@ -25,7 +26,8 @@ namespace ReflectionAnalyzers
             REFL004AmbiguousMatch.Descriptor,
             REFL005WrongBindingFlags.Descriptor,
             REFL006RedundantBindingFlags.Descriptor,
-            REFL008MissingBindingFlags.Descriptor);
+            REFL008MissingBindingFlags.Descriptor,
+            REFL013MemberIsOfWrongType.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -117,6 +119,15 @@ namespace ReflectionAnalyzers
                     case GetXResult.Ambiguous:
                         context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, argumentList.GetLocation()));
                         break;
+                    case GetXResult.WrongType:
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL013MemberIsOfWrongType.Descriptor,
+                                invocation.GetNameLocation(),
+                                targetType,
+                                targetName,
+                                target.GetType().Name));
+                        break;
                     case GetXResult.Unknown:
                         break;
                 }
@@ -195,6 +206,10 @@ namespace ReflectionAnalyzers
                         if (target == null)
                         {
                             target = member;
+                            if (IsOfWrongType(member))
+                            {
+                                return GetXResult.WrongType;
+                            }
                         }
                         else if (IsOverriding(target, member))
                         {
@@ -300,6 +315,35 @@ namespace ReflectionAnalyzers
                 }
 
                 return true;
+            }
+
+            bool IsOfWrongType(ISymbol member)
+            {
+                if (getX.ReturnType == KnownSymbol.EventInfo &&
+                    !(member is IEventSymbol))
+                {
+                    return true;
+                }
+
+                if (getX.ReturnType == KnownSymbol.FieldInfo &&
+                    !(member is IFieldSymbol))
+                {
+                    return true;
+                }
+
+                if (getX.ReturnType == KnownSymbol.MethodInfo &&
+                    !(member is IMethodSymbol))
+                {
+                    return true;
+                }
+
+                if (getX.ReturnType == KnownSymbol.PropertyInfo &&
+                    !(member is IPropertySymbol))
+                {
+                    return true;
+                }
+
+                return false;
             }
 
             bool IsOverriding(ISymbol symbol, ISymbol candidateBase)

@@ -1,0 +1,19 @@
+namespace ReflectionAnalyzers
+{
+    using Microsoft.CodeAnalysis;
+
+    internal static class REFL013MemberIsOfWrongType
+    {
+        public const string DiagnosticId = "REFL013";
+
+        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+            id: DiagnosticId,
+            title: "The member is of the wrong type.",
+            messageFormat: "The type {0} has a member named {1} of type {2}.",
+            category: AnalyzerCategory.SystemReflection,
+            defaultSeverity: DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: "The member is of the wrong type.",
+            helpLinkUri: HelpLink.ForId(DiagnosticId));
+    }
+}

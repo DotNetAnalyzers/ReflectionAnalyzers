@@ -41,6 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{1C271AF2
 		documentation\REFL010.md = documentation\REFL010.md
 		documentation\REFL011.md = documentation\REFL011.md
 		documentation\REFL012.md = documentation\REFL012.md
+		documentation\REFL013.md = documentation\REFL013.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReflectionAnalyzers.Vsix", "ReflectionAnalyzers.Vsix\ReflectionAnalyzers.Vsix.csproj", "{70EF0905-05EB-4FB4-8CA3-02B5D28EE998}"

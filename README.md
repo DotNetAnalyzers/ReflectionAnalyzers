@@ -46,5 +46,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL012.md">REFL012</a></td>
     <td>Prefer Attribute.IsDefined().</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL013.md">REFL013</a></td>
+    <td>The member is of the wrong type.</td>
+  </tr>
 <table>
 <!-- end generated table -->
