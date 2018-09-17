@@ -74,6 +74,28 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("GetMethod(nameof(this.ToString))")]
+        [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void GetMethodWhenShadowed(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+        public new string ToString() => string.Empty;
+    }
+}".AssertReplace("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("GetMethod(\"Bar\")")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Instance)")]

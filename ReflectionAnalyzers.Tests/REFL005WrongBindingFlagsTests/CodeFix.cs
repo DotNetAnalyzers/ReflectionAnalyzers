@@ -79,6 +79,47 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
+        [TestCase("this.ToString", "BindingFlags.Public",                          "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.Public | BindingFlags.Static",    "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        public void GetMethodWhenShadowed(string method, string flags, string expected)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), ↓BindingFlags.Static);
+        }
+
+        public new string ToString() => string.Empty;
+    }
+}".AssertReplace("nameof(this.ToString)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Static", flags);
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+        public new string ToString() => string.Empty;
+    }
+}".AssertReplace("nameof(this.ToString)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
+            var message = $"There is no member matching the name and binding flags. Expected: {expected}.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
         [TestCase("ReferenceEquals", "BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy")]
         [TestCase("this.Private",    "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public void GetMethodWhenMissingFlags(string method, string expected)
