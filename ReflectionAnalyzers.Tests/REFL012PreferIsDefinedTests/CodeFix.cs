@@ -40,6 +40,33 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void AttributeGetCustomAttributeEqualsNullExplicitInherit()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(Foo), typeof(ObsoleteAttribute), true) == null;
+    }
+}";
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public static bool Bar() => !Attribute.IsDefined(typeof(Foo), typeof(ObsoleteAttribute), true);
+    }
+}";
+            var message = "Prefer Attribute.IsDefined().";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [Test]
         public void AttributeGetCustomAttributeNotEqualsNull()
         {
             var code = @"
