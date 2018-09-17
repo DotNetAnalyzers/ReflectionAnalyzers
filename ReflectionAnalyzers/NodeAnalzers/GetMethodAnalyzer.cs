@@ -26,7 +26,6 @@ namespace ReflectionAnalyzers
             REFL004AmbiguousMatch.Descriptor,
             REFL005WrongBindingFlags.Descriptor,
             REFL006RedundantBindingFlags.Descriptor,
-            REFL007BindingFlagsOrder.Descriptor,
             REFL008MissingBindingFlags.Descriptor);
 
         /// <inheritdoc/>
@@ -121,19 +120,6 @@ namespace ReflectionAnalyzers
                         break;
                     case GetXResult.Unknown:
                         break;
-                }
-
-                if (flagsArg != null &&
-                    TryGetExpectedFlags(target, targetType, out var expectedBindingFlags) &&
-                    flags == expectedBindingFlags &&
-                    HasWrongOrder(flagsArg))
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            REFL007BindingFlagsOrder.Descriptor,
-                            flagsArg.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedBindingFlags.ToDisplayString()),
-                            $" Expected: {expectedBindingFlags.ToDisplayString()}."));
                 }
             }
         }
@@ -421,14 +407,6 @@ namespace ReflectionAnalyzers
                    (!Equals(target.ContainingType, targetType) &&
                     flags.HasFlagFast(BindingFlags.DeclaredOnly)) ||
                    flags.HasFlagFast(BindingFlags.IgnoreCase);
-        }
-
-        private static bool HasWrongOrder(ArgumentSyntax flags)
-        {
-            using (var walker = BindingFlagsOrderWalker.Borrow(flags))
-            {
-                return walker.IsInWrongOrder();
-            }
         }
     }
 }

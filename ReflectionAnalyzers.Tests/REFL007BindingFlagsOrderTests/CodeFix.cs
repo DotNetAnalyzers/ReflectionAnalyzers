@@ -8,15 +8,15 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
 
     internal class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL007");
 
-        [TestCase("this.Static",      "BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Public",      "BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.GetHashCode", "BindingFlags.Instance | BindingFlags.Public",    "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("this.Private",     "BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        public void GetMethod(string method, string flags, string expected)
+        [TestCase("BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("BindingFlags.Instance | BindingFlags.Public",                                "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        public void GetMethod(string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -27,19 +27,12 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), ↓BindingFlags.Public | BindingFlags.Static);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), ↓BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
         }
 
-        public static int Static() => 0;
-
-        public int Public() => 0;
-
-        public override string ToString() => string.Empty;
-
-        private int Private() => 0;
+        public int Bar() => 0;
     }
-}".AssertReplace("nameof(this.Public)", $"nameof({method})")
-  .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
+}".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly", flags);
             var fixedCode = @"
 namespace RoslynSandbox
 {
@@ -49,19 +42,12 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-        public static int Static() => 0;
-
-        public int Public() => 0;
-
-        public override string ToString() => string.Empty;
-
-        private int Private() => 0;
+        public int Bar() => 0;
     }
-}".AssertReplace("nameof(this.Public)", $"nameof({method})")
-  .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
+}".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = $"The binding flags are not in the expected order. Expected: {expected}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
