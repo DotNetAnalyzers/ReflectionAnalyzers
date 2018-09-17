@@ -63,8 +63,7 @@ namespace ReflectionAnalyzers
             private IdentifierNameSyntax duplicate;
             private bool isUnHandled;
 
-            private static BindingFlagsWalker Borrow(BinaryExpressionSyntax flags) => BorrowAndVisit(flags, () => new BindingFlagsWalker());
-
+            /// <inheritdoc />
             public override void Visit(SyntaxNode node)
             {
                 if (!this.isUnHandled)
@@ -184,6 +183,8 @@ namespace ReflectionAnalyzers
                 this.duplicate = null;
                 this.isUnHandled = false;
             }
+
+            private static BindingFlagsWalker Borrow(BinaryExpressionSyntax flags) => BorrowAndVisit(flags, () => new BindingFlagsWalker());
 
             private static string Format(IReadOnlyList<string> flags)
             {

@@ -64,7 +64,7 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// Bind with Exact Type matching, No Change type
         /// </summary>
-        ExactBinding = 0x010000,        
+        ExactBinding = 0x010000,
         SuppressChangeType = 0x020000,
 
         /// <summary>
@@ -75,6 +75,6 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// This is used in COM Interop
         /// </summary>
-        IgnoreReturn = 0x01000000, 
+        IgnoreReturn = 0x01000000,
     }
 }
