@@ -42,5 +42,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL011.md">REFL011</a></td>
     <td>Duplicate BindingFlag.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL012.md">REFL012</a></td>
+    <td>Prefer Attribute.IsDefined().</td>
+  </tr>
 <table>
 <!-- end generated table -->
