@@ -4,7 +4,7 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  Initial
+  BUGFIX: Try mirroring BindingFlags
 
 excludedgroups
   Main
