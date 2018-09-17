@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers
 {
     using System;
-    using System.Reflection;
     using Gu.Roslyn.AnalyzerExtensions;
 
     internal static class BindingFlagsExt
