@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 
     internal class Diagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL003");
 
         [Test]

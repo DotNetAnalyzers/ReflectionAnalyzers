@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
 
     internal class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL006");
 

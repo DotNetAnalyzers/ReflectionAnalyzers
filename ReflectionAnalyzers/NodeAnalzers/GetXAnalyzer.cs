@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers
     using Microsoft.CodeAnalysis.Diagnostics;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    internal class GetMethodAnalyzer : DiagnosticAnalyzer
+    internal class GetXAnalyzer : DiagnosticAnalyzer
     {
         private enum GetXResult
         {

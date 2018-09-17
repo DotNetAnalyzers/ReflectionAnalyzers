@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL009WrongParameterTypesTests
 
     internal class Diagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL007");
     }
 }

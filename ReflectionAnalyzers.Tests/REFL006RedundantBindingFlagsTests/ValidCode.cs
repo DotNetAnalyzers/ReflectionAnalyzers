@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
 
     internal class ValidCode
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL006");
 
         [TestCase("GetMethod(Static, BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]

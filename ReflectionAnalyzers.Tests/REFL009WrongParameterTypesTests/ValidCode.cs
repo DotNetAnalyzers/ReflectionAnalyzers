@@ -4,6 +4,6 @@ namespace ReflectionAnalyzers.Tests.REFL009WrongParameterTypesTests
 
     internal class ValidCode
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetMethodAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
     }
 }
