@@ -19,7 +19,8 @@ namespace ReflectionAnalyzers.Codefixes
             REFL005WrongBindingFlags.DiagnosticId,
             REFL006RedundantBindingFlags.DiagnosticId,
             REFL007BindingFlagsOrder.DiagnosticId,
-            REFL008MissingBindingFlags.DiagnosticId);
+            REFL008MissingBindingFlags.DiagnosticId,
+            REFL011DuplicateBindingFlags.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
@@ -27,8 +28,8 @@ namespace ReflectionAnalyzers.Codefixes
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument) &&
-                    diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionString))
+                if (diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionString) &&
+                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax argument))
                 {
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",

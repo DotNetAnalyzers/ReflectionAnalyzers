@@ -38,5 +38,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL010.md">REFL010</a></td>
     <td>Prefer the generic extension method GetCustomAttribute<T>.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL011.md">REFL011</a></td>
+    <td>Duplicate BindingFlag.</td>
+  </tr>
 <table>
 <!-- end generated table -->

@@ -44,8 +44,9 @@ namespace ReflectionAnalyzers
                         ImmutableDictionary.CreateRange(new[]
                         {
                             new KeyValuePair<string, string>(nameof(ExpressionSyntax), member.ToString()),
-                            new KeyValuePair<string, string>(nameof(TypeSyntax), type.ToString()),
-                        })));
+                            new KeyValuePair<string, string>(nameof(TypeSyntax),       type.ToString()),
+                        }),
+                        type.ToString()));
             }
         }
     }
