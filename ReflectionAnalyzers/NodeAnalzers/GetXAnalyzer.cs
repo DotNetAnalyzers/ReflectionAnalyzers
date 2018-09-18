@@ -44,7 +44,7 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var flags))
+                switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var effectiveFlags))
                 {
                     case GetXResult.None:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
@@ -64,10 +64,11 @@ namespace ReflectionAnalyzers
                         break;
 
                     case GetXResult.Single:
-                        if (TryGetExpectedFlags(target, targetType, out var expectedFlags))
+                        if (TryGetExpectedFlags(target, targetType, out var expectedFlags) &&
+                            effectiveFlags != expectedFlags)
                         {
                             if (flagsArg != null &&
-                                HasRedundantFlag(target, targetType, flags))
+                                HasRedundantFlag(target, targetType, effectiveFlags))
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
@@ -78,7 +79,7 @@ namespace ReflectionAnalyzers
                             }
 
                             if (flagsArg == null ||
-                                HasMissingFlag(target, targetType, flags))
+                                HasMissingFlag(target, targetType, effectiveFlags))
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
