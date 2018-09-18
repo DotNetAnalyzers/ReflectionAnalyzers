@@ -27,7 +27,8 @@ namespace ReflectionAnalyzers
             REFL005WrongBindingFlags.Descriptor,
             REFL006RedundantBindingFlags.Descriptor,
             REFL008MissingBindingFlags.Descriptor,
-            REFL013MemberIsOfWrongType.Descriptor);
+            REFL013MemberIsOfWrongType.Descriptor,
+            REFL014PreferGetProperty.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -76,6 +77,16 @@ namespace ReflectionAnalyzers
                                         ? ImmutableDictionary<string, string>.Empty
                                         : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
                                     messageArg));
+                        }
+
+                        if (IsPreferGetProperty(invocation, target, context, out var call))
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL014PreferGetProperty.Descriptor,
+                                    invocation.GetLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), call),
+                                    call));
                         }
 
                         break;
@@ -368,13 +379,28 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetBindingFlags(IMethodSymbol getMethod, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        private static bool IsPreferGetProperty(InvocationExpressionSyntax getX, ISymbol target, SyntaxNodeAnalysisContext context, out string call)
         {
-            flagsArg = null;
-            flags = default(BindingFlags);
-            return getMethod.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
-                   invocation.TryFindArgument(parameter, out flagsArg) &&
-                   context.SemanticModel.TryGetConstantValue(flagsArg.Expression, context.CancellationToken, out flags);
+            if (target is IMethodSymbol targetMethod &&
+                targetMethod.AssociatedSymbol is IPropertySymbol property &&
+                getX.Expression is MemberAccessExpressionSyntax memberAccess &&
+                TryGetExpectedFlags(property, property.ContainingType, out var flags))
+            {
+                if (targetMethod.Name.StartsWith("get_"))
+                {
+                    call = $"{memberAccess.Expression}.GetProperty(nameof({property.ContainingType.ToMinimalDisplayString(context.SemanticModel, getX.SpanStart)}.{property.Name}), {flags.ToDisplayString()}).GetMethod";
+                    return true;
+                }
+
+                if (targetMethod.Name.StartsWith("set_"))
+                {
+                    call = $"{memberAccess.Expression}.GetProperty(nameof({property.ContainingType.ToMinimalDisplayString(context.SemanticModel, getX.SpanStart)}.{property.Name}), {flags.ToDisplayString()}).SetMethod";
+                    return true;
+                }
+            }
+
+            call = null;
+            return false;
         }
 
         private static bool TryGetExpectedFlags(ISymbol target, ITypeSymbol targetType, out BindingFlags flags)

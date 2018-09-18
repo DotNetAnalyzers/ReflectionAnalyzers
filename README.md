@@ -52,5 +52,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL013.md">REFL013</a></td>
     <td>The member is of the wrong type.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL014.md">REFL014</a></td>
+    <td>Prefer GetProperty().AccessorMethod.</td>
+  </tr>
 <table>
 <!-- end generated table -->
