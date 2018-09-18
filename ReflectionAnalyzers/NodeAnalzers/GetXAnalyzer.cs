@@ -468,6 +468,13 @@ namespace ReflectionAnalyzers
 
         private static bool HasRedundantFlag(ISymbol target, ITypeSymbol targetType, BindingFlags flags)
         {
+            if (target is ITypeSymbol &&
+                (flags.HasFlagFast(BindingFlags.Instance) ||
+                 flags.HasFlagFast(BindingFlags.Static)))
+            {
+                return true;
+            }
+
             return (target.DeclaredAccessibility == Accessibility.Public &&
                     flags.HasFlagFast(BindingFlags.NonPublic)) ||
                    (target.DeclaredAccessibility != Accessibility.Public &&
