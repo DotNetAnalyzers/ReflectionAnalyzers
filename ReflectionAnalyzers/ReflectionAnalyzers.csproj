@@ -20,12 +20,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.3-dev</Version>
+    <Version>0.1.4-dev</Version>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
-    <PackageReleaseNotes>BUGFIX: Try mirroring BindingFlags</PackageReleaseNotes>
+    <PackageReleaseNotes>BUGFIX: Handle GetNestedType</PackageReleaseNotes>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
