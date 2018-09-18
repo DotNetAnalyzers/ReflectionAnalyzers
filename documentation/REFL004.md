@@ -32,11 +32,27 @@ More than one member is matching the criteria.
 
 ## Motivation
 
-ADD MOTIVATION HERE
+```cs
+public class Foo
+{
+    public static int Bar(int i) => i;
+
+    public double Bar(double d) => d;
+
+    private byte Bar(byte b) => b;
+}
+```
+
+If we do `typeof(Foo).GetMethod(nameof(Foo.Bar))` it will throw an `AmbiguousMatchException` at runtime.
+There are a couple of ways we can disambiguate.
+- `typeof(Foo).GetMethod(nameof(Foo.Bar), new[]{typeof(int));` for metching on argument type.
+- `typeof(Foo).GetMethod(nameof(Foo.Bar), BindingFlags.Public | BindingFlags.Instance)` // for filtering on public instance methods.
+- `typeof(Foo).GetMethod(nameof(Foo.Bar), BindingFlags.Public | BindingFlags.Static)` // for filtering on public static methods.
+- `typeof(Foo).GetMethod(nameof(Foo.Bar), BindingFlags.NonPublic)` // for filtering on private methods.
+- `typeof(Foo).GetMethod(nameof(Foo.Bar), BindingFlags.NonPublic)` // for filtering on private methods.
 
 ## How to fix violations
-
-ADD HOW TO FIX VIOLATIONS HERE
+Add a combination of `BindingFlags` and or `Type[]` that points to one and only one member.
 
 <!-- start generated config severity -->
 ## Configure severity
