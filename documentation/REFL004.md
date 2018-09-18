@@ -44,6 +44,7 @@ public class Foo
 ```
 
 If we do `typeof(Foo).GetMethod(nameof(Foo.Bar))` it will throw an `AmbiguousMatchException` at runtime.
+
 There are a couple of ways we can disambiguate.
 - `typeof(Foo).GetMethod(nameof(Foo.Bar), new[]{typeof(int));` for metching on argument type.
 - `typeof(Foo).GetMethod(nameof(Foo.Bar), BindingFlags.Public | BindingFlags.Instance)` // for filtering on public instance methods.
