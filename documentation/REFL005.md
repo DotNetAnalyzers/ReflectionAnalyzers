@@ -42,7 +42,7 @@ public class Foo
 
 And do `typeof(Foo).GetMethod("WRONG_NAME")` it will return `null`.
 This analyzer checks that there is a member matching the name, binding flags and types provided.
-It checks at every keystroke so it removes the risk of refactroing accidents.
+It checks at every keystroke so it removes the risk of refactoring accidents.
 
 ## How to fix violations
 
