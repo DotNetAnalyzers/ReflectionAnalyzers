@@ -17,7 +17,8 @@ namespace ReflectionAnalyzers
             None,
             Ambiguous,
             WrongFlags,
-            WrongType,
+            WrongMemberType,
+            UseContainingType,
         }
 
         /// <inheritdoc/>
@@ -28,7 +29,8 @@ namespace ReflectionAnalyzers
             REFL006RedundantBindingFlags.Descriptor,
             REFL008MissingBindingFlags.Descriptor,
             REFL013MemberIsOfWrongType.Descriptor,
-            REFL014PreferGetProperty.Descriptor);
+            REFL014PreferGetProperty.Descriptor,
+            REFL015UseContainingType.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -102,9 +104,17 @@ namespace ReflectionAnalyzers
 
                         break;
 
-                    case GetXResult.WrongType:
+                    case GetXResult.WrongMemberType:
                         context.ReportDiagnostic(
                             Diagnostic.Create(REFL013MemberIsOfWrongType.Descriptor, invocation.GetNameLocation(), targetType, targetName, target.GetType().Name));
+                        break;
+                    case GetXResult.UseContainingType:
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL015UseContainingType.Descriptor,
+                                invocation.Expression.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ISymbol.ContainingType), target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                target.ContainingType.Name));
                         break;
                     case GetXResult.Unknown:
                         break;
@@ -135,7 +145,8 @@ namespace ReflectionAnalyzers
                 (TryGetFlagsFromArgument(out flagsArg, out flags) ||
                  TryGetDefaultFlags(out flags)))
             {
-                if (flags.HasFlagFast(BindingFlags.DeclaredOnly))
+                if (getX == KnownSymbol.Type.GetNestedType ||
+                    flags.HasFlagFast(BindingFlags.DeclaredOnly))
                 {
                     foreach (var member in targetType.GetMembers(targetName))
                     {
@@ -156,9 +167,15 @@ namespace ReflectionAnalyzers
 
                     if (target == null)
                     {
-                        return targetType.TryFindFirstMemberRecursive(targetName, out target)
-                            ? GetXResult.WrongFlags
-                            : GetXResult.None;
+                        if (targetType.TryFindFirstMemberRecursive(targetName, out target))
+                        {
+                            return getX == KnownSymbol.Type.GetNestedType && 
+                                   !targetType.Equals(target.ContainingType)
+                                ? GetXResult.UseContainingType
+                                : GetXResult.WrongFlags;
+                        }
+
+                        return GetXResult.None;
                     }
 
                     return GetXResult.Single;
@@ -186,7 +203,7 @@ namespace ReflectionAnalyzers
                             target = member;
                             if (IsOfWrongType(member))
                             {
-                                return GetXResult.WrongType;
+                                return GetXResult.WrongMemberType;
                             }
                         }
                         else if (IsOverriding(target, member))
