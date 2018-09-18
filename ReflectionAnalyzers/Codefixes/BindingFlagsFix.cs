@@ -28,7 +28,7 @@ namespace ReflectionAnalyzers.Codefixes
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionString) &&
+                if (diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var expressionString) &&
                     syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax argument))
                 {
                     context.RegisterCodeFix(
@@ -39,7 +39,7 @@ namespace ReflectionAnalyzers.Codefixes
                         diagnostic);
                 }
                 else if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
-                     diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
+                         diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {
                     context.RegisterCodeFix(
                         $"Add argument: {argumentString}.",

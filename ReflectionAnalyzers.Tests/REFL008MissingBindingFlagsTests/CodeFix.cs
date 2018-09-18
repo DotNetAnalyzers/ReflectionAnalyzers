@@ -12,8 +12,10 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL008");
 
-        [Test]
-        public void GetToString()
+        [TestCase("Static",        "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public",   "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        public void GetMethodNoFlags(string method, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -24,10 +26,21 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString)↓);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public)↓);
         }
+
+        public static int Static() => 0;
+
+        public int Public() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private static int PrivateStatic() => 0;
+
+        private int Private() => 0;
     }
-}";
+}".AssertReplace("nameof(this.Public)", $"nameof({method})");
+
             var fixedCode = @"
 namespace RoslynSandbox
 {
@@ -37,16 +50,32 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
+
+        public static int Static() => 0;
+
+        public int Public() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private static int PrivateStatic() => 0;
+
+        private int Private() => 0;
     }
-}";
-            var message = "Specify binding flags for better performance and less fragile code. Expected: BindingFlags.Public | BindingFlags.Instance.";
+}".AssertReplace("nameof(this.Public)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
+
+            var message = $"Specify binding flags for better performance and less fragile code. Expected: {expected}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [Test]
-        public void GetPublicInstance()
+        [TestCase("Static",        "BindingFlags.Public | BindingFlags.Static",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public",   "BindingFlags.Public | BindingFlags.Instance",    "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.Public | BindingFlags.Instance",    "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("PrivateStatic", "BindingFlags.NonPublic | BindingFlags.Static",   "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Private",  "BindingFlags.NonPublic | BindingFlags.Instance", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        public void GetMethod(string method, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -57,14 +86,21 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar)↓);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), ↓BindingFlags.Public);
         }
 
-        public void Bar()
-        {
-        }
+        public static int Static() => 0;
+
+        public int Public() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private static int PrivateStatic() => 0;
+
+        private int Private() => 0;
     }
-}";
+}".AssertReplace("nameof(this.Public)", $"nameof({method})").AssertReplace("BindingFlags.Public", flags);
+
             var fixedCode = @"
 namespace RoslynSandbox
 {
@@ -74,56 +110,23 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-        public void Bar()
-        {
-        }
+        public static int Static() => 0;
+
+        public int Public() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private static int PrivateStatic() => 0;
+
+        private int Private() => 0;
     }
-}";
-            var message = "Specify binding flags for better performance and less fragile code. Expected: BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
-        }
+}".AssertReplace("nameof(this.Public)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
-        [Test]
-        public void GetPublicStatic()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System.Reflection;
-
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar)↓);
-        }
-
-        public static void Bar()
-        {
-        }
-    }
-}";
-            var fixedCode = @"
-namespace RoslynSandbox
-{
-    using System.Reflection;
-
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-        }
-
-        public static void Bar()
-        {
-        }
-    }
-}";
-            var message = "Specify binding flags for better performance and less fragile code. Expected: BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly.";
+            var message = $"Specify binding flags for better performance and less fragile code. Expected: {expected}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }

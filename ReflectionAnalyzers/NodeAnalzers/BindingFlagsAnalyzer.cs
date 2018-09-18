@@ -33,7 +33,7 @@ namespace ReflectionAnalyzers
                         Diagnostic.Create(
                             REFL007BindingFlagsOrder.Descriptor,
                             flags.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags),
+                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags),
                             $" Expected: {expectedFlags}."));
                 }
 
@@ -43,7 +43,7 @@ namespace ReflectionAnalyzers
                         Diagnostic.Create(
                             REFL011DuplicateBindingFlags.Descriptor,
                             dupe.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags),
+                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags),
                             $" Expected: {expectedFlags}."));
                 }
             }

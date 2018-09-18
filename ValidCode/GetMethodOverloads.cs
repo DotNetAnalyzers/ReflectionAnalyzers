@@ -11,8 +11,6 @@ namespace ValidCode
             typeof(GetMethodOverloads).GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(int) }, null);
             typeof(GetMethodOverloads).GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(double) }, null);
 
-            typeof(GetMethodOverloads).GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Static);
-            typeof(GetMethodOverloads).GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Instance);
             typeof(GetMethodOverloads).GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
             typeof(GetMethodOverloads).GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
@@ -21,8 +19,6 @@ namespace ValidCode
             typeof(GetMethodOverloads).GetMethod(nameof(this.PublicInstance), BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) },    null);
             typeof(GetMethodOverloads).GetMethod(nameof(this.PublicInstance), BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(double) }, null);
 
-            typeof(GetMethodOverloads).GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.Public | BindingFlags.Instance);
-            typeof(GetMethodOverloads).GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.NonPublic | BindingFlags.Instance);
             typeof(GetMethodOverloads).GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             typeof(GetMethodOverloads).GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }

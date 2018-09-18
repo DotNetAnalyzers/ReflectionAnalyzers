@@ -47,24 +47,24 @@ namespace ReflectionAnalyzers
                 switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var flags))
                 {
                     case GetXResult.Single:
-                        if (flagsArg != null)
+                        if (flagsArg != null &&
+                            HasRedundantFlag(target, targetType, flags))
                         {
-                            if (HasRedundantFlag(target, targetType, flags))
-                            {
-                                var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                    ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                    : null;
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL006RedundantBindingFlags.Descriptor,
-                                        flagsArg.GetLocation(),
-                                        messageArg == null
-                                            ? ImmutableDictionary<string, string>.Empty
-                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
-                                        messageArg));
-                            }
+                            var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
+                                ? $" Expected: {expectedFlags.ToDisplayString()}."
+                                : null;
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL006RedundantBindingFlags.Descriptor,
+                                    flagsArg.GetLocation(),
+                                    messageArg == null
+                                        ? ImmutableDictionary<string, string>.Empty
+                                        : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                    messageArg));
                         }
-                        else
+
+                        if (flagsArg == null ||
+                            HasMissingFlag(target, targetType, flags))
                         {
                             var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
                                 ? $" Expected: {expectedFlags.ToDisplayString()}."
@@ -72,7 +72,7 @@ namespace ReflectionAnalyzers
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     REFL008MissingBindingFlags.Descriptor,
-                                    argumentList.CloseParenToken.GetLocation(),
+                                    flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
                                     messageArg == null
                                         ? ImmutableDictionary<string, string>.Empty
                                         : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
@@ -104,7 +104,7 @@ namespace ReflectionAnalyzers
                                         flagsArg.GetLocation(),
                                         messageArg == null
                                             ? ImmutableDictionary<string, string>.Empty
-                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), expectedFlags.ToDisplayString()),
+                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
                                         messageArg));
                             }
                         }
@@ -490,6 +490,12 @@ namespace ReflectionAnalyzers
                    (!Equals(target.ContainingType, targetType) &&
                     flags.HasFlagFast(BindingFlags.DeclaredOnly)) ||
                    flags.HasFlagFast(BindingFlags.IgnoreCase);
+        }
+
+        private static bool HasMissingFlag(ISymbol target, ITypeSymbol targetType, BindingFlags flags)
+        {
+            return Equals(target.ContainingType, targetType) &&
+                   !flags.HasFlagFast(BindingFlags.DeclaredOnly);
         }
     }
 }
