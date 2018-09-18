@@ -229,5 +229,129 @@ namespace RoslynSandbox
             var message = $"There is no member matching the name and binding flags. Expected: {expected}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
+
+        [TestCase("PublicStatic",  "BindingFlags.NonPublic",                                                     "BindingFlags.Public | BindingFlags.DeclaredOnly")]
+        [TestCase("PublicStatic",  "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.DeclaredOnly")]
+        [TestCase("PublicStatic",  "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.DeclaredOnly")]
+        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.DeclaredOnly")]
+        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Instance",                             "BindingFlags.Public | BindingFlags.DeclaredOnly")]
+        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.DeclaredOnly")]
+        [TestCase("PrivateStatic", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic | BindingFlags.DeclaredOnly")]
+        [TestCase("Private",       "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic | BindingFlags.DeclaredOnly")]
+        public void GetNestedType(string type, string flags, string expected)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var typeInfo = typeof(Foo).GetNestedType(nameof(PublicStatic), ↓BindingFlags.Public | BindingFlags.Static);
+        }
+
+        public static class PublicStatic
+        {
+        }
+
+        public class Public
+        {
+        }
+
+        private static class PrivateStatic
+        {
+        }
+
+        private class Private
+        {
+        }
+    }
+}".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
+  .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var typeInfo = typeof(Foo).GetNestedType(nameof(PublicStatic), BindingFlags.Public | BindingFlags.DeclaredOnly);
+        }
+
+        public static class PublicStatic
+        {
+        }
+
+        public class Public
+        {
+        }
+
+        private static class PrivateStatic
+        {
+        }
+
+        private class Private
+        {
+        }
+    }
+}".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
+  .AssertReplace("BindingFlags.Public | BindingFlags.DeclaredOnly", expected);
+            var message = $"There is no member matching the name and binding flags. Expected: {expected}.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [TestCase("PrivateStatic")]
+        [TestCase("Private")]
+        public void GetNestedTypeWhenMissingFlags(string type)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var typeInfo = typeof(Foo).GetNestedType(nameof(PrivateStatic));
+        }
+
+        private static class PrivateStatic
+        {
+        }
+
+        private class Private
+        {
+        }
+    }
+}".AssertReplace("nameof(PrivateStatic)", $"nameof({type})");
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var typeInfo = typeof(Foo).GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+        }
+
+        private static class PrivateStatic
+        {
+        }
+
+        private class Private
+        {
+        }
+    }
+}".AssertReplace("nameof(PrivateStatic)", $"nameof({type})");
+            var message = "There is no member matching the name and binding flags. Expected: BindingFlags.NonPublic | BindingFlags.DeclaredOnly.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }

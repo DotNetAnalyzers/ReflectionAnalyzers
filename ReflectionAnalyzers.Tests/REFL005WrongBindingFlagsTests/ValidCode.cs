@@ -165,5 +165,59 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("GetNestedType(nameof(PublicStatic))")]
+        [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public)")]
+        [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("GetNestedType(nameof(Public))")]
+        [TestCase("GetNestedType(nameof(Public), BindingFlags.Public)")]
+        [TestCase("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic)")]
+        [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.Public)")]
+        [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.Static)")]
+        [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic)")]
+        [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic | BindingFlags.Public)")]
+        [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic | BindingFlags.Static)")]
+        public void GetNestedType(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
+        }
+
+        public static class PublicStatic
+        {
+        }
+
+        public class Public
+        {
+        }
+
+        private static class PrivateStatic
+        {
+        }
+
+        private class Private
+        {
+        }
+    }
+}".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

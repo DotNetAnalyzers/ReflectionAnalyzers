@@ -288,6 +288,7 @@ namespace ReflectionAnalyzers
                     case "GetMethods":
                     case "GetMember":
                     case "GetMembers":
+                    case "GetNestedType": // https://referencesource.microsoft.com/#mscorlib/system/type.cs,751
                     case "GetNestedTypes":
                     case "GetProperty":
                     case "GetProperties":
@@ -301,18 +302,6 @@ namespace ReflectionAnalyzers
 
             bool MatchesFlags(ISymbol candidate, BindingFlags filter)
             {
-                if (candidate.IsStatic &&
-                    !filter.HasFlagFast(BindingFlags.Static))
-                {
-                    return false;
-                }
-
-                if (!candidate.IsStatic &&
-                    !filter.HasFlagFast(BindingFlags.Instance))
-                {
-                    return false;
-                }
-
                 if (candidate.DeclaredAccessibility == Accessibility.Public &&
                     !filter.HasFlagFast(BindingFlags.Public))
                 {
@@ -323,6 +312,21 @@ namespace ReflectionAnalyzers
                     !filter.HasFlagFast(BindingFlags.NonPublic))
                 {
                     return false;
+                }
+
+                if (!(candidate is ITypeSymbol))
+                {
+                    if (candidate.IsStatic &&
+                        !filter.HasFlagFast(BindingFlags.Static))
+                    {
+                        return false;
+                    }
+
+                    if (!candidate.IsStatic &&
+                        !filter.HasFlagFast(BindingFlags.Instance))
+                    {
+                        return false;
+                    }
                 }
 
                 return true;
@@ -421,13 +425,16 @@ namespace ReflectionAnalyzers
                 flags |= BindingFlags.NonPublic;
             }
 
-            if (target.IsStatic)
+            if (!(target is ITypeSymbol))
             {
-                flags |= BindingFlags.Static;
-            }
-            else
-            {
-                flags |= BindingFlags.Instance;
+                if (target.IsStatic)
+                {
+                    flags |= BindingFlags.Static;
+                }
+                else
+                {
+                    flags |= BindingFlags.Instance;
+                }
             }
 
             if (Equals(target.ContainingType, targetType))
