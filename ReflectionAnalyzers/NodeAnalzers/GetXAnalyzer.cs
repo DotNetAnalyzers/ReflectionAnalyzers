@@ -90,38 +90,13 @@ namespace ReflectionAnalyzers
                         }
 
                         break;
-                    case GetXResult.OtherFlags:
-                        if (flagsArg != null)
-                        {
-                            if (HasWrongFlags(target, targetType, flags))
-                            {
-                                var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                    ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                    : null;
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL005WrongBindingFlags.Descriptor,
-                                        flagsArg.GetLocation(),
-                                        messageArg == null
-                                            ? ImmutableDictionary<string, string>.Empty
-                                            : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
-                                        messageArg));
-                            }
-                        }
-                        else
-                        {
-                            var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                 ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                 : null;
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    REFL005WrongBindingFlags.Descriptor,
-                                    argumentList.CloseParenToken.GetLocation(),
-                                    messageArg == null
-                                        ? ImmutableDictionary<string, string>.Empty
-                                        : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
-                                    messageArg));
-                        }
+                    case GetXResult.OtherFlags when TryGetExpectedFlags(target, targetType, out var expectedFlags):
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL005WrongBindingFlags.Descriptor,
+                                flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                $" Expected: {expectedFlags.ToDisplayString()}."));
 
                         break;
                     case GetXResult.None:
