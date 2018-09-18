@@ -135,13 +135,11 @@ namespace ReflectionAnalyzers
             flags = 0;
             if (context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList != null &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
+                TryGetTargetType(out targetType) &&
                 TryGetTarget(out var getX) &&
                 IsKnownSignature(getX, out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out nameArg) &&
                 nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out targetName) &&
-                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out targetType) &&
                 (TryGetFlagsFromArgument(out flagsArg, out flags) ||
                  TryGetDefaultFlags(out flags)))
             {
@@ -230,6 +228,27 @@ namespace ReflectionAnalyzers
             }
 
             return GetXResult.Unknown;
+
+            bool TryGetTargetType(out ITypeSymbol result)
+            {
+                if (invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+                {
+                    switch (memberAccess.Expression)
+                    {
+                        case TypeOfExpressionSyntax typeOf:
+                            return context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out result);
+                        case InvocationExpressionSyntax getType when getType.TryGetMethodName(out var name) &&
+                                                                     name == "GetType" &&
+                                                                     getType.ArgumentList is ArgumentListSyntax args &&
+                                                                     args.Arguments.Count == 0 &&
+                                                                     getType.Expression is MemberAccessExpressionSyntax typeAccess:
+                            return context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out result);
+                    }
+                }
+
+                result = null;
+                return false;
+            }
 
             bool TryGetTarget(out IMethodSymbol result)
             {

@@ -9,8 +9,10 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL003");
 
-        [Test]
-        public void MissingMethod()
+        [TestCase("typeof(Foo)")]
+        [TestCase("new Foo().GetType()")]
+        [TestCase("this.GetType()")]
+        public void MissingMethod(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -22,7 +24,7 @@ namespace RoslynSandbox
             var methodInfo = typeof(Foo).GetMethod(↓nameof(Foo));
         }
     }
-}";
+}".AssertReplace("typeof(Foo)", type);
             var message = "The type RoslynSandbox.Foo does not have a member named Foo.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
