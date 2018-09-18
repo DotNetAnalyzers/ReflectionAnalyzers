@@ -1,5 +1,5 @@
 # REFL005
-## There is no member matching the name and binding flags.
+## There is no member matching the filter.
 
 <!-- start generated table -->
 <table>
@@ -28,15 +28,25 @@
 
 ## Description
 
-There is no member matching the name and binding flags.
+There is no member matching the filter.
 
 ## Motivation
 
-ADD MOTIVATION HERE
+If we have the following type:
+```cs
+public class Foo
+{
+    public int Bar(int i) => i;
+}
+```
+
+And do `typeof(Foo).GetMethod("WRONG_NAME")` it will return `null`.
+This analyzer checks that there is a member matching the name, binding flags and types provided.
+It checks at every keystroke so it removes the risk of refactroing accidents.
 
 ## How to fix violations
 
-ADD HOW TO FIX VIOLATIONS HERE
+Fix the bug.
 
 <!-- start generated config severity -->
 ## Configure severity
@@ -47,21 +57,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL005 // There is no member matching the name and binding flags.
+#pragma warning disable REFL005 // There is no member matching the filter.
 Code violating the rule here
-#pragma warning restore REFL005 // There is no member matching the name and binding flags.
+#pragma warning restore REFL005 // There is no member matching the filter.
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL005 // There is no member matching the name and binding flags.
+#pragma warning disable REFL005 // There is no member matching the filter.
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL005:There is no member matching the name and binding flags.", 
+    "REFL005:There is no member matching the filter.", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

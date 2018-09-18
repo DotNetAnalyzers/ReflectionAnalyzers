@@ -22,7 +22,7 @@ Analyzers checking System.Reflection
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL005.md">REFL005</a></td>
-    <td>There is no member matching the name and binding flags.</td>
+    <td>There is no member matching the filter.</td>
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL006.md">REFL006</a></td>

@@ -169,7 +169,7 @@ namespace ReflectionAnalyzers
                     {
                         if (targetType.TryFindFirstMemberRecursive(targetName, out target))
                         {
-                            return getX == KnownSymbol.Type.GetNestedType && 
+                            return getX == KnownSymbol.Type.GetNestedType &&
                                    !targetType.Equals(target.ContainingType)
                                 ? GetXResult.UseContainingType
                                 : GetXResult.WrongFlags;
