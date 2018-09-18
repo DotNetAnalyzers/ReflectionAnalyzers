@@ -29,7 +29,8 @@ namespace ReflectionAnalyzers
             REFL006RedundantBindingFlags.Descriptor,
             REFL008MissingBindingFlags.Descriptor,
             REFL013MemberIsOfWrongType.Descriptor,
-            REFL014PreferGetProperty.Descriptor);
+            REFL014PreferGetProperty.Descriptor,
+            REFL015UseContainingType.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -109,7 +110,11 @@ namespace ReflectionAnalyzers
                         break;
                     case GetXResult.UseContainingType:
                         context.ReportDiagnostic(
-                            Diagnostic.Create(REFL015UseContainingType.Descriptor, invocation.GetNameLocation(), target.ContainingType.Name));
+                            Diagnostic.Create(
+                                REFL015UseContainingType.Descriptor,
+                                invocation.Expression.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ISymbol.ContainingType), target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                target.ContainingType.Name));
                         break;
                     case GetXResult.Unknown:
                         break;
@@ -164,7 +169,8 @@ namespace ReflectionAnalyzers
                     {
                         if (targetType.TryFindFirstMemberRecursive(targetName, out target))
                         {
-                            return getX == KnownSymbol.Type.GetNestedType
+                            return getX == KnownSymbol.Type.GetNestedType && 
+                                   !targetType.Equals(target.ContainingType)
                                 ? GetXResult.UseContainingType
                                 : GetXResult.WrongFlags;
                         }
