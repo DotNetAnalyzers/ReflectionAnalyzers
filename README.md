@@ -60,5 +60,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL015.md">REFL015</a></td>
     <td>Use the containing type.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL016.md">REFL016</a></td>
+    <td>Use nameof.</td>
+  </tr>
 <table>
 <!-- end generated table -->
