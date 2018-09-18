@@ -46,37 +46,34 @@ namespace ReflectionAnalyzers
             {
                 switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var flags))
                 {
-                    case GetXResult.Single:
-                        if (flagsArg != null &&
-                            HasRedundantFlag(target, targetType, flags))
-                        {
-                            var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                : null;
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    REFL006RedundantBindingFlags.Descriptor,
-                                    flagsArg.GetLocation(),
-                                    messageArg == null
-                                        ? ImmutableDictionary<string, string>.Empty
-                                        : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
-                                    messageArg));
-                        }
+                    case GetXResult.None:
+                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
+                        break;
 
-                        if (flagsArg == null ||
-                            HasMissingFlag(target, targetType, flags))
+                    case GetXResult.Single:
+                        if (TryGetExpectedFlags(target, targetType, out var expectedFlags))
                         {
-                            var messageArg = TryGetExpectedFlags(target, targetType, out var expectedFlags)
-                                ? $" Expected: {expectedFlags.ToDisplayString()}."
-                                : null;
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    REFL008MissingBindingFlags.Descriptor,
-                                    flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
-                                    messageArg == null
-                                        ? ImmutableDictionary<string, string>.Empty
-                                        : ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
-                                    messageArg));
+                            if (flagsArg != null &&
+                                HasRedundantFlag(target, targetType, flags))
+                            {
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        REFL006RedundantBindingFlags.Descriptor,
+                                        flagsArg.GetLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                        $" Expected: {expectedFlags.ToDisplayString()}."));
+                            }
+
+                            if (flagsArg == null ||
+                                HasMissingFlag(target, targetType, flags))
+                            {
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        REFL008MissingBindingFlags.Descriptor,
+                                        flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                        $" Expected: {expectedFlags.ToDisplayString()}."));
+                            }
                         }
 
                         if (IsPreferGetProperty(invocation, target, context, out var call))
@@ -90,29 +87,21 @@ namespace ReflectionAnalyzers
                         }
 
                         break;
-                    case GetXResult.OtherFlags when TryGetExpectedFlags(target, targetType, out var expectedFlags):
+                    case GetXResult.OtherFlags when TryGetExpectedFlags(target, targetType, out expectedFlags):
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL005WrongBindingFlags.Descriptor,
                                 flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
                                 $" Expected: {expectedFlags.ToDisplayString()}."));
+                        break;
 
-                        break;
-                    case GetXResult.None:
-                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
-                        break;
                     case GetXResult.Ambiguous:
                         context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, argumentList.GetLocation()));
                         break;
                     case GetXResult.WrongType:
                         context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL013MemberIsOfWrongType.Descriptor,
-                                invocation.GetNameLocation(),
-                                targetType,
-                                targetName,
-                                target.GetType().Name));
+                            Diagnostic.Create(REFL013MemberIsOfWrongType.Descriptor, invocation.GetNameLocation(), targetType, targetName, target.GetType().Name));
                         break;
                     case GetXResult.Unknown:
                         break;
