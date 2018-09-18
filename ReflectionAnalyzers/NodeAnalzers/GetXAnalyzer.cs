@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers
             Single,
             None,
             Ambiguous,
-            OtherFlags,
+            WrongFlags,
             WrongType,
         }
 
@@ -48,6 +48,19 @@ namespace ReflectionAnalyzers
                 {
                     case GetXResult.None:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
+                        break;
+
+                    case GetXResult.Ambiguous:
+                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, argumentList.GetLocation()));
+                        break;
+
+                    case GetXResult.WrongFlags when TryGetExpectedFlags(target, targetType, out var correctFlags):
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL005WrongBindingFlags.Descriptor,
+                                flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
+                                $" Expected: {correctFlags.ToDisplayString()}."));
                         break;
 
                     case GetXResult.Single:
@@ -87,18 +100,7 @@ namespace ReflectionAnalyzers
                         }
 
                         break;
-                    case GetXResult.OtherFlags when TryGetExpectedFlags(target, targetType, out expectedFlags):
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL005WrongBindingFlags.Descriptor,
-                                flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
-                                $" Expected: {expectedFlags.ToDisplayString()}."));
-                        break;
 
-                    case GetXResult.Ambiguous:
-                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, argumentList.GetLocation()));
-                        break;
                     case GetXResult.WrongType:
                         context.ReportDiagnostic(
                             Diagnostic.Create(REFL013MemberIsOfWrongType.Descriptor, invocation.GetNameLocation(), targetType, targetName, target.GetType().Name));
@@ -154,7 +156,7 @@ namespace ReflectionAnalyzers
                     if (target == null)
                     {
                         return targetType.TryFindFirstMemberRecursive(targetName, out target)
-                            ? GetXResult.OtherFlags
+                            ? GetXResult.WrongFlags
                             : GetXResult.None;
                     }
 
@@ -202,7 +204,7 @@ namespace ReflectionAnalyzers
                 if (target == null)
                 {
                     return targetType.TryFindFirstMemberRecursive(targetName, out target)
-                        ? GetXResult.OtherFlags
+                        ? GetXResult.WrongFlags
                         : GetXResult.None;
                 }
 
