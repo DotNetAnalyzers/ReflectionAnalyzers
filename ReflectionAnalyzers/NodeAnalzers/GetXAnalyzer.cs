@@ -271,7 +271,7 @@ namespace ReflectionAnalyzers
                         return true;
                 }
 
-                defaultFlags = (BindingFlags)0;
+                defaultFlags = 0;
                 return false;
             }
 
@@ -422,23 +422,6 @@ namespace ReflectionAnalyzers
             }
 
             return true;
-        }
-
-        private static bool HasWrongFlags(ISymbol target, ITypeSymbol targetType, BindingFlags flags)
-        {
-            return (target.DeclaredAccessibility != Accessibility.Public &&
-                    !flags.HasFlagFast(BindingFlags.NonPublic)) ||
-                   (target.DeclaredAccessibility == Accessibility.Public &&
-                    !flags.HasFlagFast(BindingFlags.Public)) ||
-                   (target.IsStatic &&
-                    !flags.HasFlagFast(BindingFlags.Static)) ||
-                   (!target.IsStatic &&
-                    !flags.HasFlagFast(BindingFlags.Instance)) ||
-                   (!Equals(target.ContainingType, targetType) &&
-                    flags.HasFlagFast(BindingFlags.DeclaredOnly)) ||
-                   (target.IsStatic &&
-                    !Equals(target.ContainingType, targetType) &&
-                    !flags.HasFlagFast(BindingFlags.FlattenHierarchy));
         }
 
         private static bool HasRedundantFlag(ISymbol target, ITypeSymbol targetType, BindingFlags flags)
