@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.props')" Label="Paket" />
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <CodeAnalysisRuleSet>ReflectionAnalyzers.Vsix.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-
   <PropertyGroup>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -19,7 +19,6 @@
     <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\ReflectionAnalyzers\ReflectionAnalyzers.csproj" />
   </ItemGroup>
@@ -27,4 +26,5 @@
   <Import Project="..\packages\build\Microsoft.VisualStudio.SDK.Analyzers\build\Microsoft.VisualStudio.SDK.Analyzers.targets" Condition="Exists('..\packages\build\Microsoft.VisualStudio.SDK.Analyzers\build\Microsoft.VisualStudio.SDK.Analyzers.targets')" Label="Paket" />
   <Import Project="..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\build\Microsoft.VisualStudio.Threading.Analyzers\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Label="Paket" />
   <Import Project="..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets')" Label="Paket" />
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

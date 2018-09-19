@@ -727,14 +727,14 @@ NUGET
     Microsoft.VisualStudio.SDK.Analyzers (15.8.33) - restriction: >= net46
       Microsoft.VisualStudio.Threading.Analyzers (>= 15.8.122) - restriction: >= netstandard1.1
     Microsoft.VisualStudio.Threading.Analyzers (15.8.145) - restriction: >= net46
-    Microsoft.VSSDK.BuildTools (15.8.3247)
+    Microsoft.VSSDK.BuildTools (15.8.3252)
       Microsoft.VisualStudio.SDK.Analyzers (>= 15.8.33) - restriction: >= net46
 
 GROUP Test
 STORAGE: NONE
 NUGET
   remote: http://www.nuget.org/api/v2
-    Gu.Roslyn.Asserts (2.4.2.1)
+    Gu.Roslyn.Asserts (2.5)
       Microsoft.CodeAnalysis.CSharp.Workspaces (>= 2.0)
     ManagedEsent (1.9.4) - restriction: >= net46
     Microsoft.CodeAnalysis.Analyzers (2.6.1) - restriction: >= netstandard1.3

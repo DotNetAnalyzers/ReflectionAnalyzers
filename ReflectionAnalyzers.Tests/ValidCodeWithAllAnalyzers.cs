@@ -17,8 +17,8 @@ namespace ReflectionAnalyzers.Tests
                                                                                  .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t))
                                                                                  .ToArray();
 
-        private static readonly Solution Solution = CodeFactory.CreateSolution(
-            SolutionFile.Find("ReflectionAnalyzers.sln"),
+        private static readonly Solution AnalyzersProjectSolution = CodeFactory.CreateSolution(
+            ProjectFile.Find("ReflectionAnalyzers.csproj"),
             AllAnalyzers,
             AnalyzerAssert.MetadataReferences);
 
@@ -55,9 +55,9 @@ namespace ReflectionAnalyzers.Tests
         }
 
         [TestCaseSource(nameof(AllAnalyzers))]
-        public void CurrentSolution(DiagnosticAnalyzer analyzer)
+        public void AnalyzersSolution(DiagnosticAnalyzer analyzer)
         {
-            AnalyzerAssert.Valid(analyzer, Solution);
+            AnalyzerAssert.Valid(analyzer, AnalyzersProjectSolution);
         }
     }
 }

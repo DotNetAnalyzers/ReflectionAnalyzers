@@ -12,9 +12,8 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
         [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(nameof(nameof(this.ToString)), BindingFlags.Instance | BindingFlags.Public)")]
-        [TestCase("GetMethod(nameof(nameof(this.ToString)), BindingFlags.Instance | BindingFlags.Static |BindingFlags.Public)")]
-        [TestCase("GetMethod(nameof(nameof(this.ToString)), BindingFlags.Instance | BindingFlags.Static |BindingFlags.Public | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Instance | BindingFlags.Static |BindingFlags.Public | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
@@ -30,7 +29,7 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
         }
 
         public static int Static() => 0;
@@ -41,7 +40,7 @@ namespace RoslynSandbox
 
         private int Private() => 0;
     }
-}".AssertReplace("GetMethod(nameof(this.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
+}".AssertReplace("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
