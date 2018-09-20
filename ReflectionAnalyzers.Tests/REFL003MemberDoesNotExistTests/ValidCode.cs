@@ -9,12 +9,14 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL003");
 
-        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString))")]
-        [TestCase("typeof(Foo).GetMethod(nameof(ToString))")]
-        [TestCase("typeof(Foo).GetMethod(nameof(ReferenceEquals))")]
         [TestCase("typeof(Foo).GetMethod(nameof(PublicStatic))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(ReferenceEquals))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static)")]
         [TestCase("typeof(Foo).GetMethod(nameof(this.PublicInstance))")]
         [TestCase("typeof(Foo).GetMethod(nameof(PublicInstance))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(ToString))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("typeof(Foo).GetMethod(nameof(PrivateStatic))")]
         [TestCase("typeof(Foo).GetMethod(nameof(this.PrivateInstance))")]
         [TestCase("typeof(Foo).GetMethod(nameof(PrivateInstance))")]
@@ -23,6 +25,8 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
             var code = @"
 namespace RoslynSandbox
 {
+    using System.Reflection;
+
     class Foo
     {
         public Foo()
