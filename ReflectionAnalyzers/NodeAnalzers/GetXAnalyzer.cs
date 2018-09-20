@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -14,7 +15,7 @@ namespace ReflectionAnalyzers
         {
             Unknown,
             Single,
-            None,
+            NoMatch,
             Ambiguous,
             WrongFlags,
             WrongMemberType,
@@ -48,7 +49,7 @@ namespace ReflectionAnalyzers
             {
                 switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var effectiveFlags))
                 {
-                    case GetXResult.None:
+                    case GetXResult.NoMatch:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
                         break;
 
@@ -173,7 +174,13 @@ namespace ReflectionAnalyzers
                                 : GetXResult.WrongFlags;
                         }
 
-                        return GetXResult.None;
+                        if (flags.HasFlagFast(BindingFlags.NonPublic) &&
+                            !targetType.Locations.Any(x => x.IsInSource))
+                        {
+                            return GetXResult.Unknown;
+                        }
+
+                        return GetXResult.NoMatch;
                     }
 
                     return GetXResult.Single;
@@ -219,9 +226,18 @@ namespace ReflectionAnalyzers
 
                 if (target == null)
                 {
-                    return targetType.TryFindFirstMemberRecursive(targetName, out target)
-                        ? GetXResult.WrongFlags
-                        : GetXResult.None;
+                    if (targetType.TryFindFirstMemberRecursive(targetName, out target))
+                    {
+                        return GetXResult.WrongFlags;
+                    }
+
+                    if (flags.HasFlagFast(BindingFlags.NonPublic) &&
+                        !targetType.Locations.Any(x => x.IsInSource))
+                    {
+                        return GetXResult.Unknown;
+                    }
+
+                    return GetXResult.NoMatch;
                 }
 
                 return GetXResult.Single;

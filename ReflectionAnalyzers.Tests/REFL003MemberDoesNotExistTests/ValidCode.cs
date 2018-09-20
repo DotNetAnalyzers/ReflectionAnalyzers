@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
+    using System.Reflection;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
@@ -45,6 +46,28 @@ namespace RoslynSandbox
         private int PrivateInstance() => 0;
     }
 }".AssertReplace("typeof(Foo).GetMethod(nameof(this.ToString))", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static)")]
+        [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        public void ExcludeNonPublicNotInSource(string invocation)
+        {
+        var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(string).GetMethod(""MISSING"", BindingFlags.NonPublic | BindingFlags.Static);
+        }
+    }
+}".AssertReplace("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static)", invocation);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
