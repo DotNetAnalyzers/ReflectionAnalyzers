@@ -5,7 +5,8 @@ group Test
 
 group Analyzers
   AsyncUsageAnalyzers
-  IDisposableAnalyzers
-  StyleCop.Analyzers
   Gu.Analyzers
+  IDisposableAnalyzers
+  Microsoft.CodeAnalysis.FxCopAnalyzers
+  StyleCop.Analyzers
 

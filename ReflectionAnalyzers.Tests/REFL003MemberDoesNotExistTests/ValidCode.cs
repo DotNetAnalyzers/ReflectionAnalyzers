@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
-    using System.Reflection;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;

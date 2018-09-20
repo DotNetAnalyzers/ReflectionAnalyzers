@@ -719,7 +719,16 @@ NUGET
     AsyncUsageAnalyzers (1.0.0-alpha003)
     Gu.Analyzers (1.2.18.1-dev)
     IDisposableAnalyzers (2.0.3.3)
+    Microsoft.CodeAnalysis.FxCopAnalyzers (2.6.1)
+      Microsoft.CodeQuality.Analyzers (>= 2.6.1)
+      Microsoft.NetCore.Analyzers (>= 2.6.1)
+      Microsoft.NetFramework.Analyzers (>= 2.6.1)
+      Text.Analyzers (>= 2.6.1)
+    Microsoft.CodeQuality.Analyzers (2.6.1)
+    Microsoft.NetCore.Analyzers (2.6.1)
+    Microsoft.NetFramework.Analyzers (2.6.1)
     StyleCop.Analyzers (1.0.2)
+    Text.Analyzers (2.6.1)
 
 GROUP Build
 NUGET

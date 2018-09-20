@@ -10,9 +10,10 @@ group Analyzers
   storage: none
   source http://www.nuget.org/api/v2/
   nuget AsyncUsageAnalyzers
-  nuget IDisposableAnalyzers
-  nuget StyleCop.Analyzers
   nuget Gu.Analyzers
+  nuget IDisposableAnalyzers
+  nuget Microsoft.CodeAnalysis.FxCopAnalyzers
+  nuget StyleCop.Analyzers
 
 group Test
   storage: none
