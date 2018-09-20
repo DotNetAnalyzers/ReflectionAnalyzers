@@ -10,7 +10,15 @@ namespace ReflectionAnalyzers
     /// </summary>
     internal static class GetX
     {
-        internal static bool TryGetTargetType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol result)
+        /// <summary>
+        /// Returns Foo for the invocation typeof(Foo).GetProperty(Bar)
+        /// </summary>
+        /// <param name="invocation"></param>
+        /// <param name="semanticModel"></param>
+        /// <param name="cancellationToken"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        internal static bool TryGetDeclaringType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol result)
         {
             if (invocation.Expression is MemberAccessExpressionSyntax memberAccess)
             {

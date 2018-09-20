@@ -43,23 +43,39 @@ namespace ReflectionAnalyzers
             }
 
             if (context.Node is LiteralExpressionSyntax literal &&
-                literal.Parent is ArgumentSyntax &&
-                SyntaxFacts.IsValidIdentifier(literal.Token.ValueText))
+                literal.Parent is ArgumentSyntax argument &&
+                literal.Token.ValueText is string text &&
+                SyntaxFacts.IsValidIdentifier(text))
             {
-                foreach (var symbol in context.SemanticModel.LookupSymbols(literal.SpanStart, name: literal.Token.ValueText))
+                if (argument.Parent is ArgumentListSyntax argumentList &&
+                    argumentList.Parent is InvocationExpressionSyntax invocation &&
+                    TryGetX(invocation, text, context, out var target))
                 {
-                    switch (symbol)
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            Descriptor,
+                            literal.GetLocation(),
+                            ImmutableDictionary<string, string>.Empty.Add(
+                                nameof(ISymbol),
+                                $"{target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)}.{target.Name}")));
+                }
+                else
+                {
+                    foreach (var symbol in context.SemanticModel.LookupSymbols(literal.SpanStart, name: text))
                     {
-                        case IParameterSymbol _:
-                        case IFieldSymbol _:
-                        case IEventSymbol _:
-                        case IPropertySymbol _:
-                        case IMethodSymbol _:
-                            context.ReportDiagnostic(Diagnostic.Create(Descriptor, literal.GetLocation()));
-                            break;
-                        case ILocalSymbol local when IsVisible(literal, local, context.CancellationToken):
-                            context.ReportDiagnostic(Diagnostic.Create(Descriptor, literal.GetLocation()));
-                            break;
+                        switch (symbol)
+                        {
+                            case IParameterSymbol _:
+                            case IFieldSymbol _:
+                            case IEventSymbol _:
+                            case IPropertySymbol _:
+                            case IMethodSymbol _:
+                                context.ReportDiagnostic(Diagnostic.Create(Descriptor, literal.GetLocation()));
+                                break;
+                            case ILocalSymbol local when IsVisible(literal, local, context.CancellationToken):
+                                context.ReportDiagnostic(Diagnostic.Create(Descriptor, literal.GetLocation()));
+                                break;
+                        }
                     }
                 }
             }
@@ -73,6 +89,26 @@ namespace ReflectionAnalyzers
                 var declaration = local.DeclaringSyntaxReferences[0]
                                        .GetSyntax(cancellationToken);
                 return !declaration.Contains(literal);
+            }
+
+            return false;
+        }
+
+        private static bool TryGetX(InvocationExpressionSyntax invocation, string name, SyntaxNodeAnalysisContext context, out ISymbol target)
+        {
+            target = null;
+            if (invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+            {
+                if (invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context.SemanticModel, context.CancellationToken, out var getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetField, context.SemanticModel, context.CancellationToken, out getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out getX))
+                {
+                    return GetX.TryGetDeclaringType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType) &&
+                           declaringType.TryFindFirstMember(name, out target);
+                }
             }
 
             return false;

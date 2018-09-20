@@ -13,6 +13,39 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL016");
 
         [Test]
+        public void TypeofDictionaryGetMethodAdd()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Dictionary<string, object>).GetMethod(↓""Add"");
+        }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
+        }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
         public void WhenThrowingArgumentException()
         {
             var testCode = @"

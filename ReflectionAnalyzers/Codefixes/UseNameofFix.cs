@@ -30,9 +30,12 @@ namespace ReflectionAnalyzers.Codefixes
                 if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument) &&
                     argument.Expression is LiteralExpressionSyntax literal)
                 {
+                    var name = diagnostic.Properties.TryGetValue(nameof(ISymbol), out var symbolName)
+                        ? symbolName
+                        : literal.Token.ValueText;
                     context.RegisterCodeFix(
                         "Use nameof",
-                        (editor, cancellationToken) => ApplyFix(editor, argument, literal.Token.ValueText, cancellationToken),
+                        (editor, cancellationToken) => ApplyFix(editor, argument, name, cancellationToken),
                         nameof(UseNameofFix),
                         diagnostic);
                 }
