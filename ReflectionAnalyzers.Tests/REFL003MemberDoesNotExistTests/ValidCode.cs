@@ -20,6 +20,8 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         [TestCase("typeof(Foo).GetMethod(nameof(PrivateStatic))")]
         [TestCase("typeof(Foo).GetMethod(nameof(this.PrivateInstance))")]
         [TestCase("typeof(Foo).GetMethod(nameof(PrivateInstance))")]
+        [TestCase("typeof(string).GetMethod(nameof(string.Clone))")]
+        [TestCase("typeof(string).GetMethod(\"op_Equality\")")]
         public void GetMethod(string call)
         {
             var code = @"
