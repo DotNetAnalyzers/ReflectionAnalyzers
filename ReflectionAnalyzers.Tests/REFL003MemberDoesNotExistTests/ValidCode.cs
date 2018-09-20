@@ -9,8 +9,16 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL003");
 
-        [Test]
-        public void GetToString()
+        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(ToString))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(ReferenceEquals))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(PublicStatic))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(this.PublicInstance))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(PublicInstance))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(PrivateStatic))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(this.PrivateInstance))")]
+        [TestCase("typeof(Foo).GetMethod(nameof(PrivateInstance))")]
+        public void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -21,25 +29,16 @@ namespace RoslynSandbox
         {
             var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString));
         }
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
 
-        [Test]
-        public void GetReferenceEquals()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(nameof(ReferenceEquals));
-        }
+        public static int PublicStatic() => 0;
+
+        public int PublicInstance() => 0;
+
+        private static int PrivateStatic() => 0;
+
+        private int PrivateInstance() => 0;
     }
-}";
+}".AssertReplace("typeof(Foo).GetMethod(nameof(this.ToString))", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
@@ -56,17 +55,14 @@ namespace RoslynSandbox
             var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString));
         }
 
-        public override string ToString()
-        {
-            return base.ToString();
-        }
+        public override string ToString() => base.ToString();
     }
 }";
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
-        public void GetMethodInSameType()
+        public void GetToStringShadowing()
         {
             var code = @"
 namespace RoslynSandbox
@@ -75,12 +71,10 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString));
         }
 
-        public void Bar()
-        {
-        }
+        public new string ToString() => base.ToString();
     }
 }";
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
