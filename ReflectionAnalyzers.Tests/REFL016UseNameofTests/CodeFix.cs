@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new REFL016UseNameof();
         private static readonly CodeFixProvider Fix = new UseNameofFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL016");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
 
         [Test]
         public void TypeofDictionaryGetMethodAdd()
@@ -40,6 +40,191 @@ namespace RoslynSandbox
         {
             var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
         }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
+        public void WhenNotUsingNameofTarget()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Dictionary<string, object>).GetMethod(nameof(↓Add));
+        }
+
+        private static int Add(int x, int y) => x + y;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
+        }
+
+        private static int Add(int x, int y) => x + y;
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
+        public void WhenUsingNameofOther()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Dictionary<string, object>).GetMethod(nameof(HashSet<string>.Add));
+        }
+
+        private static int Add(int x, int y) => x + y;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
+        }
+
+        private static int Add(int x, int y) => x + y;
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
+        public void WhenUsingNameofFromOtherTypeStatic()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetMethod(nameof(HashSet<string>.Add));
+        }
+
+        private static int Add(int x, int y) => x + y;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetMethod(nameof(Add));
+        }
+
+        private static int Add(int x, int y) => x + y;
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
+        public void WhenUsingNameofFromOtherTypeInstance()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetMethod(nameof(HashSet<string>.Add));
+        }
+
+        private int Add(int x, int y) => x + y;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetMethod(nameof(this.Add));
+        }
+
+        private int Add(int x, int y) => x + y;
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
+        public void WhenUsingNameofFromOtherTypeInstanceUnderscore()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = GetType().GetMethod(nameof(HashSet<string>.Add));
+        }
+
+        private int Add(int x, int y) => x + y;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = GetType().GetMethod(nameof(Add));
+        }
+
+        private int Add(int x, int y) => x + y;
     }
 }";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
