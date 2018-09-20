@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetPropertyTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL014PreferGetProperty.DiagnosticId);
 
         [Test]
-        public void PreferGetPropertyGetMethodInstance()
+        public void PublicGetSetInstanceGetter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -48,7 +48,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void PreferGetPropertyGetMethodStatic()
+        public void PublicGetSetStaticGetter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -83,7 +83,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void PreferGetPropertySetMethod()
+        public void PublicGetSetInstanceSetter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -118,7 +118,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void PreferGetPropertySetMethodStatic()
+        public void PublicGetSetStaticSetter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -149,6 +149,43 @@ namespace RoslynSandbox
     }
 }";
             var message = "Prefer typeof(Foo).GetProperty(nameof(Foo.Value), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [Test]
+        public void PublicGetInternalSetInstanceSetter()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = ↓typeof(Foo).GetMethod(""set_Value"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+        public int Value { get; internal set; }
+    }
+}";
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetProperty(nameof(Foo.Value), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod;
+        }
+
+        public int Value { get; internal set; }
+    }
+}";
+            var message = "Prefer typeof(Foo).GetProperty(nameof(Foo.Value), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }
