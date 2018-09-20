@@ -28,18 +28,8 @@ namespace ReflectionAnalyzers.Codefixes
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var expressionString) &&
-                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax argument))
-                {
-                    context.RegisterCodeFix(
-                        $"Change to: {expressionString}.",
-                        (editor, _) => editor.AddUsing(SystemReflection)
-                                             .ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
-                        nameof(BindingFlagsFix),
-                        diagnostic);
-                }
-                else if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
-                         diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
+                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
+                    diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {
                     context.RegisterCodeFix(
                         $"Add argument: {argumentString}.",
@@ -48,6 +38,16 @@ namespace ReflectionAnalyzers.Codefixes
                                                  argumentList,
                                                  argumentList.AddArguments(
                                                      SyntaxFactory.Argument(SyntaxFactory.ParseExpression(argumentString)))),
+                        nameof(BindingFlagsFix),
+                        diagnostic);
+                }
+                else if (diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var expressionString) &&
+                         syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax argument))
+                {
+                    context.RegisterCodeFix(
+                        $"Change to: {expressionString}.",
+                        (editor, _) => editor.AddUsing(SystemReflection)
+                                             .ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
                         nameof(BindingFlagsFix),
                         diagnostic);
                 }
