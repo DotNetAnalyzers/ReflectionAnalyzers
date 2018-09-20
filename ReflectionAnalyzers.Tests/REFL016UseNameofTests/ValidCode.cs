@@ -7,6 +7,68 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new REFL016UseNameof();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
+
+        [Test]
+        public void TypeofDictionaryGetMethodAdd()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
+        }
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+        }
+
+        [Test]
+        public void ThisGetTYpeGetStaticMethod()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetMethod(nameof(Add));
+        }
+
+        private static int Add(int x, int y) => x + y;
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+        }
+
+        [Test]
+        public void ThisGetTYpeGetInstanceMethod()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetMethod(nameof(this.Add));
+        }
+
+        private int Add(int x, int y) => x + y;
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+        }
 
         [Test]
         public void WhenThrowingArgumentException()

@@ -32,10 +32,11 @@ namespace ReflectionAnalyzers
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
-            context.RegisterSyntaxNodeAction(Handle, SyntaxKind.StringLiteralExpression);
+            context.RegisterSyntaxNodeAction(c => HandleLiteral(c), SyntaxKind.StringLiteralExpression);
+            context.RegisterSyntaxNodeAction(c => HandleNameof(c), SyntaxKind.NameOfKeyword);
         }
 
-        private static void Handle(SyntaxNodeAnalysisContext context)
+        private static void HandleLiteral(SyntaxNodeAnalysisContext context)
         {
             if (context.IsExcludedFromAnalysis())
             {
@@ -49,7 +50,8 @@ namespace ReflectionAnalyzers
             {
                 if (argument.Parent is ArgumentListSyntax argumentList &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
-                    TryGetX(invocation, text, context, out var target))
+                    TryGetX(invocation, text, context, out var target) &&
+                    target.ContainingType != context.ContainingSymbol.ContainingType)
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -79,6 +81,27 @@ namespace ReflectionAnalyzers
                     }
                 }
             }
+        }
+
+        private static void HandleNameof(SyntaxNodeAnalysisContext context)
+        {
+            //if (context.Node is InvocationExpressionSyntax nameof &&
+            //    nameof.Parent is ArgumentSyntax argument &&
+            //    context.SemanticModel.TryGetConstantValue(nameof, context.CancellationToken, out string name))
+            //{
+            //    if (argument.Parent is ArgumentListSyntax argumentList &&
+            //        argumentList.Parent is InvocationExpressionSyntax invocation &&
+            //        TryGetX(invocation, name, context, out var target))
+            //    {
+            //        context.ReportDiagnostic(
+            //            Diagnostic.Create(
+            //                Descriptor,
+            //                literal.GetLocation(),
+            //                ImmutableDictionary<string, string>.Empty.Add(
+            //                    nameof(ISymbol),
+            //                    $"{target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)}.{target.Name}")));
+            //    }
+            //}
         }
 
         private static bool IsVisible(LiteralExpressionSyntax literal, ILocalSymbol local, CancellationToken cancellationToken)
