@@ -29,9 +29,16 @@ namespace ReflectionAnalyzers
                     case InvocationExpressionSyntax getType when getType.TryGetMethodName(out var name) &&
                                                                  name == "GetType" &&
                                                                  getType.ArgumentList is ArgumentListSyntax args &&
-                                                                 args.Arguments.Count == 0 &&
-                                                                 getType.Expression is MemberAccessExpressionSyntax typeAccess:
-                        return semanticModel.TryGetType(typeAccess.Expression, cancellationToken, out result);
+                                                                 args.Arguments.Count == 0:
+                        switch (getType.Expression)
+                        {
+                            case MemberAccessExpressionSyntax typeAccess:
+                                return semanticModel.TryGetType(typeAccess.Expression, cancellationToken, out result);
+                            case IdentifierNameSyntax _ when invocation.TryFirstAncestor(out TypeDeclarationSyntax containingType):
+                                return semanticModel.TryGetSymbol(containingType, cancellationToken, out result);
+                        }
+
+                        break;
                 }
             }
 

@@ -194,6 +194,43 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void WhenUsingNameofFromOtherTypeInstanceUnderscore()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = GetType().GetMethod(nameof(HashSet<string>.Add));
+        }
+
+        private int Add(int x, int y) => x + y;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = GetType().GetMethod(nameof(Add));
+        }
+
+        private int Add(int x, int y) => x + y;
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
         public void WhenThrowingArgumentException()
         {
             var testCode = @"
