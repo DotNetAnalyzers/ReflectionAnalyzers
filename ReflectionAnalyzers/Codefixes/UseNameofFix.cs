@@ -27,17 +27,30 @@ namespace ReflectionAnalyzers.Codefixes
 
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument) &&
-                    argument.Expression is LiteralExpressionSyntax literal)
+                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument))
                 {
-                    var name = diagnostic.Properties.TryGetValue(nameof(ISymbol), out var symbolName)
-                        ? symbolName
-                        : literal.Token.ValueText;
-                    context.RegisterCodeFix(
-                        "Use nameof",
-                        (editor, cancellationToken) => ApplyFix(editor, argument, name, cancellationToken),
-                        nameof(UseNameofFix),
-                        diagnostic);
+                    if (diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionString))
+                    {
+                        context.RegisterCodeFix(
+                            "Use nameof",
+                            (editor, cancellationToken) => editor.ReplaceNode(
+                                argument.Expression,
+                                SyntaxFactory.ParseExpression(expressionString)),
+                            nameof(UseNameofFix),
+                            diagnostic);
+                    }
+                    else if (argument.Expression is LiteralExpressionSyntax literal &&
+                        literal.IsKind(SyntaxKind.StringLiteralExpression))
+                    {
+                        var name = diagnostic.Properties.TryGetValue(nameof(ISymbol), out var symbolName)
+                            ? symbolName
+                            : literal.Token.ValueText;
+                        context.RegisterCodeFix(
+                            "Use nameof",
+                            (editor, cancellationToken) => ApplyFix(editor, argument, name, cancellationToken),
+                            nameof(UseNameofFix),
+                            diagnostic);
+                    }
                 }
             }
         }
