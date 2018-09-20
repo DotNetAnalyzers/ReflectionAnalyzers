@@ -4,7 +4,8 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  BUGFIX: Try mirroring BindingFlags
+  BUGFIX: REFL003 we can't check nonpublic members not in source.
+  FEATURE: Better nameof nag.
 
 excludedgroups
   Main
