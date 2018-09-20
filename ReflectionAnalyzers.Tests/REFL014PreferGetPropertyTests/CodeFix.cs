@@ -188,5 +188,42 @@ namespace RoslynSandbox
             var message = "Prefer typeof(Foo).GetProperty(nameof(Foo.Value), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
+
+        [Test]
+        public void InternalGetSetInstanceSetter()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = ↓typeof(Foo).GetMethod(""set_Value"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+        internal int Value { get; set; }
+    }
+}";
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetProperty(nameof(Foo.Value), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod;
+        }
+
+        internal int Value { get; set; }
+    }
+}";
+            var message = "Prefer typeof(Foo).GetProperty(nameof(Foo.Value), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }
