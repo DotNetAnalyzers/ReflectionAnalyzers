@@ -113,8 +113,13 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL015UseContainingType.Descriptor,
-                                invocation.Expression.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ISymbol.ContainingType), target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                                memberAccess.Expression is TypeOfExpressionSyntax typeOf
+                                    ? typeOf.Type.GetLocation()
+                                    : invocation.Expression.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(ISymbol.ContainingType),
+                                    target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
                                 target.ContainingType.Name));
                         break;
                     case GetXResult.Unknown:
@@ -168,10 +173,20 @@ namespace ReflectionAnalyzers
                     {
                         if (targetType.TryFindFirstMemberRecursive(targetName, out target))
                         {
-                            return getX == KnownSymbol.Type.GetNestedType &&
-                                   !targetType.Equals(target.ContainingType)
-                                ? GetXResult.UseContainingType
-                                : GetXResult.WrongFlags;
+                            if (getX == KnownSymbol.Type.GetNestedType &&
+                                !targetType.Equals(target.ContainingType))
+                            {
+                                return GetXResult.UseContainingType;
+                            }
+
+                            if (target.IsStatic &&
+                                target.DeclaredAccessibility == Accessibility.Private &&
+                               !targetType.Equals(target.ContainingType))
+                            {
+                                return GetXResult.UseContainingType;
+                            }
+
+                            return GetXResult.WrongFlags;
                         }
 
                         if (!HasVisibleMembers(targetType, flags))
@@ -205,6 +220,13 @@ namespace ReflectionAnalyzers
                         if (target == null)
                         {
                             target = member;
+                            if (target.IsStatic &&
+                                target.DeclaredAccessibility == Accessibility.Private &&
+                                !target.ContainingType.Equals(targetType))
+                            {
+                                return GetXResult.UseContainingType;
+                            }
+
                             if (IsOfWrongType(member))
                             {
                                 return GetXResult.WrongMemberType;

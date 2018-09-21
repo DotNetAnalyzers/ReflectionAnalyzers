@@ -23,9 +23,7 @@ namespace ReflectionAnalyzers.Codefixes
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (diagnostic.Properties.TryGetValue(nameof(ITypeSymbol.ContainingType), out var typeName) &&
-                    syntaxRoot.TryFindNode(diagnostic, out MemberAccessExpressionSyntax memberAccess) &&
-                    memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                    typeOf.Type is TypeSyntax type)
+                    syntaxRoot.TryFindNode(diagnostic, out TypeSyntax type))
                 {
                     context.RegisterCodeFix(
                         $"Use containing type: {typeName}.",
