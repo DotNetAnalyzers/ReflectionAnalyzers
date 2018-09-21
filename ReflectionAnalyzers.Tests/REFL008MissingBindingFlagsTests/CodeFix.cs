@@ -99,7 +99,8 @@ namespace RoslynSandbox
 
         private int Private() => 0;
     }
-}".AssertReplace("nameof(this.Public)", $"nameof({method})").AssertReplace("BindingFlags.Public", flags);
+}".AssertReplace("nameof(this.Public)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Public", flags);
 
             var fixedCode = @"
 namespace RoslynSandbox
@@ -163,6 +164,74 @@ namespace RoslynSandbox
         }
     }
 }";
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [TestCase("PublicStatic",    "BindingFlags.Public")]
+        [TestCase("PublicInstance",  "BindingFlags.Public")]
+        [TestCase("PrivateStatic",   "BindingFlags.NonPublic")]
+        [TestCase("PrivateInstance", "BindingFlags.NonPublic")]
+        public void GetNestedTypeNoFlags(string method, string expected)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetNestedType(nameof(PublicInstance)↓);
+        }
+
+        public static class PublicStatic
+        {
+        }
+
+        public class PublicInstance
+        {
+        }
+
+        private static class PrivateStatic
+        {
+        }
+
+        private class PrivateInstance
+        {
+        }
+    }
+}".AssertReplace("nameof(PublicInstance)", $"nameof({method})");
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetNestedType(nameof(PublicInstance), BindingFlags.Public);
+        }
+
+        public static class PublicStatic
+        {
+        }
+
+        public class PublicInstance
+        {
+        }
+
+        private static class PrivateStatic
+        {
+        }
+
+        private class PrivateInstance
+        {
+        }
+    }
+}".AssertReplace("nameof(PublicInstance)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Public", expected);
 
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }

@@ -71,14 +71,10 @@ namespace RoslynSandbox
 
         [TestCase("GetNestedType(nameof(PublicStatic))")]
         [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public)")]
-        [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public | BindingFlags.DeclaredOnly)")]
         [TestCase("GetNestedType(nameof(Public))")]
         [TestCase("GetNestedType(nameof(Public), BindingFlags.Public)")]
-        [TestCase("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)")]
         [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic)")]
-        [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.DeclaredOnly)")]
         [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic)")]
-        [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic | BindingFlags.DeclaredOnly)")]
         public void GetNestedType(string call)
         {
             var code = @"

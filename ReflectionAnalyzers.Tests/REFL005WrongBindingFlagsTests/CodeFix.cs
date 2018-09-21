@@ -230,14 +230,14 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [TestCase("PublicStatic",  "BindingFlags.NonPublic",                                                     "BindingFlags.Public | BindingFlags.DeclaredOnly")]
-        [TestCase("PublicStatic",  "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.DeclaredOnly")]
-        [TestCase("PublicStatic",  "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.DeclaredOnly")]
-        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.DeclaredOnly")]
-        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Instance",                             "BindingFlags.Public | BindingFlags.DeclaredOnly")]
-        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.DeclaredOnly")]
-        [TestCase("PrivateStatic", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic | BindingFlags.DeclaredOnly")]
-        [TestCase("Private",       "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic | BindingFlags.DeclaredOnly")]
+        [TestCase("PublicStatic",  "BindingFlags.NonPublic",                                                     "BindingFlags.Public")]
+        [TestCase("PublicStatic",  "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public")]
+        [TestCase("PublicStatic",  "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public")]
+        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public")]
+        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Instance",                             "BindingFlags.Public")]
+        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public")]
+        [TestCase("PrivateStatic", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic")]
+        [TestCase("Private",       "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic")]
         public void GetNestedType(string type, string flags, string expected)
         {
             var code = @"
@@ -338,7 +338,7 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var typeInfo = typeof(Foo).GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+            var typeInfo = typeof(Foo).GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic);
         }
 
         private static class PrivateStatic
@@ -350,7 +350,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("nameof(PrivateStatic)", $"nameof({type})");
-            var message = "There is no member matching the filter. Expected: BindingFlags.NonPublic | BindingFlags.DeclaredOnly.";
+            var message = "There is no member matching the filter. Expected: BindingFlags.NonPublic.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }

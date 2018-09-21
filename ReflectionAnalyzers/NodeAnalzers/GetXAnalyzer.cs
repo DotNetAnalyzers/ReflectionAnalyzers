@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System;
     using System.Collections.Immutable;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -58,12 +59,32 @@ namespace ReflectionAnalyzers
                         break;
 
                     case GetXResult.WrongFlags when TryGetExpectedFlags(target, targetType, out var correctFlags):
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL005WrongBindingFlags.Descriptor,
-                                flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
-                                $" Expected: {correctFlags.ToDisplayString()}."));
+                        if (flagsArg != null)
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL005WrongBindingFlags.Descriptor,
+                                    flagsArg.GetLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
+                                    $" Expected: {correctFlags.ToDisplayString()}."));
+                        }
+                        else
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL005WrongBindingFlags.Descriptor,
+                                    argumentList.CloseParenToken.GetLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
+                                    $" Expected: {correctFlags.ToDisplayString()}."));
+
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL008MissingBindingFlags.Descriptor,
+                                    argumentList.CloseParenToken.GetLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
+                                    $" Expected: {correctFlags.ToDisplayString()}."));
+                        }
+
                         break;
 
                     case GetXResult.Single:
@@ -434,7 +455,7 @@ namespace ReflectionAnalyzers
                 getX.Expression is MemberAccessExpressionSyntax memberAccess &&
                 TryGetExpectedFlags(property, property.ContainingType, out var flags))
             {
-                if (targetMethod.Name.StartsWith("get_"))
+                if (targetMethod.Name.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
                 {
                     call = $"{memberAccess.Expression}.GetProperty(nameof({property.ContainingType.ToMinimalDisplayString(context.SemanticModel, getX.SpanStart)}.{property.Name}), {flags.ToDisplayString()}).GetMethod";
                     return true;
@@ -479,15 +500,15 @@ namespace ReflectionAnalyzers
                 {
                     flags |= BindingFlags.Instance;
                 }
-            }
 
-            if (Equals(target.ContainingType, targetType))
-            {
-                flags |= BindingFlags.DeclaredOnly;
-            }
-            else if (target.IsStatic)
-            {
-                flags |= BindingFlags.FlattenHierarchy;
+                if (Equals(target.ContainingType, targetType))
+                {
+                    flags |= BindingFlags.DeclaredOnly;
+                }
+                else if (target.IsStatic)
+                {
+                    flags |= BindingFlags.FlattenHierarchy;
+                }
             }
 
             return true;
@@ -497,7 +518,9 @@ namespace ReflectionAnalyzers
         {
             if (target is ITypeSymbol &&
                 (flags.HasFlagFast(BindingFlags.Instance) ||
-                 flags.HasFlagFast(BindingFlags.Static)))
+                 flags.HasFlagFast(BindingFlags.Static) ||
+                 flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                 flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
                 return true;
             }
