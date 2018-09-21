@@ -22,14 +22,26 @@ namespace ReflectionAnalyzers.Codefixes
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (diagnostic.Properties.TryGetValue(nameof(ITypeSymbol.ContainingType), out var typeName) &&
-                    syntaxRoot.TryFindNode(diagnostic, out TypeSyntax type))
+                if (diagnostic.Properties.TryGetValue(nameof(ITypeSymbol.ContainingType), out var typeName))
                 {
-                    context.RegisterCodeFix(
-                        $"Use containing type: {typeName}.",
-                        (editor, _) => editor.ReplaceNode(type, SyntaxFactory.ParseTypeName(typeName)),
-                        nameof(UseContainingTypeFix),
-                        diagnostic);
+                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax type))
+                    {
+                        context.RegisterCodeFix(
+                            $"Use containing type: {typeName}.",
+                            (editor, _) => editor.ReplaceNode(type, SyntaxFactory.ParseTypeName(typeName)),
+                            nameof(UseContainingTypeFix),
+                            diagnostic);
+                    }
+                    else if (syntaxRoot.TryFindNode(diagnostic, out MemberAccessExpressionSyntax memberAccess) &&
+                             memberAccess.Expression is ExpressionSyntax expression)
+                    {
+                        context.RegisterCodeFix(
+                            $"Use containing type: {typeName}.",
+                            (editor, _) => editor.ReplaceNode(expression, SyntaxFactory.ParseExpression($"typeof({typeName})")),
+                            nameof(UseContainingTypeFix),
+                            diagnostic);
+                    }
+
                 }
             }
         }
