@@ -188,6 +188,7 @@ namespace RoslynSandbox.Dump
         }
     }
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
+
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
     }
