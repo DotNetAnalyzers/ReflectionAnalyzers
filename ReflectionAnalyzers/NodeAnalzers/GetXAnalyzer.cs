@@ -311,7 +311,7 @@ namespace ReflectionAnalyzers
                 if (effectiveFlags.HasFlagFast(BindingFlags.NonPublic) &&
                     !type.Locations.Any(x => x.IsInSource))
                 {
-                    return type.TryFindFirstMember<ISymbol>(x => x.DeclaredAccessibility != Accessibility.Public && !IsExplicitInterfaceImplementation(x), out _);
+                    return type.TryFindFirstMember<ISymbol>(x => !x.DeclaredAccessibility.IsEither(Accessibility.Public, Accessibility.Protected) && !IsExplicitInterfaceImplementation(x), out _);
                 }
 
                 return true;
