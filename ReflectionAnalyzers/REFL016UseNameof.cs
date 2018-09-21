@@ -153,7 +153,7 @@ namespace ReflectionAnalyzers
                     invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out _) ||
                     invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out _))
                 {
-                    return GetX.TryGetDeclaringType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType) &&
+                    return GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType) &&
                            declaringType.TryFindFirstMember(name, out target);
                 }
             }

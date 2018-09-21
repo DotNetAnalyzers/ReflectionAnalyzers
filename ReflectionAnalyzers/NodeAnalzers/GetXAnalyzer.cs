@@ -136,7 +136,7 @@ namespace ReflectionAnalyzers
             flags = 0;
             if (context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList != null &&
-                GetX.TryGetDeclaringType(invocation, context.SemanticModel, context.CancellationToken, out targetType) &&
+                GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType) &&
                 TryGetTarget(out var getX) &&
                 IsKnownSignature(getX, out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out nameArg) &&

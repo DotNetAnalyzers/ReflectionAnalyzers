@@ -6,6 +6,7 @@ using Gu.Roslyn.Asserts;
 [assembly: TransitiveMetadataReferences(typeof(Gu.Roslyn.CodeFixExtensions.DocumentEditorCodeFixProvider))]
 [assembly: MetadataReferences(
     typeof(System.Linq.Enumerable),
+    typeof(System.Reflection.Assembly),
     typeof(System.Net.WebClient),
     typeof(System.Drawing.Bitmap),
     typeof(System.Data.Common.DbConnection),

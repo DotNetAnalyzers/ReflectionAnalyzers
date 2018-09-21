@@ -10,6 +10,7 @@ namespace ReflectionAnalyzers
 
         internal static readonly TypeType Type = new TypeType();
         internal static readonly AttributeType Attribute = new AttributeType();
+        internal static readonly AssemblyType Assembly = new AssemblyType();
         internal static readonly QualifiedType BindingFlags = Create("System.Reflection.BindingFlags");
         internal static readonly ConstructorInfoType ConstructorInfo = new ConstructorInfoType();
         internal static readonly EventInfoType EventInfo = new EventInfoType();
