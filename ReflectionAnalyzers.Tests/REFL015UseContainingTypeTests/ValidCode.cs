@@ -13,6 +13,10 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
         [TestCase("typeof(Foo).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("typeof(Foo).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("typeof(Foo).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("typeof(Foo).GetField(nameof(FooBase.InternalStaticField), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("typeof(Foo).GetEvent(nameof(FooBase.InternalStaticEvent), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("typeof(Foo).GetProperty(nameof(FooBase.InternalStaticProperty), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("typeof(Foo).GetMethod(nameof(FooBase.InternalStaticMethod), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("typeof(FooBase).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static)")]
         [TestCase("typeof(FooBase).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static)")]
         [TestCase("typeof(FooBase).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static)")]
@@ -37,11 +41,19 @@ namespace RoslynSandbox
     {
         public int PublicStaticField;
 
+        internal static int InternalStaticField;
+
         public static event EventHandler PublicStaticEvent;
+
+        internal static event EventHandler InternalStaticEvent;
 
         public static int PublicStaticProperty { get; set; }
 
+        internal static int InternalStaticProperty { get; set; }
+
         public static int PublicStaticMethod() => 0;
+
+        internal static int InternalStaticMethod() => 0;
     }
 
     public class Foo : FooBase
