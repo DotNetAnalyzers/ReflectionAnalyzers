@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL006");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL006RedundantBindingFlags.Descriptor);
 
         [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
@@ -66,6 +66,34 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetMethod(\"Bar\")", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)")]
+        [TestCase("typeof(string).GetMethod(nameof(string.EndsWith), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("typeof(string).GetMethod(nameof(string.EndsWith), BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)")]
+        [TestCase("typeof(string).GetMethod(nameof(string.EndsWith), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)")]
+        [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)")]
+        public void DontWarnWhenTypeIsNotInSln(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+        }
+    }
+}".AssertReplace("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 

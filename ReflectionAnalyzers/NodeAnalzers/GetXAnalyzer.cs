@@ -525,6 +525,11 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
+            if (!targetType.Locations.Any(x => x.IsInSource))
+            {
+                return false;
+            }
+
             return (target.DeclaredAccessibility == Accessibility.Public &&
                     flags.HasFlagFast(BindingFlags.NonPublic)) ||
                    (target.DeclaredAccessibility != Accessibility.Public &&
