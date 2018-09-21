@@ -169,5 +169,26 @@ namespace RoslynSandbox
 }".AssertReplace("get_Bar", name);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void AggregateExceptionGetInnerExceptionCount(string call)
+        {
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(AggregateException).GetMethod(""get_InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
