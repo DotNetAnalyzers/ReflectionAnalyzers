@@ -174,8 +174,7 @@ namespace ReflectionAnalyzers
                                 : GetXResult.WrongFlags;
                         }
 
-                        if (flags.HasFlagFast(BindingFlags.NonPublic) &&
-                            !targetType.Locations.Any(x => x.IsInSource))
+                        if (!HasVisibleMembers(targetType, flags))
                         {
                             return GetXResult.Unknown;
                         }
@@ -231,8 +230,7 @@ namespace ReflectionAnalyzers
                         return GetXResult.WrongFlags;
                     }
 
-                    if (flags.HasFlagFast(BindingFlags.NonPublic) &&
-                        !targetType.Locations.Any(x => x.IsInSource))
+                    if (!HasVisibleMembers(targetType, flags))
                     {
                         return GetXResult.Unknown;
                     }
@@ -263,6 +261,32 @@ namespace ReflectionAnalyzers
                        (candidate.Parameters.Length == 2 &&
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameterSymbol) &&
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
+            }
+
+            bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
+            {
+                if (effectiveFlags.HasFlagFast(BindingFlags.NonPublic) &&
+                    !type.Locations.Any(x => x.IsInSource))
+                {
+                    return type.TryFindFirstMember<ISymbol>(x => x.DeclaredAccessibility != Accessibility.Public && !IsExplicitInterfaceImplementation(x), out _);
+                }
+
+                return true;
+
+                bool IsExplicitInterfaceImplementation(ISymbol candidate)
+                {
+                    switch (candidate)
+                    {
+                        case IEventSymbol eventSymbol:
+                            return eventSymbol.ExplicitInterfaceImplementations.Any();
+                        case IMethodSymbol method:
+                            return method.ExplicitInterfaceImplementations.Any();
+                        case IPropertySymbol property:
+                            return property.ExplicitInterfaceImplementations.Any();
+                        default:
+                            return false;
+                    }
+                }
             }
 
             bool TryGetFlagsFromArgument(out ArgumentSyntax argument, out BindingFlags bindingFlags)
