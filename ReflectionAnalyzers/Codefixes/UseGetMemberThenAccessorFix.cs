@@ -25,7 +25,7 @@ namespace ReflectionAnalyzers.Codefixes
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionString) &&
-                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ExpressionSyntax old))
+                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax old))
                 {
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",

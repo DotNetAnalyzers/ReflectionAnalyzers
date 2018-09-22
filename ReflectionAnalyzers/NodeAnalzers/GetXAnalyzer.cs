@@ -4,6 +4,7 @@ namespace ReflectionAnalyzers
     using System.Collections.Immutable;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
+    using Gu.Roslyn.CodeFixExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -114,12 +115,12 @@ namespace ReflectionAnalyzers
                             }
                         }
 
-                        if (IsPreferGetProperty(invocation, target, context, out var call))
+                        if (IsPreferGetMemberThenAccessor(invocation, target, context, out var call))
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     REFL014PreferGetMemberThenAccessor.Descriptor,
-                                    invocation.GetLocation(),
+                                    invocation.GetNameLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), call),
                                     call));
                         }
@@ -448,7 +449,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool IsPreferGetProperty(InvocationExpressionSyntax getX, ISymbol target, SyntaxNodeAnalysisContext context, out string call)
+        private static bool IsPreferGetMemberThenAccessor(InvocationExpressionSyntax getX, ISymbol target, SyntaxNodeAnalysisContext context, out string call)
         {
             if (target is IMethodSymbol targetMethod &&
                 targetMethod.AssociatedSymbol is IPropertySymbol property &&
@@ -457,19 +458,34 @@ namespace ReflectionAnalyzers
             {
                 if (targetMethod.Name.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
                 {
-                    call = $"{memberAccess.Expression}.GetProperty(nameof({property.ContainingType.ToMinimalDisplayString(context.SemanticModel, getX.SpanStart)}.{property.Name}), {flags.ToDisplayString()}).GetMethod";
+                    call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString()}).GetMethod";
                     return true;
                 }
 
-                if (targetMethod.Name.StartsWith("set_"))
+                if (targetMethod.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase))
                 {
-                    call = $"{memberAccess.Expression}.GetProperty(nameof({property.ContainingType.ToMinimalDisplayString(context.SemanticModel, getX.SpanStart)}.{property.Name}), {flags.ToDisplayString()}).SetMethod";
+                    call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString()}).SetMethod";
                     return true;
                 }
             }
 
             call = null;
             return false;
+
+            string MemberName(ISymbol associatedSymbol)
+            {
+                if (context.ContainingSymbol.ContainingType == associatedSymbol.ContainingType)
+                {
+                    if (target.IsStatic)
+                    {
+                        return $"nameof({associatedSymbol.Name})";
+                    }
+
+                    return context.SemanticModel.UnderscoreFields() ? associatedSymbol.Name : $"nameof(this.{associatedSymbol.Name})";
+                }
+
+                return $"nameof({associatedSymbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{associatedSymbol.Name})";
+            }
         }
 
         private static bool TryGetExpectedFlags(ISymbol target, ITypeSymbol targetType, out BindingFlags flags)
