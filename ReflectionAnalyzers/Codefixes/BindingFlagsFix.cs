@@ -37,7 +37,8 @@ namespace ReflectionAnalyzers.Codefixes
                                              .ReplaceNode(
                                                  argumentList,
                                                  argumentList.AddArguments(
-                                                     SyntaxFactory.Argument(SyntaxFactory.ParseExpression(argumentString)))),
+                                                     SyntaxFactory.Argument(SyntaxFactory.ParseExpression(argumentString)
+                                                                  .WithLeadingTrivia(SyntaxFactory.ElasticSpace)))),
                         nameof(BindingFlagsFix),
                         diagnostic);
                 }
