@@ -245,5 +245,47 @@ namespace RoslynSandbox
             var message = $"Prefer typeof(Foo).{after}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
         }
+
+        [TestCase("GetMethod(\"add_Public\")",    "GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod")]
+        [TestCase("GetMethod(\"remove_Public\")", "GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).RemoveMethod")]
+        public void InstanceEventInSameType(string before, string after)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).↓GetMethod(""add_Public"");
+        }
+
+        public event EventHandler Public;
+    }
+}".AssertReplace("GetMethod(\"add_Public\")", before);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod;
+        }
+
+        public event EventHandler Public;
+    }
+}".AssertReplace("GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod", after);
+
+            var message = $"Prefer typeof(Foo).{after}.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }
