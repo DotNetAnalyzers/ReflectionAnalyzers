@@ -244,5 +244,27 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Valid(Analyzer, testCode);
         }
+
+        [Test]
+        public void AggregateExceptionInnerExceptionCount()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(AggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+        public int InnerExceptionCount => 0;
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, testCode);
+        }
     }
 }

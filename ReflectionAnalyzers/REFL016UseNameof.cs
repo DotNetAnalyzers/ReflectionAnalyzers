@@ -13,6 +13,7 @@ namespace ReflectionAnalyzers
     internal class REFL016UseNameof : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "REFL016";
+        private const string Key = nameof(NameSyntax);
 
         private static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
@@ -50,16 +51,16 @@ namespace ReflectionAnalyzers
             {
                 if (argument.Parent is ArgumentListSyntax argumentList &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
-                    TryGetX(invocation, text, context, out var target) &&
-                    target.ContainingType != context.ContainingSymbol.ContainingType)
+                    TryGetX(invocation, text, context, out var target))
                 {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            Descriptor,
-                            literal.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(
-                                nameof(ISymbol),
-                                $"{target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)}.{target.Name}")));
+                    if (target.HasValue)
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                Descriptor,
+                                literal.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({TargetName(context, target.Value)})")));
+                    }
                 }
                 else
                 {
@@ -68,14 +69,28 @@ namespace ReflectionAnalyzers
                         switch (symbol)
                         {
                             case IParameterSymbol _:
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        Descriptor,
+                                        literal.GetLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({symbol.Name})")));
+                                break;
                             case IFieldSymbol _:
                             case IEventSymbol _:
                             case IPropertySymbol _:
                             case IMethodSymbol _:
-                                context.ReportDiagnostic(Diagnostic.Create(Descriptor, literal.GetLocation()));
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        Descriptor,
+                                        literal.GetLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({TargetName(context, symbol)})")));
                                 break;
                             case ILocalSymbol local when IsVisible(literal, local, context.CancellationToken):
-                                context.ReportDiagnostic(Diagnostic.Create(Descriptor, literal.GetLocation()));
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        Descriptor,
+                                        literal.GetLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({symbol.Name})")));
                                 break;
                         }
                     }
@@ -92,29 +107,15 @@ namespace ReflectionAnalyzers
                 containingArgument.Parent is ArgumentListSyntax containingArgumentList &&
                 containingArgumentList.Parent is InvocationExpressionSyntax invocation &&
                 TryGetX(invocation, name, context, out var target) &&
+                target.HasValue &&
                 context.SemanticModel.GetSymbolInfo(argument.Expression, context.CancellationToken).CandidateSymbols.TryFirst(out var symbol) &&
-                !target.ContainingType.Equals(symbol.ContainingType))
+                !target.Value.ContainingType.Equals(symbol.ContainingType))
             {
-                if (context.ContainingSymbol.ContainingType == target.ContainingType)
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            Descriptor,
-                            argument.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(
-                                nameof(ExpressionSyntax),
-                                $"{(target.IsStatic || context.SemanticModel.UnderscoreFields() ? string.Empty : "this.")}{target.Name}")));
-                }
-                else
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            Descriptor,
-                            argument.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(
-                                nameof(ExpressionSyntax),
-                                $"{target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)}.{target.Name}")));
-                }
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        Descriptor,
+                        argument.GetLocation(),
+                        ImmutableDictionary<string, string>.Empty.Add(Key, $"{TargetName(context, target.Value)}")));
             }
 
             bool IsNameOf(out ArgumentSyntax result)
@@ -140,7 +141,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetX(InvocationExpressionSyntax invocation, string name, SyntaxNodeAnalysisContext context, out ISymbol target)
+        private static bool TryGetX(InvocationExpressionSyntax invocation, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> target)
         {
             target = null;
             if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
@@ -153,12 +154,50 @@ namespace ReflectionAnalyzers
                     invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out _) ||
                     invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out _))
                 {
-                    return GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType) &&
-                           declaringType.TryFindFirstMember(name, out target);
+                    if (GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType))
+                    {
+                        target = declaringType.TryFindFirstMember(name, out var targetSymbol)
+                            ? new Optional<ISymbol>(targetSymbol)
+                            : default(Optional<ISymbol>);
+                        return true;
+                    }
                 }
             }
 
             return false;
+        }
+
+        private static string TargetName(SyntaxNodeAnalysisContext context, ISymbol symbol)
+        {
+            if (context.ContainingSymbol.ContainingType == symbol.ContainingType)
+            {
+                if (symbol.IsStatic ||
+                    IsStaticContext(context))
+                {
+                    return $"{symbol.Name}";
+                }
+
+                return context.SemanticModel.UnderscoreFields() ? symbol.Name : $"this.{symbol.Name}";
+            }
+
+            return context.SemanticModel.IsAccessible(context.Node.SpanStart, symbol)
+                ? $"{symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{symbol.Name}"
+                : $"\"{symbol.Name}\"";
+        }
+
+        private static bool IsStaticContext(SyntaxNodeAnalysisContext context)
+        {
+            if (context.Node.TryFirstAncestor(out AccessorDeclarationSyntax accessor))
+            {
+                return context.SemanticModel.GetDeclaredSymbolSafe(accessor.FirstAncestor<PropertyDeclarationSyntax>(), context.CancellationToken)?.IsStatic != false;
+            }
+
+            if (context.Node.TryFirstAncestor(out BaseMethodDeclarationSyntax methodDeclaration))
+            {
+                return context.SemanticModel.GetDeclaredSymbolSafe(methodDeclaration, context.CancellationToken)?.IsStatic != false;
+            }
+
+            return !context.Node.TryFirstAncestor<AttributeArgumentListSyntax>(out _);
         }
     }
 }
