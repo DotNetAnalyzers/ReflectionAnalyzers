@@ -104,8 +104,8 @@ namespace ReflectionAnalyzers
 
         private static bool TryGetX(InvocationExpressionSyntax invocation, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> target, out Optional<IdentifierNameSyntax> instance)
         {
-            instance = null;
-            target = null;
+            instance = default(Optional<IdentifierNameSyntax>);
+            target = default(Optional<ISymbol>);
             if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 !(memberAccess.Expression is InstanceExpressionSyntax))
             {
@@ -118,9 +118,33 @@ namespace ReflectionAnalyzers
                 {
                     if (GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType, out instance))
                     {
-                        target = declaringType.TryFindFirstMemberRecursive(name, out var targetSymbol)
-                            ? new Optional<ISymbol>(targetSymbol)
-                            : default(Optional<ISymbol>);
+                        if (declaringType is ITypeParameterSymbol typeParameter)
+                        {
+                            foreach (var constraintType in typeParameter.ConstraintTypes)
+                            {
+                                if (constraintType.TryFindFirstMemberRecursive(name, out var targetSymbol))
+                                {
+                                    target = new Optional<ISymbol>(targetSymbol);
+                                    return true;
+                                }
+                            }
+
+                            {
+                                if (context.Compilation.GetSpecialType(SpecialType.System_Object)
+                                           .TryFindFirstMember(name, out var targetSymbol))
+                                {
+                                    target = new Optional<ISymbol>(targetSymbol);
+                                    return true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            target = declaringType.TryFindFirstMemberRecursive(name, out var targetSymbol)
+                                ? new Optional<ISymbol>(targetSymbol)
+                                : default(Optional<ISymbol>);
+                        }
+
                         return true;
                     }
                 }

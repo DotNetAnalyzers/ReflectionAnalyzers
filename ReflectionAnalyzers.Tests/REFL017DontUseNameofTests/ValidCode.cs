@@ -65,6 +65,44 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void TypeOfTGetMethodGetHashCode()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+        }
+
+        [Test]
+        public void TypeOfConstrainedTGetMethod()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public MethodInfo Bar<T>()
+            where T : Foo
+        {
+            return typeof(T).GetMethod(nameof(this.Baz));
+        }
+
+        public int Baz() => 0;
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+        }
+
+        [Test]
         public void TypeofDictionaryGetMethodAdd()
         {
             var testCode = @"
