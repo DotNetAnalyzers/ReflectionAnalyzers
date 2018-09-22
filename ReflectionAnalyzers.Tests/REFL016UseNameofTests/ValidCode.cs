@@ -10,24 +10,6 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
 
         [Test]
-        public void GetPropertyAnonymousType()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    class Foo
-    {
-        public Foo()
-        {
-            var anon = new { Foo = 1 };
-            var member = anon.GetType().GetProperty(""Foo"");
-        }
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
-
-        [Test]
         public void TypeofDictionaryGetMethodAdd()
         {
             var testCode = @"

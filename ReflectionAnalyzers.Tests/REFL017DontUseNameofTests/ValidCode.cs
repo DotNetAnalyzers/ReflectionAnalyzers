@@ -47,6 +47,24 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void AnonymousTypeNameofInstanceProperty()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var anon = new { Foo = 1 };
+            var member = anon.GetType().GetProperty(nameof(anon.Foo));
+        }
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+        }
+
+        [Test]
         public void TypeofDictionaryGetMethodAdd()
         {
             var testCode = @"

@@ -17,16 +17,19 @@ namespace ReflectionAnalyzers
         /// <param name="semanticModel">The <see cref="SemanticModel"/>.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <param name="result">The type.</param>
+        /// <param name="instance">The instance the type was called GetType on. Can be null</param>
         /// <returns>True if the type could be determined.</returns>
-        internal static bool TryGetTargetType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol result)
+        internal static bool TryGetTargetType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
         {
             result = null;
+            instance = default(Optional<IdentifierNameSyntax>);
             return invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                   TryGetTargetType(memberAccess.Expression, semanticModel, null, cancellationToken, out result);
+                   TryGetTargetType(memberAccess.Expression, semanticModel, null, cancellationToken, out result, out instance);
         }
 
-        private static bool TryGetTargetType(ExpressionSyntax expression, SemanticModel semanticModel, PooledSet<ExpressionSyntax> visited, CancellationToken cancellationToken, out ITypeSymbol result)
+        private static bool TryGetTargetType(ExpressionSyntax expression, SemanticModel semanticModel, PooledSet<ExpressionSyntax> visited, CancellationToken cancellationToken, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
         {
+            instance = default(Optional<IdentifierNameSyntax>);
             result = null;
             switch (expression)
             {
@@ -35,7 +38,7 @@ namespace ReflectionAnalyzers
                     {
                         return AssignedValueWalker.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue) &&
                                visited.Add(assignedValue) &&
-                               TryGetTargetType(assignedValue, semanticModel, visited, cancellationToken, out result);
+                               TryGetTargetType(assignedValue, semanticModel, visited, cancellationToken, out result, out instance);
                     }
 
                 case TypeOfExpressionSyntax typeOf:
@@ -48,8 +51,13 @@ namespace ReflectionAnalyzers
                         switch (getType.Expression)
                         {
                             case MemberAccessExpressionSyntax typeAccess:
+                                if (typeAccess.Expression is IdentifierNameSyntax identifier)
+                                {
+                                    instance = identifier;
+                                }
+
                                 return semanticModel.TryGetType(typeAccess.Expression, cancellationToken, out result);
-                            case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
+                            case IdentifierNameSyntax identifierName when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
                                 return semanticModel.TryGetSymbol(containingType, cancellationToken, out result);
                         }
                     }

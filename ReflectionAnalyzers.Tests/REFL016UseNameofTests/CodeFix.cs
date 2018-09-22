@@ -13,6 +13,37 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
 
         [Test]
+        public void AnonymousType()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var anon = new { Foo = 1 };
+            var member = anon.GetType().GetProperty(""Foo"");
+        }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var anon = new { Foo = 1 };
+            var member = anon.GetType().GetProperty(nameof(anon.Foo));
+        }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
         public void TypeofDictionaryGetMethodAdd()
         {
             var testCode = @"

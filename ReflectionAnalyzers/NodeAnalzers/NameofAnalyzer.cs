@@ -38,10 +38,10 @@ namespace ReflectionAnalyzers
             {
                 if (argument.Parent is ArgumentListSyntax argumentList &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
-                    TryGetX(invocation, text, context, out var target))
+                    TryGetX(invocation, text, context, out var target, out var instance))
                 {
                     if (target.HasValue &&
-                        TryGetTargetName(target.Value, context, out var name))
+                        TryGetTargetName(target.Value, instance, context, out var name))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -67,7 +67,7 @@ namespace ReflectionAnalyzers
                             case IEventSymbol _:
                             case IPropertySymbol _:
                             case IMethodSymbol _:
-                                if (TryGetTargetName(symbol, context, out var name))
+                                if (TryGetTargetName(symbol, default(Optional<IdentifierNameSyntax>), context, out var name))
                                 {
                                     context.ReportDiagnostic(
                                         Diagnostic.Create(
@@ -99,10 +99,10 @@ namespace ReflectionAnalyzers
                 containingArgument.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name) &&
                 containingArgument.Parent is ArgumentListSyntax containingArgumentList &&
                 containingArgumentList.Parent is InvocationExpressionSyntax invocation &&
-                TryGetX(invocation, name, context, out var target))
+                TryGetX(invocation, name, context, out var target, out var instance))
             {
-                if (!target.HasValue ||
-                    target.Value.ContainingType.IsAnonymousType)
+                if (!target.HasValue &&
+                    !instance.HasValue)
                 {
                     if (containingArgument.TryGetStringValue(context.SemanticModel, context.CancellationToken, out name))
                     {
@@ -115,7 +115,7 @@ namespace ReflectionAnalyzers
                 }
                 else if (context.SemanticModel.GetSymbolInfo(argument.Expression, context.CancellationToken).CandidateSymbols.TryFirst(out var symbol) &&
                          !target.Value.ContainingType.Equals(symbol.ContainingType) &&
-                         TryGetTargetName(target.Value, context, out var targetName))
+                         TryGetTargetName(target.Value, default(Optional<IdentifierNameSyntax>), context, out var targetName))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -148,8 +148,9 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetX(InvocationExpressionSyntax invocation, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> target)
+        private static bool TryGetX(InvocationExpressionSyntax invocation, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> target, out Optional<IdentifierNameSyntax> instance)
         {
+            instance = null;
             target = null;
             if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 !(memberAccess.Expression is InstanceExpressionSyntax))
@@ -161,7 +162,7 @@ namespace ReflectionAnalyzers
                     invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out _) ||
                     invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out _))
                 {
-                    if (GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType))
+                    if (GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType, out instance))
                     {
                         target = declaringType.TryFindFirstMemberRecursive(name, out var targetSymbol)
                             ? new Optional<ISymbol>(targetSymbol)
@@ -174,11 +175,17 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetTargetName(ISymbol symbol, SyntaxNodeAnalysisContext context, out string name)
+        private static bool TryGetTargetName(ISymbol symbol, Optional<IdentifierNameSyntax> instance, SyntaxNodeAnalysisContext context, out string name)
         {
             name = null;
-            if (symbol.ContainingType.IsAnonymousType ||
-                !context.SemanticModel.IsAccessible(context.Node.SpanStart, symbol))
+            if (instance.HasValue)
+            {
+                name = $"{instance.Value}.{symbol.Name}";
+                return true;
+            }
+
+            if (!context.SemanticModel.IsAccessible(context.Node.SpanStart, symbol) ||
+                symbol.ContainingType.IsAnonymousType)
             {
                 return false;
             }

@@ -8,13 +8,14 @@ namespace ReflectionAnalyzers.Tests.Helpers
 
     public class GetXTests
     {
-        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString))",                                                                             "Foo")]
-        [TestCase("new Foo().GetType().GetMethod(nameof(this.ToString))",                                                                     "Foo")]
-        [TestCase("this.GetType().GetMethod(nameof(this.ToString))",                                                                          "Foo")]
-        [TestCase("GetType().GetMethod(nameof(this.ToString))",                                                                               "Foo")]
-        [TestCase("typeof(string).Assembly.GetType(\"System.Int32\").GetMethod(nameof(this.ToString))",                                       "Int32")]
-        [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\").GetMethod(nameof(this.ToString))", "IEnumerable`1")]
-        public void TryGetTargetTypeExpression(string call, string expected)
+        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString))", "Foo", null)]
+        [TestCase("new Foo().GetType().GetMethod(nameof(this.ToString))", "Foo", null)]
+        [TestCase("foo.GetType().GetMethod(nameof(this.ToString))", "Foo", "foo")]
+        [TestCase("this.GetType().GetMethod(nameof(this.ToString))", "Foo", null)]
+        [TestCase("GetType().GetMethod(nameof(this.ToString))", "Foo", null)]
+        [TestCase("typeof(string).Assembly.GetType(\"System.Int32\").GetMethod(nameof(this.ToString))", "Int32", null)]
+        [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\").GetMethod(nameof(this.ToString))", "IEnumerable`1", null)]
+        public void TryGetTargetTypeExpression(string call, string expected, string expectedInstance)
         {
             var code = @"
 namespace RoslynSandbox
@@ -24,7 +25,7 @@ namespace RoslynSandbox
 
     class Foo
     {
-        public Foo()
+        public Foo(Foo foo)
         {
             var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString));
         }
@@ -34,18 +35,26 @@ namespace RoslynSandbox
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation(call);
-            Assert.AreEqual(true,     GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out var type));
+            Assert.AreEqual(true, GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out var type, out var instance));
             Assert.AreEqual(expected, type.MetadataName);
+            if (expectedInstance == null)
+            {
+                Assert.AreEqual(false, instance.HasValue);
+            }
+            else
+            {
+                Assert.AreEqual(expectedInstance, instance.Value.ToString());
+            }
         }
 
-        [TestCase("typeof(Foo)",                                                                             "Foo")]
-        [TestCase("new Foo().GetType()",                                                                     "Foo")]
-        [TestCase("foo.GetType()",                                                                           "Foo")]
-        [TestCase("this.GetType()",                                                                          "Foo")]
-        [TestCase("GetType()",                                                                               "Foo")]
-        [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")",                                       "Int32")]
-        [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "IEnumerable`1")]
-        public void TryGetTargetTypeLocal(string typeExpression, string expected)
+        [TestCase("typeof(Foo)", "Foo", null)]
+        [TestCase("new Foo().GetType()", "Foo", null)]
+        [TestCase("foo.GetType()", "Foo", "foo")]
+        [TestCase("this.GetType()", "Foo", null)]
+        [TestCase("GetType()", "Foo", null)]
+        [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "Int32", null)]
+        [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "IEnumerable`1", null)]
+        public void TryGetTargetTypeLocal(string typeExpression, string expected, string expectedInstance)
         {
             var code = @"
 namespace RoslynSandbox
@@ -66,8 +75,16 @@ namespace RoslynSandbox
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
-            Assert.AreEqual(true,     GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out var type));
+            Assert.AreEqual(true, GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out var type, out var instance));
             Assert.AreEqual(expected, type.MetadataName);
+            if (expectedInstance == null)
+            {
+                Assert.AreEqual(false, instance.HasValue);
+            }
+            else
+            {
+                Assert.AreEqual(expectedInstance, instance.Value.ToString());
+            }
         }
 
         [Test]
@@ -92,7 +109,7 @@ namespace RoslynSandbox
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
-            Assert.AreEqual(false, GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out _));
+            Assert.AreEqual(false, GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out _, out _));
         }
 
         [Test]
