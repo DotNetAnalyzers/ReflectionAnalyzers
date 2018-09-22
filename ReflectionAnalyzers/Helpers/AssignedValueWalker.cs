@@ -64,14 +64,6 @@ namespace ReflectionAnalyzers
             base.VisitArgument(node);
         }
 
-        private bool IsLocal(ExpressionSyntax expression)
-        {
-            return expression is IdentifierNameSyntax identifierName &&
-                   identifierName.Identifier.ValueText == this.local.Name &&
-                   this.semanticModel.TryGetSymbol(identifierName, this.cancellationToken, out ILocalSymbol candidate) &&
-                   candidate.Equals(this.local);
-        }
-
         internal static bool TryGetSingle(ILocalSymbol local, SemanticModel semanticModel, CancellationToken cancellationToken, out ExpressionSyntax expression)
         {
             expression = null;
@@ -109,6 +101,14 @@ namespace ReflectionAnalyzers
             this.local = null;
             this.semanticModel = null;
             this.cancellationToken = CancellationToken.None;
+        }
+
+        private bool IsLocal(ExpressionSyntax expression)
+        {
+            return expression is IdentifierNameSyntax identifierName &&
+                   identifierName.Identifier.ValueText == this.local.Name &&
+                   this.semanticModel.TryGetSymbol(identifierName, this.cancellationToken, out ILocalSymbol candidate) &&
+                   candidate.Equals(this.local);
         }
     }
 }
