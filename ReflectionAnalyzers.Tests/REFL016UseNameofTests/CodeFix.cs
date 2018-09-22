@@ -868,5 +868,41 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
         }
+
+        [Test]
+        public void AggregateExceptionMessage()
+        {
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(AggregateException).GetProperty(""Message"", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(AggregateException).GetProperty(nameof(Exception.Message), BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}";
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
     }
 }

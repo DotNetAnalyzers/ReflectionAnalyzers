@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
 {
+    using System;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
@@ -72,6 +73,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"Bar\")")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
@@ -132,6 +134,28 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("GetProperty(nameof(AggregateException.Message), BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetProperty(nameof(AggregateException.Message), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void AggregateExceptionMessage(string call)
+        {
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(AggregateException).GetProperty(nameof(AggregateException.Message), BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}".AssertReplace("GetProperty(nameof(AggregateException.Message), BindingFlags.NonPublic | BindingFlags.Instance)", call);
+
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
     }
