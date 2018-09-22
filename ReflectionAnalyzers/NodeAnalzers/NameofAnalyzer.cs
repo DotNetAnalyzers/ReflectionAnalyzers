@@ -187,6 +187,7 @@ namespace ReflectionAnalyzers
             if (symbol.ContainingType.IsAssignableTo(context.ContainingSymbol.ContainingType, context.Compilation))
             {
                 name = symbol.IsStatic ||
+                       symbol is ITypeSymbol ||
                        IsStaticContext(context)
                     ? symbol.Name
                     : context.SemanticModel.UnderscoreFields() ? symbol.Name : $"this.{symbol.Name}";

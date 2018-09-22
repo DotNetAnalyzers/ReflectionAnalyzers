@@ -230,6 +230,112 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
         }
 
+        [TestCase("Class")]
+        [TestCase("Enum")]
+        [TestCase("Interface")]
+        [TestCase("Struct")]
+        public void GetNestedTypePrivateInSameType(string type)
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetNestedType(↓""Class"", BindingFlags.NonPublic);
+        }
+
+        private class Class { }
+
+        private enum Enum { }
+
+        private interface Interface { }
+
+        private struct Struct { }
+    }
+}".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.NonPublic)", $"GetNestedType(↓\"{type}\", BindingFlags.NonPublic)");
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetNestedType(nameof(Class), BindingFlags.NonPublic);
+        }
+
+        private class Class { }
+
+        private enum Enum { }
+
+        private interface Interface { }
+
+        private struct Struct { }
+    }
+}".AssertReplace("nameof(Class)", $"nameof({type})");
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [TestCase("Class")]
+        [TestCase("Enum")]
+        [TestCase("Interface")]
+        [TestCase("Struct")]
+        public void GetNestedTypePublicInOtherType(string type)
+        {
+            var fooCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Foo
+    {
+        public class Class { }
+
+        public enum Enum { }
+
+        public interface Interface { }
+
+        public struct Struct { }
+    }
+}";
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Bar
+    {
+        public Bar()
+        {
+            var member = typeof(Foo).GetNestedType(↓""Class"", BindingFlags.Public);
+        }
+    }
+}".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.Public)", $"GetNestedType(↓\"{type}\", BindingFlags.Public)");
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Bar
+    {
+        public Bar()
+        {
+            var member = typeof(Foo).GetNestedType(nameof(Foo.Class), BindingFlags.Public);
+        }
+    }
+}".AssertReplace("nameof(Foo.Class)", $"nameof(Foo.{type})");
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { fooCode, testCode }, fixedCode);
+        }
+
         [Test]
         public void WhenThrowingArgumentException()
         {

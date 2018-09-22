@@ -9,6 +9,43 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofTests
         private static readonly DiagnosticAnalyzer Analyzer = new NameofAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameof.DiagnosticId);
 
+        [TestCase("Class")]
+        [TestCase("Enum")]
+        [TestCase("Interface")]
+        [TestCase("Struct")]
+        public void GetNestedTypePrivateInOtherType(string type)
+        {
+            var fooCode = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        private class Class { }
+
+        private enum Enum { }
+
+        private interface Interface { }
+
+        private struct Struct { }
+    }
+}";
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Bar
+    {
+        public Bar()
+        {
+            var member = typeof(Foo).GetNestedType(""Class"", BindingFlags.NonPublic);
+        }
+    }
+}".AssertReplace("GetNestedType(\"Class\", BindingFlags.NonPublic)", $"GetNestedType(\"{type}\", BindingFlags.NonPublic)");
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, fooCode, testCode);
+        }
+
         [Test]
         public void TypeofDictionaryGetMethodAdd()
         {
