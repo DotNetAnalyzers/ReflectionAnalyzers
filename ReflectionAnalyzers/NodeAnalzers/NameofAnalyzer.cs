@@ -113,7 +113,7 @@ namespace ReflectionAnalyzers
                             ImmutableDictionary<string, string>.Empty.Add(nameof(SyntaxKind.StringLiteralExpression), name)));
                     }
                 }
-                else if (context.SemanticModel.GetSymbolInfo(argument.Expression, context.CancellationToken).CandidateSymbols.TryFirst(out var symbol) &&
+                else if (TryGetSymbol(out var symbol) &&
                          !target.Value.ContainingType.Equals(symbol.ContainingType) &&
                          TryGetTargetName(target.Value, default(Optional<IdentifierNameSyntax>), context, out var targetName))
                 {
@@ -123,6 +123,13 @@ namespace ReflectionAnalyzers
                             argument.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(Key, $"{targetName}")));
                 }
+            }
+
+            bool TryGetSymbol(out ISymbol symbol)
+            {
+                return context.SemanticModel.TryGetSymbol(argument.Expression, context.CancellationToken, out symbol) ||
+                       context.SemanticModel.GetSymbolInfo(argument.Expression, context.CancellationToken)
+                              .CandidateSymbols.TryFirst(out symbol);
             }
 
             bool IsNameOf(out ArgumentSyntax result)
