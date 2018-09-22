@@ -34,12 +34,13 @@ namespace RoslynSandbox
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation(call);
-            Assert.AreEqual(true, GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out var type));
+            Assert.AreEqual(true,     GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out var type));
             Assert.AreEqual(expected, type.MetadataName);
         }
 
         [TestCase("typeof(Foo)",                                                                             "Foo")]
         [TestCase("new Foo().GetType()",                                                                     "Foo")]
+        [TestCase("foo.GetType()",                                                                           "Foo")]
         [TestCase("this.GetType()",                                                                          "Foo")]
         [TestCase("GetType()",                                                                               "Foo")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")",                                       "Int32")]
@@ -54,7 +55,7 @@ namespace RoslynSandbox
 
     class Foo
     {
-        public Foo()
+        public Foo(Foo foo)
         {
             var type = typeof(Foo);
             var methodInfo = type.GetMethod(nameof(this.ToString));
@@ -65,7 +66,7 @@ namespace RoslynSandbox
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
-            Assert.AreEqual(true, GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out var type));
+            Assert.AreEqual(true,     GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out var type));
             Assert.AreEqual(expected, type.MetadataName);
         }
 
@@ -91,7 +92,7 @@ namespace RoslynSandbox
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
-            Assert.AreEqual(false,     GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out _));
+            Assert.AreEqual(false, GetX.TryGetTargetType(node, semanticModel, CancellationToken.None, out _));
         }
 
         [Test]
