@@ -126,5 +126,36 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [Test]
+        public void SubclassAggregateExceptionGetFieldDeclaredOnly()
+        {
+            var exception = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class CustomAggregateException : AggregateException
+    {
+        private readonly int value;
+    }
+}";
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(CustomAggregateException).GetField(""value"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, exception, code);
+        }
     }
 }
