@@ -108,5 +108,23 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [Test]
+        public void GetPropertyAnonymousType()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var anon = new { Foo = 1 };
+            var member = anon.GetType().GetProperty(↓""MISSING"");
+        }
+    }
+}";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
