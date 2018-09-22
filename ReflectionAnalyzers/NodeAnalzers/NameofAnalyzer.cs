@@ -30,12 +30,8 @@ namespace ReflectionAnalyzers
 
         private static void HandleLiteral(SyntaxNodeAnalysisContext context)
         {
-            if (context.IsExcludedFromAnalysis())
-            {
-                return;
-            }
-
-            if (context.Node is LiteralExpressionSyntax literal &&
+            if (!context.IsExcludedFromAnalysis() &&
+                context.Node is LiteralExpressionSyntax literal &&
                 literal.Parent is ArgumentSyntax argument &&
                 literal.Token.ValueText is string text &&
                 SyntaxFacts.IsValidIdentifier(text))
@@ -96,7 +92,8 @@ namespace ReflectionAnalyzers
 
         private static void HandleNameof(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node is InvocationExpressionSyntax candidate &&
+            if (!context.IsExcludedFromAnalysis() &&
+                context.Node is InvocationExpressionSyntax candidate &&
                 IsNameOf(out var argument) &&
                 candidate.Parent is ArgumentSyntax containingArgument &&
                 containingArgument.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name) &&
@@ -104,7 +101,8 @@ namespace ReflectionAnalyzers
                 containingArgumentList.Parent is InvocationExpressionSyntax invocation &&
                 TryGetX(invocation, name, context, out var target))
             {
-                if (!target.HasValue)
+                if (!target.HasValue ||
+                    target.Value.ContainingType.IsAnonymousType)
                 {
                     if (containingArgument.TryGetStringValue(context.SemanticModel, context.CancellationToken, out name))
                     {
@@ -179,7 +177,8 @@ namespace ReflectionAnalyzers
         private static bool TryGetTargetName(ISymbol symbol, SyntaxNodeAnalysisContext context, out string name)
         {
             name = null;
-            if (!context.SemanticModel.IsAccessible(context.Node.SpanStart, symbol))
+            if (symbol.ContainingType.IsAnonymousType ||
+                !context.SemanticModel.IsAccessible(context.Node.SpanStart, symbol))
             {
                 return false;
             }
