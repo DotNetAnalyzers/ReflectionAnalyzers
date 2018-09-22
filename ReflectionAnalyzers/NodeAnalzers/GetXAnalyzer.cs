@@ -502,7 +502,7 @@ namespace ReflectionAnalyzers
                 }
 
                 return context.SemanticModel.IsAccessible(context.Node.SpanStart, associatedSymbol)
-                    ? $"nameof({associatedSymbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{associatedSymbol.Name})" 
+                    ? $"nameof({associatedSymbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{associatedSymbol.Name})"
                     : $"\"{associatedSymbol.Name}\"";
             }
         }

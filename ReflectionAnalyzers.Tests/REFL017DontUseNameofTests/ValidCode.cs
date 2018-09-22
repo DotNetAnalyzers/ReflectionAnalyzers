@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
+namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new NameofAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameof.DiagnosticId);
 
         [Test]
         public void TypeofDictionaryGetMethodAdd()
@@ -265,80 +265,6 @@ namespace RoslynSandbox
     }
 }";
             AnalyzerAssert.Valid(Analyzer, testCode);
-        }
-
-        [Test]
-        public void GetMethodReferenceEquals()
-        {
-            var testCode = @"
-namespace RoslynSandbox
-{
-    using System.Reflection;
-
-    public class Foo
-    {
-        public Foo()
-        {
-            var member = typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-        }
-    }
-}";
-            AnalyzerAssert.Valid(Analyzer, testCode);
-        }
-
-        [TestCase("typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(Foo).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(Foo).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(Foo).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(FooBase).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        public void MemberInBase(string call)
-        {
-            var baseClass = @"
-namespace RoslynSandbox
-{
-    using System;
-
-    public class FooBase
-    {
-        public static int PublicStaticField;
-
-        private static int PrivateStaticField;
-
-        public static event EventHandler PublicStaticEvent;
-
-        private static event EventHandler PrivateStaticEvent;
-
-        public static int PublicStaticProperty { get; set; }
-
-        private static int PrivateStaticProperty { get; set; }
-
-        public static int PublicStaticMethod() => 0;
-
-        private static int PrivateStaticMethod() => 0;
-    }
-}";
-            var code = @"
-namespace RoslynSandbox
-{
-    using System.Reflection;
-
-    public class Foo : FooBase
-    {
-        public Foo()
-        {
-            typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-        }
-    }
-}".AssertReplace("typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
-
-            AnalyzerAssert.Valid(Analyzer, baseClass, code);
         }
     }
 }

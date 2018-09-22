@@ -41,7 +41,6 @@ namespace ReflectionAnalyzers.Codefixes
                             nameof(UseContainingTypeFix),
                             diagnostic);
                     }
-
                 }
             }
         }

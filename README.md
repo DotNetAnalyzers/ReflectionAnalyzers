@@ -64,5 +64,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL016.md">REFL016</a></td>
     <td>Use nameof.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL017.md">REFL017</a></td>
+    <td>Don't use nameof.</td>
+  </tr>
 <table>
 <!-- end generated table -->

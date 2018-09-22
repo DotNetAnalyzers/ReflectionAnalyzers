@@ -8,8 +8,8 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
 
     internal class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new REFL016UseNameof();
-        private static readonly CodeFixProvider Fix = new UseNameofFix();
+        private static readonly DiagnosticAnalyzer Analyzer = new NameofAnalyzer();
+        private static readonly CodeFixProvider Fix = new NameofFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
 
         [Test]

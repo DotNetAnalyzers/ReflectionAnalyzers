@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL016UseNameof
+    internal static class REFL017DontUseNameof
     {
-        public const string DiagnosticId = "REFL016";
+        public const string DiagnosticId = "REFL017";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Use nameof.",
-            messageFormat: "Use nameof.",
+            title: "Don't use nameof.",
+            messageFormat: "Don't use nameof.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Use nameof.",
+            description: "Don't use nameof.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }
