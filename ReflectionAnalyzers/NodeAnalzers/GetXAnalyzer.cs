@@ -31,7 +31,7 @@ namespace ReflectionAnalyzers
             REFL006RedundantBindingFlags.Descriptor,
             REFL008MissingBindingFlags.Descriptor,
             REFL013MemberIsOfWrongType.Descriptor,
-            REFL014PreferGetProperty.Descriptor,
+            REFL014PreferGetMemberThenAccessor.Descriptor,
             REFL015UseContainingType.Descriptor);
 
         /// <inheritdoc/>
@@ -118,7 +118,7 @@ namespace ReflectionAnalyzers
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
-                                    REFL014PreferGetProperty.Descriptor,
+                                    REFL014PreferGetMemberThenAccessor.Descriptor,
                                     invocation.GetLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), call),
                                     call));

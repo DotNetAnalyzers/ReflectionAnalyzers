@@ -9,14 +9,14 @@ namespace ReflectionAnalyzers.Codefixes
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(UseGetPropertyAccessorFix))]
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(UseGetMemberThenAccessorFix))]
     [Shared]
-    internal class UseGetPropertyAccessorFix : DocumentEditorCodeFixProvider
+    internal class UseGetMemberThenAccessorFix : DocumentEditorCodeFixProvider
     {
         private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL014PreferGetProperty.DiagnosticId);
+            REFL014PreferGetMemberThenAccessor.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
@@ -31,7 +31,7 @@ namespace ReflectionAnalyzers.Codefixes
                         $"Change to: {expressionString}.",
                         (editor, _) => editor.AddUsing(SystemReflection)
                                              .ReplaceNode(old, SyntaxFactory.ParseExpression(expressionString)),
-                        nameof(UseGetPropertyAccessorFix),
+                        nameof(UseGetMemberThenAccessorFix),
                         diagnostic);
                 }
             }

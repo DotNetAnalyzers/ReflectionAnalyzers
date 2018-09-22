@@ -54,7 +54,7 @@ Analyzers checking System.Reflection
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL014.md">REFL014</a></td>
-    <td>Prefer GetProperty().AccessorMethod.</td>
+    <td>Prefer GetMember().AccessorMethod.</td>
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL015.md">REFL015</a></td>

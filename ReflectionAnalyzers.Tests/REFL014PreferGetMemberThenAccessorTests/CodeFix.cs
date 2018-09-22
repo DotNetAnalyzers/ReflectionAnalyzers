@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL014PreferGetPropertyTests
+namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -9,8 +9,8 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetPropertyTests
     internal class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseGetPropertyAccessorFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL014PreferGetProperty.DiagnosticId);
+        private static readonly CodeFixProvider Fix = new UseGetMemberThenAccessorFix();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL014PreferGetMemberThenAccessor.DiagnosticId);
 
         [Test]
         public void PublicGetSetInstanceGetter()
