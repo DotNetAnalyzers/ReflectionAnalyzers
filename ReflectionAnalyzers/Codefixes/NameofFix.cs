@@ -41,7 +41,7 @@ namespace ReflectionAnalyzers.Codefixes
                     else if (diagnostic.Properties.TryGetValue(nameof(SyntaxKind.StringLiteralExpression), out var literalString))
                     {
                         context.RegisterCodeFix(
-                            $"Use nameof({expressionString})",
+                            $"Use string literal \"{expressionString}\"",
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
                                 SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(literalString))),
