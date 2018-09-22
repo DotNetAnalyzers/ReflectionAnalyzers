@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
 {
-    using System;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;

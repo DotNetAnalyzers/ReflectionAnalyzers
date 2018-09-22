@@ -309,27 +309,28 @@ namespace ReflectionAnalyzers
 
             bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
             {
-                if (effectiveFlags.HasFlagFast(BindingFlags.NonPublic) &&
-                    !type.Locations.Any(x => x.IsInSource))
+                if (effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
                 {
-                    return type.TryFindFirstMember<ISymbol>(x => !x.DeclaredAccessibility.IsEither(Accessibility.Public, Accessibility.Protected) && !IsExplicitInterfaceImplementation(x), out _);
+                    return !HasSuperTypeNotInSource();
                 }
 
                 return true;
 
-                bool IsExplicitInterfaceImplementation(ISymbol candidate)
+                bool HasSuperTypeNotInSource()
                 {
-                    switch (candidate)
+                    var current = type;
+                    while (current != null &&
+                           current != KnownSymbol.Object)
                     {
-                        case IEventSymbol eventSymbol:
-                            return eventSymbol.ExplicitInterfaceImplementations.Any();
-                        case IMethodSymbol method:
-                            return method.ExplicitInterfaceImplementations.Any();
-                        case IPropertySymbol property:
-                            return property.ExplicitInterfaceImplementations.Any();
-                        default:
-                            return false;
+                        if (!current.Locations.Any(x => x.IsInSource))
+                        {
+                            return true;
+                        }
+
+                        current = current.BaseType;
                     }
+
+                    return false;
                 }
             }
 
