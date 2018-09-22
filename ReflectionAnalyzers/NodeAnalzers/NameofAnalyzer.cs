@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
-    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
     using Microsoft.CodeAnalysis;
@@ -38,54 +37,15 @@ namespace ReflectionAnalyzers
             {
                 if (argument.Parent is ArgumentListSyntax argumentList &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
-                    TryGetX(invocation, text, context, out var target, out var instance))
+                    TryGetX(invocation, text, context, out var target, out var instance) && 
+                    target.HasValue && 
+                    TryGetTargetName(target.Value, instance, context, out var name))
                 {
-                    if (target.HasValue &&
-                        TryGetTargetName(target.Value, instance, context, out var name))
-                    {
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL016UseNameof.Descriptor,
-                                literal.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({name})")));
-                    }
-                }
-                else
-                {
-                    foreach (var symbol in context.SemanticModel.LookupSymbols(literal.SpanStart, name: text))
-                    {
-                        switch (symbol)
-                        {
-                            case IParameterSymbol _:
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL016UseNameof.Descriptor,
-                                        literal.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({symbol.Name})")));
-                                break;
-                            case IFieldSymbol _:
-                            case IEventSymbol _:
-                            case IPropertySymbol _:
-                            case IMethodSymbol _:
-                                if (TryGetTargetName(symbol, default(Optional<IdentifierNameSyntax>), context, out var name))
-                                {
-                                    context.ReportDiagnostic(
-                                        Diagnostic.Create(
-                                            REFL016UseNameof.Descriptor,
-                                            literal.GetLocation(),
-                                            ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({name})")));
-                                }
-
-                                break;
-                            case ILocalSymbol local when IsVisible(literal, local, context.CancellationToken):
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL016UseNameof.Descriptor,
-                                        literal.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({symbol.Name})")));
-                                break;
-                        }
-                    }
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL016UseNameof.Descriptor,
+                            literal.GetLocation(),
+                            ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({name})")));
                 }
             }
         }
@@ -140,19 +100,6 @@ namespace ReflectionAnalyzers
                        candidate.Expression is IdentifierNameSyntax identifierName &&
                        identifierName.Identifier.ValueText == "nameof";
             }
-        }
-
-        private static bool IsVisible(LiteralExpressionSyntax literal, ILocalSymbol local, CancellationToken cancellationToken)
-        {
-            if (local.DeclaringSyntaxReferences.Length == 1 &&
-                local.DeclaringSyntaxReferences[0].Span.Start < literal.SpanStart)
-            {
-                var declaration = local.DeclaringSyntaxReferences[0]
-                                       .GetSyntax(cancellationToken);
-                return !declaration.Contains(literal);
-            }
-
-            return false;
         }
 
         private static bool TryGetX(InvocationExpressionSyntax invocation, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> target, out Optional<IdentifierNameSyntax> instance)
