@@ -30,8 +30,11 @@ namespace ReflectionAnalyzers.Codefixes
                 {
                     if (diagnostic.Properties.TryGetValue(nameof(NameSyntax), out var expressionString))
                     {
+                        var title = argument.Expression.IsKind(SyntaxKind.StringLiteralExpression)
+                            ? $"Use {expressionString}."
+                            : $"Use nameof({expressionString}).";
                         context.RegisterCodeFix(
-                            $"Use nameof({expressionString})",
+                            title,
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
                                 SyntaxFactory.ParseExpression(expressionString)),
