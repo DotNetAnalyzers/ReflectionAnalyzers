@@ -484,7 +484,9 @@ namespace ReflectionAnalyzers
                     return context.SemanticModel.UnderscoreFields() ? associatedSymbol.Name : $"nameof(this.{associatedSymbol.Name})";
                 }
 
-                return $"nameof({associatedSymbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{associatedSymbol.Name})";
+                return context.SemanticModel.IsAccessible(context.Node.SpanStart, associatedSymbol)
+                    ? $"nameof({associatedSymbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{associatedSymbol.Name})" 
+                    : $"\"{associatedSymbol.Name}\"";
             }
         }
 
