@@ -4,8 +4,12 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  BUGFIX: REFL003 we can't check nonpublic members not in source.
-  FEATURE: Better nameof nag.
+  BUGFIX: REFL008 don't warn for types not in sln.
+  BUGFIX: Handle anonymous types.
+  BUGFIX: nameof when calling GetNestedType.
+  BUGFIX nameof when calling inaccessible.
+  FEATURE: REFL014 handle events.
+  FEATURE: new analyzer don't use nameof.
 
 excludedgroups
   Main

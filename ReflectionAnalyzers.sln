@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{D9F2B8
 		paket.lock = paket.lock
 		README.md = README.md
 		.paket\Readme.paket.md = .paket\Readme.paket.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{1575C8DB-FD83-45A0-8C19-F2FFC3D8EEFC}"
@@ -46,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{1C271AF2
 		documentation\REFL015.md = documentation\REFL015.md
 		documentation\REFL016.md = documentation\REFL016.md
 		documentation\REFL017.md = documentation\REFL017.md
+		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReflectionAnalyzers.Vsix", "ReflectionAnalyzers.Vsix\ReflectionAnalyzers.Vsix.csproj", "{70EF0905-05EB-4FB4-8CA3-02B5D28EE998}"
