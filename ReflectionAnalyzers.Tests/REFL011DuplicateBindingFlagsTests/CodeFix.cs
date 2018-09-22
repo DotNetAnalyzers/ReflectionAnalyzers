@@ -12,8 +12,8 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL011");
 
-        [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.↓Public | BindingFlags.DeclaredOnly",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("BindingFlags.Public | BindingFlags.↓Public | BindingFlags.Static | BindingFlags.DeclaredOnly",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.↓Public | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("BindingFlags.Public | BindingFlags.↓Public | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
         public void GetMethod(string flags, string expected)
         {
             var code = @"

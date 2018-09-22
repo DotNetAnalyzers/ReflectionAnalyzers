@@ -54,7 +54,7 @@ namespace RoslynSandbox
         [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         public void ExcludeNonPublicNotInSource(string invocation)
         {
-        var code = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
