@@ -20,17 +20,17 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.6-dev</Version>
+    <Version>0.1.6.1-dev</Version>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
-    <PackageReleaseNotes>BUGFIX: REFL008 don't warn for types not in sln.
-BUGFIX: Handle anonymous types.
-BUGFIX: nameof when calling GetNestedType.
-BUGFIX nameof when calling inaccessible.
-FEATURE: REFL014 handle events.
-FEATURE: new analyzer don't use nameof.</PackageReleaseNotes>
+    <PackageReleaseNotes>REFL016 remove all checks except GetX arguments.
+BUGFIX: REFL016 code action title.
+BUGFIX: use correct member for nameof.
+BUGFIX REFL017 code action message.
+BUGFIX REFL017 and anonymous objects.
+</PackageReleaseNotes>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
