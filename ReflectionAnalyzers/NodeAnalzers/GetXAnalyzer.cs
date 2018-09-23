@@ -172,7 +172,10 @@ namespace ReflectionAnalyzers
                  TryGetDefaultFlags(out flags)))
             {
                 if (getX == KnownSymbol.Type.GetNestedType ||
-                    flags.HasFlagFast(BindingFlags.DeclaredOnly))
+                    flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                    (flags.HasFlagFast(BindingFlags.Static) &&
+                     !flags.HasFlagFast(BindingFlags.Instance) && 
+                     !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
                 {
                     foreach (var member in targetType.GetMembers(targetName))
                     {

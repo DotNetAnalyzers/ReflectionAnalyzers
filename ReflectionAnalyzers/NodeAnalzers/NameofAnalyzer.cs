@@ -37,8 +37,8 @@ namespace ReflectionAnalyzers
             {
                 if (argument.Parent is ArgumentListSyntax argumentList &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
-                    TryGetX(invocation, text, context, out var target, out var instance) && 
-                    target.HasValue && 
+                    TryGetX(invocation, text, context, out var target, out var instance) &&
+                    target.HasValue &&
                     TryGetTargetName(target.Value, instance, context, out var name))
                 {
                     context.ReportDiagnostic(
