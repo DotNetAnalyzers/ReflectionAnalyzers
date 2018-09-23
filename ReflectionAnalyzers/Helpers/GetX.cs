@@ -13,17 +13,17 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// Returns Foo for the invocation typeof(Foo).GetProperty(Bar).
         /// </summary>
-        /// <param name="invocation">The invocation of a GetX method, GetEvent, GetField etc.</param>
+        /// <param name="getX">The invocation of a GetX method, GetEvent, GetField etc.</param>
         /// <param name="semanticModel">The <see cref="SemanticModel"/>.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
         /// <param name="result">The type.</param>
         /// <param name="instance">The instance the type was called GetType on. Can be null</param>
         /// <returns>True if the type could be determined.</returns>
-        internal static bool TryGetTargetType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
+        internal static bool TryGetTargetType(InvocationExpressionSyntax getX, SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
         {
             result = null;
             instance = default(Optional<IdentifierNameSyntax>);
-            return invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+            return getX.Expression is MemberAccessExpressionSyntax memberAccess &&
                    TryGetTargetType(memberAccess.Expression, semanticModel, null, cancellationToken, out result, out instance);
         }
 
