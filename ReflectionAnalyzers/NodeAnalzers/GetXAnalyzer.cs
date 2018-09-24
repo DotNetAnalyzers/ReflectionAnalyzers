@@ -156,18 +156,21 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
+        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
         {
+            nameArg = null;
+            targetName = null;
             typesArg = null;
             types = null;
             if (context.Node is InvocationExpressionSyntax candidate)
             {
-                var result = GetX.TryMatchGetEvent(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
-                             GetX.TryMatchGetField(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
-                             GetX.TryMatchGetMember(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags, out typesArg, out types) ??
-                             GetX.TryMatchGetMethod(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags, out typesArg, out types) ??
-                             GetX.TryMatchGetNestedType(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
-                             GetX.TryMatchGetProperty(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
+                var result = GetX.TryMatchGetConstructor(candidate, context, out targetType, out target, out flagsArg, out effectiveFlags, out typesArg, out types) ??
+                             GetX.TryMatchGetEvent(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags) ??
+                             GetX.TryMatchGetField(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags) ??
+                             GetX.TryMatchGetMember(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags, out typesArg, out types) ??
+                             GetX.TryMatchGetMethod(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags, out typesArg, out types) ??
+                             GetX.TryMatchGetNestedType(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags) ??
+                             GetX.TryMatchGetProperty(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags);
                 if (result != null)
                 {
                     return result.Value;
@@ -179,7 +182,7 @@ namespace ReflectionAnalyzers
             targetName = null;
             target = null;
             flagsArg = null;
-            flags = BindingFlags.Default;
+            effectiveFlags = BindingFlags.Default;
             return GetXResult.Unknown;
         }
 

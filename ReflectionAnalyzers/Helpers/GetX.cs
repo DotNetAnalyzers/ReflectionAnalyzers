@@ -18,6 +18,30 @@ namespace ReflectionAnalyzers
 #pragma warning restore CA1825 // Avoid zero-length array allocations.
 
         /// <summary>
+        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod
+        /// </summary>
+        internal static GetXResult? TryMatchGetConstructor(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
+        {
+            targetType = null;
+            target = null;
+            flagsArg = null;
+            effectiveFlags = 0;
+            typesArg = null;
+            types = null;
+            if (invocation.ArgumentList != null &&
+                invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out var getX) &&
+                TryGetTargetType(invocation, context, out targetType, out _) &&
+                IsKnownSignature(invocation, getX) &&
+                TryGetFlagsOrDefault(invocation, getX, context, out flagsArg, out effectiveFlags) &&
+                TryGetTypesOrDefault(invocation, getX, context, out typesArg, out types))
+            {
+                return TryGetTarget(getX, targetType, ".ctor", effectiveFlags, types, context, out target);
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetEvent
         /// </summary>
         internal static GetXResult? TryMatchGetEvent(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags)
