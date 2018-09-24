@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL005");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL005WrongBindingFlags.Descriptor);
 
         [TestCase("GetMethod(nameof(Static))")]
         [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static)")]

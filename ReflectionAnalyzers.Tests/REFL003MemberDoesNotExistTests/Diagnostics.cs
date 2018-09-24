@@ -133,17 +133,17 @@ namespace RoslynSandbox.Dump
     {
         public Foo()
         {
-            var member = typeof(CustomAggregateException).GetField(""value"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var member = typeof(CustomAggregateException).GetField(""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, exception, code);
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, exception, code);
         }
 
-        [TestCase("GetNestedType(\"Generic\", BindingFlags.Public)")]
-        [TestCase("GetNestedType(nameof(Generic<int>), BindingFlags.Public)")]
-        [TestCase("GetNestedType(\"Generic`2\", BindingFlags.Public)")]
+        [TestCase("GetNestedType(↓\"Generic\", BindingFlags.Public)")]
+        [TestCase("GetNestedType(↓nameof(Generic<int>), BindingFlags.Public)")]
+        [TestCase("GetNestedType(↓\"Generic`2\", BindingFlags.Public)")]
         public void GetNestedType(string call)
         {
             var code = @"
@@ -155,15 +155,15 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetNestedType(nameof(Generic<int>), BindingFlags.Public);
+            var methodInfo = typeof(Foo).GetNestedType(↓nameof(Generic<int>), BindingFlags.Public);
         }
 
         public class Generic<T>
         {
         }
     }
-}".AssertReplace("GetNestedType(nameof(Generic<int>), BindingFlags.Public)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+}".AssertReplace("GetNestedType(↓nameof(Generic<int>), BindingFlags.Public)", call);
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

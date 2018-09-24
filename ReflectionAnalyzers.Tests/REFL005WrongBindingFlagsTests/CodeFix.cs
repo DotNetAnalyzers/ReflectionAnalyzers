@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL005");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL005WrongBindingFlags.Descriptor);
 
         [TestCase("Static",           "BindingFlags.Public | BindingFlags.Instance",                                "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
         [TestCase("Static",           "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
