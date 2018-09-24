@@ -42,7 +42,7 @@ namespace ReflectionAnalyzers
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetTargetType(invocation, context, out targetType, out _) &&
-                IsKnownSignature(getX, invocation) &&
+                IsKnownSignature(invocation, getX) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(KnownSymbol.Type.GetMethod, out flags)))
@@ -67,7 +67,7 @@ namespace ReflectionAnalyzers
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetTargetType(invocation, context, out targetType, out _) &&
-                IsKnownSignature(getX, invocation) &&
+                IsKnownSignature(invocation, getX) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(KnownSymbol.Type.GetMember, out flags)))
@@ -362,9 +362,9 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// Defensive check to only handle known cases. Don't know how the binder works.
         /// </summary>
-        private static bool IsKnownSignature(IMethodSymbol candidate, InvocationExpressionSyntax invocation)
+        private static bool IsKnownSignature(InvocationExpressionSyntax invocation, IMethodSymbol getX)
         {
-            foreach (var parameter in candidate.Parameters)
+            foreach (var parameter in getX.Parameters)
             {
                 if (!IsKnownArgument(parameter))
                 {
