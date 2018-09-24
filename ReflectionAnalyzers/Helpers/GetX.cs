@@ -182,7 +182,7 @@ namespace ReflectionAnalyzers
                     if (member == null)
                     {
                         member = candidate;
-                        if (IsOfWrongType(member))
+                        if (IsWrongMemberType(member))
                         {
                             return GetXResult.WrongMemberType;
                         }
@@ -200,15 +200,7 @@ namespace ReflectionAnalyzers
 
                 if (targetType.TryFindFirstMemberRecursive(name, out member))
                 {
-                    if (getX == KnownSymbol.Type.GetNestedType &&
-                        !targetType.Equals(member.ContainingType))
-                    {
-                        return GetXResult.UseContainingType;
-                    }
-
-                    if (member.IsStatic &&
-                        member.DeclaredAccessibility == Accessibility.Private &&
-                        !targetType.Equals(member.ContainingType))
+                    if (IsUseContainingType(member))
                     {
                         return GetXResult.UseContainingType;
                     }
@@ -251,12 +243,15 @@ namespace ReflectionAnalyzers
                         continue;
                     }
 
+                    if (IsOverriding(member, candidate))
+                    {
+                        continue;
+                    }
+
                     if (member == null)
                     {
                         member = candidate;
-                        if (member.IsStatic &&
-                            member.DeclaredAccessibility == Accessibility.Private &&
-                            !member.ContainingType.Equals(targetType))
+                        if (IsUseContainingType(member))
                         {
                             return GetXResult.UseContainingType;
                         }
@@ -268,14 +263,10 @@ namespace ReflectionAnalyzers
                             return GetXResult.WrongFlags;
                         }
 
-                        if (IsOfWrongType(candidate))
+                        if (IsWrongMemberType(candidate))
                         {
                             return GetXResult.WrongMemberType;
                         }
-                    }
-                    else if (IsOverriding(member, candidate))
-                    {
-                        // continue
                     }
                     else
                     {
@@ -312,34 +303,34 @@ namespace ReflectionAnalyzers
 
             return GetXResult.Single;
 
-            bool IsOfWrongType(ISymbol candidate)
+            bool IsWrongMemberType(ISymbol symbol)
             {
                 if (getX.ReturnType == KnownSymbol.EventInfo &&
-                    !(candidate is IEventSymbol))
+                    !(symbol is IEventSymbol))
                 {
                     return true;
                 }
 
                 if (getX.ReturnType == KnownSymbol.FieldInfo &&
-                    !(candidate is IFieldSymbol))
+                    !(symbol is IFieldSymbol))
                 {
                     return true;
                 }
 
                 if (getX.ReturnType == KnownSymbol.MethodInfo &&
-                    !(candidate is IMethodSymbol))
+                    !(symbol is IMethodSymbol))
                 {
                     return true;
                 }
 
                 if (getX.ReturnType == KnownSymbol.PropertyInfo &&
-                    !(candidate is IPropertySymbol))
+                    !(symbol is IPropertySymbol))
                 {
                     return true;
                 }
 
                 if (getX.ReturnType == KnownSymbol.Type &&
-                    !(candidate is ITypeSymbol))
+                    !(symbol is ITypeSymbol))
                 {
                     return true;
                 }
@@ -349,6 +340,11 @@ namespace ReflectionAnalyzers
 
             bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
             {
+                if (symbol == null)
+                {
+                    return false;
+                }
+
                 if (symbol.IsOverride)
                 {
                     switch (symbol)
@@ -366,6 +362,14 @@ namespace ReflectionAnalyzers
                 }
 
                 return false;
+            }
+
+            bool IsUseContainingType(ISymbol symbol)
+            {
+                return !targetType.Equals(symbol.ContainingType) &&
+                       (getX == KnownSymbol.Type.GetNestedType ||
+                        (symbol.IsStatic &&
+                         symbol.DeclaredAccessibility == Accessibility.Private));
             }
 
             bool IsExplicitImplementation(out ISymbol result)
