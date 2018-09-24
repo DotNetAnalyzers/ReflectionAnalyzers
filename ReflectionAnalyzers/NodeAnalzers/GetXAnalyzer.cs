@@ -24,7 +24,8 @@ namespace ReflectionAnalyzers
             REFL013MemberIsOfWrongType.Descriptor,
             REFL014PreferGetMemberThenAccessor.Descriptor,
             REFL015UseContainingType.Descriptor,
-            REFL018ExplicitImplementation.Descriptor);
+            REFL018ExplicitImplementation.Descriptor,
+            REFL019NoMemberMatchesTheTypes.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -40,17 +41,17 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var effectiveFlags, out var typesArg, out var types))
+                switch (TryGetX(context, out var type, out var nameArg, out var memberName, out var member, out var flagsArg, out var effectiveFlags, out var typesArg, out var types))
                 {
                     case GetXResult.NoMatch:
-                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
+                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), type, memberName));
                         break;
 
                     case GetXResult.Ambiguous:
                         context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, argumentList.GetLocation()));
                         break;
 
-                    case GetXResult.WrongFlags when TryGetExpectedFlags(target, targetType, out var correctFlags):
+                    case GetXResult.WrongFlags when TryGetExpectedFlags(member, type, out var correctFlags):
                         if (flagsArg != null)
                         {
                             context.ReportDiagnostic(
@@ -80,11 +81,11 @@ namespace ReflectionAnalyzers
                         break;
 
                     case GetXResult.Single:
-                        if (TryGetExpectedFlags(target, targetType, out var expectedFlags) &&
+                        if (TryGetExpectedFlags(member, type, out var expectedFlags) &&
                             effectiveFlags != expectedFlags)
                         {
                             if (flagsArg != null &&
-                                HasRedundantFlag(target, targetType, effectiveFlags))
+                                HasRedundantFlag(member, type, effectiveFlags))
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
@@ -95,7 +96,7 @@ namespace ReflectionAnalyzers
                             }
 
                             if (flagsArg == null ||
-                                HasMissingFlag(target, targetType, effectiveFlags))
+                                HasMissingFlag(member, type, effectiveFlags))
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
@@ -106,7 +107,7 @@ namespace ReflectionAnalyzers
                             }
                         }
 
-                        if (IsPreferGetMemberThenAccessor(invocation, target, context, out var call))
+                        if (IsPreferGetMemberThenAccessor(invocation, member, context, out var call))
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
@@ -120,7 +121,18 @@ namespace ReflectionAnalyzers
 
                     case GetXResult.WrongMemberType:
                         context.ReportDiagnostic(
-                            Diagnostic.Create(REFL013MemberIsOfWrongType.Descriptor, invocation.GetNameLocation(), targetType, targetName, target.GetType().Name));
+                            Diagnostic.Create(
+                                REFL013MemberIsOfWrongType.Descriptor,
+                                invocation.GetNameLocation(),
+                                type,
+                                memberName,
+                                member.GetType().Name));
+                        break;
+                    case GetXResult.WrongTypes:
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL019NoMemberMatchesTheTypes.Descriptor,
+                                typesArg?.GetLocation() ?? invocation.GetNameLocation()));
                         break;
                     case GetXResult.UseContainingType:
                         context.ReportDiagnostic(
@@ -129,8 +141,8 @@ namespace ReflectionAnalyzers
                                 TargetTypeLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
-                                    target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                target.ContainingType.Name));
+                                    member.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                member.ContainingType.Name));
                         break;
                     case GetXResult.ExplicitImplementation:
                         context.ReportDiagnostic(
@@ -139,8 +151,8 @@ namespace ReflectionAnalyzers
                                 TargetTypeLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
-                                    target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                target.Name));
+                                    member.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                member.Name));
                         break;
                     case GetXResult.Unknown:
                         break;

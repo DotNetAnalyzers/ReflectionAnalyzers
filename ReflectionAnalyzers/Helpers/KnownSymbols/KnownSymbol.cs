@@ -6,6 +6,7 @@ namespace ReflectionAnalyzers
     {
         internal static readonly ObjectType Object = new ObjectType();
         internal static readonly StringType String = new StringType();
+        internal static readonly ArrayType Array = new ArrayType();
         internal static readonly QualifiedType Boolean = Create("System.Boolean", "bool");
 
         internal static readonly TypeType Type = new TypeType();

@@ -72,5 +72,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL018.md">REFL018</a></td>
     <td>The member is explicitly implemented.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL019.md">REFL019</a></td>
+    <td>No member matches the types.</td>
+  </tr>
 <table>
 <!-- end generated table -->

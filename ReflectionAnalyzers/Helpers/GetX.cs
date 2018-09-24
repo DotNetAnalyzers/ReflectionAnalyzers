@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -167,6 +168,7 @@ namespace ReflectionAnalyzers
             }
 
             if (getX == KnownSymbol.Type.GetNestedType ||
+                getX == KnownSymbol.Type.GetConstructor ||
                 flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
                 (flags.HasFlagFast(BindingFlags.Static) &&
                  !flags.HasFlagFast(BindingFlags.Instance) &&
@@ -252,17 +254,14 @@ namespace ReflectionAnalyzers
                     return GetXResult.UseContainingType;
                 }
 
-                if (member.MetadataName == targetMetadataName &&
-                    !MatchesFilter(member, member.MetadataName, flags, null))
+                if (IsWrongFlags(member))
                 {
                     return GetXResult.WrongFlags;
                 }
 
-                if (!member.ContainingType.Equals(targetType) &&
-                    (member.IsStatic ||
-                     flags.HasFlagFast(BindingFlags.DeclaredOnly)))
+                if (IsWrongTypes(member))
                 {
-                    return GetXResult.WrongFlags;
+                    return GetXResult.WrongTypes;
                 }
             }
 
@@ -345,6 +344,37 @@ namespace ReflectionAnalyzers
                        (getX == KnownSymbol.Type.GetNestedType ||
                         (symbol.IsStatic &&
                          symbol.DeclaredAccessibility == Accessibility.Private));
+            }
+
+            bool IsWrongFlags(ISymbol symbol)
+            {
+                if (symbol.MetadataName == targetMetadataName &&
+                    !MatchesFilter(symbol, symbol.MetadataName, flags, null))
+                {
+                    return true;
+                }
+
+                if (!symbol.ContainingType.Equals(targetType) &&
+                    (symbol.IsStatic ||
+                     flags.HasFlagFast(BindingFlags.DeclaredOnly)))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            bool IsWrongTypes(ISymbol symbol)
+            {
+                if (types == null ||
+                    ReferenceEquals(types, AnyTypes))
+                {
+                    return false;
+                }
+
+                const BindingFlags everything = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+                return symbol.MetadataName == targetMetadataName &&
+                       !MatchesFilter(symbol, symbol.MetadataName, everything, types);
             }
 
             bool IsExplicitImplementation(out ISymbol result)
@@ -444,10 +474,13 @@ namespace ReflectionAnalyzers
                    TryGetDefaultFlags(getX.MetadataName, out bindingFlags);
         }
 
-        private static bool TryGetDefaultFlags(string getXName, out BindingFlags defaultFlags)
+        private static bool TryGetDefaultFlags(string getXName, out BindingFlags flags)
         {
             switch (getXName)
             {
+                case "GetConstructor":
+                    flags = BindingFlags.Public | BindingFlags.Instance;
+                    return true;
                 case "GetField":
                 case "GetFields":
                 case "GetEvent":
@@ -460,11 +493,11 @@ namespace ReflectionAnalyzers
                 case "GetNestedTypes":
                 case "GetProperty":
                 case "GetProperties":
-                    defaultFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
+                    flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
                     return true;
             }
 
-            defaultFlags = 0;
+            flags = 0;
             return false;
         }
 
@@ -498,23 +531,28 @@ namespace ReflectionAnalyzers
         private static bool TryGetTypes(ArgumentSyntax argument, SyntaxNodeAnalysisContext context, out IReadOnlyList<ITypeSymbol> types)
         {
             types = null;
-            return TryGetTypes(argument, out types);
-
-            bool TryGetTypes(ArgumentSyntax array, out IReadOnlyList<ITypeSymbol> result)
+            switch (argument.Expression)
             {
-                result = null;
-                switch (array.Expression)
-                {
-                    case ImplicitArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
-                        return TryGetTypesFromInitializer(initializer, out result);
-                    case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
-                        return TryGetTypesFromInitializer(initializer, out result);
-                    case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
-                        return true;
-                }
-
-                return false;
+                case ImplicitArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
+                    return TryGetTypesFromInitializer(initializer, out types);
+                case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
+                    return TryGetTypesFromInitializer(initializer, out types);
+                case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer == null:
+                    types = Array.Empty<ITypeSymbol>();
+                    return true;
+                case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
+                    return true;
+                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out ISymbol symbol) &&
+                                                                    symbol == KnownSymbol.Type.EmptyTypes:
+                    types = Array.Empty<ITypeSymbol>();
+                    return true;
+                case InvocationExpressionSyntax invocation when context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out ISymbol symbol) &&
+                                                                symbol == KnownSymbol.Array.Empty:
+                    types = Array.Empty<ITypeSymbol>();
+                    return true;
             }
+
+            return false;
 
             bool TryGetTypesFromInitializer(InitializerExpressionSyntax initializer, out IReadOnlyList<ITypeSymbol> result)
             {

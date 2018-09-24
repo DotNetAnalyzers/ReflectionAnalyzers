@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL018ExplicitImplementation
+    internal static class REFL019NoMemberMatchesTheTypes
     {
-        public const string DiagnosticId = "REFL018";
+        public const string DiagnosticId = "REFL019";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "The member is explicitly implemented.",
-            messageFormat: "{0} is explicitly implemented.",
+            title: "No member matches the types.",
+            messageFormat: "No member matches the types.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "The member is explicitly implemented.",
+            description: "No member matches the types.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }

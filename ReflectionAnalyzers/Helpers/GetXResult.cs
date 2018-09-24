@@ -8,6 +8,7 @@ namespace ReflectionAnalyzers
         ExplicitImplementation,
         Ambiguous,
         WrongFlags,
+        WrongTypes,
         WrongMemberType,
         UseContainingType,
     }
