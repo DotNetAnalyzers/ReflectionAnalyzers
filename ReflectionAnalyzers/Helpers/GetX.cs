@@ -3,6 +3,7 @@ namespace ReflectionAnalyzers
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -41,7 +42,7 @@ namespace ReflectionAnalyzers
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetTargetType(invocation, context, out targetType, out _) &&
-                IsKnownSignature(getX) &&
+                IsKnownSignature(getX, invocation) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(KnownSymbol.Type.GetMethod, out flags)))
@@ -50,16 +51,6 @@ namespace ReflectionAnalyzers
             }
 
             return null;
-
-            bool IsKnownSignature(IMethodSymbol candidate)
-            {
-                // I don't know how binder works so limiting checks to what I know.
-                return (candidate.Parameters.TrySingle(out var nameParameter) &&
-                        nameParameter.Type == KnownSymbol.String) ||
-                       (candidate.Parameters.Length == 2 &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameter) &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
-            }
         }
 
         /// <summary>
@@ -76,7 +67,7 @@ namespace ReflectionAnalyzers
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetTargetType(invocation, context, out targetType, out _) &&
-                IsKnownSignature(getX) &&
+                IsKnownSignature(getX, invocation) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(KnownSymbol.Type.GetMember, out flags)))
@@ -85,16 +76,6 @@ namespace ReflectionAnalyzers
             }
 
             return null;
-
-            bool IsKnownSignature(IMethodSymbol candidate)
-            {
-                // I don't know how binder works so limiting checks to what I know.
-                return (candidate.Parameters.TrySingle(out var nameParameter) &&
-                        nameParameter.Type == KnownSymbol.String) ||
-                       (candidate.Parameters.Length == 2 &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameter) &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
-            }
         }
 
         /// <summary>
@@ -328,7 +309,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            bool IsExplicitImplementation( out ISymbol result)
+            bool IsExplicitImplementation(out ISymbol result)
             {
                 foreach (var @interface in targetType.AllInterfaces)
                 {
@@ -376,6 +357,33 @@ namespace ReflectionAnalyzers
 
             defaultFlags = 0;
             return false;
+        }
+
+        /// <summary>
+        /// Defensive check to only handle known cases. Don't know how the binder works.
+        /// </summary>
+        private static bool IsKnownSignature(IMethodSymbol candidate, InvocationExpressionSyntax invocation)
+        {
+            foreach (var parameter in candidate.Parameters)
+            {
+                if (!IsKnownArgument(parameter))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+            bool IsKnownArgument(IParameterSymbol parameter)
+            {
+                if (parameter.Type == KnownSymbol.String ||
+                    parameter.Type == KnownSymbol.BindingFlags)
+                {
+                    return true;
+                }
+
+                return invocation.TryFindArgument(parameter, out var argument) &&
+                       argument.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true;
+            }
         }
 
         /// <summary>
