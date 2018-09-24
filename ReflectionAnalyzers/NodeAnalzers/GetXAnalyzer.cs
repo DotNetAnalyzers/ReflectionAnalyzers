@@ -156,9 +156,9 @@ namespace ReflectionAnalyzers
                 foreach (var qualifiedMethod in GetXMethods)
                 {
                     var result = GetX.TryMatch(candidate, qualifiedMethod, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
-                    if (result != GetXResult.Unknown)
+                    if (result != null)
                     {
-                        return result;
+                        return result.Value;
                     }
                 }
             }

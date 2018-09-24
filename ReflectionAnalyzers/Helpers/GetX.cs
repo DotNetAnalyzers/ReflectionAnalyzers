@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// Handles GetField, GetEvent, GetMember, GetMethod...
         /// </summary>
-        internal static GetXResult TryMatch(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        internal static GetXResult? TryMatch(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
         {
             targetType = null;
             nameArg = null;
@@ -30,7 +30,7 @@ namespace ReflectionAnalyzers
                 invocation.TryFindArgument(nameParameter, out nameArg) &&
                 nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out targetName) &&
                 (TryGetFlagsFromArgument(out flagsArg, out flags) ||
-                 TryGetDefaultFlags(out flags)))
+                 TryGetDefaultFlags(getXMethod, out flags)))
             {
                 if (getX == KnownSymbol.Type.GetNestedType ||
                     flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
@@ -55,35 +55,35 @@ namespace ReflectionAnalyzers
                         }
                     }
 
-                    if (target == null)
+                    if (target != null)
                     {
-                        if (targetType.TryFindFirstMemberRecursive(targetName, out target))
-                        {
-                            if (getX == KnownSymbol.Type.GetNestedType &&
-                                !targetType.Equals(target.ContainingType))
-                            {
-                                return GetXResult.UseContainingType;
-                            }
-
-                            if (target.IsStatic &&
-                                target.DeclaredAccessibility == Accessibility.Private &&
-                               !targetType.Equals(target.ContainingType))
-                            {
-                                return GetXResult.UseContainingType;
-                            }
-
-                            return GetXResult.WrongFlags;
-                        }
-
-                        if (!HasVisibleMembers(targetType, flags))
-                        {
-                            return GetXResult.Unknown;
-                        }
-
-                        return GetXResult.NoMatch;
+                        return GetXResult.Single;
                     }
 
-                    return GetXResult.Single;
+                    if (targetType.TryFindFirstMemberRecursive(targetName, out target))
+                    {
+                        if (getX == KnownSymbol.Type.GetNestedType &&
+                            !targetType.Equals(target.ContainingType))
+                        {
+                            return GetXResult.UseContainingType;
+                        }
+
+                        if (target.IsStatic &&
+                            target.DeclaredAccessibility == Accessibility.Private &&
+                            !targetType.Equals(target.ContainingType))
+                        {
+                            return GetXResult.UseContainingType;
+                        }
+
+                        return GetXResult.WrongFlags;
+                    }
+
+                    if (!HasVisibleMembers(targetType, flags))
+                    {
+                        return GetXResult.Unknown;
+                    }
+
+                    return GetXResult.NoMatch;
                 }
 
                 var current = targetType;
@@ -149,7 +149,7 @@ namespace ReflectionAnalyzers
                 return GetXResult.Single;
             }
 
-            return GetXResult.Unknown;
+            return null;
 
             bool IsKnownSignature(IMethodSymbol candidate, out IParameterSymbol nameParameterSymbol)
             {
@@ -161,33 +161,6 @@ namespace ReflectionAnalyzers
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
             }
 
-            bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
-            {
-                if (effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
-                {
-                    return !HasSuperTypeNotInSource();
-                }
-
-                return true;
-
-                bool HasSuperTypeNotInSource()
-                {
-                    var current = type;
-                    while (current != null &&
-                           current != KnownSymbol.Object)
-                    {
-                        if (!current.Locations.Any(x => x.IsInSource))
-                        {
-                            return true;
-                        }
-
-                        current = current.BaseType;
-                    }
-
-                    return false;
-                }
-            }
-
             bool TryGetFlagsFromArgument(out ArgumentSyntax argument, out BindingFlags bindingFlags)
             {
                 argument = null;
@@ -195,62 +168,6 @@ namespace ReflectionAnalyzers
                 return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
                        invocation.TryFindArgument(parameter, out argument) &&
                        context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
-            }
-
-            bool TryGetDefaultFlags(out BindingFlags defaultFlags)
-            {
-                switch (getX.MetadataName)
-                {
-                    case "GetField":
-                    case "GetFields":
-                    case "GetEvent":
-                    case "GetEvents":
-                    case "GetMethod":
-                    case "GetMethods":
-                    case "GetMember":
-                    case "GetMembers":
-                    case "GetNestedType": // https://referencesource.microsoft.com/#mscorlib/system/type.cs,751
-                    case "GetNestedTypes":
-                    case "GetProperty":
-                    case "GetProperties":
-                        defaultFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
-                        return true;
-                }
-
-                defaultFlags = 0;
-                return false;
-            }
-
-            bool MatchesFlags(ISymbol candidate, BindingFlags filter)
-            {
-                if (candidate.DeclaredAccessibility == Accessibility.Public &&
-                    !filter.HasFlagFast(BindingFlags.Public))
-                {
-                    return false;
-                }
-
-                if (candidate.DeclaredAccessibility != Accessibility.Public &&
-                    !filter.HasFlagFast(BindingFlags.NonPublic))
-                {
-                    return false;
-                }
-
-                if (!(candidate is ITypeSymbol))
-                {
-                    if (candidate.IsStatic &&
-                        !filter.HasFlagFast(BindingFlags.Static))
-                    {
-                        return false;
-                    }
-
-                    if (!candidate.IsStatic &&
-                        !filter.HasFlagFast(BindingFlags.Instance))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
             }
 
             bool IsOfWrongType(ISymbol member)
@@ -319,6 +236,89 @@ namespace ReflectionAnalyzers
             instance = default(Optional<IdentifierNameSyntax>);
             return getX.Expression is MemberAccessExpressionSyntax memberAccess &&
                    TryGetTargetType(memberAccess.Expression, semanticModel, null, cancellationToken, out result, out instance);
+        }
+
+        internal static bool TryGetDefaultFlags(QualifiedMethod getX, out BindingFlags defaultFlags)
+        {
+            switch (getX.Name)
+            {
+                case "GetField":
+                case "GetFields":
+                case "GetEvent":
+                case "GetEvents":
+                case "GetMethod":
+                case "GetMethods":
+                case "GetMember":
+                case "GetMembers":
+                case "GetNestedType": // https://referencesource.microsoft.com/#mscorlib/system/type.cs,751
+                case "GetNestedTypes":
+                case "GetProperty":
+                case "GetProperties":
+                    defaultFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
+                    return true;
+            }
+
+            defaultFlags = 0;
+            return false;
+        }
+
+        private static bool MatchesFlags(ISymbol candidate, BindingFlags filter)
+        {
+            if (candidate.DeclaredAccessibility == Accessibility.Public &&
+                !filter.HasFlagFast(BindingFlags.Public))
+            {
+                return false;
+            }
+
+            if (candidate.DeclaredAccessibility != Accessibility.Public &&
+                !filter.HasFlagFast(BindingFlags.NonPublic))
+            {
+                return false;
+            }
+
+            if (!(candidate is ITypeSymbol))
+            {
+                if (candidate.IsStatic &&
+                    !filter.HasFlagFast(BindingFlags.Static))
+                {
+                    return false;
+                }
+
+                if (!candidate.IsStatic &&
+                    !filter.HasFlagFast(BindingFlags.Instance))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
+        {
+            if (effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
+            {
+                return !HasSuperTypeNotInSource();
+            }
+
+            return true;
+
+            bool HasSuperTypeNotInSource()
+            {
+                var current = type;
+                while (current != null &&
+                       current != KnownSymbol.Object)
+                {
+                    if (!current.Locations.Any(x => x.IsInSource))
+                    {
+                        return true;
+                    }
+
+                    current = current.BaseType;
+                }
+
+                return false;
+            }
         }
 
         private static bool TryGetTargetType(ExpressionSyntax expression, SemanticModel semanticModel, PooledSet<ExpressionSyntax> visited, CancellationToken cancellationToken, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
