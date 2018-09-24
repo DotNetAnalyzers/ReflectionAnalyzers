@@ -125,7 +125,7 @@ namespace ReflectionAnalyzers
             target = default(Optional<ISymbol>);
             if (GetX.TryGetTargetType(invocation, context, out var targetType, out instance))
             {
-                _ = GetX.TryGetTarget(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, GetX.AnyTypes, context, out var targetSymbol);
+                _ = GetX.TryGetMember(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, GetX.AnyTypes, context, out var targetSymbol);
                 target = targetSymbol != null
                     ? new Optional<ISymbol>(targetSymbol)
                     : default(Optional<ISymbol>);
