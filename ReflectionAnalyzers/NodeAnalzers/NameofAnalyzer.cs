@@ -36,7 +36,8 @@ namespace ReflectionAnalyzers
                 SyntaxFacts.IsValidIdentifier(text) &&
                 argument.Parent is ArgumentListSyntax argumentList &&
                 argumentList.Parent is InvocationExpressionSyntax invocation &&
-                TryGetX(invocation, text, context, out var target, out var instance) &&
+                TryGetX(invocation, context, out var getX) &&
+                TryGetTarget(invocation, getX, text, context, out var target, out var instance) &&
                 target.HasValue &&
                 TryGetTargetName(target.Value, instance, context, out var targetName))
             {
@@ -57,7 +58,8 @@ namespace ReflectionAnalyzers
                 containingArgument.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name) &&
                 containingArgument.Parent is ArgumentListSyntax containingArgumentList &&
                 containingArgumentList.Parent is InvocationExpressionSyntax invocation &&
-                TryGetX(invocation, name, context, out var target, out var instance))
+                TryGetX(invocation, context, out var getX) &&
+                TryGetTarget(invocation, getX, name, context, out var target, out var instance))
             {
                 if (!target.HasValue &&
                     !instance.HasValue)
@@ -100,29 +102,34 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetX(InvocationExpressionSyntax invocation, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> target, out Optional<IdentifierNameSyntax> instance)
+        private static bool TryGetX(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out IMethodSymbol getX)
         {
-            instance = default(Optional<IdentifierNameSyntax>);
-            target = default(Optional<ISymbol>);
             if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 !(memberAccess.Expression is InstanceExpressionSyntax))
             {
-                if (invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context.SemanticModel, context.CancellationToken, out var getX) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetField, context.SemanticModel, context.CancellationToken, out getX) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out getX) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out getX) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out getX) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out getX))
-                {
-                    if (GetX.TryGetTargetType(invocation, context, out var targetType, out instance))
-                    {
-                        _ = GetX.TryGetTarget(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, context, out var targetSymbol);
-                        target = targetSymbol != null
-                            ? new Optional<ISymbol>(targetSymbol)
-                            : default(Optional<ISymbol>);
-                        return true;
-                    }
-                }
+                return invocation.TryGetTarget(KnownSymbol.Type.GetEvent,      context.SemanticModel, context.CancellationToken, out getX) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetField,      context.SemanticModel, context.CancellationToken, out getX) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetMember,     context.SemanticModel, context.CancellationToken, out getX) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetMethod,     context.SemanticModel, context.CancellationToken, out getX) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out getX) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetProperty,   context.SemanticModel, context.CancellationToken, out getX);
+            }
+
+            getX = null;
+            return false;
+        }
+
+        private static bool TryGetTarget(InvocationExpressionSyntax invocation, IMethodSymbol getX, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> target, out Optional<IdentifierNameSyntax> instance)
+        {
+            instance = default(Optional<IdentifierNameSyntax>);
+            target = default(Optional<ISymbol>);
+            if (GetX.TryGetTargetType(invocation, context, out var targetType, out instance))
+            {
+                _ = GetX.TryGetTarget(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, context, out var targetSymbol);
+                target = targetSymbol != null
+                    ? new Optional<ISymbol>(targetSymbol)
+                    : default(Optional<ISymbol>);
+                return true;
             }
 
             return false;
