@@ -13,16 +13,15 @@ namespace ReflectionAnalyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class GetXAnalyzer : DiagnosticAnalyzer
     {
-        private enum GetXResult
+        protected internal static readonly QualifiedMethod[] GetXMethods =
         {
-            Unknown,
-            Single,
-            NoMatch,
-            Ambiguous,
-            WrongFlags,
-            WrongMemberType,
-            UseContainingType,
-        }
+            KnownSymbol.Type.GetEvent,
+            KnownSymbol.Type.GetField,
+            KnownSymbol.Type.GetMember,
+            KnownSymbol.Type.GetMethod,
+            KnownSymbol.Type.GetNestedType,
+            KnownSymbol.Type.GetProperty
+        };
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
@@ -150,307 +149,27 @@ namespace ReflectionAnalyzers
             }
         }
 
-        /// <summary>
-        /// Handles GetField, GetEvent, GetMember, GetMethod...
-        /// </summary>
         private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
         {
+            if (context.Node is InvocationExpressionSyntax candidate)
+            {
+                foreach (var qualifiedMethod in GetXMethods)
+                {
+                    var result = GetX.TryMatch(candidate, qualifiedMethod, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
+                    if (result != GetXResult.Unknown)
+                    {
+                        return result;
+                    }
+                }
+            }
+
             targetType = null;
             nameArg = null;
             targetName = null;
             target = null;
             flagsArg = null;
-            flags = 0;
-            if (context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList != null &&
-                GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
-                TryGetTarget(out var getX) &&
-                IsKnownSignature(getX, out var nameParameter) &&
-                invocation.TryFindArgument(nameParameter, out nameArg) &&
-                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out targetName) &&
-                (TryGetFlagsFromArgument(out flagsArg, out flags) ||
-                 TryGetDefaultFlags(out flags)))
-            {
-                if (getX == KnownSymbol.Type.GetNestedType ||
-                    flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
-                    (flags.HasFlagFast(BindingFlags.Static) &&
-                     !flags.HasFlagFast(BindingFlags.Instance) && 
-                     !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
-                {
-                    foreach (var member in targetType.GetMembers(targetName))
-                    {
-                        if (!MatchesFlags(member, flags))
-                        {
-                            continue;
-                        }
-
-                        if (target == null)
-                        {
-                            target = member;
-                        }
-                        else
-                        {
-                            return GetXResult.Ambiguous;
-                        }
-                    }
-
-                    if (target == null)
-                    {
-                        if (targetType.TryFindFirstMemberRecursive(targetName, out target))
-                        {
-                            if (getX == KnownSymbol.Type.GetNestedType &&
-                                !targetType.Equals(target.ContainingType))
-                            {
-                                return GetXResult.UseContainingType;
-                            }
-
-                            if (target.IsStatic &&
-                                target.DeclaredAccessibility == Accessibility.Private &&
-                               !targetType.Equals(target.ContainingType))
-                            {
-                                return GetXResult.UseContainingType;
-                            }
-
-                            return GetXResult.WrongFlags;
-                        }
-
-                        if (!HasVisibleMembers(targetType, flags))
-                        {
-                            return GetXResult.Unknown;
-                        }
-
-                        return GetXResult.NoMatch;
-                    }
-
-                    return GetXResult.Single;
-                }
-
-                var current = targetType;
-                while (current != null)
-                {
-                    foreach (var member in current.GetMembers(targetName))
-                    {
-                        if (!MatchesFlags(member, flags))
-                        {
-                            continue;
-                        }
-
-                        if (member.IsStatic &&
-                            !current.Equals(targetType) &&
-                            !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
-                        {
-                            continue;
-                        }
-
-                        if (target == null)
-                        {
-                            target = member;
-                            if (target.IsStatic &&
-                                target.DeclaredAccessibility == Accessibility.Private &&
-                                !target.ContainingType.Equals(targetType))
-                            {
-                                return GetXResult.UseContainingType;
-                            }
-
-                            if (IsOfWrongType(member))
-                            {
-                                return GetXResult.WrongMemberType;
-                            }
-                        }
-                        else if (IsOverriding(target, member))
-                        {
-                            // continue
-                        }
-                        else
-                        {
-                            return GetXResult.Ambiguous;
-                        }
-                    }
-
-                    current = current.BaseType;
-                }
-
-                if (target == null)
-                {
-                    if (targetType.TryFindFirstMemberRecursive(targetName, out target))
-                    {
-                        return GetXResult.WrongFlags;
-                    }
-
-                    if (!HasVisibleMembers(targetType, flags))
-                    {
-                        return GetXResult.Unknown;
-                    }
-
-                    return GetXResult.NoMatch;
-                }
-
-                return GetXResult.Single;
-            }
-
+            flags = BindingFlags.Default;
             return GetXResult.Unknown;
-
-            bool TryGetTarget(out IMethodSymbol result)
-            {
-                return invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context.SemanticModel, context.CancellationToken, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetField, context.SemanticModel, context.CancellationToken, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out result) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out result);
-            }
-
-            bool IsKnownSignature(IMethodSymbol candidate, out IParameterSymbol nameParameterSymbol)
-            {
-                // I don't know how binder works so limiting checks to what I know.
-                return (candidate.Parameters.TrySingle(out nameParameterSymbol) &&
-                        nameParameterSymbol.Type == KnownSymbol.String) ||
-                       (candidate.Parameters.Length == 2 &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameterSymbol) &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
-            }
-
-            bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
-            {
-                if (effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
-                {
-                    return !HasSuperTypeNotInSource();
-                }
-
-                return true;
-
-                bool HasSuperTypeNotInSource()
-                {
-                    var current = type;
-                    while (current != null &&
-                           current != KnownSymbol.Object)
-                    {
-                        if (!current.Locations.Any(x => x.IsInSource))
-                        {
-                            return true;
-                        }
-
-                        current = current.BaseType;
-                    }
-
-                    return false;
-                }
-            }
-
-            bool TryGetFlagsFromArgument(out ArgumentSyntax argument, out BindingFlags bindingFlags)
-            {
-                argument = null;
-                bindingFlags = 0;
-                return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
-                       invocation.TryFindArgument(parameter, out argument) &&
-                       context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
-            }
-
-            bool TryGetDefaultFlags(out BindingFlags defaultFlags)
-            {
-                switch (getX.MetadataName)
-                {
-                    case "GetField":
-                    case "GetFields":
-                    case "GetEvent":
-                    case "GetEvents":
-                    case "GetMethod":
-                    case "GetMethods":
-                    case "GetMember":
-                    case "GetMembers":
-                    case "GetNestedType": // https://referencesource.microsoft.com/#mscorlib/system/type.cs,751
-                    case "GetNestedTypes":
-                    case "GetProperty":
-                    case "GetProperties":
-                        defaultFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
-                        return true;
-                }
-
-                defaultFlags = 0;
-                return false;
-            }
-
-            bool MatchesFlags(ISymbol candidate, BindingFlags filter)
-            {
-                if (candidate.DeclaredAccessibility == Accessibility.Public &&
-                    !filter.HasFlagFast(BindingFlags.Public))
-                {
-                    return false;
-                }
-
-                if (candidate.DeclaredAccessibility != Accessibility.Public &&
-                    !filter.HasFlagFast(BindingFlags.NonPublic))
-                {
-                    return false;
-                }
-
-                if (!(candidate is ITypeSymbol))
-                {
-                    if (candidate.IsStatic &&
-                        !filter.HasFlagFast(BindingFlags.Static))
-                    {
-                        return false;
-                    }
-
-                    if (!candidate.IsStatic &&
-                        !filter.HasFlagFast(BindingFlags.Instance))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            bool IsOfWrongType(ISymbol member)
-            {
-                if (getX.ReturnType == KnownSymbol.EventInfo &&
-                    !(member is IEventSymbol))
-                {
-                    return true;
-                }
-
-                if (getX.ReturnType == KnownSymbol.FieldInfo &&
-                    !(member is IFieldSymbol))
-                {
-                    return true;
-                }
-
-                if (getX.ReturnType == KnownSymbol.MethodInfo &&
-                    !(member is IMethodSymbol))
-                {
-                    return true;
-                }
-
-                if (getX.ReturnType == KnownSymbol.PropertyInfo &&
-                    !(member is IPropertySymbol))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
-            {
-                if (symbol.IsOverride)
-                {
-                    switch (symbol)
-                    {
-                        case IEventSymbol eventSymbol:
-                            return Equals(eventSymbol.OverriddenEvent, candidateBase) ||
-                                   IsOverriding(eventSymbol.OverriddenEvent, candidateBase);
-                        case IMethodSymbol method:
-                            return Equals(method.OverriddenMethod, candidateBase) ||
-                                   IsOverriding(method.OverriddenMethod, candidateBase);
-                        case IPropertySymbol property:
-                            return Equals(property.OverriddenProperty, candidateBase) ||
-                                   IsOverriding(property.OverriddenProperty, candidateBase);
-                    }
-                }
-
-                return false;
-            }
         }
 
         private static bool IsPreferGetMemberThenAccessor(InvocationExpressionSyntax getX, ISymbol target, SyntaxNodeAnalysisContext context, out string call)
