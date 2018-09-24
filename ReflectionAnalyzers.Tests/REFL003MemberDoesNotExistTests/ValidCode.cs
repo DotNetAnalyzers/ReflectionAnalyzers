@@ -52,7 +52,7 @@ namespace RoslynSandbox
         [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static)")]
         [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        public void ExcludeNonPublicNotInSource(string invocation)
+        public void GetMethodExcludeNonPublicNotInSource(string invocation)
         {
             var code = @"
 namespace RoslynSandbox
@@ -71,7 +71,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetToStringOverridden()
+        public void GetGetMethodToStringOverridden()
         {
             var code = @"
 namespace RoslynSandbox
@@ -90,7 +90,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetToStringShadowing()
+        public void GetMethodToStringShadowing()
         {
             var code = @"
 namespace RoslynSandbox
@@ -109,7 +109,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetOverloadedMethodInSameType()
+        public void GetMethodOverloadedMethodInSameType()
         {
             var code = @"
 namespace RoslynSandbox
