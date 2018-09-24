@@ -29,7 +29,7 @@ namespace ReflectionAnalyzers
                 IsKnownSignature(getX, out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out nameArg) &&
                 nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out targetName) &&
-                (TryGetFlagsFromArgument(out flagsArg, out flags) ||
+                (TryGetFlagsFromArgument(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(getXMethod, out flags)))
             {
                 if (getX == KnownSymbol.Type.GetNestedType ||
@@ -161,15 +161,6 @@ namespace ReflectionAnalyzers
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
             }
 
-            bool TryGetFlagsFromArgument(out ArgumentSyntax argument, out BindingFlags bindingFlags)
-            {
-                argument = null;
-                bindingFlags = 0;
-                return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
-                       invocation.TryFindArgument(parameter, out argument) &&
-                       context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
-            }
-
             bool IsOfWrongType(ISymbol member)
             {
                 if (getX.ReturnType == KnownSymbol.EventInfo &&
@@ -260,6 +251,15 @@ namespace ReflectionAnalyzers
 
             defaultFlags = 0;
             return false;
+        }
+
+        private static bool TryGetFlagsFromArgument(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out BindingFlags bindingFlags)
+        {
+            argument = null;
+            bindingFlags = 0;
+            return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
+                   invocation.TryFindArgument(parameter, out argument) &&
+                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
         }
 
         private static bool MatchesFlags(ISymbol candidate, BindingFlags filter)
