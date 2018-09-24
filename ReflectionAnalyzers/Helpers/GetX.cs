@@ -30,7 +30,7 @@ namespace ReflectionAnalyzers
             types = null;
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out var getX) &&
-                TryGetTargetType(invocation, context, out targetType, out _) &&
+                TryGetType(invocation, context, out targetType, out _) &&
                 IsKnownSignature(invocation, getX) &&
                 TryGetFlagsOrDefault(invocation, getX, context, out flagsArg, out effectiveFlags) &&
                 TryGetTypesOrDefault(invocation, getX, context, out typesArg, out types))
@@ -72,7 +72,7 @@ namespace ReflectionAnalyzers
             types = null;
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
-                TryGetTargetType(invocation, context, out targetType, out _) &&
+                TryGetType(invocation, context, out targetType, out _) &&
                 IsKnownSignature(invocation, getX) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 TryGetFlagsOrDefault(invocation, getX, context, out flagsArg, out effectiveFlags) &&
@@ -99,7 +99,7 @@ namespace ReflectionAnalyzers
             types = null;
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out var getX) &&
-                TryGetTargetType(invocation, context, out targetType, out _) &&
+                TryGetType(invocation, context, out targetType, out _) &&
                 IsKnownSignature(invocation, getX) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 TryGetFlagsOrDefault(invocation, getX, context, out flagsArg, out effectiveFlags) &&
@@ -135,12 +135,12 @@ namespace ReflectionAnalyzers
         /// <param name="result">The type.</param>
         /// <param name="instance">The instance the type was called GetType on. Can be null</param>
         /// <returns>True if the type could be determined.</returns>
-        internal static bool TryGetTargetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
+        internal static bool TryGetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
         {
             result = null;
             instance = default(Optional<IdentifierNameSyntax>);
             return getX.Expression is MemberAccessExpressionSyntax memberAccess &&
-                   TryGetTargetType(memberAccess.Expression, context, null, out result, out instance);
+                   TryGetType(memberAccess.Expression, context, null, out result, out instance);
         }
 
         internal static GetXResult TryGetMember(IMethodSymbol getX, ITypeSymbol targetType, string targetMetadataName, BindingFlags flags, IReadOnlyList<ITypeSymbol> types, SyntaxNodeAnalysisContext context, out ISymbol member)
@@ -419,7 +419,7 @@ namespace ReflectionAnalyzers
             effectiveFlags = 0;
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
-                TryGetTargetType(invocation, context, out targetType, out _) &&
+                TryGetType(invocation, context, out targetType, out _) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 TryGetFlagsOrDefault(invocation, getX, context, out flagsArg, out effectiveFlags))
             {
@@ -626,7 +626,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        private static bool TryGetTargetType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
+        private static bool TryGetType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
         {
             instance = default(Optional<IdentifierNameSyntax>);
             result = null;
@@ -637,7 +637,7 @@ namespace ReflectionAnalyzers
                     {
                         return AssignedValueWalker.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
                                visited.Add(assignedValue) &&
-                               TryGetTargetType(assignedValue, context, visited, out result, out instance);
+                               TryGetType(assignedValue, context, visited, out result, out instance);
                     }
 
                 case TypeOfExpressionSyntax typeOf:

@@ -37,7 +37,7 @@ namespace RoslynSandbox
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation(call);
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true, GetX.TryGetTargetType(node, context, out var type, out var instance));
+            Assert.AreEqual(true, GetX.TryGetType(node, context, out var type, out var instance));
             Assert.AreEqual(expected, type.MetadataName);
             if (expectedInstance == null)
             {
@@ -78,7 +78,7 @@ namespace RoslynSandbox
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true, GetX.TryGetTargetType(node, context, out var type, out var instance));
+            Assert.AreEqual(true, GetX.TryGetType(node, context, out var type, out var instance));
             Assert.AreEqual(expected, type.MetadataName);
             if (expectedInstance == null)
             {
@@ -113,7 +113,7 @@ namespace RoslynSandbox
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(false, GetX.TryGetTargetType(node, context, out _, out _));
+            Assert.AreEqual(false, GetX.TryGetType(node, context, out _, out _));
         }
 
         [Test]

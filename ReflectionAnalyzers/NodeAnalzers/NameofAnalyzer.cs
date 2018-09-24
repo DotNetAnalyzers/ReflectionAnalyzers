@@ -123,7 +123,7 @@ namespace ReflectionAnalyzers
         {
             instance = default(Optional<IdentifierNameSyntax>);
             target = default(Optional<ISymbol>);
-            if (GetX.TryGetTargetType(invocation, context, out var targetType, out instance))
+            if (GetX.TryGetType(invocation, context, out var targetType, out instance))
             {
                 _ = GetX.TryGetMember(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, GetX.AnyTypes, context, out var targetSymbol);
 
