@@ -166,6 +166,28 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [Test]
+        public void GetMethodWhenConstrainedTypeParameter()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public MethodInfo Bar<T>()
+            where T : Foo
+        {
+            return typeof(T).GetMethod(nameof(this.Baz));
+        }
+
+        public int Baz() => 0;
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("get_Bar")]
         [TestCase("set_Bar")]
         public void GetPropertyMethods(string name)

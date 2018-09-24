@@ -206,6 +206,17 @@ namespace ReflectionAnalyzers
                 {
                     return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), targetName, effectiveFlags, context, out target);
                 }
+
+                foreach (var constraintType in typeParameter.ConstraintTypes)
+                {
+                    var result = TryGetTarget(getX, constraintType, targetName, effectiveFlags, context, out target);
+                    if (result != GetXResult.NoMatch)
+                    {
+                        return result;
+                    }
+
+                    return GetXResult.NoMatch;
+                }
             }
 
             if (getX == KnownSymbol.Type.GetNestedType ||
