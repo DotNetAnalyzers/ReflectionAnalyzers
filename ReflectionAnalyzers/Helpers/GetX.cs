@@ -198,6 +198,11 @@ namespace ReflectionAnalyzers
                     return GetXResult.WrongFlags;
                 }
 
+                if (IsExplicitImplementation(out target))
+                {
+                    return GetXResult.ExplicitImplementation;
+                }
+
                 if (!HasVisibleMembers(targetType, effectiveFlags))
                 {
                     return GetXResult.Unknown;
@@ -258,6 +263,11 @@ namespace ReflectionAnalyzers
                     return GetXResult.WrongFlags;
                 }
 
+                if (IsExplicitImplementation(out target))
+                {
+                    return GetXResult.ExplicitImplementation;
+                }
+
                 if (!HasVisibleMembers(targetType, effectiveFlags))
                 {
                     return GetXResult.Unknown;
@@ -315,6 +325,20 @@ namespace ReflectionAnalyzers
                     }
                 }
 
+                return false;
+            }
+
+            bool IsExplicitImplementation( out ISymbol result)
+            {
+                foreach (var @interface in targetType.AllInterfaces)
+                {
+                    if (@interface.TryFindFirstMemberRecursive(targetName, out result))
+                    {
+                        return true;
+                    }
+                }
+
+                result = null;
                 return false;
             }
         }

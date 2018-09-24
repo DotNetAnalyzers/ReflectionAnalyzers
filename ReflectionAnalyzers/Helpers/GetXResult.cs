@@ -5,6 +5,7 @@ namespace ReflectionAnalyzers
         Unknown,
         Single,
         NoMatch,
+        ExplicitImplementation,
         Ambiguous,
         WrongFlags,
         WrongMemberType,

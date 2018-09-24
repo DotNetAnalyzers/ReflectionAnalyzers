@@ -22,7 +22,8 @@ namespace ReflectionAnalyzers
             REFL008MissingBindingFlags.Descriptor,
             REFL013MemberIsOfWrongType.Descriptor,
             REFL014PreferGetMemberThenAccessor.Descriptor,
-            REFL015UseContainingType.Descriptor);
+            REFL015UseContainingType.Descriptor,
+            REFL018ExplicitImplementation.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -124,18 +125,33 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL015UseContainingType.Descriptor,
-                                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                                memberAccess.Expression is TypeOfExpressionSyntax typeOf
-                                    ? typeOf.Type.GetLocation()
-                                    : invocation.Expression.GetLocation(),
+                                TargetTypeLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
                                     target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
                                 target.ContainingType.Name));
                         break;
+                    case GetXResult.ExplicitImplementation:
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL018ExplicitImplementation.Descriptor,
+                                TargetTypeLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(ISymbol.ContainingType),
+                                    target.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                target.Name));
+                        break;
                     case GetXResult.Unknown:
                         break;
                 }
+            }
+
+            Location TargetTypeLocation()
+            {
+                return invocation.Expression is MemberAccessExpressionSyntax explicitMemberAccess &&
+                        explicitMemberAccess.Expression is TypeOfExpressionSyntax typeOf
+                    ? typeOf.Type.GetLocation()
+                    : invocation.Expression.GetLocation();
             }
         }
 

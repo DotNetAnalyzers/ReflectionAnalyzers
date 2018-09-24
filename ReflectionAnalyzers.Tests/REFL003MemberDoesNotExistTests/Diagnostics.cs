@@ -54,23 +54,6 @@ namespace RoslynSandbox
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
-        [TestCase("typeof(string).GetMethod(↓nameof(System.IConvertible.ToInt16))")]
-        public void ExplicitInterface(string type)
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(string).GetMethod(↓nameof(System.IConvertible.ToInt16));
-        }
-    }
-}".AssertReplace("typeof(string).GetMethod(↓nameof(System.IConvertible.ToInt16))", type);
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
-
         [Test]
         public void MissingPropertySetAccessor()
         {

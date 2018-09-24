@@ -131,6 +131,27 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("GetMethod(nameof(IConvertible.ToBoolean))")]
+        [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void WhenExplicitImplementation(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(string).GetMethod(nameof(IConvertible.ToBoolean));
+        }
+    }
+}".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [Test]
         public void GetMethodWhenUnknownType()
         {
