@@ -172,16 +172,20 @@ namespace ReflectionAnalyzers
                  !flags.HasFlagFast(BindingFlags.Instance) &&
                  !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
-                foreach (var member in targetType.GetMembers(name))
+                foreach (var candidate in targetType.GetMembers(name))
                 {
-                    if (!MatchesFilter(member, targetMetadataName, flags, types))
+                    if (!MatchesFilter(candidate, targetMetadataName, flags, types))
                     {
                         continue;
                     }
 
                     if (target == null)
                     {
-                        target = member;
+                        target = candidate;
+                        if (IsOfWrongType(target))
+                        {
+                            return GetXResult.WrongMemberType;
+                        }
                     }
                     else
                     {
@@ -330,6 +334,12 @@ namespace ReflectionAnalyzers
 
                 if (getX.ReturnType == KnownSymbol.PropertyInfo &&
                     !(member is IPropertySymbol))
+                {
+                    return true;
+                }
+
+                if (getX.ReturnType == KnownSymbol.Type &&
+                    !(member is ITypeSymbol))
                 {
                     return true;
                 }
