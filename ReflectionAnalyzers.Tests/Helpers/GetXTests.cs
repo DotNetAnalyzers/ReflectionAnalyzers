@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("GetType().GetMethod(nameof(this.ToString))", "Foo", null)]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\").GetMethod(nameof(this.ToString))", "Int32", null)]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\").GetMethod(nameof(this.ToString))", "IEnumerable`1", null)]
-        public void TryGetTargetTypeExpression(string call, string expected, string expectedInstance)
+        public void TryGetTypeFromExpression(string call, string expected, string expectedInstance)
         {
             var code = @"
 namespace RoslynSandbox
@@ -56,7 +56,7 @@ namespace RoslynSandbox
         [TestCase("GetType()", "Foo", null)]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "Int32", null)]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "IEnumerable`1", null)]
-        public void TryGetTargetTypeLocal(string typeExpression, string expected, string expectedInstance)
+        public void TryGetTypeFromLocal(string typeExpression, string expected, string expectedInstance)
         {
             var code = @"
 namespace RoslynSandbox
