@@ -192,116 +192,91 @@ namespace ReflectionAnalyzers
                         return GetXResult.Ambiguous;
                     }
                 }
-
-                if (member != null)
-                {
-                    return GetXResult.Single;
-                }
-
-                if (targetType.TryFindFirstMemberRecursive(name, out member))
-                {
-                    if (IsUseContainingType(member))
-                    {
-                        return GetXResult.UseContainingType;
-                    }
-
-                    if (member.MetadataName == targetMetadataName &&
-                        !MatchesFilter(member, member.MetadataName, flags, null))
-                    {
-                        return GetXResult.WrongFlags;
-                    }
-
-                    if (!member.ContainingType.Equals(targetType) &&
-                        (member.IsStatic ||
-                         flags.HasFlagFast(BindingFlags.DeclaredOnly)))
-                    {
-                        return GetXResult.WrongFlags;
-                    }
-                }
-
-                if (IsExplicitImplementation(out member))
-                {
-                    return GetXResult.ExplicitImplementation;
-                }
-
-                if (flags.HasFlagFast(BindingFlags.NonPublic) &&
-                    !targetType.Locations.Any(x => x.IsInSource))
-                {
-                    return GetXResult.Unknown;
-                }
-
-                return GetXResult.NoMatch;
             }
-
-            var current = targetType;
-            while (current != null)
+            else
             {
-                foreach (var candidate in current.GetMembers(name))
+                var current = targetType;
+                while (current != null)
                 {
-                    if (!MatchesFilter(candidate, targetMetadataName, flags, types))
+                    foreach (var candidate in current.GetMembers(name))
                     {
-                        continue;
-                    }
-
-                    if (IsOverriding(member, candidate))
-                    {
-                        continue;
-                    }
-
-                    if (member == null)
-                    {
-                        member = candidate;
-                        if (IsUseContainingType(member))
+                        if (!MatchesFilter(candidate, targetMetadataName, flags, types))
                         {
-                            return GetXResult.UseContainingType;
+                            continue;
                         }
 
-                        if (candidate.IsStatic &&
-                            !current.Equals(targetType) &&
-                            !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                        if (IsOverriding(member, candidate))
                         {
-                            return GetXResult.WrongFlags;
+                            continue;
                         }
 
-                        if (IsWrongMemberType(candidate))
+                        if (member == null)
                         {
-                            return GetXResult.WrongMemberType;
+                            member = candidate;
+                            if (IsUseContainingType(member))
+                            {
+                                return GetXResult.UseContainingType;
+                            }
+
+                            if (candidate.IsStatic &&
+                                !current.Equals(targetType) &&
+                                !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                            {
+                                return GetXResult.WrongFlags;
+                            }
+
+                            if (IsWrongMemberType(candidate))
+                            {
+                                return GetXResult.WrongMemberType;
+                            }
+                        }
+                        else
+                        {
+                            return GetXResult.Ambiguous;
                         }
                     }
-                    else
-                    {
-                        return GetXResult.Ambiguous;
-                    }
+
+                    current = current.BaseType;
                 }
-
-                current = current.BaseType;
             }
 
-            if (member == null)
+            if (member != null)
             {
-                if (targetType.TryFindFirstMemberRecursive(name, out member))
-                {
-                    if (member.MetadataName == targetMetadataName &&
-                        !MatchesFilter(member, member.MetadataName, flags, null))
-                    {
-                        return GetXResult.WrongFlags;
-                    }
-                }
-
-                if (IsExplicitImplementation(out member))
-                {
-                    return GetXResult.ExplicitImplementation;
-                }
-
-                if (!HasVisibleMembers(targetType, flags))
-                {
-                    return GetXResult.Unknown;
-                }
-
-                return GetXResult.NoMatch;
+                return GetXResult.Single;
             }
 
-            return GetXResult.Single;
+            if (targetType.TryFindFirstMemberRecursive(name, out member))
+            {
+                if (IsUseContainingType(member))
+                {
+                    return GetXResult.UseContainingType;
+                }
+
+                if (member.MetadataName == targetMetadataName &&
+                    !MatchesFilter(member, member.MetadataName, flags, null))
+                {
+                    return GetXResult.WrongFlags;
+                }
+
+                if (!member.ContainingType.Equals(targetType) &&
+                    (member.IsStatic ||
+                     flags.HasFlagFast(BindingFlags.DeclaredOnly)))
+                {
+                    return GetXResult.WrongFlags;
+                }
+            }
+
+            if (IsExplicitImplementation(out member))
+            {
+                return GetXResult.ExplicitImplementation;
+            }
+
+            if (!HasVisibleMembers(targetType, flags))
+            {
+                return GetXResult.Unknown;
+            }
+
+            return GetXResult.NoMatch;
 
             bool IsWrongMemberType(ISymbol symbol)
             {
@@ -626,29 +601,29 @@ namespace ReflectionAnalyzers
 
         private static bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
         {
-            if (effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
+            if (!effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
             {
-                return !HasSuperTypeNotInSource();
+                return true;
+            }
+
+            if (effectiveFlags.HasFlagFast(BindingFlags.DeclaredOnly))
+            {
+                return type.Locations.Any(x => x.IsInSource);
+            }
+
+            var current = type;
+            while (current != null &&
+                   current != KnownSymbol.Object)
+            {
+                if (!current.Locations.Any(x => x.IsInSource))
+                {
+                    return false;
+                }
+
+                current = current.BaseType;
             }
 
             return true;
-
-            bool HasSuperTypeNotInSource()
-            {
-                var current = type;
-                while (current != null &&
-                       current != KnownSymbol.Object)
-                {
-                    if (!current.Locations.Any(x => x.IsInSource))
-                    {
-                        return true;
-                    }
-
-                    current = current.BaseType;
-                }
-
-                return false;
-            }
         }
 
         private static bool TryGetTargetType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
