@@ -13,9 +13,111 @@ namespace ReflectionAnalyzers
     internal static class GetX
     {
         /// <summary>
+        /// Check if <paramref name="invocation"/> is a call to Type.GetEvent
+        /// </summary>
+        internal static GetXResult? TryMatchGetEvent(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetEvent, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
+        }
+
+        /// <summary>
+        /// Check if <paramref name="invocation"/> is a call to Type.GetField
+        /// </summary>
+        internal static GetXResult? TryMatchGetField(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetField, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
+        }
+
+        /// <summary>
+        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod
+        /// </summary>
+        internal static GetXResult? TryMatchGetMethod(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            targetType = null;
+            nameArg = null;
+            targetName = null;
+            target = null;
+            flagsArg = null;
+            flags = 0;
+            if (invocation.ArgumentList != null &&
+                invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
+                TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
+                IsKnownSignature(getX) &&
+                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
+                (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
+                 TryGetDefaultFlags(KnownSymbol.Type.GetMethod, out flags)))
+            {
+                return TryGetTarget(getX, targetType, targetName, flags, out target);
+            }
+
+            return null;
+
+            bool IsKnownSignature(IMethodSymbol candidate)
+            {
+                // I don't know how binder works so limiting checks to what I know.
+                return (candidate.Parameters.TrySingle(out var nameParameter) &&
+                        nameParameter.Type == KnownSymbol.String) ||
+                       (candidate.Parameters.Length == 2 &&
+                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String,       out nameParameter) &&
+                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
+            }
+        }
+
+        /// <summary>
+        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod
+        /// </summary>
+        internal static GetXResult? TryMatchGetMember(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            targetType = null;
+            nameArg = null;
+            targetName = null;
+            target = null;
+            flagsArg = null;
+            flags = 0;
+            if (invocation.ArgumentList != null &&
+                invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out var getX) &&
+                TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
+                IsKnownSignature(getX) &&
+                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
+                (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
+                 TryGetDefaultFlags(KnownSymbol.Type.GetMember, out flags)))
+            {
+                return TryGetTarget(getX, targetType, targetName, flags, out target);
+            }
+
+            return null;
+
+            bool IsKnownSignature(IMethodSymbol candidate)
+            {
+                // I don't know how binder works so limiting checks to what I know.
+                return (candidate.Parameters.TrySingle(out var nameParameter) &&
+                        nameParameter.Type == KnownSymbol.String) ||
+                       (candidate.Parameters.Length == 2 &&
+                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String,       out nameParameter) &&
+                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
+            }
+        }
+
+        /// <summary>
+        /// Check if <paramref name="invocation"/> is a call to Type.GetNestedType
+        /// </summary>
+        internal static GetXResult? TryMatchGetNestedType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetNestedType, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
+        }
+
+        /// <summary>
+        /// Check if <paramref name="invocation"/> is a call to Type.GetProperty
+        /// </summary>
+        internal static GetXResult? TryMatchGetProperty(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetProperty, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
+        }
+
+        /// <summary>
         /// Handles GetField, GetEvent, GetMember, GetMethod...
         /// </summary>
-        internal static GetXResult? TryMatch(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        private static GetXResult? TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
         {
             targetType = null;
             nameArg = null;
@@ -26,26 +128,14 @@ namespace ReflectionAnalyzers
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
-                IsKnownSignature(getX, out var nameParameter) &&
-                invocation.TryFindArgument(nameParameter, out nameArg) &&
-                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out targetName) &&
-                (TryGetFlagsFromArgument(invocation, getX, context, out flagsArg, out flags) ||
+                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
+                (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(getXMethod, out flags)))
             {
                 return TryGetTarget(getX, targetType, targetName, flags, out target);
             }
 
             return null;
-
-            bool IsKnownSignature(IMethodSymbol candidate, out IParameterSymbol nameParameterSymbol)
-            {
-                // I don't know how binder works so limiting checks to what I know.
-                return (candidate.Parameters.TrySingle(out nameParameterSymbol) &&
-                        nameParameterSymbol.Type == KnownSymbol.String) ||
-                       (candidate.Parameters.Length == 2 &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameterSymbol) &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
-            }
         }
 
         /// <summary>
@@ -89,7 +179,16 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetFlagsFromArgument(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out BindingFlags bindingFlags)
+        private static bool TryGetName(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out string name)
+        {
+            argument = null;
+            name = null;
+            return getX.TryFindParameter(KnownSymbol.String, out var parameter) &&
+                   invocation.TryFindArgument(parameter, out argument) &&
+                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out name);
+        }
+
+        private static bool TryGetFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out BindingFlags bindingFlags)
         {
             argument = null;
             bindingFlags = 0;

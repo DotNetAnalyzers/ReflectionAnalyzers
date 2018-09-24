@@ -13,16 +13,6 @@ namespace ReflectionAnalyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class GetXAnalyzer : DiagnosticAnalyzer
     {
-        protected internal static readonly QualifiedMethod[] GetXMethods =
-        {
-            KnownSymbol.Type.GetEvent,
-            KnownSymbol.Type.GetField,
-            KnownSymbol.Type.GetMember,
-            KnownSymbol.Type.GetMethod,
-            KnownSymbol.Type.GetNestedType,
-            KnownSymbol.Type.GetProperty
-        };
-
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL003MemberDoesNotExist.Descriptor,
@@ -153,13 +143,15 @@ namespace ReflectionAnalyzers
         {
             if (context.Node is InvocationExpressionSyntax candidate)
             {
-                foreach (var qualifiedMethod in GetXMethods)
+                var result = GetX.TryMatchGetEvent(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
+                             GetX.TryMatchGetField(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
+                             GetX.TryMatchGetMember(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
+                             GetX.TryMatchGetMethod(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
+                             GetX.TryMatchGetNestedType(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
+                             GetX.TryMatchGetProperty(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
+                if (result != null)
                 {
-                    var result = GetX.TryMatch(candidate, qualifiedMethod, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
-                    if (result != null)
-                    {
-                        return result.Value;
-                    }
+                    return result.Value;
                 }
             }
 
