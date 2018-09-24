@@ -103,6 +103,29 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("GetNestedType(\"Generic`1\", BindingFlags.Public)")]
+        public void GetNestedGenericType(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetNestedType(""Generic`1"", BindingFlags.Public);
+        }
+
+        public class Generic<T>
+        {
+        }
+    }
+}".AssertReplace("GetNestedType(\"Generic`1\", BindingFlags.Public)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [Test]
         public void WhenThrowingArgumentException()
         {

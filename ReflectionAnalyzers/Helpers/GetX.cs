@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers
 {
     using System.Linq;
-    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -130,26 +129,27 @@ namespace ReflectionAnalyzers
                    TryGetTargetType(memberAccess.Expression, context, null, out result, out instance);
         }
 
-        internal static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetName, BindingFlags effectiveFlags, SyntaxNodeAnalysisContext context, out ISymbol target)
+        internal static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetMetadataName, BindingFlags effectiveFlags, SyntaxNodeAnalysisContext context, out ISymbol target)
         {
+            var name = TrimName();
             target = null;
             if (targetType is ITypeParameterSymbol typeParameter)
             {
                 if (typeParameter.ConstraintTypes.Length == 0)
                 {
-                    return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), targetName, effectiveFlags, context, out target);
+                    return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, effectiveFlags, context, out target);
                 }
 
                 foreach (var constraintType in typeParameter.ConstraintTypes)
                 {
-                    var result = TryGetTarget(getX, constraintType, targetName, effectiveFlags, context, out target);
+                    var result = TryGetTarget(getX, constraintType, name, effectiveFlags, context, out target);
                     if (result != GetXResult.NoMatch)
                     {
                         return result;
                     }
                 }
 
-                return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), targetName, effectiveFlags, context, out target);
+                return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, effectiveFlags, context, out target);
             }
 
             if (getX == KnownSymbol.Type.GetNestedType ||
@@ -158,9 +158,9 @@ namespace ReflectionAnalyzers
                  !effectiveFlags.HasFlagFast(BindingFlags.Instance) &&
                  !effectiveFlags.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
-                foreach (var member in targetType.GetMembers(targetName))
+                foreach (var member in targetType.GetMembers(name))
                 {
-                    if (!MatchesFlags(member, effectiveFlags))
+                    if (!MatchesFilter(member, targetMetadataName, effectiveFlags))
                     {
                         continue;
                     }
@@ -180,7 +180,7 @@ namespace ReflectionAnalyzers
                     return GetXResult.Single;
                 }
 
-                if (targetType.TryFindFirstMemberRecursive(targetName, out target))
+                if (targetType.TryFindFirstMemberRecursive(name, out target))
                 {
                     if (getX == KnownSymbol.Type.GetNestedType &&
                         !targetType.Equals(target.ContainingType))
@@ -214,9 +214,9 @@ namespace ReflectionAnalyzers
             var current = targetType;
             while (current != null)
             {
-                foreach (var member in current.GetMembers(targetName))
+                foreach (var member in current.GetMembers(name))
                 {
-                    if (!MatchesFlags(member, effectiveFlags))
+                    if (!MatchesFilter(member, targetMetadataName, effectiveFlags))
                     {
                         continue;
                     }
@@ -258,7 +258,7 @@ namespace ReflectionAnalyzers
 
             if (target == null)
             {
-                if (targetType.TryFindFirstMemberRecursive(targetName, out target))
+                if (targetType.TryFindFirstMemberRecursive(name, out target))
                 {
                     return GetXResult.WrongFlags;
                 }
@@ -332,7 +332,7 @@ namespace ReflectionAnalyzers
             {
                 foreach (var @interface in targetType.AllInterfaces)
                 {
-                    if (@interface.TryFindFirstMemberRecursive(targetName, out result))
+                    if (@interface.TryFindFirstMemberRecursive(name, out result))
                     {
                         return true;
                     }
@@ -340,6 +340,17 @@ namespace ReflectionAnalyzers
 
                 result = null;
                 return false;
+            }
+
+            string TrimName()
+            {
+                var index = targetMetadataName.IndexOf('`');
+                if (index > 0)
+                {
+                    return targetMetadataName.Substring(0, index);
+                }
+
+                return targetMetadataName;
             }
         }
 
@@ -409,8 +420,13 @@ namespace ReflectionAnalyzers
                    context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
         }
 
-        private static bool MatchesFlags(ISymbol candidate, BindingFlags filter)
+        private static bool MatchesFilter(ISymbol candidate, string metadataName, BindingFlags filter)
         {
+            if (candidate.MetadataName != metadataName)
+            {
+                return false;
+            }
+
             if (candidate.DeclaredAccessibility == Accessibility.Public &&
                 !filter.HasFlagFast(BindingFlags.Public))
             {
@@ -498,7 +514,7 @@ namespace ReflectionAnalyzers
                                 }
 
                                 return context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out result);
-                            case IdentifierNameSyntax identifierName when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
+                            case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
                                 return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);
                         }
                     }

@@ -140,5 +140,30 @@ namespace RoslynSandbox.Dump
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, exception, code);
         }
+
+        [TestCase("GetNestedType(\"Generic\", BindingFlags.Public)")]
+        [TestCase("GetNestedType(nameof(Generic<int>), BindingFlags.Public)")]
+        [TestCase("GetNestedType(\"Generic`2\", BindingFlags.Public)")]
+        public void GetNestedType(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetNestedType(nameof(Generic<int>), BindingFlags.Public);
+        }
+
+        public class Generic<T>
+        {
+        }
+    }
+}".AssertReplace("GetNestedType(nameof(Generic<int>), BindingFlags.Public)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
