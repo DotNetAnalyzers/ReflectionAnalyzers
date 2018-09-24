@@ -127,6 +127,25 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void IEnumeratorGetCurrent()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections;
+
+    public class Foo
+    {
+        public void Meh(object value)
+        {
+            _ = typeof(IEnumerator).GetMethod(""get_Current"");
+        }
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, testCode);
+        }
+
+        [Test]
         public void WhenThrowingArgumentException()
         {
             var testCode = @"

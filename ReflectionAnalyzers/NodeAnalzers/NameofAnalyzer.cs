@@ -107,12 +107,12 @@ namespace ReflectionAnalyzers
             if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 !(memberAccess.Expression is InstanceExpressionSyntax))
             {
-                return invocation.TryGetTarget(KnownSymbol.Type.GetEvent,      context.SemanticModel, context.CancellationToken, out getX) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetField,      context.SemanticModel, context.CancellationToken, out getX) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetMember,     context.SemanticModel, context.CancellationToken, out getX) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetMethod,     context.SemanticModel, context.CancellationToken, out getX) ||
+                return invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context.SemanticModel, context.CancellationToken, out getX) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetField, context.SemanticModel, context.CancellationToken, out getX) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out getX) ||
+                       invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out getX) ||
                        invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out getX) ||
-                       invocation.TryGetTarget(KnownSymbol.Type.GetProperty,   context.SemanticModel, context.CancellationToken, out getX);
+                       invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out getX);
             }
 
             getX = null;
@@ -126,9 +126,20 @@ namespace ReflectionAnalyzers
             if (GetX.TryGetTargetType(invocation, context, out var targetType, out instance))
             {
                 _ = GetX.TryGetMember(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, GetX.AnyTypes, context, out var targetSymbol);
-                target = targetSymbol != null
-                    ? new Optional<ISymbol>(targetSymbol)
-                    : default(Optional<ISymbol>);
+
+                if (targetSymbol is IMethodSymbol method)
+                {
+                    target = method.AssociatedSymbol == null
+                        ? new Optional<ISymbol>(targetSymbol)
+                        : default(Optional<ISymbol>);
+                }
+                else
+                {
+                    target = targetSymbol != null
+                        ? new Optional<ISymbol>(targetSymbol)
+                        : default(Optional<ISymbol>);
+                }
+
                 return true;
             }
 
