@@ -47,7 +47,7 @@ namespace ReflectionAnalyzers
                 (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(KnownSymbol.Type.GetMethod, out flags)))
             {
-                return TryGetTarget(getX, targetType, targetName, flags, out target);
+                return TryGetTarget(getX, targetType, targetName, flags, context, out target);
             }
 
             return null;
@@ -58,7 +58,7 @@ namespace ReflectionAnalyzers
                 return (candidate.Parameters.TrySingle(out var nameParameter) &&
                         nameParameter.Type == KnownSymbol.String) ||
                        (candidate.Parameters.Length == 2 &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String,       out nameParameter) &&
+                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameter) &&
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
             }
         }
@@ -82,7 +82,7 @@ namespace ReflectionAnalyzers
                 (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(KnownSymbol.Type.GetMember, out flags)))
             {
-                return TryGetTarget(getX, targetType, targetName, flags, out target);
+                return TryGetTarget(getX, targetType, targetName, flags, context, out target);
             }
 
             return null;
@@ -93,7 +93,7 @@ namespace ReflectionAnalyzers
                 return (candidate.Parameters.TrySingle(out var nameParameter) &&
                         nameParameter.Type == KnownSymbol.String) ||
                        (candidate.Parameters.Length == 2 &&
-                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String,       out nameParameter) &&
+                        candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameter) &&
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
             }
         }
@@ -112,30 +112,6 @@ namespace ReflectionAnalyzers
         internal static GetXResult? TryMatchGetProperty(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
         {
             return TryMatchGetX(invocation, KnownSymbol.Type.GetProperty, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
-        }
-
-        /// <summary>
-        /// Handles GetField, GetEvent, GetMember, GetMethod...
-        /// </summary>
-        private static GetXResult? TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
-        {
-            targetType = null;
-            nameArg = null;
-            targetName = null;
-            target = null;
-            flagsArg = null;
-            flags = 0;
-            if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
-                TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
-                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
-                (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
-                 TryGetDefaultFlags(getXMethod, out flags)))
-            {
-                return TryGetTarget(getX, targetType, targetName, flags, out target);
-            }
-
-            return null;
         }
 
         /// <summary>
@@ -179,6 +155,30 @@ namespace ReflectionAnalyzers
             return false;
         }
 
+        /// <summary>
+        /// Handles GetField, GetEvent, GetMember, GetMethod...
+        /// </summary>
+        private static GetXResult? TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            targetType = null;
+            nameArg = null;
+            targetName = null;
+            target = null;
+            flagsArg = null;
+            flags = 0;
+            if (invocation.ArgumentList != null &&
+                invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
+                TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
+                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
+                (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
+                 TryGetDefaultFlags(getXMethod, out flags)))
+            {
+                return TryGetTarget(getX, targetType, targetName, flags, context, out target);
+            }
+
+            return null;
+        }
+
         private static bool TryGetName(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out string name)
         {
             argument = null;
@@ -197,18 +197,26 @@ namespace ReflectionAnalyzers
                    context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
         }
 
-        private static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetName, BindingFlags flags, out ISymbol target)
+        private static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetName, BindingFlags effectiveFlags, SyntaxNodeAnalysisContext context, out ISymbol target)
         {
             target = null;
+            if (targetType is ITypeParameterSymbol typeParameter)
+            {
+                if (typeParameter.ConstraintTypes.Length == 0)
+                {
+                    return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), targetName, effectiveFlags, context, out target);
+                }
+            }
+
             if (getX == KnownSymbol.Type.GetNestedType ||
-                flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
-                (flags.HasFlagFast(BindingFlags.Static) &&
-                 !flags.HasFlagFast(BindingFlags.Instance) &&
-                 !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
+                effectiveFlags.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                (effectiveFlags.HasFlagFast(BindingFlags.Static) &&
+                 !effectiveFlags.HasFlagFast(BindingFlags.Instance) &&
+                 !effectiveFlags.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
                 foreach (var member in targetType.GetMembers(targetName))
                 {
-                    if (!MatchesFlags(member, flags))
+                    if (!MatchesFlags(member, effectiveFlags))
                     {
                         continue;
                     }
@@ -246,7 +254,7 @@ namespace ReflectionAnalyzers
                     return GetXResult.WrongFlags;
                 }
 
-                if (!HasVisibleMembers(targetType, flags))
+                if (!HasVisibleMembers(targetType, effectiveFlags))
                 {
                     return GetXResult.Unknown;
                 }
@@ -259,14 +267,14 @@ namespace ReflectionAnalyzers
             {
                 foreach (var member in current.GetMembers(targetName))
                 {
-                    if (!MatchesFlags(member, flags))
+                    if (!MatchesFlags(member, effectiveFlags))
                     {
                         continue;
                     }
 
                     if (member.IsStatic &&
                         !current.Equals(targetType) &&
-                        !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                        !effectiveFlags.HasFlagFast(BindingFlags.FlattenHierarchy))
                     {
                         continue;
                     }
@@ -306,7 +314,7 @@ namespace ReflectionAnalyzers
                     return GetXResult.WrongFlags;
                 }
 
-                if (!HasVisibleMembers(targetType, flags))
+                if (!HasVisibleMembers(targetType, effectiveFlags))
                 {
                     return GetXResult.Unknown;
                 }

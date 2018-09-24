@@ -150,6 +150,22 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [Test]
+        public void GetMethodWhenTypeParameter()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("get_Bar")]
         [TestCase("set_Bar")]
         public void GetPropertyMethods(string name)
