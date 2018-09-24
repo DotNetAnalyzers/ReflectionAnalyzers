@@ -8,8 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         internal class GetMethod
         {
             [TestCase("typeof(Foo).GetMethod(nameof(PublicStatic))")]
-            [TestCase("typeof(Foo).GetMethod(nameof(ReferenceEquals))")]
-            [TestCase("typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static)")]
+            [TestCase("typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
             [TestCase("typeof(Foo).GetMethod(nameof(this.PublicInstance))")]
             [TestCase("typeof(Foo).GetMethod(nameof(PublicInstance))")]
             [TestCase("typeof(Foo).GetMethod(nameof(this.ToString))")]

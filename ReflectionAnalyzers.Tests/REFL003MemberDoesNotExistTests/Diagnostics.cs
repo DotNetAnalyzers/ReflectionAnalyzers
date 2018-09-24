@@ -133,7 +133,7 @@ namespace RoslynSandbox.Dump
     {
         public Foo()
         {
-            var member = typeof(CustomAggregateException).GetField(""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var member = typeof(CustomAggregateException).GetField(↓""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
     }
 }";

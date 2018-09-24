@@ -143,7 +143,7 @@ namespace ReflectionAnalyzers
                    TryGetTargetType(memberAccess.Expression, context, null, out result, out instance);
         }
 
-        internal static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetMetadataName, BindingFlags effectiveFlags, IReadOnlyList<ITypeSymbol> types, SyntaxNodeAnalysisContext context, out ISymbol target)
+        internal static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetMetadataName, BindingFlags flags, IReadOnlyList<ITypeSymbol> types, SyntaxNodeAnalysisContext context, out ISymbol target)
         {
             var name = TrimName();
             target = null;
@@ -151,30 +151,30 @@ namespace ReflectionAnalyzers
             {
                 if (typeParameter.ConstraintTypes.Length == 0)
                 {
-                    return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, effectiveFlags, types, context, out target);
+                    return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, flags, types, context, out target);
                 }
 
                 foreach (var constraintType in typeParameter.ConstraintTypes)
                 {
-                    var result = TryGetTarget(getX, constraintType, name, effectiveFlags, types, context, out target);
+                    var result = TryGetTarget(getX, constraintType, name, flags, types, context, out target);
                     if (result != GetXResult.NoMatch)
                     {
                         return result;
                     }
                 }
 
-                return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, effectiveFlags, types, context, out target);
+                return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, flags, types, context, out target);
             }
 
             if (getX == KnownSymbol.Type.GetNestedType ||
-                effectiveFlags.HasFlagFast(BindingFlags.DeclaredOnly) ||
-                (effectiveFlags.HasFlagFast(BindingFlags.Static) &&
-                 !effectiveFlags.HasFlagFast(BindingFlags.Instance) &&
-                 !effectiveFlags.HasFlagFast(BindingFlags.FlattenHierarchy)))
+                flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                (flags.HasFlagFast(BindingFlags.Static) &&
+                 !flags.HasFlagFast(BindingFlags.Instance) &&
+                 !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
                 foreach (var member in targetType.GetMembers(name))
                 {
-                    if (!MatchesFilter(member, targetMetadataName, effectiveFlags, types))
+                    if (!MatchesFilter(member, targetMetadataName, flags, types))
                     {
                         continue;
                     }
@@ -209,7 +209,18 @@ namespace ReflectionAnalyzers
                         return GetXResult.UseContainingType;
                     }
 
-                    return GetXResult.WrongFlags;
+                    if (target.MetadataName == targetMetadataName &&
+                        !MatchesFilter(target, target.MetadataName, flags, null))
+                    {
+                        return GetXResult.WrongFlags;
+                    }
+
+                    if (!target.ContainingType.Equals(targetType) &&
+                        (target.IsStatic ||
+                         flags.HasFlagFast(BindingFlags.DeclaredOnly)))
+                    {
+                        return GetXResult.WrongFlags;
+                    }
                 }
 
                 if (IsExplicitImplementation(out target))
@@ -217,7 +228,8 @@ namespace ReflectionAnalyzers
                     return GetXResult.ExplicitImplementation;
                 }
 
-                if (!HasVisibleMembers(targetType, effectiveFlags))
+                if (flags.HasFlagFast(BindingFlags.NonPublic) &&
+                    !targetType.Locations.Any(x => x.IsInSource))
                 {
                     return GetXResult.Unknown;
                 }
@@ -230,14 +242,7 @@ namespace ReflectionAnalyzers
             {
                 foreach (var member in current.GetMembers(name))
                 {
-                    if (!MatchesFilter(member, targetMetadataName, effectiveFlags, types))
-                    {
-                        continue;
-                    }
-
-                    if (member.IsStatic &&
-                        !current.Equals(targetType) &&
-                        !effectiveFlags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                    if (!MatchesFilter(member, targetMetadataName, flags, types))
                     {
                         continue;
                     }
@@ -250,6 +255,13 @@ namespace ReflectionAnalyzers
                             !target.ContainingType.Equals(targetType))
                         {
                             return GetXResult.UseContainingType;
+                        }
+
+                        if (member.IsStatic &&
+                            !current.Equals(targetType) &&
+                            !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                        {
+                            return GetXResult.WrongFlags;
                         }
 
                         if (IsOfWrongType(member))
@@ -274,7 +286,11 @@ namespace ReflectionAnalyzers
             {
                 if (targetType.TryFindFirstMemberRecursive(name, out target))
                 {
-                    return GetXResult.WrongFlags;
+                    if (target.MetadataName == targetMetadataName &&
+                        !MatchesFilter(target, target.MetadataName, flags, null))
+                    {
+                        return GetXResult.WrongFlags;
+                    }
                 }
 
                 if (IsExplicitImplementation(out target))
@@ -282,7 +298,7 @@ namespace ReflectionAnalyzers
                     return GetXResult.ExplicitImplementation;
                 }
 
-                if (!HasVisibleMembers(targetType, effectiveFlags))
+                if (!HasVisibleMembers(targetType, flags))
                 {
                     return GetXResult.Unknown;
                 }

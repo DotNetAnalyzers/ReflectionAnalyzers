@@ -32,7 +32,6 @@ namespace RoslynSandbox.Dump
         }
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public void SubclassAggregateExceptionGetInnerExceptionCount(string call)
         {
             var exception = @"

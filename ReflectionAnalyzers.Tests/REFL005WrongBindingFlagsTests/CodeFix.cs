@@ -145,6 +145,7 @@ namespace RoslynSandbox
         private int Private() => 0;
     }
 }".AssertReplace("nameof(this.Public)", $"nameof({method})");
+
             var fixedCode = @"
 namespace RoslynSandbox
 {
@@ -167,6 +168,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
+
             var message = $"There is no member matching the filter. Expected: {expected}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
