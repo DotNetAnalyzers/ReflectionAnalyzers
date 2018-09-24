@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -39,7 +40,7 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var effectiveFlags))
+                switch (TryGetX(context, out var targetType, out var nameArg, out var targetName, out var target, out var flagsArg, out var effectiveFlags, out var typesArg, out var types))
                 {
                     case GetXResult.NoMatch:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), targetType, targetName));
@@ -155,14 +156,16 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
         {
+            typesArg = null;
+            types = null;
             if (context.Node is InvocationExpressionSyntax candidate)
             {
                 var result = GetX.TryMatchGetEvent(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
                              GetX.TryMatchGetField(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
-                             GetX.TryMatchGetMember(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
-                             GetX.TryMatchGetMethod(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
+                             GetX.TryMatchGetMember(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags, out typesArg, out types) ??
+                             GetX.TryMatchGetMethod(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags, out typesArg, out types) ??
                              GetX.TryMatchGetNestedType(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags) ??
                              GetX.TryMatchGetProperty(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out flags);
                 if (result != null)
