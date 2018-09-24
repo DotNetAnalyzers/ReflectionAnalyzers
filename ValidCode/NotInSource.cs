@@ -1,3 +1,4 @@
+#pragma warning disable CS0169
 namespace ValidCode
 {
     using System;

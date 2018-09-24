@@ -3,6 +3,7 @@ namespace ReflectionAnalyzers.Tests.Documentation
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -13,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.Documentation
     using NUnit.Framework;
     using ReflectionAnalyzers;
 
-    public class Tests
+    internal class Tests
     {
         private static readonly IReadOnlyList<DiagnosticAnalyzer> Analyzers = typeof(AnalyzerCategory)
                                                                               .Assembly
@@ -65,11 +66,11 @@ namespace ReflectionAnalyzers.Tests.Documentation
         {
             var expected = descriptorInfo.Descriptor
                                          .Description
-                                         .ToString()
+                                         .ToString(CultureInfo.InvariantCulture)
                                          .Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries)
                                          .First();
             var actual = File.ReadLines(descriptorInfo.DocFileName)
-                             .SkipWhile(l => !l.StartsWith("## Description"))
+                             .SkipWhile(l => !l.StartsWith("## Description", StringComparison.OrdinalIgnoreCase))
                              .Skip(1)
                              .FirstOrDefault(l => !string.IsNullOrWhiteSpace(l))
                             ?.Replace("`", string.Empty);
@@ -130,12 +131,12 @@ namespace ReflectionAnalyzers.Tests.Documentation
             var descriptor = descriptorInfo.Descriptor;
             var stub = Properties.Resources.DiagnosticDocTemplate
                              .AssertReplace("{ID}", descriptor.Id)
-                             .AssertReplace("## ADD TITLE HERE", $"## {descriptor.Title.ToString()}")
+                             .AssertReplace("## ADD TITLE HERE", $"## {descriptor.Title.ToString(CultureInfo.InvariantCulture)}")
                              .AssertReplace("{SEVERITY}", descriptor.DefaultSeverity.ToString())
                              .AssertReplace("{ENABLED}", descriptor.IsEnabledByDefault ? "true" : "false")
                              .AssertReplace("{CATEGORY}", descriptor.Category)
-                             .AssertReplace("ADD DESCRIPTION HERE", descriptor.Description.ToString())
-                             .AssertReplace("{TITLE}", descriptor.Title.ToString());
+                             .AssertReplace("ADD DESCRIPTION HERE", descriptor.Description.ToString(CultureInfo.InvariantCulture))
+                             .AssertReplace("{TITLE}", descriptor.Title.ToString(CultureInfo.InvariantCulture));
             if (Analyzers.Count(x => x.SupportedDiagnostics.Any(d => d.Id == descriptor.Id)) == 1)
             {
                 return stub.AssertReplace("{TYPENAME}", descriptorInfo.Analyzer.GetType().Name)
@@ -191,11 +192,6 @@ namespace ReflectionAnalyzers.Tests.Documentation
                 this.Analyzer = analyzer;
                 this.Descriptor = descriptor;
                 this.DocFileName = Path.Combine(DocumentsDirectory.FullName, descriptor.Id + ".md");
-                this.CodeFileName = Directory.EnumerateFiles(
-                                                 SolutionDirectory.FullName,
-                                                 analyzer.GetType().Name + ".cs",
-                                                 SearchOption.AllDirectories)
-                                             .FirstOrDefault();
                 this.CodeFileUri = GetCodeFileUri(analyzer);
             }
 
@@ -206,8 +202,6 @@ namespace ReflectionAnalyzers.Tests.Documentation
             public DiagnosticDescriptor Descriptor { get; }
 
             public string DocFileName { get; }
-
-            public string CodeFileName { get; }
 
             public string CodeFileUri { get; }
 
