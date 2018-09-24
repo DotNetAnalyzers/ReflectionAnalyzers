@@ -32,121 +32,7 @@ namespace ReflectionAnalyzers
                 (TryGetFlagsFromArgument(invocation, getX, context, out flagsArg, out flags) ||
                  TryGetDefaultFlags(getXMethod, out flags)))
             {
-                if (getX == KnownSymbol.Type.GetNestedType ||
-                    flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
-                    (flags.HasFlagFast(BindingFlags.Static) &&
-                     !flags.HasFlagFast(BindingFlags.Instance) &&
-                     !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
-                {
-                    foreach (var member in targetType.GetMembers(targetName))
-                    {
-                        if (!MatchesFlags(member, flags))
-                        {
-                            continue;
-                        }
-
-                        if (target == null)
-                        {
-                            target = member;
-                        }
-                        else
-                        {
-                            return GetXResult.Ambiguous;
-                        }
-                    }
-
-                    if (target != null)
-                    {
-                        return GetXResult.Single;
-                    }
-
-                    if (targetType.TryFindFirstMemberRecursive(targetName, out target))
-                    {
-                        if (getX == KnownSymbol.Type.GetNestedType &&
-                            !targetType.Equals(target.ContainingType))
-                        {
-                            return GetXResult.UseContainingType;
-                        }
-
-                        if (target.IsStatic &&
-                            target.DeclaredAccessibility == Accessibility.Private &&
-                            !targetType.Equals(target.ContainingType))
-                        {
-                            return GetXResult.UseContainingType;
-                        }
-
-                        return GetXResult.WrongFlags;
-                    }
-
-                    if (!HasVisibleMembers(targetType, flags))
-                    {
-                        return GetXResult.Unknown;
-                    }
-
-                    return GetXResult.NoMatch;
-                }
-
-                var current = targetType;
-                while (current != null)
-                {
-                    foreach (var member in current.GetMembers(targetName))
-                    {
-                        if (!MatchesFlags(member, flags))
-                        {
-                            continue;
-                        }
-
-                        if (member.IsStatic &&
-                            !current.Equals(targetType) &&
-                            !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
-                        {
-                            continue;
-                        }
-
-                        if (target == null)
-                        {
-                            target = member;
-                            if (target.IsStatic &&
-                                target.DeclaredAccessibility == Accessibility.Private &&
-                                !target.ContainingType.Equals(targetType))
-                            {
-                                return GetXResult.UseContainingType;
-                            }
-
-                            if (IsOfWrongType(member))
-                            {
-                                return GetXResult.WrongMemberType;
-                            }
-                        }
-                        else if (IsOverriding(target, member))
-                        {
-                            // continue
-                        }
-                        else
-                        {
-                            return GetXResult.Ambiguous;
-                        }
-                    }
-
-                    current = current.BaseType;
-                }
-
-                if (target == null)
-                {
-                    if (targetType.TryFindFirstMemberRecursive(targetName, out target))
-                    {
-                        return GetXResult.WrongFlags;
-                    }
-
-                    if (!HasVisibleMembers(targetType, flags))
-                    {
-                        return GetXResult.Unknown;
-                    }
-
-                    return GetXResult.NoMatch;
-                }
-
-                return GetXResult.Single;
+                return TryGetTarget(getX, targetType, targetName, flags, out target);
             }
 
             return null;
@@ -159,56 +45,6 @@ namespace ReflectionAnalyzers
                        (candidate.Parameters.Length == 2 &&
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.String, out nameParameterSymbol) &&
                         candidate.Parameters.TrySingle(x => x.Type == KnownSymbol.BindingFlags, out _));
-            }
-
-            bool IsOfWrongType(ISymbol member)
-            {
-                if (getX.ReturnType == KnownSymbol.EventInfo &&
-                    !(member is IEventSymbol))
-                {
-                    return true;
-                }
-
-                if (getX.ReturnType == KnownSymbol.FieldInfo &&
-                    !(member is IFieldSymbol))
-                {
-                    return true;
-                }
-
-                if (getX.ReturnType == KnownSymbol.MethodInfo &&
-                    !(member is IMethodSymbol))
-                {
-                    return true;
-                }
-
-                if (getX.ReturnType == KnownSymbol.PropertyInfo &&
-                    !(member is IPropertySymbol))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
-            {
-                if (symbol.IsOverride)
-                {
-                    switch (symbol)
-                    {
-                        case IEventSymbol eventSymbol:
-                            return Equals(eventSymbol.OverriddenEvent, candidateBase) ||
-                                   IsOverriding(eventSymbol.OverriddenEvent, candidateBase);
-                        case IMethodSymbol method:
-                            return Equals(method.OverriddenMethod, candidateBase) ||
-                                   IsOverriding(method.OverriddenMethod, candidateBase);
-                        case IPropertySymbol property:
-                            return Equals(property.OverriddenProperty, candidateBase) ||
-                                   IsOverriding(property.OverriddenProperty, candidateBase);
-                    }
-                }
-
-                return false;
             }
         }
 
@@ -260,6 +96,176 @@ namespace ReflectionAnalyzers
             return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
                    invocation.TryFindArgument(parameter, out argument) &&
                    context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
+        }
+
+        private static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetName, BindingFlags flags, out ISymbol target)
+        {
+            target = null;
+            if (getX == KnownSymbol.Type.GetNestedType ||
+                flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                (flags.HasFlagFast(BindingFlags.Static) &&
+                 !flags.HasFlagFast(BindingFlags.Instance) &&
+                 !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
+            {
+                foreach (var member in targetType.GetMembers(targetName))
+                {
+                    if (!MatchesFlags(member, flags))
+                    {
+                        continue;
+                    }
+
+                    if (target == null)
+                    {
+                        target = member;
+                    }
+                    else
+                    {
+                        return GetXResult.Ambiguous;
+                    }
+                }
+
+                if (target != null)
+                {
+                    return GetXResult.Single;
+                }
+
+                if (targetType.TryFindFirstMemberRecursive(targetName, out target))
+                {
+                    if (getX == KnownSymbol.Type.GetNestedType &&
+                        !targetType.Equals(target.ContainingType))
+                    {
+                        return GetXResult.UseContainingType;
+                    }
+
+                    if (target.IsStatic &&
+                        target.DeclaredAccessibility == Accessibility.Private &&
+                        !targetType.Equals(target.ContainingType))
+                    {
+                        return GetXResult.UseContainingType;
+                    }
+
+                    return GetXResult.WrongFlags;
+                }
+
+                if (!HasVisibleMembers(targetType, flags))
+                {
+                    return GetXResult.Unknown;
+                }
+
+                return GetXResult.NoMatch;
+            }
+
+            var current = targetType;
+            while (current != null)
+            {
+                foreach (var member in current.GetMembers(targetName))
+                {
+                    if (!MatchesFlags(member, flags))
+                    {
+                        continue;
+                    }
+
+                    if (member.IsStatic &&
+                        !current.Equals(targetType) &&
+                        !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                    {
+                        continue;
+                    }
+
+                    if (target == null)
+                    {
+                        target = member;
+                        if (target.IsStatic &&
+                            target.DeclaredAccessibility == Accessibility.Private &&
+                            !target.ContainingType.Equals(targetType))
+                        {
+                            return GetXResult.UseContainingType;
+                        }
+
+                        if (IsOfWrongType(member))
+                        {
+                            return GetXResult.WrongMemberType;
+                        }
+                    }
+                    else if (IsOverriding(target, member))
+                    {
+                        // continue
+                    }
+                    else
+                    {
+                        return GetXResult.Ambiguous;
+                    }
+                }
+
+                current = current.BaseType;
+            }
+
+            if (target == null)
+            {
+                if (targetType.TryFindFirstMemberRecursive(targetName, out target))
+                {
+                    return GetXResult.WrongFlags;
+                }
+
+                if (!HasVisibleMembers(targetType, flags))
+                {
+                    return GetXResult.Unknown;
+                }
+
+                return GetXResult.NoMatch;
+            }
+
+            return GetXResult.Single;
+
+            bool IsOfWrongType(ISymbol member)
+            {
+                if (getX.ReturnType == KnownSymbol.EventInfo &&
+                    !(member is IEventSymbol))
+                {
+                    return true;
+                }
+
+                if (getX.ReturnType == KnownSymbol.FieldInfo &&
+                    !(member is IFieldSymbol))
+                {
+                    return true;
+                }
+
+                if (getX.ReturnType == KnownSymbol.MethodInfo &&
+                    !(member is IMethodSymbol))
+                {
+                    return true;
+                }
+
+                if (getX.ReturnType == KnownSymbol.PropertyInfo &&
+                    !(member is IPropertySymbol))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+
+            bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
+            {
+                if (symbol.IsOverride)
+                {
+                    switch (symbol)
+                    {
+                        case IEventSymbol eventSymbol:
+                            return Equals(eventSymbol.OverriddenEvent, candidateBase) ||
+                                   IsOverriding(eventSymbol.OverriddenEvent, candidateBase);
+                        case IMethodSymbol method:
+                            return Equals(method.OverriddenMethod, candidateBase) ||
+                                   IsOverriding(method.OverriddenMethod, candidateBase);
+                        case IPropertySymbol property:
+                            return Equals(property.OverriddenProperty, candidateBase) ||
+                                   IsOverriding(property.OverriddenProperty, candidateBase);
+                    }
+                }
+
+                return false;
+            }
         }
 
         private static bool MatchesFlags(ISymbol candidate, BindingFlags filter)
