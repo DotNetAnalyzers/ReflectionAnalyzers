@@ -33,20 +33,18 @@ namespace ReflectionAnalyzers
                 context.Node is LiteralExpressionSyntax literal &&
                 literal.Parent is ArgumentSyntax argument &&
                 literal.Token.ValueText is string text &&
-                SyntaxFacts.IsValidIdentifier(text))
+                SyntaxFacts.IsValidIdentifier(text) &&
+                argument.Parent is ArgumentListSyntax argumentList &&
+                argumentList.Parent is InvocationExpressionSyntax invocation &&
+                TryGetX(invocation, text, context, out var target, out var instance) &&
+                target.HasValue &&
+                TryGetTargetName(target.Value, instance, context, out var targetName))
             {
-                if (argument.Parent is ArgumentListSyntax argumentList &&
-                    argumentList.Parent is InvocationExpressionSyntax invocation &&
-                    TryGetX(invocation, text, context, out var target, out var instance) &&
-                    target.HasValue &&
-                    TryGetTargetName(target.Value, instance, context, out var name))
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            REFL016UseNameof.Descriptor,
-                            literal.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({name})")));
-                }
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        REFL016UseNameof.Descriptor,
+                        literal.GetLocation(),
+                        ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({targetName})")));
             }
         }
 
@@ -74,7 +72,7 @@ namespace ReflectionAnalyzers
                     }
                 }
                 else if (TryGetSymbol(out var symbol) &&
-                         !target.Value.ContainingType.Equals(symbol.ContainingType) &&
+                         !symbol.ContainingType.IsAssignableTo(target.Value.ContainingType, context.Compilation) &&
                          TryGetTargetName(target.Value, default(Optional<IdentifierNameSyntax>), context, out var targetName))
                 {
                     context.ReportDiagnostic(
@@ -109,42 +107,19 @@ namespace ReflectionAnalyzers
             if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 !(memberAccess.Expression is InstanceExpressionSyntax))
             {
-                if (invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context.SemanticModel, context.CancellationToken, out _) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetField, context.SemanticModel, context.CancellationToken, out _) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out _) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out _) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out _) ||
-                    invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out _))
+                if (invocation.TryGetTarget(KnownSymbol.Type.GetEvent, context.SemanticModel, context.CancellationToken, out var getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetField, context.SemanticModel, context.CancellationToken, out getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, context.SemanticModel, context.CancellationToken, out getX) ||
+                    invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out getX))
                 {
-                    if (GetX.TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out var declaringType, out instance))
+                    if (GetX.TryGetTargetType(invocation, context, out var targetType, out instance))
                     {
-                        if (declaringType is ITypeParameterSymbol typeParameter)
-                        {
-                            foreach (var constraintType in typeParameter.ConstraintTypes)
-                            {
-                                if (constraintType.TryFindFirstMemberRecursive(name, out var targetSymbol))
-                                {
-                                    target = new Optional<ISymbol>(targetSymbol);
-                                    return true;
-                                }
-                            }
-
-                            {
-                                if (context.Compilation.GetSpecialType(SpecialType.System_Object)
-                                           .TryFindFirstMember(name, out var targetSymbol))
-                                {
-                                    target = new Optional<ISymbol>(targetSymbol);
-                                    return true;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            target = declaringType.TryFindFirstMemberRecursive(name, out var targetSymbol)
-                                ? new Optional<ISymbol>(targetSymbol)
-                                : default(Optional<ISymbol>);
-                        }
-
+                        _ = GetX.TryGetTarget(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, context, out var targetSymbol);
+                        target = targetSymbol != null
+                            ? new Optional<ISymbol>(targetSymbol)
+                            : default(Optional<ISymbol>);
                         return true;
                     }
                 }

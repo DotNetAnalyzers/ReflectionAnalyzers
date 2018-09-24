@@ -41,7 +41,7 @@ namespace ReflectionAnalyzers
             flags = 0;
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
-                TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
+                TryGetTargetType(invocation, context, out targetType, out _) &&
                 IsKnownSignature(getX) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
@@ -76,7 +76,7 @@ namespace ReflectionAnalyzers
             flags = 0;
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMember, context.SemanticModel, context.CancellationToken, out var getX) &&
-                TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
+                TryGetTargetType(invocation, context, out targetType, out _) &&
                 IsKnownSignature(getX) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
                 (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
@@ -118,86 +118,19 @@ namespace ReflectionAnalyzers
         /// Returns Foo for the invocation typeof(Foo).GetProperty(Bar).
         /// </summary>
         /// <param name="getX">The invocation of a GetX method, GetEvent, GetField etc.</param>
-        /// <param name="semanticModel">The <see cref="SemanticModel"/>.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+        /// <param name="context">The <see cref="SyntaxNodeAnalysisContext"/>.</param>
         /// <param name="result">The type.</param>
         /// <param name="instance">The instance the type was called GetType on. Can be null</param>
         /// <returns>True if the type could be determined.</returns>
-        internal static bool TryGetTargetType(InvocationExpressionSyntax getX, SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
+        internal static bool TryGetTargetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
         {
             result = null;
             instance = default(Optional<IdentifierNameSyntax>);
             return getX.Expression is MemberAccessExpressionSyntax memberAccess &&
-                   TryGetTargetType(memberAccess.Expression, semanticModel, null, cancellationToken, out result, out instance);
+                   TryGetTargetType(memberAccess.Expression, context, null, out result, out instance);
         }
 
-        internal static bool TryGetDefaultFlags(QualifiedMethod getX, out BindingFlags defaultFlags)
-        {
-            switch (getX.Name)
-            {
-                case "GetField":
-                case "GetFields":
-                case "GetEvent":
-                case "GetEvents":
-                case "GetMethod":
-                case "GetMethods":
-                case "GetMember":
-                case "GetMembers":
-                case "GetNestedType": // https://referencesource.microsoft.com/#mscorlib/system/type.cs,751
-                case "GetNestedTypes":
-                case "GetProperty":
-                case "GetProperties":
-                    defaultFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
-                    return true;
-            }
-
-            defaultFlags = 0;
-            return false;
-        }
-
-        /// <summary>
-        /// Handles GetField, GetEvent, GetMember, GetMethod...
-        /// </summary>
-        private static GetXResult? TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
-        {
-            targetType = null;
-            nameArg = null;
-            targetName = null;
-            target = null;
-            flagsArg = null;
-            flags = 0;
-            if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
-                TryGetTargetType(invocation, context.SemanticModel, context.CancellationToken, out targetType, out _) &&
-                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
-                (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
-                 TryGetDefaultFlags(getXMethod, out flags)))
-            {
-                return TryGetTarget(getX, targetType, targetName, flags, context, out target);
-            }
-
-            return null;
-        }
-
-        private static bool TryGetName(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out string name)
-        {
-            argument = null;
-            name = null;
-            return getX.TryFindParameter(KnownSymbol.String, out var parameter) &&
-                   invocation.TryFindArgument(parameter, out argument) &&
-                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out name);
-        }
-
-        private static bool TryGetFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out BindingFlags bindingFlags)
-        {
-            argument = null;
-            bindingFlags = 0;
-            return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
-                   invocation.TryFindArgument(parameter, out argument) &&
-                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
-        }
-
-        private static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetName, BindingFlags effectiveFlags, SyntaxNodeAnalysisContext context, out ISymbol target)
+        internal static GetXResult TryGetTarget(IMethodSymbol getX, ITypeSymbol targetType, string targetName, BindingFlags effectiveFlags, SyntaxNodeAnalysisContext context, out ISymbol target)
         {
             target = null;
             if (targetType is ITypeParameterSymbol typeParameter)
@@ -386,6 +319,72 @@ namespace ReflectionAnalyzers
             }
         }
 
+        internal static bool TryGetDefaultFlags(QualifiedMethod getX, out BindingFlags defaultFlags)
+        {
+            switch (getX.Name)
+            {
+                case "GetField":
+                case "GetFields":
+                case "GetEvent":
+                case "GetEvents":
+                case "GetMethod":
+                case "GetMethods":
+                case "GetMember":
+                case "GetMembers":
+                case "GetNestedType": // https://referencesource.microsoft.com/#mscorlib/system/type.cs,751
+                case "GetNestedTypes":
+                case "GetProperty":
+                case "GetProperties":
+                    defaultFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
+                    return true;
+            }
+
+            defaultFlags = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// Handles GetField, GetEvent, GetMember, GetMethod...
+        /// </summary>
+        private static GetXResult? TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags flags)
+        {
+            targetType = null;
+            nameArg = null;
+            targetName = null;
+            target = null;
+            flagsArg = null;
+            flags = 0;
+            if (invocation.ArgumentList != null &&
+                invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
+                TryGetTargetType(invocation, context, out targetType, out _) &&
+                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
+                (TryGetFlags(invocation, getX, context, out flagsArg, out flags) ||
+                 TryGetDefaultFlags(getXMethod, out flags)))
+            {
+                return TryGetTarget(getX, targetType, targetName, flags, context, out target);
+            }
+
+            return null;
+        }
+
+        private static bool TryGetName(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out string name)
+        {
+            argument = null;
+            name = null;
+            return getX.TryFindParameter(KnownSymbol.String, out var parameter) &&
+                   invocation.TryFindArgument(parameter, out argument) &&
+                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out name);
+        }
+
+        private static bool TryGetFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out BindingFlags bindingFlags)
+        {
+            argument = null;
+            bindingFlags = 0;
+            return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
+                   invocation.TryFindArgument(parameter, out argument) &&
+                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
+        }
+
         private static bool MatchesFlags(ISymbol candidate, BindingFlags filter)
         {
             if (candidate.DeclaredAccessibility == Accessibility.Public &&
@@ -445,22 +444,22 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetTargetType(ExpressionSyntax expression, SemanticModel semanticModel, PooledSet<ExpressionSyntax> visited, CancellationToken cancellationToken, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
+        private static bool TryGetTargetType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
         {
             instance = default(Optional<IdentifierNameSyntax>);
             result = null;
             switch (expression)
             {
-                case IdentifierNameSyntax identifierName when semanticModel.TryGetSymbol(identifierName, cancellationToken, out ILocalSymbol local):
+                case IdentifierNameSyntax identifierName when context.SemanticModel.TryGetSymbol(identifierName, context.CancellationToken, out ILocalSymbol local):
                     using (visited = visited.IncrementUsage())
                     {
-                        return AssignedValueWalker.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue) &&
+                        return AssignedValueWalker.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
                                visited.Add(assignedValue) &&
-                               TryGetTargetType(assignedValue, semanticModel, visited, cancellationToken, out result, out instance);
+                               TryGetTargetType(assignedValue, context, visited, out result, out instance);
                     }
 
                 case TypeOfExpressionSyntax typeOf:
-                    return semanticModel.TryGetType(typeOf.Type, cancellationToken, out result);
+                    return context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out result);
                 case InvocationExpressionSyntax getType when getType.TryGetMethodName(out var name) &&
                                                  name == "GetType" &&
                                                  getType.ArgumentList is ArgumentListSyntax args:
@@ -474,22 +473,22 @@ namespace ReflectionAnalyzers
                                     instance = identifier;
                                 }
 
-                                return semanticModel.TryGetType(typeAccess.Expression, cancellationToken, out result);
+                                return context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out result);
                             case IdentifierNameSyntax identifierName when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
-                                return semanticModel.TryGetSymbol(containingType, cancellationToken, out result);
+                                return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);
                         }
                     }
                     else if (args.Arguments.TrySingle(out var arg) &&
-                             arg.TryGetStringValue(semanticModel, cancellationToken, out var typeName) &&
-                             getType.TryGetTarget(KnownSymbol.Assembly.GetType, semanticModel, cancellationToken, out _))
+                             arg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var typeName) &&
+                             getType.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out _))
                     {
                         switch (getType.Expression)
                         {
-                            case MemberAccessExpressionSyntax typeAccess when semanticModel.TryGetType(typeAccess.Expression, cancellationToken, out var typeInAssembly):
+                            case MemberAccessExpressionSyntax typeAccess when context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out var typeInAssembly):
                                 result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
                                 return result != null;
                             case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType) &&
-                                                            semanticModel.TryGetSymbol(containingType, cancellationToken, out var typeInAssembly):
+                                                             context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out var typeInAssembly):
                                 result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
                                 return result != null;
                         }
