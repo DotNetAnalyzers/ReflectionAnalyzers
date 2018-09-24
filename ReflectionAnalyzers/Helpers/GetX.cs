@@ -214,9 +214,9 @@ namespace ReflectionAnalyzers
                     {
                         return result;
                     }
-
-                    return GetXResult.NoMatch;
                 }
+
+                return TryGetTarget(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), targetName, effectiveFlags, context, out target);
             }
 
             if (getX == KnownSymbol.Type.GetNestedType ||

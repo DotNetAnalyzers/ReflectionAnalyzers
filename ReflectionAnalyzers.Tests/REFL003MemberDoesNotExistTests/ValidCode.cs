@@ -166,12 +166,22 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
-        public void GetMethodWhenConstrainedTypeParameter()
+        [TestCase("where T : Foo",               "GetMethod(nameof(this.Baz))")]
+        [TestCase("where T : Foo",               "GetMethod(nameof(this.Baz), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToString))")]
+        [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToBoolean))")]
+        [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : Foo, IConvertible", "GetMethod(nameof(IConvertible.ToString))")]
+        [TestCase("where T : Foo, IConvertible", "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : Foo, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean))")]
+        [TestCase("where T : Foo, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
+        public void GetMethodWhenConstrainedTypeParameter(string constraint, string call)
         {
             var code = @"
 namespace RoslynSandbox
 {
+    using System;
     using System.Reflection;
 
     class Foo
@@ -184,7 +194,8 @@ namespace RoslynSandbox
 
         public int Baz() => 0;
     }
-}";
+}".AssertReplace("where T : Foo", constraint)
+  .AssertReplace("GetMethod(nameof(this.Baz))", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
