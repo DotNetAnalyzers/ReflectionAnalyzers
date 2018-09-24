@@ -214,6 +214,12 @@ namespace ReflectionAnalyzers
                         call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString()}).RemoveMethod";
                         return true;
                     }
+
+                    if (targetMethod.Name.StartsWith("raise_", StringComparison.OrdinalIgnoreCase))
+                    {
+                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString()}).RaiseMethod";
+                        return true;
+                    }
                 }
             }
 
