@@ -220,6 +220,27 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [Test]
+        public void GetGenericMethod()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            _ = typeof(Foo).GetMethod(nameof(Foo.Id), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+        public T Id<T>(T value) => value;
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("get_Bar")]
         [TestCase("set_Bar")]
         public void GetPropertyMethods(string name)
