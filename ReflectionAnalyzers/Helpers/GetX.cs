@@ -391,6 +391,33 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
+            bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
+            {
+                if (!effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
+                {
+                    return true;
+                }
+
+                if (effectiveFlags.HasFlagFast(BindingFlags.DeclaredOnly))
+                {
+                    return type.Locations.Any(x => x.IsInSource);
+                }
+
+                var current = type;
+                while (current != null &&
+                       current != KnownSymbol.Object)
+                {
+                    if (!current.Locations.Any(x => x.IsInSource))
+                    {
+                        return false;
+                    }
+
+                    current = current.BaseType;
+                }
+
+                return true;
+            }
+
             string TrimName()
             {
                 var index = targetMetadataName.IndexOf('`');
@@ -632,33 +659,6 @@ namespace ReflectionAnalyzers
 
                         break;
                 }
-            }
-
-            return true;
-        }
-
-        private static bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
-        {
-            if (!effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
-            {
-                return true;
-            }
-
-            if (effectiveFlags.HasFlagFast(BindingFlags.DeclaredOnly))
-            {
-                return type.Locations.Any(x => x.IsInSource);
-            }
-
-            var current = type;
-            while (current != null &&
-                   current != KnownSymbol.Object)
-            {
-                if (!current.Locations.Any(x => x.IsInSource))
-                {
-                    return false;
-                }
-
-                current = current.BaseType;
             }
 
             return true;
