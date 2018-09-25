@@ -76,5 +76,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL019.md">REFL019</a></td>
     <td>No member matches the types.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL020.md">REFL020</a></td>
+    <td>More than one interface is matching the name.</td>
+  </tr>
 <table>
 <!-- end generated table -->

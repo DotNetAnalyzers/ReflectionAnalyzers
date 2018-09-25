@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL003MemberDoesNotExist.Descriptor,
-            REFL004AmbiguousMatch.Descriptor,
+            REFL004AmbiguousMatchMember.Descriptor,
             REFL005WrongBindingFlags.Descriptor,
             REFL006RedundantBindingFlags.Descriptor,
             REFL008MissingBindingFlags.Descriptor,
@@ -48,7 +48,7 @@ namespace ReflectionAnalyzers
                         break;
 
                     case GetXResult.Ambiguous:
-                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, argumentList.GetLocation()));
+                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatchMember.Descriptor, argumentList.GetLocation()));
                         break;
 
                     case GetXResult.WrongFlags when TryGetExpectedFlags(member, type, out var correctFlags):
