@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL024PreferNullOverEmptyArray
+    internal static class REFL026MissingDefaultConstructor
     {
-        public const string DiagnosticId = "REFL024";
+        public const string DiagnosticId = "REFL026";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Prefer null over empty array.",
-            messageFormat: "Prefer null over empty array.",
+            title: "No parameterless constructor defined for this object.",
+            messageFormat: "No parameterless constructor defined for {0}.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Prefer null over empty array.",
+            description: "No parameterless constructor defined for this object.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }
