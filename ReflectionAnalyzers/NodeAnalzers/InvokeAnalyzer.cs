@@ -34,43 +34,10 @@ namespace ReflectionAnalyzers
             {
                 if (invoke.TryFindParameter("parameters", out var parameter) &&
                     invocation.TryFindArgument(parameter, out var paramsArg) &&
-                    IsEmptyArray(paramsArg, context))
+                   Array.IsCreatingEmpty(paramsArg.Expression, context))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, paramsArg.GetLocation()));
                 }
-            }
-        }
-
-        private static bool IsEmptyArray(ArgumentSyntax argument, SyntaxNodeAnalysisContext context)
-        {
-            switch (argument.Expression)
-            {
-                case InvocationExpressionSyntax invocation when context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var symbol) &&
-                                                                symbol == KnownSymbol.Array.Empty:
-                    return true;
-                case ArrayCreationExpressionSyntax arrayCreation:
-                    if (arrayCreation.Type is ArrayTypeSyntax arrayType)
-                    {
-                        foreach (var rankSpecifier in arrayType.RankSpecifiers)
-                        {
-                            foreach (var size in rankSpecifier.Sizes)
-                            {
-                                if (size is LiteralExpressionSyntax literal &&
-                                    literal.Token.ValueText != "0")
-                                {
-                                    return false;
-                                }
-                            }
-                        }
-
-                        var initializer = arrayCreation.Initializer;
-                        return initializer == null ||
-                               initializer.Expressions.Count == 0;
-                    }
-
-                    return false;
-                default:
-                    return false;
             }
         }
     }

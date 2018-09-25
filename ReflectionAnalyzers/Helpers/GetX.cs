@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -541,7 +540,7 @@ namespace ReflectionAnalyzers
         {
             if (TryGetTypesArgument(invocation, getX, out typesArg))
             {
-                return TryGetTypes(typesArg, context, out types);
+                return Array.TryGetTypes(typesArg.Expression, context, out types);
             }
 
             types = null;
@@ -553,55 +552,6 @@ namespace ReflectionAnalyzers
             argument = null;
             return getX.TryFindParameter("types", out var parameter) &&
                    invocation.TryFindArgument(parameter, out argument);
-        }
-
-        private static bool TryGetTypes(ArgumentSyntax argument, SyntaxNodeAnalysisContext context, out IReadOnlyList<ITypeSymbol> types)
-        {
-            types = null;
-            switch (argument.Expression)
-            {
-                case ImplicitArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
-                    return TryGetTypesFromInitializer(initializer, out types);
-                case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
-                    return TryGetTypesFromInitializer(initializer, out types);
-                case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer == null:
-                    types = Array.Empty<ITypeSymbol>();
-                    return true;
-                case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
-                    return true;
-                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out ISymbol symbol) &&
-                                                                    symbol == KnownSymbol.Type.EmptyTypes:
-                    types = Array.Empty<ITypeSymbol>();
-                    return true;
-                case InvocationExpressionSyntax invocation when context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out ISymbol symbol) &&
-                                                                symbol == KnownSymbol.Array.Empty:
-                    types = Array.Empty<ITypeSymbol>();
-                    return true;
-            }
-
-            return false;
-
-            bool TryGetTypesFromInitializer(InitializerExpressionSyntax initializer, out IReadOnlyList<ITypeSymbol> result)
-            {
-                var temp = new ITypeSymbol[initializer.Expressions.Count];
-                for (var i = 0; i < initializer.Expressions.Count; i++)
-                {
-                    var expression = initializer.Expressions[i];
-                    if (expression is TypeOfExpressionSyntax typeOf &&
-                        context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var type))
-                    {
-                        temp[i] = type;
-                    }
-                    else
-                    {
-                        result = null;
-                        return false;
-                    }
-                }
-
-                result = temp;
-                return true;
-            }
         }
 
         private static bool MatchesFilter(ISymbol candidate, string metadataName, BindingFlags flags, IReadOnlyList<ITypeSymbol> types)
