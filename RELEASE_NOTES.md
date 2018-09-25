@@ -1,3 +1,10 @@
+#### 0.1.7
+* REFL019 Check filter types.
+* REFL020 More than one interface is matching the name.
+* REFL022 Use fully qualified name.
+* REFL023 The type does not implement the interface.
+* REFL024 Prefer null over empty array.
+
 #### 0.1.6.1
 * REFL016 remove all checks except GetX arguments.
 * BUGFIX: REFL016 code action title.

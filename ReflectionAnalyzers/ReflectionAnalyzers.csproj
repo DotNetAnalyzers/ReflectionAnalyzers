@@ -20,16 +20,16 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.6.1-dev</Version>
+    <Version>0.1.7.0-dev</Version>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
-    <PackageReleaseNotes>REFL016 remove all checks except GetX arguments.
-BUGFIX: REFL016 code action title.
-BUGFIX: use correct member for nameof.
-BUGFIX REFL017 code action message.
-BUGFIX REFL017 and anonymous objects.
+    <PackageReleaseNotes>REFL019 Check filter types.
+REFL020 More than one interface is matching the name.
+REFL022 Use fully qualified name.
+REFL023 The type does not implement the interface.
+REFL024 Prefer null over empty array.
 </PackageReleaseNotes>
   </PropertyGroup>
 
