@@ -12,6 +12,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
+            REFL025ActivatorCreateInstanceArguments.Descriptor,
             REFL026MissingDefaultConstructor.Descriptor);
 
         /// <inheritdoc/>
