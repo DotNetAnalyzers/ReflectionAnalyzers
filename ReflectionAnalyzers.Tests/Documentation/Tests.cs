@@ -207,7 +207,7 @@ namespace ReflectionAnalyzers.Tests.Documentation
 
             public static string GetCodeFileUri(DiagnosticAnalyzer analyzer)
             {
-                string fileName = Directory.EnumerateFiles(SolutionDirectory.FullName, analyzer.GetType().Name + ".cs", SearchOption.AllDirectories)
+                var fileName = Directory.EnumerateFiles(SolutionDirectory.FullName, analyzer.GetType().Name + ".cs", SearchOption.AllDirectories)
                                            .FirstOrDefault();
                 return fileName != null
                     ? "https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master" +

@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Use fully qualified name.",
-            messageFormat: "Use fully qualified name {0}.",
+            messageFormat: "Use fully qualified name.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
