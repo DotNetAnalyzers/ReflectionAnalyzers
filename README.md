@@ -80,5 +80,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL020.md">REFL020</a></td>
     <td>More than one interface is matching the name.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL023.md">REFL023</a></td>
+    <td>The type does not implement the interface.</td>
+  </tr>
 <table>
 <!-- end generated table -->

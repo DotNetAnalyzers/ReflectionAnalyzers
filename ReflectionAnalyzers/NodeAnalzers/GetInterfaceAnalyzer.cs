@@ -13,7 +13,8 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL020AmbiguousMatchInterface.Descriptor);
+            REFL020AmbiguousMatchInterface.Descriptor,
+            REFL023TypeDoesNotImplementInterface.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -37,6 +38,11 @@ namespace ReflectionAnalyzers
                 if (count > 1)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL020AmbiguousMatchInterface.Descriptor, nameArg.GetLocation()));
+                }
+
+                if (count == 0)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(REFL023TypeDoesNotImplementInterface.Descriptor, nameArg.GetLocation()));
                 }
             }
 
