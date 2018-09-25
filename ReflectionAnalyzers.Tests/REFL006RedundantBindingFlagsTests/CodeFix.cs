@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL006");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL006RedundantBindingFlags.Descriptor);
 
         [TestCase("Static",           "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Instance",               "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
         [TestCase("Static",           "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic",              "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
@@ -171,6 +171,42 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.DeclaredOnly", expected);
             var message = $"The binding flags can be more precise. Expected: {expected}.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [TestCase("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
+        [TestCase("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy, null, Type.EmptyTypes, null)")]
+        public void GetConstructor(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Foo).GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+        }
+    }
+}".AssertReplace("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)", call);
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(Foo).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
+        }
+    }
+}";
+            var message = "The binding flags can be more precise. Expected: BindingFlags.Public | BindingFlags.Instance.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }

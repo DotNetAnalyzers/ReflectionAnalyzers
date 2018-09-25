@@ -291,13 +291,17 @@ namespace ReflectionAnalyzers
                     flags |= BindingFlags.Instance;
                 }
 
-                if (Equals(target.ContainingType, targetType))
+                if (!(target is IMethodSymbol method &&
+                      method.MethodKind == MethodKind.Constructor))
                 {
-                    flags |= BindingFlags.DeclaredOnly;
-                }
-                else if (target.IsStatic)
-                {
-                    flags |= BindingFlags.FlattenHierarchy;
+                    if (Equals(target.ContainingType, targetType))
+                    {
+                        flags |= BindingFlags.DeclaredOnly;
+                    }
+                    else if (target.IsStatic)
+                    {
+                        flags |= BindingFlags.FlattenHierarchy;
+                    }
                 }
             }
 
@@ -306,6 +310,14 @@ namespace ReflectionAnalyzers
 
         private static bool HasRedundantFlag(ISymbol target, ITypeSymbol targetType, BindingFlags flags)
         {
+            if (target is IMethodSymbol method &&
+                method.MethodKind == MethodKind.Constructor &&
+                (flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                 flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
+            {
+                return true;
+            }
+
             if (target is ITypeSymbol &&
                 (flags.HasFlagFast(BindingFlags.Instance) ||
                  flags.HasFlagFast(BindingFlags.Static) ||
