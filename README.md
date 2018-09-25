@@ -88,5 +88,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL023.md">REFL023</a></td>
     <td>The type does not implement the interface.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL024.md">REFL024</a></td>
+    <td>Prefer null over empty array.</td>
+  </tr>
 <table>
 <!-- end generated table -->
