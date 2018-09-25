@@ -127,7 +127,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        // ReSharper disable once InconsistentNaming
+        //// ReSharper disable once InconsistentNaming
         public void IEnumeratorGetCurrent()
         {
             var testCode = @"

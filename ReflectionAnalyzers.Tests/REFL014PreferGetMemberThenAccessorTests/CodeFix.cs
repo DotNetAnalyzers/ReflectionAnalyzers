@@ -287,5 +287,41 @@ namespace RoslynSandbox
             var message = $"Prefer typeof(Foo).{after}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
+
+        [Test]
+        //// ReSharper disable once InconsistentNaming
+        public void IEnumeratorGetCurrent()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Collections;
+
+    public class Foo
+    {
+        public void Meh(object value)
+        {
+            _ = typeof(IEnumerator).GetMethod(""get_Current"");
+        }
+    }
+}";
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Collections;
+    using System.Reflection;
+
+    public class Foo
+    {
+        public void Meh(object value)
+        {
+            _ = typeof(IEnumerator).GetProperty(nameof(IEnumerator.Current), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
+        }
+    }
+}";
+
+            var message = "Prefer typeof(IEnumerator).GetProperty(nameof(IEnumerator.Current), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }
