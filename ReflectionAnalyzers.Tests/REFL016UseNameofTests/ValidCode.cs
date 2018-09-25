@@ -127,6 +127,7 @@ namespace RoslynSandbox
         }
 
         [Test]
+        // ReSharper disable once InconsistentNaming
         public void IEnumeratorGetCurrent()
         {
             var testCode = @"
@@ -143,6 +144,54 @@ namespace RoslynSandbox
     }
 }";
             AnalyzerAssert.Valid(Analyzer, testCode);
+        }
+
+        [TestCase("GetMethod(\"add_Public\")")]
+        [TestCase("GetMethod(\"remove_Public\")")]
+        public void EventAccessors(string before)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(""add_Public"");
+        }
+
+        public event EventHandler Public;
+    }
+}".AssertReplace("GetMethod(\"add_Public\")", before);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("GetMethod(\"get_Public\")")]
+        [TestCase("GetMethod(\"set_Public\")")]
+        public void PropertyAccessors(string before)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(""get_Public"");
+        }
+
+        public int Public { get; set; }
+    }
+}".AssertReplace("GetMethod(\"get_Public\")", before);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
