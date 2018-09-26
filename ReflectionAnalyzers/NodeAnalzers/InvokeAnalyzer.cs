@@ -34,7 +34,10 @@ namespace ReflectionAnalyzers
             {
                 if (invoke.TryFindParameter("parameters", out var parameter) &&
                     invocation.TryFindArgument(parameter, out var paramsArg) &&
-                   Array.IsCreatingEmpty(paramsArg.Expression, context))
+                    context.SemanticModel.TryGetType(paramsArg.Expression, context.CancellationToken, out var type) &&
+                    type is IArrayTypeSymbol arrayType &&
+                    arrayType.ElementType == KnownSymbol.Object &&
+                    Array.IsCreatingEmpty(paramsArg.Expression, context))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, paramsArg.GetLocation()));
                 }

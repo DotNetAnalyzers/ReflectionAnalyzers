@@ -9,13 +9,14 @@ namespace ReflectionAnalyzers.Codefixes
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(PreferNullFix))]
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(PreferEmptyTypesFix))]
     [Shared]
-    internal class PreferNullFix : DocumentEditorCodeFixProvider
+    internal class PreferEmptyTypesFix : DocumentEditorCodeFixProvider
     {
+        private static readonly UsingDirectiveSyntax System = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System"));
+
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL024PreferNullOverEmptyArray.DiagnosticId);
+            REFL027PreferTypeEmptyTypes.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
@@ -27,10 +28,11 @@ namespace ReflectionAnalyzers.Codefixes
                 {
                     context.RegisterCodeFix(
                         "Prefer null.",
-                        (editor, _) => editor.ReplaceNode(
+                        (editor, _) => editor.AddUsing(System)
+                                             .ReplaceNode(
                             argument.Expression,
-                            x => SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)),
-                        nameof(PreferNullFix),
+                            x => SyntaxFactory.ParseExpression("Type.EmptyTypes")),
+                        nameof(PreferEmptyTypesFix),
                         diagnostic);
                 }
             }

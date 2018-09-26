@@ -100,5 +100,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL026.md">REFL026</a></td>
     <td>No parameterless constructor defined for this object.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL027.md">REFL027</a></td>
+    <td>Prefer Type.EmptyTypes.</td>
+  </tr>
 <table>
 <!-- end generated table -->
