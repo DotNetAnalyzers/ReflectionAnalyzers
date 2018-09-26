@@ -53,6 +53,7 @@ namespace RoslynSandbox
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("Activator.CreateInstance(typeof(Foo), ↓null)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓(string)null)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓(StringBuilder)null)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓new object[] { null })")]
