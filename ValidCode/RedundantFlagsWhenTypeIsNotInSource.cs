@@ -13,11 +13,11 @@ namespace ValidCode
             _ = typeof(string).GetField(nameof(string.Empty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
             _ = typeof(string).GetField(nameof(string.Empty), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
 
-            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
-            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null);
+            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null);
+            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null);
+            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase, null, new[] { typeof(string) }, null);
+            _ = typeof(string).GetMethod(nameof(string.Contains), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null);
 
             _ = typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             _ = typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
