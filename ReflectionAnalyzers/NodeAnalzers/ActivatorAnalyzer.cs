@@ -30,16 +30,32 @@ namespace ReflectionAnalyzers
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 invocation.TryGetTarget(KnownSymbol.Activator.CreateInstance, context.SemanticModel, context.CancellationToken, out var createInstance))
             {
-                if (createInstance.IsGenericMethod &&
-                    memberAccess.Name is GenericNameSyntax genericName &&
-                    genericName.TypeArgumentList is TypeArgumentListSyntax typeArgumentList &&
-                    typeArgumentList.Arguments.TrySingle(out var typeArgument) &&
-                    context.SemanticModel.TryGetType(typeArgument, context.CancellationToken, out var type) &&
-                    type is INamedTypeSymbol namedType &&
-                    (!namedType.Constructors.TrySingle(x => x.Parameters.Length == 0, out var ctor) ||
-                     ctor.DeclaredAccessibility != Accessibility.Public))
+                if (createInstance.IsGenericMethod)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, typeArgument.GetLocation(), type.ToDisplayString()));
+                    if (memberAccess.Name is GenericNameSyntax genericName &&
+                        genericName.TypeArgumentList is TypeArgumentListSyntax typeArgumentList &&
+                        typeArgumentList.Arguments.TrySingle(out var typeArgument) &&
+                        context.SemanticModel.TryGetType(typeArgument, context.CancellationToken, out var type) &&
+                        type is INamedTypeSymbol namedType &&
+                        (!namedType.Constructors.TrySingle(x => x.Parameters.Length == 0, out var ctor) ||
+                         ctor.DeclaredAccessibility != Accessibility.Public))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, typeArgument.GetLocation(), type.ToDisplayString()));
+                    }
+                }
+                else
+                {
+                    if (createInstance.Parameters.TrySingle(out var singleParameter) &&
+                        singleParameter.Type == KnownSymbol.Type &&
+                        invocation.TryFindArgument(singleParameter, out var typeArgument) &&
+                        typeArgument.Expression is TypeOfExpressionSyntax typeOf &&
+                        context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var type) &&
+                        type is INamedTypeSymbol namedType &&
+                        (!namedType.Constructors.TrySingle(x => x.Parameters.Length == 0, out var ctor) ||
+                         ctor.DeclaredAccessibility != Accessibility.Public))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, typeOf.Type.GetLocation(), type.ToDisplayString()));
+                    }
                 }
             }
         }

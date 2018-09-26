@@ -10,6 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL026MissingDefaultConstructor.Descriptor);
 
         [TestCase("Activator.CreateInstance<↓Foo>()")]
+        [TestCase("Activator.CreateInstance(typeof(↓Foo))")]
         public void OneConstructor(string call)
         {
             var code = @"
@@ -31,6 +32,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("Activator.CreateInstance<↓Foo>()")]
+        [TestCase("Activator.CreateInstance(typeof(↓Foo))")]
         public void PrivateConstructor(string call)
         {
             var code = @"
