@@ -263,14 +263,18 @@ namespace ReflectionAnalyzers
                 }
             }
 
+            if (getX != KnownSymbol.Type.GetConstructor &&
+                getX != KnownSymbol.Type.GetNestedType &&
+                !Type.HasVisibleMembers(targetType, flags))
+            {
+                // Assigning member if it is explicit. Useful info but we can't be sure still.
+                _ = IsExplicitImplementation(out member);
+                return GetXResult.Unknown;
+            }
+
             if (IsExplicitImplementation(out member))
             {
                 return GetXResult.ExplicitImplementation;
-            }
-
-            if (!Type.HasVisibleMembers(targetType, flags))
-            {
-                return GetXResult.Unknown;
             }
 
             return GetXResult.NoMatch;

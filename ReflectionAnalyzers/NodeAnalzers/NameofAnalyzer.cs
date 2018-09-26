@@ -37,7 +37,7 @@ namespace ReflectionAnalyzers
                 argument.Parent is ArgumentListSyntax argumentList &&
                 argumentList.Parent is InvocationExpressionSyntax invocation &&
                 TryGetX(invocation, context, out var getX) &&
-                TryGetTarget(invocation, getX, text, context, out var target, out var instance) &&
+                TryGetMember(invocation, getX, literal.Token.ValueText, context, out var target, out var instance) &&
                 target.HasValue &&
                 TryGetTargetName(target.Value, instance, context, out var targetName))
             {
@@ -59,19 +59,16 @@ namespace ReflectionAnalyzers
                 containingArgument.Parent is ArgumentListSyntax containingArgumentList &&
                 containingArgumentList.Parent is InvocationExpressionSyntax invocation &&
                 TryGetX(invocation, context, out var getX) &&
-                TryGetTarget(invocation, getX, name, context, out var target, out var instance))
+                TryGetMember(invocation, getX, name, context, out var target, out var instance))
             {
                 if (!target.HasValue &&
                     !instance.HasValue)
                 {
-                    if (containingArgument.TryGetStringValue(context.SemanticModel, context.CancellationToken, out name))
-                    {
-                        context.ReportDiagnostic(
+                    context.ReportDiagnostic(
                         Diagnostic.Create(
                             REFL017DontUseNameof.Descriptor,
                             containingArgument.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(nameof(SyntaxKind.StringLiteralExpression), name)));
-                    }
                 }
                 else if (TryGetSymbol(out var symbol) &&
                          !symbol.ContainingType.IsAssignableTo(target.Value.ContainingType, context.Compilation) &&
@@ -119,10 +116,10 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetTarget(InvocationExpressionSyntax invocation, IMethodSymbol getX, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> target, out Optional<IdentifierNameSyntax> instance)
+        private static bool TryGetMember(InvocationExpressionSyntax invocation, IMethodSymbol getX, string name, SyntaxNodeAnalysisContext context, out Optional<ISymbol> optionalMember, out Optional<IdentifierNameSyntax> optionalInstance)
         {
-            instance = default(Optional<IdentifierNameSyntax>);
-            target = default(Optional<ISymbol>);
+            optionalInstance = default(Optional<IdentifierNameSyntax>);
+            optionalMember = default(Optional<ISymbol>);
             if (GetX.TryGetType(invocation, context, out var targetType, out var typeSource))
             {
                 if (typeSource.HasValue &&
@@ -131,21 +128,27 @@ namespace ReflectionAnalyzers
                     getType.Expression is MemberAccessExpressionSyntax memberAccess &&
                     memberAccess.Expression is IdentifierNameSyntax identifierName)
                 {
-                    instance = new Optional<IdentifierNameSyntax>(identifierName);
+                    optionalInstance = new Optional<IdentifierNameSyntax>(identifierName);
                 }
 
-                _ = GetX.TryGetMember(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, GetX.AnyTypes, context, out var targetSymbol);
-
-                if (targetSymbol is IMethodSymbol method)
+                var result = GetX.TryGetMember(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, GetX.AnyTypes, context, out var member);
+                if (result == GetXResult.Unknown &&
+                    member != null)
                 {
-                    target = method.AssociatedSymbol == null
-                        ? new Optional<ISymbol>(targetSymbol)
+                    optionalMember = new Optional<ISymbol>(member);
+                    return true;
+                }
+
+                if (member is IMethodSymbol method)
+                {
+                    optionalMember = method.AssociatedSymbol == null
+                        ? new Optional<ISymbol>(member)
                         : default(Optional<ISymbol>);
                 }
                 else
                 {
-                    target = targetSymbol != null
-                        ? new Optional<ISymbol>(targetSymbol)
+                    optionalMember = member != null
+                        ? new Optional<ISymbol>(member)
                         : default(Optional<ISymbol>);
                 }
 

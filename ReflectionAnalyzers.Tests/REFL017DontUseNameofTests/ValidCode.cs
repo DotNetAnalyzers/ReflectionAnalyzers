@@ -46,10 +46,37 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, fooCode, testCode);
         }
 
+        [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
+        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void WhenExplicitImplementationVisibleMembers(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    sealed class Foo : IDisposable
+    {
+        public Foo()
+        {
+            var method = typeof(Foo).GetMethod(nameof(IDisposable.Dispose));
+        }
+
+        void IDisposable.Dispose()
+        {
+        }
+    }
+}".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("GetMethod(nameof(IConvertible.ToBoolean))")]
         [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void WhenExplicitImplementation(string call)
+        public void WhenExplicitImplementationNotInSource(string call)
         {
             var code = @"
 namespace RoslynSandbox

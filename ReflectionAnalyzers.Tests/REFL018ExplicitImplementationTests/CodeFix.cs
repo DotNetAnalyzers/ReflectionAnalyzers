@@ -12,9 +12,9 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
         private static readonly CodeFixProvider Fix = new UseContainingTypeFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL018ExplicitImplementation.Descriptor);
 
-        [TestCase("GetMethod(nameof(IConvertible.ToBoolean))")]
-        [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
+        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public void WhenExplicitImplementation(string call)
         {
             var code = @"
@@ -23,14 +23,18 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    sealed class Foo : IDisposable
     {
         public Foo()
         {
-            var methodInfo = typeof(string).GetMethod(nameof(IConvertible.ToBoolean));
+            var methodInfo = typeof(Foo).GetMethod(nameof(IDisposable.Dispose));
+        }
+
+        void IDisposable.Dispose()
+        {
         }
     }
-}".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
+}".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
             var fixedCode = @"
 namespace RoslynSandbox
@@ -38,16 +42,20 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    sealed class Foo : IDisposable
     {
         public Foo()
         {
-            var methodInfo = typeof(IConvertible).GetMethod(nameof(IConvertible.ToBoolean));
+            var methodInfo = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
+        }
+
+        void IDisposable.Dispose()
+        {
         }
     }
-}".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
+}".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            var message = "ToBoolean is explicitly implemented.";
+            var message = "Dispose is explicitly implemented.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }
