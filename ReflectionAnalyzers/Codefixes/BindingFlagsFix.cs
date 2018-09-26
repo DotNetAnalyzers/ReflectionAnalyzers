@@ -3,17 +3,21 @@ namespace ReflectionAnalyzers.Codefixes
     using System.Collections.Immutable;
     using System.Composition;
     using System.Threading.Tasks;
+    using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Microsoft.CodeAnalysis.Formatting;
 
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(BindingFlagsFix))]
     [Shared]
     internal class BindingFlagsFix : DocumentEditorCodeFixProvider
     {
         private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
+        private static readonly ArgumentSyntax NullArgument = SyntaxFactory.Argument(SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression))
+                                                                           .WithAdditionalAnnotations(Formatter.Annotation);
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL005WrongBindingFlags.DiagnosticId,
@@ -29,19 +33,40 @@ namespace ReflectionAnalyzers.Codefixes
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
-                    diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString) &&
-                    argumentList.Arguments.Count == 1)
+                    diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {
-                    context.RegisterCodeFix(
-                        $"Add argument: {argumentString}.",
-                        (editor, _) => editor.AddUsing(SystemReflection)
-                                             .ReplaceNode(
-                                                 argumentList,
-                                                 argumentList.AddArguments(
-                                                     SyntaxFactory.Argument(SyntaxFactory.ParseExpression(argumentString)
-                                                                  .WithLeadingTrivia(SyntaxFactory.ElasticSpace)))),
-                        nameof(BindingFlagsFix),
-                        diagnostic);
+                    if (argumentList.Arguments.Count == 1)
+                    {
+                        context.RegisterCodeFix(
+                            $"Add argument: {argumentString}.",
+                            (editor, _) => editor.AddUsing(SystemReflection)
+                                                 .ReplaceNode(
+                                                     argumentList,
+                                                     x => x.AddArguments(ParseArgument(argumentString))),
+                            nameof(BindingFlagsFix),
+                            diagnostic);
+                    }
+                    else if (argumentList.Parent is InvocationExpressionSyntax invocation)
+                    {
+                        var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
+                        if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out var getMethod) &&
+                            getMethod.Parameters.Length == 2 &&
+                            getMethod.TryFindParameter("name", out _) &&
+                            getMethod.TryFindParameter("types", out _))
+                        {
+                            context.RegisterCodeFix(
+                                $"Add argument: {argumentString}.",
+                                (editor, _) => editor.AddUsing(SystemReflection)
+                                                     .ReplaceNode(
+                                                         argumentList,
+                                                         x => x.WithArguments(
+                                                             x.Arguments.Insert(1, ParseArgument(argumentString))
+                                                              .Insert(2, NullArgument)
+                                                              .Add(NullArgument))),
+                                nameof(BindingFlagsFix),
+                                diagnostic);
+                        }
+                    }
                 }
                 else if (diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var expressionString) &&
                          syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax argument))
@@ -54,6 +79,12 @@ namespace ReflectionAnalyzers.Codefixes
                         diagnostic);
                 }
             }
+        }
+
+        private static ArgumentSyntax ParseArgument(string expressionString)
+        {
+            return SyntaxFactory.Argument(SyntaxFactory.ParseExpression(expressionString))
+                                .WithLeadingTrivia(SyntaxFactory.ElasticSpace);
         }
     }
 }

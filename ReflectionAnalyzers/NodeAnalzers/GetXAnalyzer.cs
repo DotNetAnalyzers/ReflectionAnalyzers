@@ -115,13 +115,13 @@ namespace ReflectionAnalyzers
                         }
 
                         if (typesArg == null &&
-                            HasMissingTypes(invocation, member as IMethodSymbol, context, out var argumentListString))
+                            HasMissingTypes(invocation, member as IMethodSymbol, context, out var typeArrayString))
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     REFL029MissingTypes.Descriptor,
                                     argumentList.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentListSyntax), argumentListString)));
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayString)));
                         }
 
                         if (IsPreferGetMemberThenAccessor(invocation, member, context, out var call))
@@ -374,81 +374,39 @@ namespace ReflectionAnalyzers
         private static bool HasMissingTypes(InvocationExpressionSyntax invocation, IMethodSymbol member, SyntaxNodeAnalysisContext context, out string typesString)
         {
             if (member != null &&
-                !member.IsGenericMethod &&
-                invocation.ArgumentList is ArgumentListSyntax argumentList)
+                !member.IsGenericMethod)
             {
                 if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getMethod))
                 {
-                    if (getMethod.Parameters.TrySingle(out var nameParameter) &&
-                        nameParameter.Type == KnownSymbol.String &&
-                        argumentList.Arguments.TrySingle(out var nameArg))
+                    if (member.Parameters.Length == 0)
                     {
-                        if (member.Parameters.Length == 0)
-                        {
-                            typesString = $"({nameArg}, Type.EmptyTypes)";
-                            return true;
-                        }
-
-                        var builder = StringBuilderPool.Borrow()
-                                                       .Append("(")
-                                                       .Append(nameArg)
-                                                       .Append(", ");
-                        if (TryAppendTypesArray(builder))
-                        {
-                            typesString = builder.Append(")")
-                                                 .Return();
-                            return true;
-                        }
-
-                        typesString = null;
-                        return false;
+                        typesString = "Type.EmptyTypes";
+                        return true;
                     }
 
-                    if (getMethod.Parameters.Length == 2 &&
-                        getMethod.Parameters.TryElementAt(0, out nameParameter) &&
-                        invocation.TryFindArgument(nameParameter, out nameArg) &&
-                        nameParameter.Type == KnownSymbol.String &&
-                        getMethod.Parameters.TryElementAt(1, out var flagsParameter) &&
-                        flagsParameter.Type == KnownSymbol.BindingFlags &&
-                        invocation.TryFindArgument(flagsParameter, out var flagsArg))
+                    if (TryGetTypesArray(out typesString))
                     {
-                        if (member.Parameters.Length == 0)
-                        {
-                            typesString = $"({nameArg}, {flagsArg}, null, Type.EmptyTypes, null)";
-                            return true;
-                        }
-
-                        var builder = StringBuilderPool.Borrow()
-                                                       .Append("(")
-                                                       .Append(nameArg)
-                                                       .Append(", ")
-                                                       .Append(flagsArg)
-                                                       .Append(", null, ");
-                        if (TryAppendTypesArray(builder))
-                        {
-                            typesString = builder.Append(", null)")
-                                                 .Return();
-                            return true;
-                        }
-
-                        typesString = null;
-                        return false;
+                        return true;
                     }
+
+                    typesString = null;
+                    return false;
                 }
             }
 
             typesString = null;
             return false;
 
-            bool TryAppendTypesArray(StringBuilderPool.PooledStringBuilder builder)
+            bool TryGetTypesArray(out string typesArrayString)
             {
-                _ = builder.Append("new[] { ");
+                var builder = StringBuilderPool.Borrow().Append("new[] { ");
                 for (var i = 0; i < member.Parameters.Length; i++)
                 {
                     var parameter = member.Parameters[i];
                     if (!context.SemanticModel.IsAccessible(invocation.SpanStart, parameter.Type))
                     {
                         _ = builder.Return();
+                        typesArrayString = null;
                         return false;
                     }
 
@@ -462,7 +420,7 @@ namespace ReflectionAnalyzers
                                .Append(")");
                 }
 
-                _ = builder.Append(" }");
+                typesArrayString = builder.Append(" }").Return();
                 return true;
             }
         }

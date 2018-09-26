@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers
     internal static class GetX
     {
 #pragma warning disable CA1825 // Avoid zero-length array allocations. We want to check by reference.
-        public static IReadOnlyList<ITypeSymbol> AnyTypes = new ITypeSymbol[0];
+        public static readonly IReadOnlyList<ITypeSymbol> AnyTypes = new ITypeSymbol[0];
 #pragma warning restore CA1825 // Avoid zero-length array allocations.
 
         /// <summary>
