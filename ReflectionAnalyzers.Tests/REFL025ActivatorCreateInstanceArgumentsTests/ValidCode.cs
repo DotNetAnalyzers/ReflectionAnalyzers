@@ -71,6 +71,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new[] { (object)null })")]
         [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { null })")]
         [TestCase("Activator.CreateInstance(typeof(Foo), (string)null)")]
         public void OneConstructorSingleStringParameter(string call)

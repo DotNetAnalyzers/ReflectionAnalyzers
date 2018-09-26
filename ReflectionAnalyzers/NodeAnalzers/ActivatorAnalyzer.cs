@@ -95,10 +95,10 @@ namespace ReflectionAnalyzers
             {
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
                     return false;
-                case ImplicitArrayCreationExpressionSyntax _:
-                    break;
-                case ExpressionSyntax expression when Array.TryGetValues(expression, context, out values):
-                    return true;
+                case ExpressionSyntax expression when context.SemanticModel.TryGetType(expression, context.CancellationToken, out var type) &&
+                                                      type is IArrayTypeSymbol arrayType &&
+                                                      arrayType.ElementType == KnownSymbol.Object:
+                    return Array.TryGetValues(expression, context, out values);
             }
 
             for (var i = startIndex; i < argumentList.Arguments.Count; i++)
@@ -150,11 +150,24 @@ namespace ReflectionAnalyzers
                 for (var i = 0; i < values.Length; i++)
                 {
                     var conversion = context.SemanticModel.ClassifyConversion(values[i], parameters[i].Type);
-                    if (!conversion.IsIdentity &&
-                        !conversion.IsImplicit)
+                    if (!conversion.Exists)
                     {
                         return false;
                     }
+
+                    if (conversion.IsImplicit ||
+                        conversion.IsIdentity)
+                    {
+                        continue;
+                    }
+
+                    if (conversion.IsExplicit &&
+                        conversion.IsReference)
+                    {
+                        continue;
+                    }
+
+                    return false;
                 }
 
                 return true;
