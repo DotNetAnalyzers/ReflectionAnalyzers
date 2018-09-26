@@ -29,7 +29,8 @@ namespace ReflectionAnalyzers.Codefixes
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
-                    diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
+                    diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString) &&
+                    argumentList.Arguments.Count == 1)
                 {
                     context.RegisterCodeFix(
                         $"Add argument: {argumentString}.",

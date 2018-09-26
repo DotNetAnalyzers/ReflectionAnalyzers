@@ -69,7 +69,6 @@ namespace ReflectionAnalyzers
                                     argumentList.CloseParenToken.GetLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
                                     $" Expected: {correctFlags.ToDisplayString()}."));
-
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     REFL008MissingBindingFlags.Descriptor,
@@ -95,13 +94,21 @@ namespace ReflectionAnalyzers
                                         $" Expected: {expectedFlags.ToDisplayString()}."));
                             }
 
-                            if (flagsArg == null ||
-                                HasMissingFlag(member, type, effectiveFlags))
+                            if (flagsArg == null)
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
                                         REFL008MissingBindingFlags.Descriptor,
-                                        flagsArg?.GetLocation() ?? argumentList.CloseParenToken.GetLocation(),
+                                        argumentList.CloseParenToken.GetLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
+                                        $" Expected: {expectedFlags.ToDisplayString()}."));
+                            }
+                            else if (HasMissingFlag(member, type, effectiveFlags))
+                            {
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        REFL008MissingBindingFlags.Descriptor,
+                                        flagsArg.GetLocation(),
                                         ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
                                         $" Expected: {expectedFlags.ToDisplayString()}."));
                             }
