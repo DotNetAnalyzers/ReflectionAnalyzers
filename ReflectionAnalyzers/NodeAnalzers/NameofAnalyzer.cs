@@ -123,8 +123,17 @@ namespace ReflectionAnalyzers
         {
             instance = default(Optional<IdentifierNameSyntax>);
             target = default(Optional<ISymbol>);
-            if (GetX.TryGetType(invocation, context, out var targetType, out instance))
+            if (GetX.TryGetType(invocation, context, out var targetType, out var typeSource))
             {
+                if (typeSource.HasValue &&
+                    typeSource.Value is InvocationExpressionSyntax getType &&
+                    getType.TryGetTarget(KnownSymbol.Object.GetType, context.SemanticModel, context.CancellationToken, out _) &&
+                    getType.Expression is MemberAccessExpressionSyntax memberAccess &&
+                    memberAccess.Expression is IdentifierNameSyntax identifierName)
+                {
+                    instance = new Optional<IdentifierNameSyntax>(identifierName);
+                }
+
                 _ = GetX.TryGetMember(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, GetX.AnyTypes, context, out var targetSymbol);
 
                 if (targetSymbol is IMethodSymbol method)

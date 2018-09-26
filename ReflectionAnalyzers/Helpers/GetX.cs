@@ -133,14 +133,14 @@ namespace ReflectionAnalyzers
         /// <param name="getX">The invocation of a GetX method, GetEvent, GetField etc.</param>
         /// <param name="context">The <see cref="SyntaxNodeAnalysisContext"/>.</param>
         /// <param name="result">The type.</param>
-        /// <param name="instance">The instance the type was called GetType on. Can be null</param>
+        /// <param name="typeSource">The expression the type was ultimately produced from.</param>
         /// <returns>True if the type could be determined.</returns>
-        internal static bool TryGetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
+        internal static bool TryGetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out Optional<ExpressionSyntax> typeSource)
         {
             result = null;
-            instance = default(Optional<IdentifierNameSyntax>);
+            typeSource = default(Optional<ExpressionSyntax>);
             return getX.Expression is MemberAccessExpressionSyntax memberAccess &&
-                   Type.TryGet(memberAccess.Expression, context, null, out result, out instance);
+                   Type.TryGet(memberAccess.Expression, context, out result, out typeSource);
         }
 
         internal static GetXResult TryGetMember(IMethodSymbol getX, ITypeSymbol targetType, string targetMetadataName, BindingFlags flags, IReadOnlyList<ITypeSymbol> types, SyntaxNodeAnalysisContext context, out ISymbol member)

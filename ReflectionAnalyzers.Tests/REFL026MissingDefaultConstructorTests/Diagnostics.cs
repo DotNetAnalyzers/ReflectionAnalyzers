@@ -10,7 +10,8 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL026MissingDefaultConstructor.Descriptor);
 
         [TestCase("Activator.CreateInstance<↓Foo>()")]
-        public void OneConstructor(string call)
+        [TestCase("Activator.CreateInstance(typeof(↓Foo))")]
+        public void OneConstructorSingleIntParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -21,16 +22,18 @@ namespace RoslynSandbox
     {
         public Foo(int i)
         {
-            var foo = Activator.CreateInstance(typeof(Foo));
+            var foo = Activator.CreateInstance(typeof(↓Foo));
         }
     }
-}".AssertReplace("Activator.CreateInstance(typeof(Foo))", call);
+}".AssertReplace("Activator.CreateInstance(typeof(↓Foo))", call);
 
             var message = "No parameterless constructor defined for RoslynSandbox.Foo.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [TestCase("Activator.CreateInstance<↓Foo>()")]
+        [TestCase("Activator.CreateInstance(typeof(↓Foo))")]
+        [TestCase("Activator.CreateInstance(typeof(↓Foo), false)")]
         public void PrivateConstructor(string call)
         {
             var code = @"

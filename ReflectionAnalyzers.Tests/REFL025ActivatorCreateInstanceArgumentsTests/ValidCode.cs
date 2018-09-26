@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
+namespace ReflectionAnalyzers.Tests.REFL025ActivatorCreateInstanceArgumentsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -7,11 +7,9 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL026MissingDefaultConstructor.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor);
 
         [TestCase("Activator.CreateInstance(typeof(Foo))")]
-        [TestCase("Activator.CreateInstance(typeof(Foo), true)")]
-        [TestCase("Activator.CreateInstance(typeof(Foo), false)")]
         [TestCase("Activator.CreateInstance(this.GetType())")]
         [TestCase("Activator.CreateInstance<Foo>()")]
         public void ExplicitDefaultConstructor(string call)
@@ -53,7 +51,7 @@ namespace RoslynSandbox
 
         [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1 })")]
-        public void OneConstructor(string call)
+        public void OneConstructorOneIntParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -64,16 +62,19 @@ namespace RoslynSandbox
     {
         public Foo(int i)
         {
-            var foo = Activator.CreateInstance(typeof(Foo));
+            var foo = Activator.CreateInstance(typeof(Foo), 1);
         }
     }
-}".AssertReplace("Activator.CreateInstance(typeof(Foo))", call);
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), 1)", call);
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [Test]
-        public void PrivateConstructor()
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1.2)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1 })")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1.2 })")]
+        public void OneConstructorOneDoubleParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -82,12 +83,36 @@ namespace RoslynSandbox
 
     public class Foo
     {
-        private Foo()
+        public Foo(double d)
         {
-            var foo = Activator.CreateInstance(typeof(Foo), true);
+            var foo = Activator.CreateInstance(typeof(Foo), 1);
         }
     }
-}";
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), 1)", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("Activator.CreateInstance(typeof(Foo))")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1, 2)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1 })")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1, 2 })")]
+        public void ParamsConstructor(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo(params int[] ints)
+        {
+            var foo = Activator.CreateInstance(typeof(Foo), 1);
+        }
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), 1)", call);
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
