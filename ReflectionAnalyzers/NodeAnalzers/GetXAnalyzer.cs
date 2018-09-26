@@ -367,60 +367,95 @@ namespace ReflectionAnalyzers
         private static bool HasMissingTypes(InvocationExpressionSyntax invocation, IMethodSymbol member, SyntaxNodeAnalysisContext context, out string typesString)
         {
             if (member != null &&
-                invocation.ArgumentList is ArgumentListSyntax argumentList &&
-                invocation.TryGetMethodName(out var getXName))
+                invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                if (getXName == "GetMethod" &&
-                    argumentList.Arguments.Count == 1)
+                if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getMethod))
                 {
-                    return TryGetTypesString(member.Parameters, out typesString);
+                    if (getMethod.Parameters.TrySingle(out var nameParameter) &&
+                        nameParameter.Type == KnownSymbol.String &&
+                        argumentList.Arguments.TrySingle(out var nameArg))
+                    {
+                        if (member.Parameters.Length == 0)
+                        {
+                            typesString = $"({nameArg}, Type.EmptyTypes)";
+                            return true;
+                        }
+
+                        var builder = StringBuilderPool.Borrow()
+                                                       .Append("(")
+                                                       .Append(nameArg)
+                                                       .Append(", ");
+                        if (TryAppendTypesArray(builder))
+                        {
+                            typesString = builder.Append(")")
+                                                 .Return();
+                            return true;
+                        }
+
+                        typesString = null;
+                        return false;
+                    }
+
+                    if (getMethod.Parameters.Length == 2 &&
+                        getMethod.Parameters.TryElementAt(0, out nameParameter) &&
+                        invocation.TryFindArgument(nameParameter, out nameArg) &&
+                        nameParameter.Type == KnownSymbol.String &&
+                        getMethod.Parameters.TryElementAt(1, out var flagsParameter) &&
+                        flagsParameter.Type == KnownSymbol.BindingFlags &&
+                        invocation.TryFindArgument(flagsParameter, out var flagsArg))
+                    {
+                        if (member.Parameters.Length == 0)
+                        {
+                            typesString = $"({nameArg}, {flagsArg}, null, Type.EmptyTypes, null)";
+                            return true;
+                        }
+
+                        var builder = StringBuilderPool.Borrow()
+                                                       .Append("(")
+                                                       .Append(nameArg)
+                                                       .Append(", ")
+                                                       .Append(flagsArg)
+                                                       .Append(", null, ");
+                        if (TryAppendTypesArray(builder))
+                        {
+                            typesString = builder.Append(", null)")
+                                                 .Return();
+                            return true;
+                        }
+
+                        typesString = null;
+                        return false;
+                    }
                 }
             }
 
             typesString = null;
             return false;
 
-            bool TryGetTypesString(ImmutableArray<IParameterSymbol> parameters, out string result)
+            bool TryAppendTypesArray(StringBuilderPool.PooledStringBuilder builder)
             {
-                if (argumentList.Arguments.TrySingle(out var argument))
+                _ = builder.Append("new[] { ");
+                for (var i = 0; i < member.Parameters.Length; i++)
                 {
-                    if (parameters.Length == 0)
+                    var parameter = member.Parameters[i];
+                    if (!context.SemanticModel.IsAccessible(invocation.SpanStart, parameter.Type))
                     {
-                        result = $"({argument}, Type.EmptyTypes)";
-                        return true;
+                        _ = builder.Return();
+                        return false;
                     }
 
-                    var builder = StringBuilderPool.Borrow()
-                                                   .Append("(")
-                                                   .Append(argument)
-                                                   .Append(", new[] { ");
-                    for (var i = 0; i < parameters.Length; i++)
+                    if (i != 0)
                     {
-                        var parameter = parameters[i];
-                        if (!context.SemanticModel.IsAccessible(invocation.SpanStart, parameter.Type))
-                        {
-                            _ = builder.Return();
-                            result = null;
-                            return false;
-                        }
-
-                        if (i != 0)
-                        {
-                            _ = builder.Append(", ");
-                        }
-
-                        _ = builder.Append("typeof(")
-                                   .Append(parameter.Type.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart))
-                                   .Append(")");
+                        _ = builder.Append(", ");
                     }
 
-                    result = builder.Append(" })")
-                                    .Return();
-                    return true;
+                    _ = builder.Append("typeof(")
+                               .Append(parameter.Type.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart))
+                               .Append(")");
                 }
 
-                result = null;
-                return false;
+                _ = builder.Append(" }");
+                return true;
             }
         }
     }
