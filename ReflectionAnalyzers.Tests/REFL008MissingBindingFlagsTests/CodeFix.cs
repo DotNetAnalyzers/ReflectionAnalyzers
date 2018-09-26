@@ -71,6 +71,116 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void GetMethodNoParameterWithTypes()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), Type.EmptyTypes);
+        }
+
+        public int Bar() => 0;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+        }
+
+        public int Bar() => 0;
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
+        public void GetMethodOneParameterWithTypes()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int) });
+        }
+
+        public int Bar(int value) => value;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        }
+
+        public int Bar(int value) => value;
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
+        public void GetMethodTwoParameterWithTYpes()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int), typeof(double) });
+        }
+
+        public double Bar(int i, double d) => i + d;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(double) }, null);
+        }
+
+        public double Bar(int i, double d) => i + d;
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
         public void GetMethodNoFlagsFixInsideArrayInitializer()
         {
             var code = @"
