@@ -7,9 +7,14 @@ namespace ReflectionAnalyzers
 
     internal static class Type
     {
-        internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out Optional<IdentifierNameSyntax> instance)
+        internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out Optional<ExpressionSyntax> source)
         {
-            instance = default(Optional<IdentifierNameSyntax>);
+            return TryGet(expression, context, null, out result, out source);
+        }
+
+        private static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out Optional<ExpressionSyntax> source)
+        {
+            source = default(Optional<ExpressionSyntax>);
             result = null;
             switch (expression)
             {
@@ -18,10 +23,11 @@ namespace ReflectionAnalyzers
                     {
                         return AssignedValueWalker.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
                                visited.Add(assignedValue) &&
-                               TryGet(assignedValue, context, visited, out result, out instance);
+                               TryGet(assignedValue, context, visited, out result, out source);
                     }
 
                 case TypeOfExpressionSyntax typeOf:
+                    source = new Optional<ExpressionSyntax>(typeOf);
                     return context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out result);
                 case InvocationExpressionSyntax getType when getType.TryGetMethodName(out var name) &&
                                                  name == "GetType" &&
@@ -31,13 +37,10 @@ namespace ReflectionAnalyzers
                         switch (getType.Expression)
                         {
                             case MemberAccessExpressionSyntax typeAccess:
-                                if (typeAccess.Expression is IdentifierNameSyntax identifier)
-                                {
-                                    instance = identifier;
-                                }
-
+                                source = new Optional<ExpressionSyntax>(getType);
                                 return context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out result);
                             case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
+                                source = new Optional<ExpressionSyntax>(getType);
                                 return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);
                         }
                     }
@@ -48,10 +51,12 @@ namespace ReflectionAnalyzers
                         switch (getType.Expression)
                         {
                             case MemberAccessExpressionSyntax typeAccess when context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out var typeInAssembly):
+                                source = new Optional<ExpressionSyntax>(getType);
                                 result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
                                 return result != null;
                             case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType) &&
                                                              context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out var typeInAssembly):
+                                source = new Optional<ExpressionSyntax>(getType);
                                 result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
                                 return result != null;
                         }
