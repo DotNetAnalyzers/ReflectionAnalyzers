@@ -9,14 +9,11 @@ namespace ReflectionAnalyzers.Tests.REFL025ActivatorCreateInstanceArgumentsTests
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor);
 
-        [TestCase("Activator.CreateInstance(typeof(Foo)↓)")]
-        [TestCase("Activator.CreateInstance(this.GetType()↓)")]
-        [TestCase("Activator.↓CreateInstance<Foo>()")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓new object[] { 1, 2 })")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓\"abc\")")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓1.0)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓1, 2)")]
-        public void OneConstructor(string call)
+        public void OneConstructorSingleIntParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox

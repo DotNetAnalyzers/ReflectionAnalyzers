@@ -1,6 +1,8 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Generic;
+    using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -86,5 +88,30 @@ namespace ReflectionAnalyzers
             }
         }
 
+        internal static bool TryGetValues(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
+        {
+            values = default(ImmutableArray<ExpressionSyntax>);
+            if (IsCreatingEmpty(creation, context))
+            {
+                values = ImmutableArray<ExpressionSyntax>.Empty;
+                return true;
+            }
+
+            switch (creation)
+            {
+                case ImplicitArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
+                    values = ImmutableArray.CreateRange(initializer.Expressions);
+                    return true;
+                case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
+                    values = ImmutableArray.CreateRange(initializer.Expressions);
+                    return true;
+                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out ISymbol symbol) &&
+                                                                    symbol == KnownSymbol.Type.EmptyTypes:
+                    values = ImmutableArray<ExpressionSyntax>.Empty;
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

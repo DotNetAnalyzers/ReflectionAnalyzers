@@ -27,6 +27,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
+                invocation.ArgumentList is ArgumentListSyntax argumentList &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 invocation.TryGetTarget(KnownSymbol.Activator.CreateInstance, context.SemanticModel, context.CancellationToken, out var createInstance))
             {
@@ -70,12 +71,91 @@ namespace ReflectionAnalyzers
                                 context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, GetLocation(typeSource) ?? typeArgument.GetLocation(), type.ToDisplayString()));
                             }
                         }
-                        else if(parameter.IsParams)
+                        else if (parameter.IsParams)
                         {
-                            
+                            if (invocation.ArgumentList.Arguments[0].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, GetLocation(typeSource) ?? typeArgument.GetLocation(), type.ToDisplayString()));
+                            }
+                            else if (TryGetValues(argumentList, 1, context, out var values) &&
+                                     TryFindConstructor(namedType, values, context) == false)
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor, invocation.ArgumentList.Arguments[1].GetLocation(), type.ToDisplayString()));
+                            }
                         }
                     }
                 }
+            }
+        }
+
+        private static bool TryGetValues(ArgumentListSyntax argumentList, int startIndex, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
+        {
+            var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>();
+            switch (argumentList.Arguments[startIndex].Expression)
+            {
+                case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
+                    return false;
+                case ExpressionSyntax expression when Array.TryGetValues(expression, context, out values):
+                    return true;
+            }
+
+            for (var i = startIndex; i < argumentList.Arguments.Count; i++)
+            {
+                builder.Add(argumentList.Arguments[i].Expression);
+            }
+
+            values = builder.ToImmutable();
+            return true;
+        }
+
+        private static bool? TryFindConstructor(INamedTypeSymbol type, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context)
+        {
+            foreach (var constructor in type.Constructors)
+            {
+                if (constructor.IsStatic)
+                {
+                    continue;
+                }
+
+                switch (IsMatch(constructor.Parameters))
+                {
+                    case true:
+                        return true;
+                    case null:
+                        return null;
+                }
+            }
+
+            return false;
+            bool? IsMatch(ImmutableArray<IParameterSymbol> parameters)
+            {
+                if (parameters.TryLast(out var last) &&
+                    last.IsParams)
+                {
+                    return null;
+                }
+
+                if (parameters.TryFirst(x => x.RefKind == RefKind.Ref || x.RefKind == RefKind.Out, out _))
+                {
+                    return null;
+                }
+
+                if (values.Length != parameters.Length)
+                {
+                    return false;
+                }
+
+                for (var i = 0; i < values.Length; i++)
+                {
+                    var conversion = context.SemanticModel.ClassifyConversion(values[i], parameters[i].Type);
+                    if (!conversion.IsIdentity &&
+                        !conversion.IsImplicit)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
 

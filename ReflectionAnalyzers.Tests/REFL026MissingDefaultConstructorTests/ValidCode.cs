@@ -10,6 +10,8 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL026MissingDefaultConstructor.Descriptor);
 
         [TestCase("Activator.CreateInstance(typeof(Foo))")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), true)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), false)")]
         [TestCase("Activator.CreateInstance(this.GetType())")]
         [TestCase("Activator.CreateInstance<Foo>()")]
         public void ExplicitDefaultConstructor(string call)
@@ -66,6 +68,26 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo))", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
+        public void PrivateConstructor()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        private Foo()
+        {
+            var foo = Activator.CreateInstance(typeof(Foo), true);
+        }
+    }
+}";
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
