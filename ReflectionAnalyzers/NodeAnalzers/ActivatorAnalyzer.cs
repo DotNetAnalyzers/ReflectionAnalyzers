@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
-    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -14,7 +13,8 @@ namespace ReflectionAnalyzers
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL025ActivatorCreateInstanceArguments.Descriptor,
-            REFL026MissingDefaultConstructor.Descriptor);
+            REFL026MissingDefaultConstructor.Descriptor,
+            REFL028CastReturnValueToCorrectType.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -36,10 +36,10 @@ namespace ReflectionAnalyzers
                     context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, location, createdType.ToDisplayString()));
                 }
                 else if (createInstance.Parameters.Length > 1 &&
-                    createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
-                        invocation.TryFindArgument(typeParameter, out var typeArgument) &&
-                         Type.TryGet(typeArgument.Expression, context, out var type, out _) &&
-                         type is INamedTypeSymbol namedType)
+                         createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
+                         invocation.TryFindArgument(typeParameter, out var typeArgument) &&
+                         Type.TryGet(typeArgument.Expression, context, out createdType, out _) &&
+                         createdType is INamedTypeSymbol namedType)
                 {
                     if (createInstance.Parameters.Length == 2 &&
                              createInstance.Parameters.TryElementAt(1, out var parameter))
@@ -58,11 +58,33 @@ namespace ReflectionAnalyzers
                         }
                     }
                 }
+
+                if (!createInstance.IsGenericMethod &&
+                    createdType != null)
+                {
+                    switch (invocation.Parent)
+                    {
+                        case CastExpressionSyntax castExpression when castExpression.Type is TypeSyntax typeSyntax &&
+                                                                      context.SemanticModel.TryGetType(typeSyntax, context.CancellationToken, out var castType) &&
+                                                                      !createdType.IsAssignableTo(castType, context.Compilation):
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL028CastReturnValueToCorrectType.Descriptor,
+                                    typeSyntax.GetLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(
+                                        nameof(TypeSyntax),
+                                        createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                    createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                            break;
+                    }
+                }
             }
         }
 
         private static bool IsMissingDefaultConstructor(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out Location location, out ITypeSymbol createdType)
         {
+            location = null;
+            createdType = null;
             if (createInstance.IsGenericMethod &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Name is GenericNameSyntax genericName &&
@@ -113,8 +135,6 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            location = null;
-            createdType = null;
             return false;
 
             bool HasDefaultConstructor(ITypeSymbol type)

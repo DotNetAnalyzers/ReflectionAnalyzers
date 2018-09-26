@@ -9,12 +9,12 @@ namespace ReflectionAnalyzers.Codefixes
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(PreferNullFix))]
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CastReturnValueFix))]
     [Shared]
-    internal class PreferNullFix : DocumentEditorCodeFixProvider
+    internal class CastReturnValueFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL024PreferNullOverEmptyArray.DiagnosticId);
+            REFL028CastReturnValueToCorrectType.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
@@ -22,14 +22,15 @@ namespace ReflectionAnalyzers.Codefixes
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument))
+                if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax typeSyntax) &&
+                    diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeString))
                 {
                     context.RegisterCodeFix(
-                        "Prefer null.",
+                        $"Cast to {typeString}.",
                         (editor, _) => editor.ReplaceNode(
-                            argument.Expression,
-                            x => SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression)),
-                        nameof(PreferNullFix),
+                            typeSyntax,
+                            x => SyntaxFactory.ParseTypeName(typeString)),
+                        nameof(CastReturnValueFix),
                         diagnostic);
                 }
             }

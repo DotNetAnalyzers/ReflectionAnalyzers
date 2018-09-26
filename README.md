@@ -104,5 +104,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL027.md">REFL027</a></td>
     <td>Prefer Type.EmptyTypes.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL028.md">REFL028</a></td>
+    <td>Cast return value to correct type.</td>
+  </tr>
 <table>
 <!-- end generated table -->
