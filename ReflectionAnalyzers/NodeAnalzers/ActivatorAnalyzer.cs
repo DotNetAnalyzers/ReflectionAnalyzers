@@ -112,6 +112,7 @@ namespace ReflectionAnalyzers
 
         private static bool? TryFindConstructor(INamedTypeSymbol type, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context)
         {
+            var foundMatch = false;
             foreach (var constructor in type.Constructors)
             {
                 if (constructor.IsStatic)
@@ -122,13 +123,19 @@ namespace ReflectionAnalyzers
                 switch (IsMatch(constructor.Parameters))
                 {
                     case true:
-                        return true;
+                        if (foundMatch)
+                        {
+                            return false;
+                        }
+
+                        foundMatch = true;
+                        break;
                     case null:
                         return null;
                 }
             }
 
-            return false;
+            return foundMatch;
             bool? IsMatch(ImmutableArray<IParameterSymbol> parameters)
             {
                 if (parameters.TryLast(out var last) &&
@@ -149,6 +156,11 @@ namespace ReflectionAnalyzers
 
                 for (var i = 0; i < values.Length; i++)
                 {
+                    if (IsNull(values[i]))
+                    {
+                        continue;
+                    }
+
                     var conversion = context.SemanticModel.ClassifyConversion(values[i], parameters[i].Type);
                     if (!conversion.Exists)
                     {
@@ -171,6 +183,21 @@ namespace ReflectionAnalyzers
                 }
 
                 return true;
+            }
+
+            bool IsNull(ExpressionSyntax expression)
+            {
+                switch (expression)
+                {
+                    case LiteralExpressionSyntax literal:
+                        return literal.IsKind(SyntaxKind.NullLiteralExpression);
+                    case CastExpressionSyntax cast:
+                        return IsNull(cast.Expression);
+                    case BinaryExpressionSyntax binary when binary.IsKind(SyntaxKind.AsExpression):
+                        return IsNull(binary.Left);
+                    default:
+                        return false;
+                }
             }
         }
 

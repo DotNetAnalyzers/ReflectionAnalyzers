@@ -116,6 +116,89 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
+        public void OverloadedConstructorsStringAndStringBuilder(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Text;
+
+    public class Foo
+    {
+        public Foo(string text)
+        {
+        }
+
+        public Foo(StringBuilder text)
+        {
+        }
+
+        public static Foo Create() => (Foo)Activator.CreateInstance(typeof(Foo), ""abc"");
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { \"abc\" })")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1 })")]
+        public void OverloadedConstructorsStringAndInt(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo(string text)
+        {
+        }
+
+        public Foo(int value)
+        {
+        }
+
+        public static Foo Create() => (Foo)Activator.CreateInstance(typeof(Foo), ""abc"");
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), (string)null)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { null })")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\", \"cde\")")]
+        public void OverloadedConstructorsDifferentLength(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Text;
+
+    public class Foo
+    {
+        public Foo(string text)
+        {
+        }
+
+        public Foo(string text1, string text2)
+        {
+        }
+
+        public static Foo Create() => (Foo)Activator.CreateInstance(typeof(Foo), ""abc"");
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("Activator.CreateInstance(typeof(Foo))")]
         [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), 1, 2)")]

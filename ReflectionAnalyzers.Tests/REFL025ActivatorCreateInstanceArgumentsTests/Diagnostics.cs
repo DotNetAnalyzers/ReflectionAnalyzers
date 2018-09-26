@@ -52,5 +52,59 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("Activator.CreateInstance(typeof(Foo), ↓(string)null)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), ↓(StringBuilder)null)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), ↓new object[] { null })")]
+        public void OverloadedConstructorsStringAndStringBuilder(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Text;
+
+    public class Foo
+    {
+        public Foo(string text)
+        {
+        }
+
+        public Foo(StringBuilder text)
+        {
+        }
+
+        public static Foo Create() => (Foo)Activator.CreateInstance(typeof(Foo), ↓(string)null);
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), ↓(string)null)", call);
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("Activator.CreateInstance(typeof(Foo), ↓(string)null)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), ↓new object[] { null })")]
+        public void OverloadedConstructorsStringAndInt(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo(string text)
+        {
+        }
+
+        public Foo(int value)
+        {
+        }
+
+        public static Foo Create() => (Foo)Activator.CreateInstance(typeof(Foo), ↓(string)null);
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), ↓(string)null)", call);
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
