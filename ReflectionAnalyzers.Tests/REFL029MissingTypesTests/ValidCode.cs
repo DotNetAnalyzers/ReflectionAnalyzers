@@ -48,5 +48,24 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [Test]
+        public void GetMethodOneGenericParameter()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Id));
+        }
+
+        public T Id<T>(T value) => value;
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

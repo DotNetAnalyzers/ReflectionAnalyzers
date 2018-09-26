@@ -374,6 +374,7 @@ namespace ReflectionAnalyzers
         private static bool HasMissingTypes(InvocationExpressionSyntax invocation, IMethodSymbol member, SyntaxNodeAnalysisContext context, out string typesString)
         {
             if (member != null &&
+                !member.IsGenericMethod &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
                 if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getMethod))
