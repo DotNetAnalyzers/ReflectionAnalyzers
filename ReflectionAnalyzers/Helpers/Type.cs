@@ -12,6 +12,43 @@ namespace ReflectionAnalyzers
             return TryGet(expression, context, null, out result, out source);
         }
 
+        internal static bool HasVisibleMembers(ITypeSymbol type, BindingFlags flags)
+        {
+            if (!flags.HasFlagFast(BindingFlags.NonPublic))
+            {
+                return true;
+            }
+
+            if (flags.HasFlagFast(BindingFlags.DeclaredOnly))
+            {
+                return HasVisibleNonPublicMembers(type, recursive: false);
+            }
+
+            if (!flags.HasFlagFast(BindingFlags.Instance) &&
+                !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+            {
+                return HasVisibleNonPublicMembers(type, recursive: false);
+            }
+
+            return HasVisibleNonPublicMembers(type, recursive: true);
+        }
+
+        internal static bool HasVisibleNonPublicMembers(ITypeSymbol type, bool recursive)
+        {
+            if (type == null ||
+                type == KnownSymbol.Object)
+            {
+                return true;
+            }
+
+            if (!type.Locations.TryFirst(x => x.IsInSource, out _))
+            {
+                return false;
+            }
+
+            return !recursive || HasVisibleNonPublicMembers(type.BaseType, recursive: true);
+        }
+
         private static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out Optional<ExpressionSyntax> source)
         {
             source = default(Optional<ExpressionSyntax>);

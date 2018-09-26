@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -28,50 +29,22 @@ namespace ReflectionAnalyzers
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 invocation.TryGetTarget(KnownSymbol.Activator.CreateInstance, context.SemanticModel, context.CancellationToken, out var createInstance))
             {
-                if (createInstance.IsGenericMethod)
+                if (IsMissingDefaultConstructor(createInstance, invocation, context, out var location, out var createdType))
                 {
-                    if (memberAccess.Name is GenericNameSyntax genericName &&
-                        genericName.TypeArgumentList is TypeArgumentListSyntax typeArgumentList &&
-                        typeArgumentList.Arguments.TrySingle(out var typeArgument) &&
-                        context.SemanticModel.TryGetType(typeArgument, context.CancellationToken, out var type) &&
-                        type is INamedTypeSymbol namedType &&
-                        !namedType.Constructors.TrySingle(x => x.Parameters.Length == 0 && x.DeclaredAccessibility == Accessibility.Public, out _))
-                    {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, typeArgument.GetLocation(), type.ToDisplayString()));
-                    }
+                    context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, location, createdType.ToDisplayString()));
                 }
-                else if (createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
+                else if (createInstance.Parameters.Length > 1 &&
+                    createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
                         invocation.TryFindArgument(typeParameter, out var typeArgument) &&
-                         Type.TryGet(typeArgument.Expression, context, out var type, out var typeSource) &&
+                         Type.TryGet(typeArgument.Expression, context, out var type, out _) &&
                          type is INamedTypeSymbol namedType)
                 {
-                    if (createInstance.Parameters.Length == 1 &&
-                        !namedType.Constructors.TrySingle(x => x.Parameters.Length == 0 && x.DeclaredAccessibility == Accessibility.Public, out _))
-                    {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, GetLocation(typeSource) ?? typeArgument.GetLocation(), type.ToDisplayString()));
-                    }
-                    else if (createInstance.Parameters.Length == 2 &&
+                    if (createInstance.Parameters.Length == 2 &&
                              createInstance.Parameters.TryElementAt(1, out var parameter))
                     {
-                        if (parameter.Type == KnownSymbol.Boolean &&
-                            invocation.TryFindArgument(parameter, out var flagArg) &&
-                            flagArg.Expression is LiteralExpressionSyntax literal)
-                        {
-                            if (literal.IsKind(SyntaxKind.TrueLiteralExpression) &&
-                                !namedType.Constructors.TrySingle(x => x.Parameters.Length == 0, out _))
-                            {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, GetLocation(typeSource) ?? typeArgument.GetLocation(), type.ToDisplayString()));
-                            }
-                            else if (literal.IsKind(SyntaxKind.FalseLiteralExpression) &&
-                                !namedType.Constructors.TrySingle(x => x.Parameters.Length == 0 && x.DeclaredAccessibility == Accessibility.Public, out _))
-                            {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, GetLocation(typeSource) ?? typeArgument.GetLocation(), type.ToDisplayString()));
-                            }
-                        }
-                        else if (parameter.IsParams)
+                        if (parameter.IsParams)
                         {
                             if (invocation.ArgumentList.Arguments[1].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
                             {
@@ -85,6 +58,89 @@ namespace ReflectionAnalyzers
                         }
                     }
                 }
+            }
+        }
+
+        private static bool IsMissingDefaultConstructor(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out Location location, out ITypeSymbol createdType)
+        {
+            if (createInstance.IsGenericMethod &&
+                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                memberAccess.Name is GenericNameSyntax genericName &&
+                genericName.TypeArgumentList is TypeArgumentListSyntax typeArgumentList &&
+                typeArgumentList.Arguments.TrySingle(out var typeArgument) &&
+                context.SemanticModel.TryGetType(typeArgument, context.CancellationToken, out createdType) &&
+                !HasDefaultConstructor(createdType))
+            {
+                location = typeArgument.GetLocation();
+                return true;
+            }
+
+            if (createInstance.Parameters.TrySingle(out var typeParameter) &&
+                typeParameter.Type == KnownSymbol.Type &&
+                invocation.TryFindArgument(typeParameter, out var typeArg) &&
+                Type.TryGet(typeArg.Expression, context, out createdType, out var typeSource) &&
+                !HasDefaultConstructor(createdType))
+            {
+                location = GetLocation(typeSource);
+                return true;
+            }
+
+            if (createInstance.Parameters.Length == 2 &&
+                createInstance.Parameters.TryElementAt(0, out typeParameter) &&
+                typeParameter.Type == KnownSymbol.Type &&
+                invocation.TryFindArgument(typeParameter, out typeArg) &&
+                Type.TryGet(typeArg.Expression, context, out createdType, out typeSource) &&
+                createInstance.Parameters.TryElementAt(1, out var flagParameter) &&
+                flagParameter.Type == KnownSymbol.Boolean &&
+                invocation.TryFindArgument(flagParameter, out var flagArg))
+            {
+                switch (flagArg.Expression)
+                {
+                    case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.TrueLiteralExpression) &&
+                                                              Type.HasVisibleNonPublicMembers(createdType, recursive: false) &&
+                                                              createdType is INamedTypeSymbol namedType &&
+                                                              !namedType.Constructors.TrySingle(
+                                                                  x => x.Parameters.Length == 0 &&
+                                                                       !x.IsStatic,
+                                                                  out _)
+                                                               :
+                        location = GetLocation(typeSource);
+                        return true;
+                    case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.FalseLiteralExpression) &&
+                                                              !HasDefaultConstructor(createdType):
+                        location = GetLocation(typeSource);
+                        return true;
+                }
+            }
+
+            location = null;
+            createdType = null;
+            return false;
+
+            bool HasDefaultConstructor(ITypeSymbol type)
+            {
+                return type is INamedTypeSymbol namedType &&
+                       namedType.Constructors.TrySingle(
+                           x => x.Parameters.Length == 0 &&
+                                x.DeclaredAccessibility == Accessibility.Public &&
+                                !x.IsStatic,
+                           out _);
+            }
+
+            Location GetLocation(Optional<ExpressionSyntax> source)
+            {
+                if (source.HasValue)
+                {
+                    if (source.Value is TypeOfExpressionSyntax typeOf &&
+                        typeOf.Type is TypeSyntax typeSyntax)
+                    {
+                        return typeSyntax.GetLocation();
+                    }
+
+                    return source.Value.GetLocation();
+                }
+
+                return null;
             }
         }
 
@@ -199,22 +255,6 @@ namespace ReflectionAnalyzers
                         return false;
                 }
             }
-        }
-
-        private static Location GetLocation(Optional<ExpressionSyntax> typeSource)
-        {
-            if (typeSource.HasValue)
-            {
-                if (typeSource.Value is TypeOfExpressionSyntax typeOf &&
-                    typeOf.Type is TypeSyntax typeSyntax)
-                {
-                    return typeSyntax.GetLocation();
-                }
-
-                return typeSource.Value.GetLocation();
-            }
-
-            return null;
         }
     }
 }

@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Generic;
-    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -269,7 +268,7 @@ namespace ReflectionAnalyzers
                 return GetXResult.ExplicitImplementation;
             }
 
-            if (!HasVisibleMembers(targetType, flags))
+            if (!Type.HasVisibleMembers(targetType, flags))
             {
                 return GetXResult.Unknown;
             }
@@ -388,33 +387,6 @@ namespace ReflectionAnalyzers
 
                 result = null;
                 return false;
-            }
-
-            bool HasVisibleMembers(ITypeSymbol type, BindingFlags effectiveFlags)
-            {
-                if (!effectiveFlags.HasFlagFast(BindingFlags.NonPublic))
-                {
-                    return true;
-                }
-
-                if (effectiveFlags.HasFlagFast(BindingFlags.DeclaredOnly))
-                {
-                    return type.Locations.Any(x => x.IsInSource);
-                }
-
-                var current = type;
-                while (current != null &&
-                       current != KnownSymbol.Object)
-                {
-                    if (!current.Locations.Any(x => x.IsInSource))
-                    {
-                        return false;
-                    }
-
-                    current = current.BaseType;
-                }
-
-                return true;
             }
 
             string TrimName()
