@@ -73,14 +73,14 @@ namespace ReflectionAnalyzers
                         }
                         else if (parameter.IsParams)
                         {
-                            if (invocation.ArgumentList.Arguments[0].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                            if (invocation.ArgumentList.Arguments[1].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, GetLocation(typeSource) ?? typeArgument.GetLocation(), type.ToDisplayString()));
+                                context.ReportDiagnostic(Diagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor, invocation.ArgumentList.Arguments[1].Expression.GetLocation()));
                             }
                             else if (TryGetValues(argumentList, 1, context, out var values) &&
                                      TryFindConstructor(namedType, values, context) == false)
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor, invocation.ArgumentList.Arguments[1].GetLocation(), type.ToDisplayString()));
+                                context.ReportDiagnostic(Diagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor, invocation.ArgumentList.Arguments[1].GetLocation()));
                             }
                         }
                     }

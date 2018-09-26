@@ -70,6 +70,28 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { null })")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), (string)null)")]
+        public void OneConstructorSingleStringParameter(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo(string text)
+        {
+            var foo = Activator.CreateInstance(typeof(Foo), ""abc"");
+        }
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), 1.2)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1 })")]

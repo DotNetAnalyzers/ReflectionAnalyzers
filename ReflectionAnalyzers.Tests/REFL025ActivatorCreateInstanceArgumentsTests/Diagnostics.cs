@@ -31,5 +31,25 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("Activator.CreateInstance(typeof(Foo), ↓null)")]
+        public void OneConstructorOneStringParameters(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo(string text1)
+        {
+            var foo = Activator.CreateInstance(typeof(Foo), ↓null);
+        }
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), ↓null)", call);
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
