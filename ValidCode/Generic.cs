@@ -39,7 +39,7 @@ namespace ValidCode
             _ = typeof(T).GetMethod(nameof(this.Baz), BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
             _ = typeof(T).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
             _ = typeof(T).GetMethod(nameof(Generic.ToString), BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
-            _ = typeof(IConvertible).GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(IFormatProvider) }, null);
+            _ = typeof(IConvertible).GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(IFormatProvider) }, null);
             _ = typeof(T).GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(IFormatProvider) }, null);
         }
 
