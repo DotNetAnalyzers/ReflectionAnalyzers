@@ -9,6 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ActivatorCreateInstanceArgumentsTests
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor);
 
+        [TestCase("Activator.CreateInstance(typeof(Foo), ↓new[] { 1 })")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓new object[] { 1, 2 })")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓\"abc\")")]
         [TestCase("Activator.CreateInstance(typeof(Foo), ↓1.0)")]

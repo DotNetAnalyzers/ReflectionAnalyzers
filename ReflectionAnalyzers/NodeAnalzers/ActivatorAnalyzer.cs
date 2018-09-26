@@ -95,6 +95,8 @@ namespace ReflectionAnalyzers
             {
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
                     return false;
+                case ImplicitArrayCreationExpressionSyntax _:
+                    break;
                 case ExpressionSyntax expression when Array.TryGetValues(expression, context, out values):
                     return true;
             }
