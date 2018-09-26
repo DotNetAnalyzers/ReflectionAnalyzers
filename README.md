@@ -108,5 +108,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL028.md">REFL028</a></td>
     <td>Cast return value to correct type.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL029.md">REFL029</a></td>
+    <td>Specify types in case an overload is added in the future.</td>
+  </tr>
 <table>
 <!-- end generated table -->

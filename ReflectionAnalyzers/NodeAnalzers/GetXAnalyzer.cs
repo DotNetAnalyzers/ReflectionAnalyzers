@@ -25,7 +25,8 @@ namespace ReflectionAnalyzers
             REFL014PreferGetMemberThenAccessor.Descriptor,
             REFL015UseContainingType.Descriptor,
             REFL018ExplicitImplementation.Descriptor,
-            REFL019NoMemberMatchesTheTypes.Descriptor);
+            REFL019NoMemberMatchesTheTypes.Descriptor,
+            REFL029MissingTypes.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -105,6 +106,16 @@ namespace ReflectionAnalyzers
                                         ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
                                         $" Expected: {expectedFlags.ToDisplayString()}."));
                             }
+                        }
+
+                        if (typesArg == null &&
+                            HasMissingTypes(invocation, member as IMethodSymbol, context, out var argumentListString))
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL029MissingTypes.Descriptor,
+                                    argumentList.GetLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentListSyntax), argumentListString)));
                         }
 
                         if (IsPreferGetMemberThenAccessor(invocation, member, context, out var call))
@@ -353,6 +364,35 @@ namespace ReflectionAnalyzers
         {
             return Equals(target.ContainingType, targetType) &&
                    !flags.HasFlagFast(BindingFlags.DeclaredOnly);
+        }
+
+        private static bool HasMissingTypes(InvocationExpressionSyntax invocation, IMethodSymbol member, SyntaxNodeAnalysisContext context, out string typesString)
+        {
+            if (member != null &&
+                invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                invocation.TryGetMethodName(out var getXName))
+            {
+                if (getXName == "GetMethod" &&
+                    argumentList.Arguments.Count == 1)
+                {
+                    return TryGetTypesString(member.Parameters, out typesString);
+                }
+            }
+
+            typesString = null;
+            return false;
+
+            bool TryGetTypesString(ImmutableArray<IParameterSymbol> parameters, out string result)
+            {
+                if (argumentList.Arguments.TrySingle(out var argument))
+                {
+                    result = $"({argument}, Type.EmptyTypes)";
+                    return true;
+                }
+
+                result = null;
+                return false;
+            }
         }
     }
 }

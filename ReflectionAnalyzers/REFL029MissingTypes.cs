@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL028CastReturnValueToCorrectType
+    internal static class REFL029MissingTypes
     {
-        public const string DiagnosticId = "REFL028";
+        public const string DiagnosticId = "REFL029";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Cast return value to correct type.",
-            messageFormat: "Cast return value to {0}.",
+            title: "Specify types in case an overload is added in the future.",
+            messageFormat: "Specify types in case an overload is added in the future.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Cast return value to correct type.",
+            description: "Specify types in case an overload is added in the future.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }
