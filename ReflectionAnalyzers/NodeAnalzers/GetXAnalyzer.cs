@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers
 {
     using System;
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -42,7 +41,7 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                switch (TryGetX(context, out var type, out var nameArg, out var memberName, out var member, out var flagsArg, out var effectiveFlags, out var typesArg, out var types))
+                switch (TryGetX(context, out var type, out var nameArg, out var memberName, out var member, out var flagsArg, out var effectiveFlags, out var typesArg))
                 {
                     case GetXResult.NoMatch:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), type, memberName));
@@ -179,19 +178,18 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
+        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg)
         {
             nameArg = null;
             targetName = null;
             typesArg = null;
-            types = null;
             if (context.Node is InvocationExpressionSyntax candidate)
             {
-                var result = GetX.TryMatchGetConstructor(candidate, context, out targetType, out target, out flagsArg, out effectiveFlags, out typesArg, out types) ??
+                var result = GetX.TryMatchGetConstructor(candidate, context, out targetType, out target, out flagsArg, out effectiveFlags, out typesArg, out _) ??
                              GetX.TryMatchGetEvent(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags) ??
                              GetX.TryMatchGetField(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags) ??
-                             GetX.TryMatchGetMember(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags, out typesArg, out types) ??
-                             GetX.TryMatchGetMethod(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags, out typesArg, out types) ??
+                             GetX.TryMatchGetMember(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags, out typesArg, out _) ??
+                             GetX.TryMatchGetMethod(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags, out typesArg, out _) ??
                              GetX.TryMatchGetNestedType(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags) ??
                              GetX.TryMatchGetProperty(candidate, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags);
                 if (result != null)
@@ -386,7 +384,38 @@ namespace ReflectionAnalyzers
             {
                 if (argumentList.Arguments.TrySingle(out var argument))
                 {
-                    result = $"({argument}, Type.EmptyTypes)";
+                    if (parameters.Length == 0)
+                    {
+                        result = $"({argument}, Type.EmptyTypes)";
+                        return true;
+                    }
+
+                    var builder = StringBuilderPool.Borrow()
+                                                   .Append("(")
+                                                   .Append(argument)
+                                                   .Append(", new[] { ");
+                    for (var i = 0; i < parameters.Length; i++)
+                    {
+                        var parameter = parameters[i];
+                        if (!context.SemanticModel.IsAccessible(invocation.SpanStart, parameter.Type))
+                        {
+                            _ = builder.Return();
+                            result = null;
+                            return false;
+                        }
+
+                        if (i != 0)
+                        {
+                            _ = builder.Append(", ");
+                        }
+
+                        _ = builder.Append("typeof(")
+                                   .Append(parameter.Type.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart))
+                                   .Append(")");
+                    }
+
+                    result = builder.Append(" })")
+                                    .Return();
                     return true;
                 }
 
