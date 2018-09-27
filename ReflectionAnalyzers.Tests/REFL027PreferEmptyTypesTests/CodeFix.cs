@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL027PreferTypeEmptyTypesTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new ArgumentAnalyzer();
         private static readonly CodeFixProvider Fix = new PreferEmptyTypesFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL027PreferTypeEmptyTypes.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL027PreferEmptyTypes.Descriptor);
 
         [TestCase("new Type[0]")]
         [TestCase("Array.Empty<Type>()")]

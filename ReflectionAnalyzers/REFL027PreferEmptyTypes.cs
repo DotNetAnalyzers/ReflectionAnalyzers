@@ -2,7 +2,7 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL027PreferTypeEmptyTypes
+    internal static class REFL027PreferEmptyTypes
     {
         public const string DiagnosticId = "REFL027";
 

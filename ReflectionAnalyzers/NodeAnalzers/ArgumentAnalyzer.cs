@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL027PreferTypeEmptyTypes.Descriptor);
+            REFL027PreferEmptyTypes.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -32,7 +32,7 @@ namespace ReflectionAnalyzers
                 type is IArrayTypeSymbol arrayType &&
                 arrayType.ElementType == KnownSymbol.Type)
             {
-                context.ReportDiagnostic(Diagnostic.Create(REFL027PreferTypeEmptyTypes.Descriptor, argument.GetLocation()));
+                context.ReportDiagnostic(Diagnostic.Create(REFL027PreferEmptyTypes.Descriptor, argument.GetLocation()));
             }
         }
 

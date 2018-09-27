@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Codefixes
         private static readonly UsingDirectiveSyntax System = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System"));
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL027PreferTypeEmptyTypes.DiagnosticId);
+            REFL027PreferEmptyTypes.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
