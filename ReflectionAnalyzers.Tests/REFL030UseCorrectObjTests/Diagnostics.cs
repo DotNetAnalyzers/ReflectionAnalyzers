@@ -53,6 +53,26 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void NullableInstance()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var value = typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(↓null, null);
+        }
+    }
+}";
+            var message = "The method int?.GetValueOrDefault() is an instance method and the instance should be passed as obj.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
+
+        [Test]
         public void InstanceWrongType()
         {
             var code = @"
