@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL030UseCorrectObj
+    internal static class REFL031UseCorrectGenericParameters
     {
-        public const string DiagnosticId = "REFL030";
+        public const string DiagnosticId = "REFL031";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Use correct obj parameter.",
-            messageFormat: "{0}",
+            title: "Use correct generic parameters.",
+            messageFormat: "Use correct generic parameters.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Use correct obj parameter.",
+            description: "Use correct generic parameters.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }

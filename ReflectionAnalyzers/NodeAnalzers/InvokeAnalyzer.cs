@@ -50,7 +50,7 @@ namespace ReflectionAnalyzers
                     context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, parametersArg.GetLocation()));
                 }
 
-                if (TryGetMethod(memberAccess, context, out var method))
+                if (GetX.TryGetMethod(memberAccess, context, out var method))
                 {
                     if (method.ReturnsVoid &&
                         !IsResultDiscarded(invocation))
@@ -121,23 +121,6 @@ namespace ReflectionAnalyzers
                 default:
                     return false;
             }
-        }
-
-        private static bool TryGetMethod(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol method)
-        {
-            if (memberAccess.Expression is InvocationExpressionSyntax parentInvocation)
-            {
-                var result = GetX.TryMatchGetMethod(parentInvocation, context, out _, out _, out _, out var member, out _, out _, out _, out _);
-                if (result == GetXResult.Single &&
-                    member is IMethodSymbol match)
-                {
-                    method = match;
-                    return true;
-                }
-            }
-
-            method = null;
-            return false;
         }
 
         private static bool IsDiscardName(string text)
