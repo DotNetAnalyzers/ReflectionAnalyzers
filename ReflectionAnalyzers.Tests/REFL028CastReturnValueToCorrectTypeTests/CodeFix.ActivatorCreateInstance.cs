@@ -8,14 +8,16 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
 
     public class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-        private static readonly CodeFixProvider Fix = new CastReturnValueFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL028CastReturnValueToCorrectType.Descriptor);
-
-        [Test]
-        public void WhenCastingToWrongType()
+        public class ActivatorCreateInstance
         {
-            var code = @"
+            private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
+            private static readonly CodeFixProvider Fix = new CastReturnValueFix();
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL028CastReturnValueToCorrectType.Descriptor);
+
+            [Test]
+            public void WhenCastingToWrongType()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -33,7 +35,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+                var fixedCode = @"
 namespace RoslynSandbox
 {
     using System;
@@ -50,7 +52,8 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            }
         }
     }
 }

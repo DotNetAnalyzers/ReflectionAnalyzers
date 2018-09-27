@@ -13,7 +13,8 @@ namespace ReflectionAnalyzers
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL002InvokeDiscardReturnValue.Descriptor,
-            REFL024PreferNullOverEmptyArray.Descriptor);
+            REFL024PreferNullOverEmptyArray.Descriptor,
+            REFL025ArgumentsDontMatchParameters.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -27,6 +28,8 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
+                invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 invocation.TryGetMethodName(out var name) &&
                 name == "Invoke" &&
                 context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var invoke) &&
@@ -35,16 +38,41 @@ namespace ReflectionAnalyzers
                 invoke.TryFindParameter("obj", out var objParameter) &&
                 invocation.TryFindArgument(objParameter, out var objArg) &&
                 invoke.TryFindParameter("parameters", out var parametersParameter) &&
-                invocation.TryFindArgument(parametersParameter, out var paramsArg))
+                invocation.TryFindArgument(parametersParameter, out var parametersArg))
             {
-                if (context.SemanticModel.TryGetType(paramsArg.Expression, context.CancellationToken, out var type) &&
+                if (context.SemanticModel.TryGetType(parametersArg.Expression, context.CancellationToken, out var type) &&
                     type is IArrayTypeSymbol arrayType &&
                     arrayType.ElementType == KnownSymbol.Object &&
-                    Array.IsCreatingEmpty(paramsArg.Expression, context))
+                    Array.IsCreatingEmpty(parametersArg.Expression, context))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, paramsArg.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, parametersArg.GetLocation()));
+                }
+
+                if (TryGetMethod(memberAccess, context, out var method) &&
+                    Array.TryGetValues(parametersArg.Expression, context, out var values) &&
+                    Arguments.IsMatch(method.Parameters, values, context) == false)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, parametersArg.GetLocation()));
                 }
             }
+        }
+
+        private static bool TryGetMethod(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol method)
+        {
+            if (memberAccess.Expression is InvocationExpressionSyntax parentInvocation)
+            {
+                var result = GetX.TryMatchGetMember(parentInvocation, context, out _, out _, out _, out var member, out _, out _, out _, out _) ??
+                             GetX.TryMatchGetMethod(parentInvocation, context, out _, out _, out _, out member, out _, out _, out _, out _);
+                if (result == GetXResult.Single &&
+                    member is IMethodSymbol match)
+                {
+                    method = match;
+                    return true;
+                }
+            }
+
+            method = null;
+            return false;
         }
     }
 }
