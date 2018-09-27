@@ -156,6 +156,82 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void GetMethodOneParams()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Linq;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar));
+        }
+
+        public int Bar(params int[] values) => values.Sum();
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Linq;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int[]) });
+        }
+
+        public int Bar(params int[] values) => values.Sum();
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
+        public void GetMethodOneParamsWithFlags()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Linq;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+        public int Bar(params int[] values) => values.Sum();
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Linq;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int[]) }, null);
+        }
+
+        public int Bar(params int[] values) => values.Sum();
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
         public void GetMethodTwoParameters()
         {
             var code = @"
