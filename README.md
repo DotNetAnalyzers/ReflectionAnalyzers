@@ -9,6 +9,10 @@ Analyzers checking System.Reflection
 <!-- start generated table -->
 <table>
   <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL001.md">REFL001</a></td>
+    <td>Cast return value to the correct type.</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL002.md">REFL002</a></td>
     <td>Discard the return value.</td>
   </tr>

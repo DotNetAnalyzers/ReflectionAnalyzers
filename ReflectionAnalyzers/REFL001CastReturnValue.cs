@@ -2,14 +2,14 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL001InvokeCastReturnValue
+    internal static class REFL001CastReturnValue
     {
         public const string DiagnosticId = "REFL001";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Cast return value to the correct type.",
-            messageFormat: "Cast return value to {0}.",
+            messageFormat: "Cast return value to the correct type.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,

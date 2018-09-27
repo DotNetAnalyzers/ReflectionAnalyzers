@@ -12,6 +12,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
+            REFL001CastReturnValue.Descriptor,
             REFL002DiscardReturnValue.Descriptor,
             REFL024PreferNullOverEmptyArray.Descriptor,
             REFL025ArgumentsDontMatchParameters.Descriptor);
@@ -56,6 +57,12 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
                     }
 
+                    if (!method.ReturnsVoid &&
+                        ShouldCast(invocation, context))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
+                    }
+
                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
                     Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
                     {
@@ -81,18 +88,16 @@ namespace ReflectionAnalyzers
                 default:
                     return true;
             }
+        }
 
-            bool IsDiscardName(string text)
+        private static bool ShouldCast(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context)
+        {
+            switch (invocation.Parent)
             {
-                foreach (var c in text)
-                {
-                    if (c != '_')
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                case EqualsValueClauseSyntax equalsValueClause when equalsValueClause.Parent is VariableDeclaratorSyntax variableDeclarator:
+                    return !IsDiscardName(variableDeclarator.Identifier.ValueText);
+                default:
+                    return false;
             }
         }
 
@@ -111,6 +116,19 @@ namespace ReflectionAnalyzers
 
             method = null;
             return false;
+        }
+
+        private static bool IsDiscardName(string text)
+        {
+            foreach (var c in text)
+            {
+                if (c != '_')
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
