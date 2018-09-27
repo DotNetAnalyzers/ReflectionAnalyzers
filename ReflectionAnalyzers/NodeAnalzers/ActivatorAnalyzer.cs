@@ -228,12 +228,6 @@ namespace ReflectionAnalyzers
             return foundMatch;
             bool? IsMatch(ImmutableArray<IParameterSymbol> parameters)
             {
-                if (parameters.TryLast(out var last) &&
-                    last.IsParams)
-                {
-                    return null;
-                }
-
                 if (parameters.TryFirst(x => x.RefKind == RefKind.Ref || x.RefKind == RefKind.Out, out _))
                 {
                     return null;
@@ -241,24 +235,53 @@ namespace ReflectionAnalyzers
 
                 if (values.Length != parameters.Length)
                 {
-                    return false;
-                }
-
-                for (var i = 0; i < values.Length; i++)
-                {
-                    if (IsNull(values[i]))
-                    {
-                        continue;
-                    }
-
-                    var conversion = context.SemanticModel.ClassifyConversion(values[i], parameters[i].Type);
-                    if (!conversion.Exists)
+                    if (parameters.TryLast(out var last) &&
+                        !last.IsParams)
                     {
                         return false;
                     }
 
-                    if (conversion.IsImplicit ||
-                        conversion.IsIdentity)
+                    if (values.Length < parameters.Length - 1)
+                    {
+                        return false;
+                    }
+                }
+
+                IParameterSymbol lastParameter = null;
+                for (var i = 0; i < values.Length; i++)
+                {
+                    if (lastParameter == null ||
+                        !lastParameter.IsParams)
+                    {
+                        if (!parameters.TryElementAt(i, out lastParameter))
+                        {
+                            return false;
+                        }
+                    }
+
+                    if (IsNull(values[i]))
+                    {
+                        if (lastParameter.IsParams)
+                        {
+                            return false;
+                        }
+
+                        continue;
+                    }
+
+                    var conversion = context.SemanticModel.ClassifyConversion(values[i], lastParameter.Type);
+                    if (!conversion.Exists)
+                    {
+                        if (lastParameter.Type is IArrayTypeSymbol arrayType &&
+                            context.SemanticModel.ClassifyConversion(values[i], arrayType.ElementType).IsIdentity)
+                        {
+                            continue;
+                        }
+
+                        return false;
+                    }
+
+                    if (conversion.IsIdentity || conversion.IsImplicit)
                     {
                         continue;
                     }
