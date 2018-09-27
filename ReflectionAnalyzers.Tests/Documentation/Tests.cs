@@ -192,6 +192,11 @@ namespace ReflectionAnalyzers.Tests.Documentation
                 this.Analyzer = analyzer;
                 this.Descriptor = descriptor;
                 this.DocFileName = Path.Combine(DocumentsDirectory.FullName, descriptor.Id + ".md");
+                this.CodeFileName = Directory.EnumerateFiles(
+                                                 SolutionDirectory.FullName,
+                                                 analyzer.GetType().Name + ".cs",
+                                                 SearchOption.AllDirectories)
+                                             .FirstOrDefault();
                 this.CodeFileUri = GetCodeFileUri(analyzer);
             }
 
@@ -203,12 +208,14 @@ namespace ReflectionAnalyzers.Tests.Documentation
 
             public string DocFileName { get; }
 
+            public string CodeFileName { get; }
+
             public string CodeFileUri { get; }
 
             public static string GetCodeFileUri(DiagnosticAnalyzer analyzer)
             {
                 var fileName = Directory.EnumerateFiles(SolutionDirectory.FullName, analyzer.GetType().Name + ".cs", SearchOption.AllDirectories)
-                                           .FirstOrDefault();
+                                        .FirstOrDefault();
                 return fileName != null
                     ? "https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master" +
                       fileName.Substring(SolutionDirectory.FullName.Length).Replace("\\", "/")
