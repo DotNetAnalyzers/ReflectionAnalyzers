@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ActivatorCreateInstanceArgumentsTests
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
 
         [TestCase("Activator.CreateInstance(typeof(Foo))")]
         [TestCase("Activator.CreateInstance(this.GetType())")]

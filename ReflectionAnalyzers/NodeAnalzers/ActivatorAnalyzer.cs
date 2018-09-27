@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL025ActivatorCreateInstanceArguments.Descriptor,
+            REFL025ArgumentsDontMatchParameters.Descriptor,
             REFL026MissingDefaultConstructor.Descriptor,
             REFL028CastReturnValueToCorrectType.Descriptor);
 
@@ -48,12 +48,12 @@ namespace ReflectionAnalyzers
                         {
                             if (invocation.ArgumentList.Arguments[1].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor, invocation.ArgumentList.Arguments[1].Expression.GetLocation()));
+                                context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, invocation.ArgumentList.Arguments[1].Expression.GetLocation()));
                             }
                             else if (TryGetValues(argumentList, 1, context, out var values) &&
                                      TryFindConstructor(namedType, values, context) == false)
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL025ActivatorCreateInstanceArguments.Descriptor, invocation.ArgumentList.Arguments[1].GetLocation()));
+                                context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, invocation.ArgumentList.Arguments[1].GetLocation()));
                             }
                         }
                     }

@@ -2,7 +2,7 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL025ActivatorCreateInstanceArguments
+    internal static class REFL025ArgumentsDontMatchParameters
     {
         public const string DiagnosticId = "REFL025";
 
