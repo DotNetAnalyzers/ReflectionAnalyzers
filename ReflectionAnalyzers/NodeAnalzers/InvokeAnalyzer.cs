@@ -48,11 +48,13 @@ namespace ReflectionAnalyzers
                     context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, parametersArg.GetLocation()));
                 }
 
-                if (TryGetMethod(memberAccess, context, out var method) &&
-                    Array.TryGetValues(parametersArg.Expression, context, out var values) &&
-                    Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
+                if (TryGetMethod(memberAccess, context, out var method))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
+                    if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
+                    Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
+                    }
                 }
             }
         }
@@ -61,8 +63,7 @@ namespace ReflectionAnalyzers
         {
             if (memberAccess.Expression is InvocationExpressionSyntax parentInvocation)
             {
-                var result = GetX.TryMatchGetMember(parentInvocation, context, out _, out _, out _, out var member, out _, out _, out _, out _) ??
-                             GetX.TryMatchGetMethod(parentInvocation, context, out _, out _, out _, out member, out _, out _, out _, out _);
+                var result = GetX.TryMatchGetMethod(parentInvocation, context, out _, out _, out _, out var member, out _, out _, out _, out _);
                 if (result == GetXResult.Single &&
                     member is IMethodSymbol match)
                 {

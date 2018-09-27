@@ -11,6 +11,13 @@ namespace ReflectionAnalyzers
     {
         internal static bool? TryFindFirstMisMatch(ImmutableArray<IParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context, out ExpressionSyntax expression)
         {
+            if (parameters.Length == 0 &&
+                values.Length > 0)
+            {
+                expression = null;
+                return true;
+            }
+
             if (parameters.TryFirst(x => x.RefKind == RefKind.Ref || x.RefKind == RefKind.Out, out _))
             {
                 expression = null;
