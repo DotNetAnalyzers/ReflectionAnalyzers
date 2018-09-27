@@ -29,7 +29,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                invocation.ArgumentList != null &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 invocation.TryGetMethodName(out var name) &&
                 name == "Invoke" &&
@@ -58,7 +58,7 @@ namespace ReflectionAnalyzers
                     }
 
                     if (!method.ReturnsVoid &&
-                        ShouldCast(invocation, context))
+                        ShouldCast(invocation))
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
                     }
@@ -90,7 +90,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool ShouldCast(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context)
+        private static bool ShouldCast(InvocationExpressionSyntax invocation)
         {
             switch (invocation.Parent)
             {
