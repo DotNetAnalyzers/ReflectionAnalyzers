@@ -120,5 +120,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL030.md">REFL030</a></td>
     <td>Use correct obj parameter.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL031.md">REFL031</a></td>
+    <td>Use correct generic parameters.</td>
+  </tr>
 <table>
 <!-- end generated table -->
