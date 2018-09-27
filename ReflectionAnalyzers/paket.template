@@ -4,11 +4,9 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  REFL019 Check filter types.
-  REFL020 More than one interface is matching the name.
-  REFL022 Use fully qualified name.
-  REFL023 The type does not implement the interface.
-  REFL024 Prefer null over empty array.
+  Analyzers for Activator.CreateInstance
+  BUGFIX REFL018 when not visible member.
+  Check arguments when calling MethodInfo.Invoke
 
 
 excludedgroups

@@ -1,3 +1,8 @@
+#### 0.1.8
+* Analyzers for Activator.CreateInstance
+* BUGFIX REFL018 when not visible member.
+* Check arguments when calling MethodInfo.Invoke
+
 #### 0.1.7
 * REFL019 Check filter types.
 * REFL020 More than one interface is matching the name.
