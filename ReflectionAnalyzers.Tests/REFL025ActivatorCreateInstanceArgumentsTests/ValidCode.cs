@@ -201,6 +201,7 @@ namespace RoslynSandbox
 
         [TestCase("Activator.CreateInstance(typeof(Foo))")]
         [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), null)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), 1, 2)")]
         [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1 })")]
         [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1, 2 })")]

@@ -159,22 +159,19 @@ namespace ReflectionAnalyzers
         private static bool IsArgumentMisMatch(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, INamedTypeSymbol createdType, SyntaxNodeAnalysisContext context)
         {
             if (invocation.ArgumentList is ArgumentListSyntax argumentList &&
-                createInstance.Parameters.Length > 1)
+                createInstance.Parameters.Length > 1 &&
+                createInstance.Parameters.Length == 2 &&
+                createInstance.Parameters.TryElementAt(1, out var parameter) && parameter.IsParams)
             {
-                if (createInstance.Parameters.Length == 2 &&
-                    createInstance.Parameters.TryElementAt(1, out var parameter) &&
-                    parameter.IsParams)
+                if (invocation.ArgumentList.Arguments[1].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
                 {
-                    if (invocation.ArgumentList.Arguments[1].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
-                    {
-                        return true;
-                    }
+                    return !createdType.Constructors.TrySingle(x => x.Parameters.TrySingle(out parameter) && parameter.IsParams, out _);
+                }
 
-                    if (TryGetValues(argumentList, 1, context, out var values) &&
-                        TryFindConstructor(createdType, values, context) == false)
-                    {
-                        return true;
-                    }
+                if (TryGetValues(argumentList, 1, context, out var values) &&
+                    TryFindConstructor(createdType, values, context) == false)
+                {
+                    return true;
                 }
             }
 
