@@ -30,11 +30,14 @@ namespace ReflectionAnalyzers
                 invocation.TryGetMethodName(out var name) &&
                 name == "Invoke" &&
                 context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var invoke) &&
-                invoke.ContainingType.IsAssignableTo(KnownSymbol.MemberInfo, context.Compilation))
+                invoke.ContainingType.IsAssignableTo(KnownSymbol.MemberInfo, context.Compilation) &&
+                invoke.Parameters.Length == 2 &&
+                invoke.TryFindParameter("obj", out var objParameter) &&
+                invocation.TryFindArgument(objParameter, out var objArg) &&
+                invoke.TryFindParameter("parameters", out var parametersParameter) &&
+                invocation.TryFindArgument(parametersParameter, out var paramsArg))
             {
-                if (invoke.TryFindParameter("parameters", out var parameter) &&
-                    invocation.TryFindArgument(parameter, out var paramsArg) &&
-                    context.SemanticModel.TryGetType(paramsArg.Expression, context.CancellationToken, out var type) &&
+                if (context.SemanticModel.TryGetType(paramsArg.Expression, context.CancellationToken, out var type) &&
                     type is IArrayTypeSymbol arrayType &&
                     arrayType.ElementType == KnownSymbol.Object &&
                     Array.IsCreatingEmpty(paramsArg.Expression, context))
