@@ -222,5 +222,31 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1, 2)")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1 })")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), new object[] { 1, 2 })")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1, new[] { 2, 3 })")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1, new int[0])")]
+        [TestCase("Activator.CreateInstance(typeof(Foo), 1, Array.Empty<int>())")]
+        public void ParamsConstructorSecondParameter(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo(int i, params int[] ints)
+        {
+            var foo = Activator.CreateInstance(typeof(Foo), 1);
+        }
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(Foo), 1)", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
