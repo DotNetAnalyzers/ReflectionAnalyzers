@@ -54,5 +54,28 @@ namespace RoslynSandbox
             var message = "No parameterless constructor defined for RoslynSandbox.Foo.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
+
+        [TestCase("Activator.CreateInstance<↓Foo>()")]
+        [TestCase("Activator.CreateInstance(typeof(↓Foo))")]
+        public void OneConstructorSingleParams(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo(params int[] values)
+        {
+        }
+
+        public Foo Create() => Activator.CreateInstance<↓Foo>();
+    }
+}".AssertReplace("Activator.CreateInstance<↓Foo>()", call);
+
+            var message = "No parameterless constructor defined for RoslynSandbox.Foo.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
     }
 }
