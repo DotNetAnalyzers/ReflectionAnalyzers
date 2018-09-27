@@ -116,5 +116,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL029.md">REFL029</a></td>
     <td>Specify types in case an overload is added in the future.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL030.md">REFL030</a></td>
+    <td>Use correct obj parameter.</td>
+  </tr>
 <table>
 <!-- end generated table -->

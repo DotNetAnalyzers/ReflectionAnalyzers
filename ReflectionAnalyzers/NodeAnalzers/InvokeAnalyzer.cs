@@ -15,7 +15,8 @@ namespace ReflectionAnalyzers
             REFL001CastReturnValue.Descriptor,
             REFL002DiscardReturnValue.Descriptor,
             REFL024PreferNullOverEmptyArray.Descriptor,
-            REFL025ArgumentsDontMatchParameters.Descriptor);
+            REFL025ArgumentsDontMatchParameters.Descriptor,
+            REFL030UseCorrectObj.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -64,9 +65,30 @@ namespace ReflectionAnalyzers
                     }
 
                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
-                    Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
+                        Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
+                    }
+
+                    if (method.IsStatic &&
+                        objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == false)
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is static and null should be passed as obj."));
+                    }
+
+                    if (!method.IsStatic)
+                    {
+                        if (objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is an instance method and the instance should be passed as obj."));
+                        }
+
+                        if (context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var objType) &&
+                            objType != KnownSymbol.Object &&
+                            !objType.IsAssignableTo(method.ContainingType, context.Compilation))
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Expected an argument of type {method.ContainingType}."));
+                        }
                     }
                 }
             }

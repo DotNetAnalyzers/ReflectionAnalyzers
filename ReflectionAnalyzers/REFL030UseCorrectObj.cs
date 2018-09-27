@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL029MissingTypes
+    internal static class REFL030UseCorrectObj
     {
-        public const string DiagnosticId = "REFL029";
+        public const string DiagnosticId = "REFL030";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Specify types in case an overload is added in the future.",
-            messageFormat: "Specify types in case an overload is added in the future.",
+            title: "Use correct obj parameter.",
+            messageFormat: "{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Specify types in case an overload is added in the future.",
+            description: "Use correct obj parameter.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }
