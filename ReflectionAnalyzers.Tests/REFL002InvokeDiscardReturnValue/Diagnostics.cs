@@ -2,10 +2,79 @@ namespace ReflectionAnalyzers.Tests.REFL002InvokeDiscardReturnValue
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
+    using NUnit.Framework;
 
     internal class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL002");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL002DiscardReturnValue.Descriptor);
+
+        [Test]
+        public void AssigningLocal()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        public Foo()
+        {
+            var value = ↓typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+        }
+
+        public static void Bar()
+        {
+        }
+    }
+}";
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
+        public void AssigningField()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        private readonly int value;
+
+        public Foo()
+        {
+            this.value = ↓typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+        }
+
+        public static void Bar()
+        {
+        }
+    }
+}";
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
+        public void UsingInExpression()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        public Foo()
+        {
+            var text = ((int)↓typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null)).ToString();
+        }
+
+        public static void Bar()
+        {
+        }
+    }
+}";
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

@@ -2,7 +2,7 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL002InvokeDiscardReturnValue
+    internal static class REFL002DiscardReturnValue
     {
         public const string DiagnosticId = "REFL002";
 

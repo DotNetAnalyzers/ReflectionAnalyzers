@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL002InvokeDiscardReturnValue.Descriptor,
+            REFL002DiscardReturnValue.Descriptor,
             REFL024PreferNullOverEmptyArray.Descriptor,
             REFL025ArgumentsDontMatchParameters.Descriptor);
 
@@ -50,12 +50,49 @@ namespace ReflectionAnalyzers
 
                 if (TryGetMethod(memberAccess, context, out var method))
                 {
+                    if (method.ReturnsVoid &&
+                        !IsResultDiscarded(invocation))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
+                    }
+
                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
                     Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }
                 }
+            }
+        }
+
+        private static bool IsResultDiscarded(InvocationExpressionSyntax invocation)
+        {
+            switch (invocation.Parent)
+            {
+                case ArgumentSyntax _:
+                case MemberAccessExpressionSyntax _:
+                case CastExpressionSyntax _:
+                case BinaryExpressionSyntax _:
+                    return false;
+                case AssignmentExpressionSyntax assignment:
+                    return assignment.Left is IdentifierNameSyntax identifierName && IsDiscardName(identifierName.Identifier.ValueText);
+                case EqualsValueClauseSyntax equalsValueClause when equalsValueClause.Parent is VariableDeclaratorSyntax variableDeclarator:
+                    return IsDiscardName(variableDeclarator.Identifier.ValueText);
+                default:
+                    return true;
+            }
+
+            bool IsDiscardName(string text)
+            {
+                foreach (var c in text)
+                {
+                    if (c != '_')
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
 
