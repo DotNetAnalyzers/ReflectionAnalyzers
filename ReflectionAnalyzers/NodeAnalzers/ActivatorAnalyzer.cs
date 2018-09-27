@@ -210,9 +210,9 @@ namespace ReflectionAnalyzers
                     continue;
                 }
 
-                switch (Arguments.IsMatch(constructor.Parameters, values, context))
+                switch (Arguments.TryFindFirstMisMatch(constructor.Parameters, values, context, out _))
                 {
-                    case true:
+                    case false:
                         if (foundMatch)
                         {
                             return false;

@@ -9,10 +9,11 @@ namespace ReflectionAnalyzers
 
     internal static class Arguments
     {
-        internal static bool? IsMatch(ImmutableArray<IParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context)
+        internal static bool? TryFindFirstMisMatch(ImmutableArray<IParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context, out ExpressionSyntax expression)
         {
             if (parameters.TryFirst(x => x.RefKind == RefKind.Ref || x.RefKind == RefKind.Out, out _))
             {
+                expression = null;
                 return null;
             }
 
@@ -21,24 +22,27 @@ namespace ReflectionAnalyzers
                 if (parameters.TryLast(out var last) &&
                     !last.IsParams)
                 {
-                    return false;
+                    expression = null;
+                    return true;
                 }
 
                 if (values.Length < parameters.Length - 1)
                 {
-                    return false;
+                    expression = null;
+                    return true;
                 }
             }
 
             IParameterSymbol lastParameter = null;
             for (var i = 0; i < values.Length; i++)
             {
+                expression = values[i];
                 if (lastParameter == null ||
                     !lastParameter.IsParams)
                 {
                     if (!parameters.TryElementAt(i, out lastParameter))
                     {
-                        return false;
+                        return true;
                     }
                 }
 
@@ -46,7 +50,7 @@ namespace ReflectionAnalyzers
                 {
                     if (lastParameter.IsParams)
                     {
-                        return false;
+                        return true;
                     }
 
                     continue;
@@ -61,7 +65,7 @@ namespace ReflectionAnalyzers
                         continue;
                     }
 
-                    return false;
+                    return true;
                 }
 
                 if (conversion.IsIdentity || conversion.IsImplicit)
@@ -75,14 +79,15 @@ namespace ReflectionAnalyzers
                     continue;
                 }
 
-                return false;
+                return true;
             }
 
-            return true;
+            expression = null;
+            return false;
 
-            bool IsNull(ExpressionSyntax expression)
+            bool IsNull(ExpressionSyntax candidate)
             {
-                switch (expression)
+                switch (candidate)
                 {
                     case LiteralExpressionSyntax literal:
                         return literal.IsKind(SyntaxKind.NullLiteralExpression);

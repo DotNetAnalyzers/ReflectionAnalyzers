@@ -11,9 +11,9 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
 
-            [TestCase("Invoke(null, ↓new object[] { 1.2 })")]
+            [TestCase("Invoke(null, new object[] { ↓1.2 })")]
             [TestCase("Invoke(null, ↓new object[] { 1, 2 })")]
-            [TestCase("Invoke(null, ↓new object[] { \"abc\" })")]
+            [TestCase("Invoke(null, new object[] { ↓\"abc\" })")]
             public void SingleIntParameter(string call)
             {
                 var code = @"
@@ -23,12 +23,12 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var foo = typeof(Foo).GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { 1.2 });
+            var foo = typeof(Foo).GetMethod(nameof(this.Bar)).Invoke(null, new object[] { ↓1.2 });
         }
 
         public int Bar(int value) => value;
     }
-}".AssertReplace("Invoke(null, ↓new object[] { 1.2 })", call);
+}".AssertReplace("Invoke(null, new object[] { ↓1.2 })", call);
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }

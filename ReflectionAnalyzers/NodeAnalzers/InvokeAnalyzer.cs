@@ -50,9 +50,9 @@ namespace ReflectionAnalyzers
 
                 if (TryGetMethod(memberAccess, context, out var method) &&
                     Array.TryGetValues(parametersArg.Expression, context, out var values) &&
-                    Arguments.IsMatch(method.Parameters, values, context) == false)
+                    Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, parametersArg.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                 }
             }
         }
