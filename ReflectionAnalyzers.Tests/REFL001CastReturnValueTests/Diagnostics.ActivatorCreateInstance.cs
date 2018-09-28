@@ -31,8 +31,11 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [Test]
-            public void WhenUnconstrainedGeneric()
+            [TestCase("Activator.CreateInstance(typeof(T))")]
+            [TestCase("Activator.CreateInstance(typeof(T), true)")]
+            [TestCase("Activator.CreateInstance(typeof(T), false)")]
+            [TestCase("Activator.CreateInstance(typeof(T), \"foo\")")]
+            public void WhenUnconstrainedGeneric(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -43,10 +46,10 @@ namespace RoslynSandbox
     {
         public static void Bar<T>()
         {
-            var foo = ↓Activator.CreateInstance(typeof(T), ""foo"");
+            var foo = ↓Activator.CreateInstance(typeof(T));
         }
     }
-}";
+}".AssertReplace("Activator.CreateInstance(typeof(T))", call);
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }

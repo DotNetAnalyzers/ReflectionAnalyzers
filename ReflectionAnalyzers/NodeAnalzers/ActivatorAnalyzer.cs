@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL001CastReturnValue.Descriptor,
             REFL025ArgumentsDontMatchParameters.Descriptor,
-            REFL026MissingDefaultConstructor.Descriptor,
+            REFL026NoDefaultConstructor.Descriptor,
             REFL028CastReturnValueToCorrectType.Descriptor);
 
         /// <inheritdoc/>
@@ -33,17 +33,19 @@ namespace ReflectionAnalyzers
                 invocation.TryGetTarget(KnownSymbol.Activator.CreateInstance, context.SemanticModel, context.CancellationToken, out var createInstance) &&
                 TryGetCreatedType(createInstance, invocation, context, out var createdType, out var typeSource))
             {
-                if (IsMissingDefaultConstructor(createInstance, invocation, createdType))
+                if (createdType is INamedTypeSymbol namedType)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL026MissingDefaultConstructor.Descriptor, typeSource.GetLocation(), createdType.ToDisplayString()));
-                }
-                else if (IsArgumentMisMatch(createInstance, invocation, createdType, context))
-                {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, invocation.ArgumentList.Arguments[1].GetLocation()));
+                    if (IsMissingDefaultConstructor(createInstance, invocation, namedType))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL026NoDefaultConstructor.Descriptor, typeSource.GetLocation(), createdType.ToDisplayString()));
+                    }
+                    else if (IsArgumentMisMatch(createInstance, invocation, namedType, context))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, invocation.ArgumentList.Arguments[1].GetLocation()));
+                    }
                 }
 
-                if (!createInstance.IsGenericMethod &&
-                    createdType != null)
+                if (!createInstance.IsGenericMethod)
                 {
                     switch (invocation.Parent)
                     {
@@ -69,23 +71,22 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetCreatedType(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out INamedTypeSymbol createdType, out ExpressionSyntax typeSource)
+        private static bool TryGetCreatedType(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol createdType, out ExpressionSyntax typeSource)
         {
             if (createInstance.IsGenericMethod &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Name is GenericNameSyntax genericName &&
                 genericName.TypeArgumentList is TypeArgumentListSyntax typeArgumentList &&
                 typeArgumentList.Arguments.TrySingle(out var typeArgument) &&
-                context.SemanticModel.TryGetType(typeArgument, context.CancellationToken, out var type))
+                context.SemanticModel.TryGetType(typeArgument, context.CancellationToken, out createdType))
             {
                 typeSource = typeArgument;
-                createdType = type as INamedTypeSymbol;
-                return createdType != null;
+                return true;
             }
 
             if (createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
                invocation.TryFindArgument(typeParameter, out var typeArg) &&
-               Type.TryGet(typeArg.Expression, context, out type, out var optionalTypeSource))
+               Type.TryGet(typeArg.Expression, context, out createdType, out var optionalTypeSource))
             {
                 if (optionalTypeSource.HasValue)
                 {
@@ -104,8 +105,7 @@ namespace ReflectionAnalyzers
                     typeSource = typeArg.Expression;
                 }
 
-                createdType = type as INamedTypeSymbol;
-                return type != null;
+                return true;
             }
 
             createdType = null;

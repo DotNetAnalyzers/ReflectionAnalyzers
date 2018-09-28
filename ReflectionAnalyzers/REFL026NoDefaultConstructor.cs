@@ -2,7 +2,7 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL026MissingDefaultConstructor
+    internal static class REFL026NoDefaultConstructor
     {
         public const string DiagnosticId = "REFL026";
 
