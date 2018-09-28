@@ -74,7 +74,7 @@ namespace ReflectionAnalyzers
             {
                 typeSource = typeArgument;
                 createdType = type as INamedTypeSymbol;
-                return type != null;
+                return createdType != null;
             }
 
             if (createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
