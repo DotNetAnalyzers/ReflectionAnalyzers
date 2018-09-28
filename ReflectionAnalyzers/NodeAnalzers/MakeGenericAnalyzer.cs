@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL031UseCorrectGenericParameters.Descriptor);
+            REFL031UseCorrectGenericArguments.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -26,16 +26,18 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList != null &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+                invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                invocation.TryGetTarget(KnownSymbol.MethodInfo.MakeGenericMethod, context.SemanticModel, context.CancellationToken, out var makeGenericMethod) &&
+                makeGenericMethod.Parameters.Length == 1 &&
+                makeGenericMethod.TryFindParameter("typeArguments", out _) &&
+                GetX.TryGetMethod(memberAccess, context, out var method) &&
+                method.IsGenericMethod &&
+                Array.TryGetTypes(invocation.ArgumentList, context, out var types))
             {
-                if (invocation.TryGetTarget(KnownSymbol.MethodInfo.MakeGenericMethod, context.SemanticModel, context.CancellationToken, out var makeGenericMethod) &&
-                    makeGenericMethod.Parameters.Length == 1 &&
-                    makeGenericMethod.TryFindParameter("typeArguments", out _) &&
-                    GetX.TryGetMethod(memberAccess, context, out var method) &&
-                    method.IsGenericMethod)
+                if (method.TypeParameters.Length != types.Length)
                 {
-
+                    context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, argumentList.GetLocation()));
                 }
             }
         }

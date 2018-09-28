@@ -2,7 +2,7 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL031UseCorrectGenericParameters
+    internal static class REFL031UseCorrectGenericArguments
     {
         public const string DiagnosticId = "REFL031";
 
