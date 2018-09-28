@@ -74,20 +74,20 @@ namespace ReflectionAnalyzers
                         case MemberAccessExpressionSyntax _:
                             base.Visit(node);
                             break;
-                        case IdentifierNameSyntax identifierName:
-                            if (identifierName.Parent is MemberAccessExpressionSyntax memberAccess &&
-                                !(memberAccess.Parent is MemberAccessExpressionSyntax) &&
-                                memberAccess.Name == identifierName)
+                        case IdentifierNameSyntax identifierName when (identifierName.Parent is MemberAccessExpressionSyntax memberAccess &&
+                                                                       !(memberAccess.Parent is MemberAccessExpressionSyntax) &&
+                                                                       memberAccess.Name == identifierName) ||
+                                                                      identifierName.Parent is BinaryExpressionSyntax:
+                            if (this.duplicate == null &&
+                                this.flags.TryFirst(x => x.Identifier.ValueText == identifierName.Identifier.ValueText, out _))
                             {
-                                if (this.duplicate == null &&
-                                    this.flags.TryFirst(x => x.Identifier.ValueText == identifierName.Identifier.ValueText, out _))
-                                {
-                                    this.duplicate = identifierName;
-                                }
-
-                                this.flags.Add(identifierName);
+                                this.duplicate = identifierName;
                             }
 
+                            this.flags.Add(identifierName);
+
+                            break;
+                        case IdentifierNameSyntax _:
                             break;
                         default:
                             this.isUnHandled = true;

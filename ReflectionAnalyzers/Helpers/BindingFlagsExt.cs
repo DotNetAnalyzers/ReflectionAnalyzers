@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers
 
         internal static string ToDisplayString(this BindingFlags flags)
         {
-            var stringBuilder = StringBuilderPool.Borrow();
+            var builder = StringBuilderPool.Borrow();
             AppendIfHasFlag(BindingFlags.Public);
             AppendIfHasFlag(BindingFlags.NonPublic);
             AppendIfHasFlag(BindingFlags.Static);
@@ -21,17 +21,17 @@ namespace ReflectionAnalyzers
             AppendIfHasFlag(BindingFlags.FlattenHierarchy);
             AppendIfHasFlag(BindingFlags.IgnoreCase);
 
-            return stringBuilder.Return();
+            return builder.Return();
             void AppendIfHasFlag(BindingFlags flag)
             {
                 if (flags.HasFlagFast(flag))
                 {
-                    if (stringBuilder.Length != 0)
+                    if (builder.Length != 0)
                     {
-                        _ = stringBuilder.Append(" | ");
+                        _ = builder.Append(" | ");
                     }
 
-                    _ = stringBuilder.Append("BindingFlags.").Append(flag.Name());
+                    _ = builder.Append("BindingFlags.").Append(flag.Name());
                 }
             }
         }

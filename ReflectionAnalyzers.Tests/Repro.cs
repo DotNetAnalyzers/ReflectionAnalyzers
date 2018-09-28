@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    [Explicit]
+    [Explicit("Only for digging out test cases.")]
     internal class Repro
     {
         // ReSharper disable once UnusedMember.Local

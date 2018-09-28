@@ -160,6 +160,34 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("GetMethod(nameof(this.Bar), Public | Instance)")]
+        [TestCase("GetMethod(nameof(this.Bar), Public | Instance | DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.Bar), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
+        public void GetMethodUsingStatic(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+    using static System.Reflection.BindingFlags;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly);
+        }
+
+        public int Bar() => 0;
+    }
+}".AssertReplace("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("GetProperty(nameof(Static), BindingFlags.Public | BindingFlags.Static)")]
         [TestCase("GetProperty(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic)")]
         [TestCase("GetProperty(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
