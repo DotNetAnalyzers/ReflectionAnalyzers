@@ -114,7 +114,9 @@ namespace ReflectionAnalyzers.Codefixes
                 {
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",
-                        (editor, _) => editor.ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
+                        (editor, _) => editor.ReplaceNode(
+                            argument.Expression,
+                            SyntaxFactory.ParseExpression(expressionString).WithTriviaFrom(argument.Expression)),
                         nameof(BindingFlagsFix),
                         diagnostic);
                 }
