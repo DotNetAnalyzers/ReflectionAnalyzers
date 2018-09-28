@@ -59,7 +59,7 @@ namespace ReflectionAnalyzers
 
         private class BindingFlagsWalker : PooledWalker<BindingFlagsWalker>
         {
-            private readonly List<string> flags = new List<string>();
+            private readonly List<IdentifierNameSyntax> flags = new List<IdentifierNameSyntax>();
             private IdentifierNameSyntax duplicate;
             private bool isUnHandled;
 
@@ -76,15 +76,16 @@ namespace ReflectionAnalyzers
                             break;
                         case IdentifierNameSyntax identifierName:
                             if (identifierName.Parent is MemberAccessExpressionSyntax memberAccess &&
+                                !(memberAccess.Parent is MemberAccessExpressionSyntax) &&
                                 memberAccess.Name == identifierName)
                             {
                                 if (this.duplicate == null &&
-                                    this.flags.Contains(identifierName.Identifier.ValueText))
+                                    this.flags.TryFirst(x => x.Identifier.ValueText == identifierName.Identifier.ValueText, out _))
                                 {
                                     this.duplicate = identifierName;
                                 }
 
-                                this.flags.Add(identifierName.Identifier.ValueText);
+                                this.flags.Add(identifierName);
                             }
 
                             break;
@@ -128,9 +129,9 @@ namespace ReflectionAnalyzers
                     return false;
                 }
 
-                int Index(string text)
+                int Index(IdentifierNameSyntax identifierName)
                 {
-                    switch (text)
+                    switch (identifierName.Identifier.ValueText)
                     {
                         case nameof(BindingFlags.Public):
                             return 0;
@@ -168,7 +169,7 @@ namespace ReflectionAnalyzers
                         walker.duplicate != null)
                     {
                         dupe = walker.duplicate;
-                        walker.flags.RemoveAt(walker.flags.LastIndexOf(dupe.Identifier.ValueText));
+                        walker.flags.RemoveAt(walker.flags.LastIndexOf(dupe));
                         expectedFlags = Format(walker.flags);
                         return true;
                     }
@@ -186,7 +187,7 @@ namespace ReflectionAnalyzers
 
             private static BindingFlagsWalker Borrow(BinaryExpressionSyntax flags) => BorrowAndVisit(flags, () => new BindingFlagsWalker());
 
-            private static string Format(IReadOnlyList<string> flags)
+            private static string Format(IReadOnlyList<IdentifierNameSyntax> flags)
             {
                 var builder = StringBuilderPool.Borrow();
                 for (var i = 0; i < flags.Count; i++)
@@ -196,8 +197,13 @@ namespace ReflectionAnalyzers
                         _ = builder.Append(" | ");
                     }
 
-                    _ = builder.Append("BindingFlags.")
-                               .Append(flags[i]);
+                    ExpressionSyntax flag = flags[i];
+                    while (flag.Parent is MemberAccessExpressionSyntax memberAccess)
+                    {
+                        flag = memberAccess;
+                    }
+
+                    _ = builder.Append(flag);
                 }
 
                 return builder.Return();
