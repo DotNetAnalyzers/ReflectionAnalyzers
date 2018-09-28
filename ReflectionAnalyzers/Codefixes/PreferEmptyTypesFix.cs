@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers.Codefixes
                 if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument))
                 {
                     context.RegisterCodeFix(
-                        "Prefer null.",
+                        "Prefer Type.EmptyTypes.",
                         (editor, _) => editor.AddUsing(System)
                                              .ReplaceNode(
                             argument.Expression,
