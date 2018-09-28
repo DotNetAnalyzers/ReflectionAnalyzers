@@ -56,6 +56,23 @@ namespace ReflectionAnalyzers
             return TryMatchGetX(invocation, KnownSymbol.Type.GetField, context, out targetType, out nameArg, out targetName, out target, out flagsArg, out effectiveFlags);
         }
 
+        internal static bool TryGetMethod(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol method)
+        {
+            if (memberAccess.Expression is InvocationExpressionSyntax parentInvocation)
+            {
+                var result = GetX.TryMatchGetMethod(parentInvocation, context, out _, out _, out _, out var member, out _, out _, out _, out _);
+                if (result == GetXResult.Single &&
+                    member is IMethodSymbol match)
+                {
+                    method = match;
+                    return true;
+                }
+            }
+
+            method = null;
+            return false;
+        }
+
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetMethod
         /// </summary>

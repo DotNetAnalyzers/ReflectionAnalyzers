@@ -41,6 +41,33 @@ namespace ReflectionAnalyzers
             }
         }
 
+        internal static bool TryGetTypes(ArgumentListSyntax argumentList, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
+        {
+            if (argumentList == null ||
+                argumentList.Arguments.Count == 0)
+            {
+                types = ImmutableArray<ITypeSymbol>.Empty;
+                return false;
+            }
+
+            var builder = ImmutableArray.CreateBuilder<ITypeSymbol>();
+            foreach (var argument in argumentList.Arguments)
+            {
+                if (Type.TryGet(argument.Expression, context, out var type, out _))
+                {
+                    builder.Add(type);
+                }
+                else
+                {
+                    types = ImmutableArray<ITypeSymbol>.Empty;
+                    return false;
+                }
+            }
+
+            types = builder.ToImmutable();
+            return true;
+        }
+
         internal static bool TryGetTypes(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out IReadOnlyList<ITypeSymbol> types)
         {
             types = null;
@@ -69,9 +96,7 @@ namespace ReflectionAnalyzers
                 var temp = new ITypeSymbol[initializer.Expressions.Count];
                 for (var i = 0; i < initializer.Expressions.Count; i++)
                 {
-                    var expression = initializer.Expressions[i];
-                    if (expression is TypeOfExpressionSyntax typeOf &&
-                        context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var type))
+                    if (Type.TryGet(initializer.Expressions[i], context, out var type, out _))
                     {
                         temp[i] = type;
                     }
