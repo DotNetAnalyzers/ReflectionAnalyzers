@@ -80,8 +80,7 @@ namespace ReflectionAnalyzers
                         break;
 
                     case GetXResult.Single:
-                        if (TryGetExpectedFlags(member, type, out var expectedFlags) &&
-                            effectiveFlags != expectedFlags)
+                        if (TryGetExpectedFlags(member, type, out var expectedFlags))
                         {
                             if (flagsArg != null &&
                                 HasRedundantFlag(member, type, effectiveFlags))
