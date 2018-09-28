@@ -93,7 +93,7 @@ namespace RoslynSandbox
         {
             var methodInfo = typeof(Foo).GetMethod(
                 nameof(this.Public),
-  /* trivia1 */ ↓BindingFlags.Public | BindingFlags.Static    /* trivia1 */  );
+  /* trivia1 */ ↓BindingFlags.Public | BindingFlags.Static    /* trivia2 */  );
         }
 
         public int Public() => 0;
@@ -110,7 +110,7 @@ namespace RoslynSandbox
         {
             var methodInfo = typeof(Foo).GetMethod(
                 nameof(this.Public),
-  /* trivia1 */ BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly    /* trivia1 */  );
+  /* trivia1 */ BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly    /* trivia2 */  );
         }
 
         public int Public() => 0;

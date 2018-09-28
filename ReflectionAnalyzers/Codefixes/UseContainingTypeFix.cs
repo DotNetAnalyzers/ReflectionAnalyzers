@@ -29,7 +29,10 @@ namespace ReflectionAnalyzers.Codefixes
                     {
                         context.RegisterCodeFix(
                             $"Use containing type: {typeName}.",
-                            (editor, _) => editor.ReplaceNode(type, SyntaxFactory.ParseTypeName(typeName)),
+                            (editor, _) => editor.ReplaceNode(
+                                type,
+                                x => SyntaxFactory.ParseTypeName(typeName)
+                                                  .WithTriviaFrom(x)),
                             nameof(UseContainingTypeFix),
                             diagnostic);
                     }
@@ -38,7 +41,9 @@ namespace ReflectionAnalyzers.Codefixes
                     {
                         context.RegisterCodeFix(
                             $"Use containing type: {typeName}.",
-                            (editor, _) => editor.ReplaceNode(expression, SyntaxFactory.ParseExpression($"typeof({typeName})")),
+                            (editor, _) => editor.ReplaceNode(
+                                expression,
+                                x => SyntaxFactory.ParseExpression($"typeof({typeName})").WithTriviaFrom(x)),
                             nameof(UseContainingTypeFix),
                             diagnostic);
                     }

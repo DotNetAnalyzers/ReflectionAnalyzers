@@ -30,7 +30,10 @@ namespace ReflectionAnalyzers.Codefixes
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",
                         (editor, _) => editor.AddUsing(SystemReflection)
-                                             .ReplaceNode(old, SyntaxFactory.ParseExpression(expressionString)),
+                                             .ReplaceNode(
+                                                 old,
+                                                 x => SyntaxFactory.ParseExpression(expressionString)
+                                                                   .WithTriviaFrom(x)),
                         nameof(UseGetMemberThenAccessorFix),
                         diagnostic);
                 }

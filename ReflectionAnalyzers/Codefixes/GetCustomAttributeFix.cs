@@ -36,7 +36,8 @@ namespace ReflectionAnalyzers.Codefixes
                         (editor, _) => editor.AddUsing(SystemReflection)
                                              .ReplaceNode(
                                                  cast,
-                                                 SyntaxFactory.ParseExpression(call)),
+                                                 SyntaxFactory.ParseExpression(call)
+                                                              .WithTriviaFrom(cast)),
                         nameof(GetCustomAttributeFix),
                         diagnostic);
                 }
@@ -48,7 +49,8 @@ namespace ReflectionAnalyzers.Codefixes
                         "Use Attribute.IsDefined",
                         (editor, _) => editor.ReplaceNode(
                             binary,
-                            SyntaxFactory.ParseExpression(call)),
+                            SyntaxFactory.ParseExpression(call)
+                                         .WithTriviaFrom(binary)),
                         nameof(GetCustomAttributeFix),
                         diagnostic);
                 }
