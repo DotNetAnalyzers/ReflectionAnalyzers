@@ -13,6 +13,113 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
 
         [Test]
+        public void GetPropertyInstance()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetProperty(""Bar"");
+        }
+
+         public int Bar { get; }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetProperty(nameof(this.Bar));
+        }
+
+         public int Bar { get; }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
+        public void GetPropertyInstanceWithTrivia()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetProperty(
+  /* trivia1 */ ""Bar""  ,    // trivia2
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+         public int Bar { get; }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetProperty(
+  /* trivia1 */ nameof(this.Bar)  ,    // trivia2
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+
+         public int Bar { get; }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
+        public void GetPropertyStatic()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetProperty(""Bar"");
+        }
+
+         public static int Bar { get; }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    class Foo
+    {
+        public Foo()
+        {
+            var member = this.GetType().GetProperty(nameof(Bar));
+        }
+
+         public static int Bar { get; }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
         public void AnonymousType()
         {
             var testCode = @"

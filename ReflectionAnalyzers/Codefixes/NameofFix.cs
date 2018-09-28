@@ -37,17 +37,19 @@ namespace ReflectionAnalyzers.Codefixes
                             title,
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
-                                SyntaxFactory.ParseExpression(expressionString)),
+                                SyntaxFactory.ParseExpression(expressionString)
+                                             .WithTriviaFrom(argument.Expression)),
                             nameof(NameofFix),
                             diagnostic);
                     }
                     else if (diagnostic.Properties.TryGetValue(nameof(SyntaxKind.StringLiteralExpression), out var literalString))
                     {
                         context.RegisterCodeFix(
-                            $"Use string literal \"{expressionString}\"",
+                            $"Use string literal \"{literalString}\"",
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
-                                SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(literalString))),
+                                SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(literalString))
+                                             .WithTriviaFrom(argument.Expression)),
                             nameof(NameofFix),
                             diagnostic);
                     }
