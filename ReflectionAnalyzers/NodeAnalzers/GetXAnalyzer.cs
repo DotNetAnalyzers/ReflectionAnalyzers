@@ -58,8 +58,8 @@ namespace ReflectionAnalyzers
                                 Diagnostic.Create(
                                     REFL005WrongBindingFlags.Descriptor,
                                     flagsArg.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
-                                    $" Expected: {correctFlags.ToDisplayString()}."));
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
+                                    $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                         }
                         else
                         {
@@ -67,14 +67,14 @@ namespace ReflectionAnalyzers
                                 Diagnostic.Create(
                                     REFL005WrongBindingFlags.Descriptor,
                                     argumentList.CloseParenToken.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
-                                    $" Expected: {correctFlags.ToDisplayString()}."));
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
+                                    $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     REFL008MissingBindingFlags.Descriptor,
                                     argumentList.CloseParenToken.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString()),
-                                    $" Expected: {correctFlags.ToDisplayString()}."));
+                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
+                                    $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                         }
 
                         break;
@@ -90,8 +90,8 @@ namespace ReflectionAnalyzers
                                     Diagnostic.Create(
                                         REFL006RedundantBindingFlags.Descriptor,
                                         flagsArg.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
-                                        $" Expected: {expectedFlags.ToDisplayString()}."));
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
+                                        $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
                             }
 
                             if (flagsArg == null)
@@ -100,8 +100,8 @@ namespace ReflectionAnalyzers
                                     Diagnostic.Create(
                                         REFL008MissingBindingFlags.Descriptor,
                                         argumentList.CloseParenToken.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
-                                        $" Expected: {expectedFlags.ToDisplayString()}."));
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
+                                        $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
                             }
                             else if (HasMissingFlag(member, type, effectiveFlags))
                             {
@@ -109,8 +109,8 @@ namespace ReflectionAnalyzers
                                     Diagnostic.Create(
                                         REFL008MissingBindingFlags.Descriptor,
                                         flagsArg.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString()),
-                                        $" Expected: {expectedFlags.ToDisplayString()}."));
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
+                                        $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
                             }
                         }
 
@@ -224,13 +224,13 @@ namespace ReflectionAnalyzers
                 {
                     if (targetMethod.Name.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
                     {
-                        call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString()}).GetMethod";
+                        call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString(memberAccess)}).GetMethod";
                         return true;
                     }
 
                     if (targetMethod.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase))
                     {
-                        call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString()}).SetMethod";
+                        call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString(memberAccess)}).SetMethod";
                         return true;
                     }
                 }
@@ -239,19 +239,19 @@ namespace ReflectionAnalyzers
                 {
                     if (targetMethod.Name.StartsWith("add_", StringComparison.OrdinalIgnoreCase))
                     {
-                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString()}).AddMethod";
+                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).AddMethod";
                         return true;
                     }
 
                     if (targetMethod.Name.StartsWith("remove_", StringComparison.OrdinalIgnoreCase))
                     {
-                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString()}).RemoveMethod";
+                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).RemoveMethod";
                         return true;
                     }
 
                     if (targetMethod.Name.StartsWith("raise_", StringComparison.OrdinalIgnoreCase))
                     {
-                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString()}).RaiseMethod";
+                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).RaiseMethod";
                         return true;
                     }
                 }
