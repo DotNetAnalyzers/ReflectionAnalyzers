@@ -56,7 +56,7 @@ namespace ReflectionAnalyzers
                     }
 
                     if (!method.ReturnsVoid &&
-                        ShouldCast(invocation))
+                        ReturnValue.ShouldCast(invocation))
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
                     }
@@ -95,7 +95,7 @@ namespace ReflectionAnalyzers
 
                 if (GetX.TryGetConstructor(memberAccess, context, out var ctor))
                 {
-                    if (ShouldCast(invocation))
+                    if (ReturnValue.ShouldCast(invocation))
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
                     }
@@ -130,17 +130,6 @@ namespace ReflectionAnalyzers
                     return IsDiscardName(variableDeclarator.Identifier.ValueText);
                 default:
                     return true;
-            }
-        }
-
-        private static bool ShouldCast(InvocationExpressionSyntax invocation)
-        {
-            switch (invocation.Parent)
-            {
-                case EqualsValueClauseSyntax equalsValueClause when equalsValueClause.Parent is VariableDeclaratorSyntax variableDeclarator:
-                    return !IsDiscardName(variableDeclarator.Identifier.ValueText);
-                default:
-                    return false;
             }
         }
 

@@ -12,6 +12,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
+            REFL001CastReturnValue.Descriptor,
             REFL025ArgumentsDontMatchParameters.Descriptor,
             REFL026MissingDefaultConstructor.Descriptor,
             REFL028CastReturnValueToCorrectType.Descriptor);
@@ -59,6 +60,11 @@ namespace ReflectionAnalyzers
                                     createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
                             break;
                     }
+                }
+
+                if (ReturnValue.ShouldCast(invocation))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
                 }
             }
         }
