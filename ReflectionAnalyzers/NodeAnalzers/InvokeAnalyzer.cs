@@ -67,8 +67,7 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }
 
-                    if (invoke.Parameters.Length == 2 &&
-                        invoke.TryFindParameter("obj", out var objParameter) &&
+                    if (invoke.TryFindParameter("obj", out var objParameter) &&
                         invocation.TryFindArgument(objParameter, out var objArg))
                     {
                         if (method.IsStatic &&
@@ -105,6 +104,12 @@ namespace ReflectionAnalyzers
                         Arguments.TryFindFirstMisMatch(ctor.Parameters, values, context, out var misMatch) == true)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
+                    }
+
+                    if (invoke.TryFindParameter("obj", out var objParameter) &&
+                        invocation.TryFindArgument(objParameter, out var objArg))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), "Use overload of Invoke without obj parameter."));
                     }
                 }
             }
