@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL002InvokeDiscardReturnValue
+namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
