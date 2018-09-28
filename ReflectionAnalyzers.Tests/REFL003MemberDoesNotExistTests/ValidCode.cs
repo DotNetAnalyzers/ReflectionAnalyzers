@@ -104,5 +104,26 @@ namespace RoslynSandbox
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("Delegate")]
+        [TestCase("Action")]
+        [TestCase("Action<int>")]
+        public void DelegateInvoke(string type)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public Foo(Delegate foo)
+        {
+            var methodInfo = foo.GetType().GetMethod(""Invoke"");
+        }
+    }
+}".AssertReplace("Delegate", type);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

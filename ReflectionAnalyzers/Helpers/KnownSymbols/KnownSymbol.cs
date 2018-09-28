@@ -8,6 +8,7 @@ namespace ReflectionAnalyzers
         internal static readonly StringType String = new StringType();
         internal static readonly ArrayType Array = new ArrayType();
         internal static readonly QualifiedType Boolean = Create("System.Boolean", "bool");
+        internal static readonly QualifiedType Delegate = Create("System.Delegate", "bool");
 
         internal static readonly TypeType Type = new TypeType();
         internal static readonly ActivatorType Activator = new ActivatorType();

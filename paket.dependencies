@@ -13,7 +13,7 @@ group Analyzers
   nuget Gu.Analyzers
   nuget IDisposableAnalyzers
   nuget Microsoft.CodeAnalysis.FxCopAnalyzers
-  nuget StyleCop.Analyzers
+  nuget StyleCop.Analyzers prerelease
 
 group Test
   storage: none

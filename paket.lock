@@ -7,7 +7,7 @@ NUGET
       Gu.Roslyn.AnalyzerExtensions (>= 0.3.3.1-dev)
       Microsoft.CodeAnalysis.CSharp.Workspaces (>= 2.0)
     ManagedEsent (1.9.4) - restriction: >= net46
-    Microsoft.CodeAnalysis.Analyzers (2.6.1) - restriction: >= netstandard1.3
+    Microsoft.CodeAnalysis.Analyzers (2.6.2) - restriction: >= netstandard1.3
     Microsoft.CodeAnalysis.Common (2.3.1)
       Microsoft.CodeAnalysis.Analyzers (>= 1.1) - restriction: >= netstandard1.3
       System.AppContext (>= 4.3) - restriction: >= netstandard1.3
@@ -719,23 +719,23 @@ NUGET
     AsyncUsageAnalyzers (1.0.0-alpha003)
     Gu.Analyzers (1.2.18.1-dev)
     IDisposableAnalyzers (2.0.3.3)
-    Microsoft.CodeAnalysis.FxCopAnalyzers (2.6.1)
-      Microsoft.CodeQuality.Analyzers (>= 2.6.1)
-      Microsoft.NetCore.Analyzers (>= 2.6.1)
-      Microsoft.NetFramework.Analyzers (>= 2.6.1)
-      Text.Analyzers (>= 2.6.1)
-    Microsoft.CodeQuality.Analyzers (2.6.1)
-    Microsoft.NetCore.Analyzers (2.6.1)
-    Microsoft.NetFramework.Analyzers (2.6.1)
-    StyleCop.Analyzers (1.0.2)
-    Text.Analyzers (2.6.1)
+    Microsoft.CodeAnalysis.FxCopAnalyzers (2.6.2)
+      Microsoft.CodeQuality.Analyzers (2.6.2)
+      Microsoft.NetCore.Analyzers (2.6.2)
+      Microsoft.NetFramework.Analyzers (2.6.2)
+      Text.Analyzers (2.6.2)
+    Microsoft.CodeQuality.Analyzers (2.6.2)
+    Microsoft.NetCore.Analyzers (2.6.2)
+    Microsoft.NetFramework.Analyzers (2.6.2)
+    StyleCop.Analyzers (1.1.0-beta009)
+    Text.Analyzers (2.6.2)
 
 GROUP Build
 NUGET
   remote: http://www.nuget.org/api/v2
-    Microsoft.VisualStudio.SDK.Analyzers (15.8.33) - restriction: >= net46
-      Microsoft.VisualStudio.Threading.Analyzers (>= 15.8.122) - restriction: >= netstandard1.1
-    Microsoft.VisualStudio.Threading.Analyzers (15.8.145) - restriction: >= net46
+    Microsoft.VisualStudio.SDK.Analyzers (15.8.36) - restriction: >= net46
+      Microsoft.VisualStudio.Threading.Analyzers (>= 15.8.168) - restriction: >= netstandard1.1
+    Microsoft.VisualStudio.Threading.Analyzers (15.8.168) - restriction: >= net46
     Microsoft.VSSDK.BuildTools (15.8.3252)
       Microsoft.VisualStudio.SDK.Analyzers (>= 15.8.33) - restriction: >= net46
 
@@ -746,7 +746,7 @@ NUGET
     Gu.Roslyn.Asserts (2.5)
       Microsoft.CodeAnalysis.CSharp.Workspaces (>= 2.0)
     ManagedEsent (1.9.4) - restriction: >= net46
-    Microsoft.CodeAnalysis.Analyzers (2.6.1) - restriction: >= netstandard1.3
+    Microsoft.CodeAnalysis.Analyzers (2.6.2) - restriction: >= netstandard1.3
     Microsoft.CodeAnalysis.Common (2.3.1)
       Microsoft.CodeAnalysis.Analyzers (>= 1.1) - restriction: >= netstandard1.3
       System.AppContext (>= 4.3) - restriction: >= netstandard1.3
