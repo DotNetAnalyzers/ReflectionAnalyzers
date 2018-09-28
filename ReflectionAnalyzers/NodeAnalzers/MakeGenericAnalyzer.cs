@@ -39,6 +39,16 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, argumentList.GetLocation()));
                 }
+                else
+                {
+                    for (var i = 0; i < types.Length; i++)
+                    {
+                        if (!Type.SatisfiesConstraints(types[i], method.TypeParameters[i], context.Compilation))
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, argumentList.Arguments[i].GetLocation()));
+                        }
+                    }
+                }
             }
         }
     }

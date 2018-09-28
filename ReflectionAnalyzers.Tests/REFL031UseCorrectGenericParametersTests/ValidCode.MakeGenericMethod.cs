@@ -29,6 +29,30 @@ namespace RoslynSandbox
 }";
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
+
+            [TestCase("where T : class", "typeof(string)")]
+            [TestCase("where T : struct", "typeof(int)")]
+            [TestCase("where T : IComparable", "typeof(int)")]
+            [TestCase("where T : new()", "typeof(Foo)")]
+            public void ConstrainedParameter(string constraint, string arg)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public static void Bar<T>()
+            where T : class
+        {
+            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod(typeof(int));
+        }
+    }
+}".AssertReplace("where T : class", constraint).AssertReplace("typeof(int)", arg);
+
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }

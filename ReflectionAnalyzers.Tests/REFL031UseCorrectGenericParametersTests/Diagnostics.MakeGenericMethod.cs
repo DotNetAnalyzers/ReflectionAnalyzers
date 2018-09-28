@@ -30,6 +30,41 @@ namespace RoslynSandbox
                 var message = "Use correct generic parameters.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
+
+            [TestCase("where T : class",       "typeof(int)")]
+            [TestCase("where T : struct",      "typeof(string)")]
+            [TestCase("where T : IComparable", "typeof(Foo)")]
+            [TestCase("where T : new()",       "typeof(Bar)")]
+            public void ConstrainedParameterWrongArg(string constraint, string arg)
+            {
+                var barCode = @"
+namespace RoslynSandbox
+{
+    public class Bar
+    {
+        public Bar(int i)
+        {
+        }
+    }
+}";
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public static void Bar<T>()
+            where T : class
+        {
+            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod(↓typeof(int));
+        }
+    }
+}".AssertReplace("where T : class", constraint)
+  .AssertReplace("typeof(int)", arg);
+                var message = "Use correct generic parameters.";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), barCode, code);
+            }
         }
     }
 }
