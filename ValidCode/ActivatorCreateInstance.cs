@@ -25,6 +25,8 @@ namespace ValidCode
             _ = (SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), new object[] { 1.2 });
         }
 
+        public T Create<T>() => Activator.CreateInstance<T>();
+
         public class ImplicitDefaultConstructor
         {
         }
