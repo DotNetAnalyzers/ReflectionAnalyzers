@@ -204,11 +204,11 @@ namespace ReflectionAnalyzers
                    Type.TryGet(memberAccess.Expression, context, out result, out typeSource);
         }
 
-        internal static GetXResult TryGetMember(IMethodSymbol getX, ITypeSymbol targetType, string targetMetadataName, BindingFlags flags, IReadOnlyList<ITypeSymbol> types, SyntaxNodeAnalysisContext context, out ISymbol member)
+        internal static GetXResult TryGetMember(IMethodSymbol getX, ITypeSymbol type, string targetMetadataName, BindingFlags flags, IReadOnlyList<ITypeSymbol> types, SyntaxNodeAnalysisContext context, out ISymbol member)
         {
             var name = TrimName();
             member = null;
-            if (targetType is ITypeParameterSymbol typeParameter)
+            if (type is ITypeParameterSymbol typeParameter)
             {
                 if (typeParameter.ConstraintTypes.Length == 0)
                 {
@@ -234,7 +234,7 @@ namespace ReflectionAnalyzers
                  !flags.HasFlagFast(BindingFlags.Instance) &&
                  !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
-                foreach (var candidate in targetType.GetMembers(name))
+                foreach (var candidate in type.GetMembers(name))
                 {
                     if (!MatchesFilter(candidate, targetMetadataName, flags, types))
                     {
@@ -257,7 +257,7 @@ namespace ReflectionAnalyzers
             }
             else
             {
-                var current = targetType;
+                var current = type;
                 while (current != null)
                 {
                     foreach (var candidate in current.GetMembers(name))
@@ -281,7 +281,7 @@ namespace ReflectionAnalyzers
                             }
 
                             if (candidate.IsStatic &&
-                                !current.Equals(targetType) &&
+                                !current.Equals(type) &&
                                 !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
                             {
                                 return GetXResult.WrongFlags;
@@ -307,11 +307,16 @@ namespace ReflectionAnalyzers
                 return GetXResult.Single;
             }
 
-            if (targetType.TryFindFirstMemberRecursive(name, out member))
+            if (type.TryFindFirstMemberRecursive(name, out member))
             {
                 if (IsUseContainingType(member))
                 {
                     return GetXResult.UseContainingType;
+                }
+
+                if (!Type.HasVisibleMembers(type, flags))
+                {
+                    return GetXResult.Unknown;
                 }
 
                 if (IsWrongFlags(member))
@@ -325,9 +330,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            if (getX != KnownSymbol.Type.GetConstructor &&
-                getX != KnownSymbol.Type.GetNestedType &&
-                !Type.HasVisibleMembers(targetType, flags))
+            if (!Type.HasVisibleMembers(type, flags))
             {
                 // Assigning member if it is explicit. Useful info but we can't be sure still.
                 _ = IsExplicitImplementation(out member);
@@ -404,7 +407,7 @@ namespace ReflectionAnalyzers
 
             bool IsUseContainingType(ISymbol symbol)
             {
-                return !targetType.Equals(symbol.ContainingType) &&
+                return !type.Equals(symbol.ContainingType) &&
                        (getX == KnownSymbol.Type.GetNestedType ||
                         (symbol.IsStatic &&
                          symbol.DeclaredAccessibility == Accessibility.Private));
@@ -418,7 +421,7 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                if (!symbol.ContainingType.Equals(targetType) &&
+                if (!symbol.ContainingType.Equals(type) &&
                     (symbol.IsStatic ||
                      flags.HasFlagFast(BindingFlags.DeclaredOnly)))
                 {
@@ -443,7 +446,7 @@ namespace ReflectionAnalyzers
 
             bool IsExplicitImplementation(out ISymbol result)
             {
-                foreach (var @interface in targetType.AllInterfaces)
+                foreach (var @interface in type.AllInterfaces)
                 {
                     if (@interface.TryFindFirstMemberRecursive(name, out result))
                     {

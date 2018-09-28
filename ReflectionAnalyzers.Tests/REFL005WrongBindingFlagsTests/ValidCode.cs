@@ -283,5 +283,36 @@ namespace RoslynSandbox
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [Test]
+        public void NonPublicNotVisible()
+        {
+            var exception = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class CustomAggregateException : AggregateException
+    {
+        public int InnerExceptionCount { get; }
+    }
+}";
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(CustomAggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, exception, code);
+        }
     }
 }
