@@ -3,6 +3,8 @@ namespace ReflectionAnalyzers
     using System;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     internal static class BindingFlagsExt
     {
@@ -14,6 +16,7 @@ namespace ReflectionAnalyzers
 
         internal static string ToDisplayString(this BindingFlags flags, SyntaxNode location)
         {
+            var usingStatic = IsUsingStatic(location);
             var builder = StringBuilderPool.Borrow();
             //// below is in specific order.
             AppendIf(BindingFlags.Public);
@@ -49,8 +52,32 @@ namespace ReflectionAnalyzers
                         _ = builder.Append(" | ");
                     }
 
-                    _ = builder.Append("BindingFlags.").Append(flag.Name());
+                    if (!usingStatic)
+                    {
+                        _ = builder.Append("BindingFlags.");
+                    }
+
+                    _ = builder.Append(flag.Name());
                 }
+            }
+        }
+
+        private static bool IsUsingStatic(SyntaxNode location)
+        {
+            if (location.TryFirstAncestor(out NamespaceDeclarationSyntax namespaceDeclaration))
+            {
+                return namespaceDeclaration.Usings.TryFirst(x => IsBindingFlags(x), out _) ||
+                       (namespaceDeclaration.Parent is CompilationUnitSyntax compilationUnit &&
+                        compilationUnit.Usings.TryFirst(x => IsBindingFlags(x), out _));
+            }
+
+            return false;
+
+            bool IsBindingFlags(UsingDirectiveSyntax @using)
+            {
+                return @using.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) &&
+                       @using.Name is QualifiedNameSyntax qn &&
+                       qn.Right.Identifier.ValueText == "BindingFlags";
             }
         }
 
