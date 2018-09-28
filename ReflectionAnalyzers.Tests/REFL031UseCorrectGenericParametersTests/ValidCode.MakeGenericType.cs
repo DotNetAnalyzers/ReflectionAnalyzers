@@ -53,6 +53,28 @@ namespace RoslynSandbox
 
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
+
+            [Test]
+            public void Recursion()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo<T1, T2>
+        where T1 : T2
+        where T2 : T1
+    {
+        public static void Bar()
+        {
+            var type = typeof(Foo<,>).MakeGenericType(typeof(int), typeof(int));
+        }
+    }
+}";
+                var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), AnalyzerAssert.MetadataReferences);
+                AnalyzerAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
+            }
         }
     }
 }
