@@ -71,6 +71,7 @@ namespace ReflectionAnalyzers
                             ImmutableDictionary<string, string>.Empty.Add(nameof(SyntaxKind.StringLiteralExpression), name)));
                 }
                 else if (TryGetSymbol(out var symbol) &&
+                         target.HasValue &&
                          !symbol.ContainingType.IsAssignableTo(target.Value.ContainingType, context.Compilation) &&
                          TryGetTargetName(target.Value, default(Optional<IdentifierNameSyntax>), context, out var targetName))
                 {

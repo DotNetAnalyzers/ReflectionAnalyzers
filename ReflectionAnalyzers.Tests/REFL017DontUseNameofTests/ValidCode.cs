@@ -97,6 +97,23 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void DelegateInvoke()
+        {
+            var testCode = @"
+using System;
+
+namespace TestApp.Infrastructure
+{
+    static class Poke
+    {
+        public static void Foo(Delegate d) => d.GetType().GetMethod(nameof(Action.Invoke));
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+        }
+
+        [Test]
         public void AnonymousTypeNameofInstanceProperty()
         {
             var testCode = @"
