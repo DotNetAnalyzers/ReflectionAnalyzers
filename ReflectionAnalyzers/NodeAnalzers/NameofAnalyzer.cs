@@ -37,9 +37,9 @@ namespace ReflectionAnalyzers
                 argument.Parent is ArgumentListSyntax argumentList &&
                 argumentList.Parent is InvocationExpressionSyntax invocation &&
                 TryGetX(invocation, context, out var getX) &&
-                TryGetMember(invocation, getX, literal.Token.ValueText, context, out var target, out var instance) &&
-                target.HasValue &&
-                TryGetTargetName(target.Value, instance, context, out var targetName))
+                TryGetMember(invocation, getX, literal.Token.ValueText, context, out var member, out var instance) &&
+                member.HasValue &&
+                TryGetTargetName(member.Value, instance, context, out var targetName))
             {
                 context.ReportDiagnostic(
                     Diagnostic.Create(
@@ -59,9 +59,9 @@ namespace ReflectionAnalyzers
                 containingArgument.Parent is ArgumentListSyntax containingArgumentList &&
                 containingArgumentList.Parent is InvocationExpressionSyntax invocation &&
                 TryGetX(invocation, context, out var getX) &&
-                TryGetMember(invocation, getX, name, context, out var target, out var instance))
+                TryGetMember(invocation, getX, name, context, out var member, out var instance))
             {
-                if (!target.HasValue &&
+                if (!member.HasValue &&
                     !instance.HasValue)
                 {
                     context.ReportDiagnostic(
@@ -71,9 +71,9 @@ namespace ReflectionAnalyzers
                             ImmutableDictionary<string, string>.Empty.Add(nameof(SyntaxKind.StringLiteralExpression), name)));
                 }
                 else if (TryGetSymbol(out var symbol) &&
-                         target.HasValue &&
-                         !symbol.ContainingType.IsAssignableTo(target.Value.ContainingType, context.Compilation) &&
-                         TryGetTargetName(target.Value, default(Optional<IdentifierNameSyntax>), context, out var targetName))
+                         member.HasValue &&
+                         !symbol.ContainingType.IsAssignableTo(member.Value.ContainingType, context.Compilation) &&
+                         TryGetTargetName(member.Value, default(Optional<IdentifierNameSyntax>), context, out var targetName))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -129,15 +129,15 @@ namespace ReflectionAnalyzers
                     getType.Expression is MemberAccessExpressionSyntax memberAccess &&
                     memberAccess.Expression is IdentifierNameSyntax identifierName)
                 {
-                    optionalInstance = new Optional<IdentifierNameSyntax>(identifierName);
+                    optionalInstance = identifierName;
                 }
 
-                var result = GetX.TryGetMember(getX, targetType, name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy, GetX.AnyTypes, context, out var member);
+                const BindingFlags searchAll = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
+                var result = GetX.TryGetMember(getX, targetType, name, searchAll, GetX.AnyTypes, context, out var member);
                 if (result == GetXResult.Unknown &&
                     member != null)
                 {
-                    optionalMember = new Optional<ISymbol>(member);
-                    return true;
+                    return false;
                 }
 
                 if (member is IMethodSymbol method)
