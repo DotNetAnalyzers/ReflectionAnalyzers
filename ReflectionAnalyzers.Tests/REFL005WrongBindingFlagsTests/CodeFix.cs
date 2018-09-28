@@ -173,6 +173,73 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
+        [TestCase("StaticMethod",       "Public | Instance",                   "Public | Static | DeclaredOnly")]
+        [TestCase("StaticMethod",       "Public | Instance | DeclaredOnly",    "Public | Static | DeclaredOnly")]
+        [TestCase("StaticMethod",       "NonPublic | Static",                  "Public | Static | DeclaredOnly")]
+        [TestCase("ReferenceEquals",    "Public | Static",                     "Public | Static | FlattenHierarchy")]
+        [TestCase("this.PublicMethod",  "Public | Static",                     "Public | Instance | DeclaredOnly")]
+        [TestCase("this.PublicMethod",  "NonPublic | Instance",                "Public | Instance | DeclaredOnly")]
+        [TestCase("this.PublicMethod",  "NonPublic | Instance | DeclaredOnly", "Public | Instance | DeclaredOnly")]
+        [TestCase("this.PublicMethod",  "Public | Static | DeclaredOnly",      "Public | Instance | DeclaredOnly")]
+        [TestCase("this.ToString",      "Public",                              "Public | Instance | DeclaredOnly")]
+        [TestCase("this.ToString",      "NonPublic | Static",                  "Public | Instance | DeclaredOnly")]
+        [TestCase("this.ToString",      "Public | Static",                     "Public | Instance | DeclaredOnly")]
+        [TestCase("this.GetHashCode",   "Public",                              "Public | Instance")]
+        [TestCase("this.GetHashCode",   "Public | Instance | DeclaredOnly",    "Public | Instance")]
+        [TestCase("this.GetHashCode",   "NonPublic | Static",                  "Public | Instance")]
+        [TestCase("this.GetHashCode",   "Public | Static",                     "Public | Instance")]
+        [TestCase("this.PrivateMethod", "Public | Instance | DeclaredOnly",    "NonPublic | Instance | DeclaredOnly")]
+        [TestCase("this.PrivateMethod", "NonPublic | Static | DeclaredOnly",   "NonPublic | Instance | DeclaredOnly")]
+        public void GetMethodUsingStatic(string method, string flags, string expected)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using static System.Reflection.BindingFlags;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.PublicMethod), ↓Public | Static);
+        }
+
+        public static int StaticMethod() => 0;
+
+        public int PublicMethod() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private int PrivateMethod() => 0;
+    }
+}".AssertReplace("nameof(this.PublicMethod)", $"nameof({method})")
+  .AssertReplace("Public | Static", flags);
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using static System.Reflection.BindingFlags;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.PublicMethod), Public | Instance | DeclaredOnly);
+        }
+
+        public static int StaticMethod() => 0;
+
+        public int PublicMethod() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private int PrivateMethod() => 0;
+    }
+}".AssertReplace("nameof(this.PublicMethod)", $"nameof({method})")
+  .AssertReplace("Public | Instance | DeclaredOnly", expected);
+            var message = $"There is no member matching the filter. Expected: {expected}.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
         [TestCase("Static",       "BindingFlags.Public | BindingFlags.Instance",                                "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
         [TestCase("Static",       "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
         [TestCase("Static",       "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]

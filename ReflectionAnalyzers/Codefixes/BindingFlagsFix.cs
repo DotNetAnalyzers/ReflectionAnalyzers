@@ -39,10 +39,17 @@ namespace ReflectionAnalyzers.Codefixes
                     {
                         context.RegisterCodeFix(
                             $"Add argument: {argumentString}.",
-                            (editor, _) => editor.AddUsing(SystemReflection)
-                                                 .ReplaceNode(
-                                                     argumentList,
-                                                     x => x.AddArguments(ParseArgument(argumentString))),
+                            (editor, __) =>
+                            {
+                                if (argumentString.Contains("BindingFlags"))
+                                {
+                                    _ = editor.AddUsing(SystemReflection);
+                                }
+
+                                _ = editor.ReplaceNode(
+                                          argumentList,
+                                          x => x.AddArguments(ParseArgument(argumentString)));
+                            },
                             nameof(BindingFlagsFix),
                             diagnostic);
                     }
@@ -56,13 +63,20 @@ namespace ReflectionAnalyzers.Codefixes
                         {
                             context.RegisterCodeFix(
                                 $"Add argument: {argumentString}.",
-                                (editor, _) => editor.AddUsing(SystemReflection)
-                                                     .ReplaceNode(
-                                                         argumentList,
-                                                         x => x.WithArguments(
-                                                             x.Arguments.Insert(1, ParseArgument(argumentString))
-                                                              .Insert(2, NullArgument)
-                                                              .Add(NullArgument))),
+                                (editor, __) =>
+                                {
+                                    if (argumentString.Contains("BindingFlags"))
+                                    {
+                                        _ = editor.AddUsing(SystemReflection);
+                                    }
+
+                                    _ = editor.ReplaceNode(
+                                        argumentList,
+                                        x => x.WithArguments(
+                                            x.Arguments.Insert(1, ParseArgument(argumentString))
+                                             .Insert(2, NullArgument)
+                                             .Add(NullArgument)));
+                                },
                                 nameof(BindingFlagsFix),
                                 diagnostic);
                         }
@@ -73,8 +87,7 @@ namespace ReflectionAnalyzers.Codefixes
                 {
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",
-                        (editor, _) => editor.AddUsing(SystemReflection)
-                                             .ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
+                        (editor, _) => editor.ReplaceNode(argument.Expression, SyntaxFactory.ParseExpression(expressionString)),
                         nameof(BindingFlagsFix),
                         diagnostic);
                 }
