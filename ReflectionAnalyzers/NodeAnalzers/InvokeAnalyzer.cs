@@ -36,9 +36,6 @@ namespace ReflectionAnalyzers
                 name == "Invoke" &&
                 context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var invoke) &&
                 invoke.ContainingType.IsAssignableTo(KnownSymbol.MemberInfo, context.Compilation) &&
-                invoke.Parameters.Length == 2 &&
-                invoke.TryFindParameter("obj", out var objParameter) &&
-                invocation.TryFindArgument(objParameter, out var objArg) &&
                 invoke.TryFindParameter("parameters", out var parametersParameter) &&
                 invocation.TryFindArgument(parametersParameter, out var parametersArg))
             {
@@ -70,25 +67,44 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }
 
-                    if (method.IsStatic &&
-                        objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == false)
+                    if (invoke.Parameters.Length == 2 &&
+                        invoke.TryFindParameter("obj", out var objParameter) &&
+                        invocation.TryFindArgument(objParameter, out var objArg))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is static and null should be passed as obj."));
+                        if (method.IsStatic &&
+                            objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == false)
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is static and null should be passed as obj."));
+                        }
+
+                        if (!method.IsStatic)
+                        {
+                            if (objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is an instance method and the instance should be passed as obj."));
+                            }
+
+                            if (context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var objType) &&
+                                objType != KnownSymbol.Object &&
+                                !objType.IsAssignableTo(method.ContainingType, context.Compilation))
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Expected an argument of type {method.ContainingType}."));
+                            }
+                        }
+                    }
+                }
+
+                if (GetX.TryGetConstructor(memberAccess, context, out var ctor))
+                {
+                    if (ShouldCast(invocation))
+                    {
+                        context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
                     }
 
-                    if (!method.IsStatic)
+                    if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
+                        Arguments.TryFindFirstMisMatch(ctor.Parameters, values, context, out var misMatch) == true)
                     {
-                        if (objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
-                        {
-                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is an instance method and the instance should be passed as obj."));
-                        }
-
-                        if (context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var objType) &&
-                            objType != KnownSymbol.Object &&
-                            !objType.IsAssignableTo(method.ContainingType, context.Compilation))
-                        {
-                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Expected an argument of type {method.ContainingType}."));
-                        }
+                        context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }
                 }
             }

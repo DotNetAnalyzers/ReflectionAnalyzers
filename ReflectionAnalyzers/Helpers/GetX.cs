@@ -16,13 +16,30 @@ namespace ReflectionAnalyzers
         public static readonly IReadOnlyList<ITypeSymbol> AnyTypes = new ITypeSymbol[0];
 #pragma warning restore CA1825 // Avoid zero-length array allocations.
 
+        internal static bool TryGetConstructor(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol method)
+        {
+            if (memberAccess.Expression is InvocationExpressionSyntax parentInvocation)
+            {
+                var result = GetX.TryMatchGetConstructor(parentInvocation, context, out _, out var member, out _, out _, out _, out _);
+                if (result == GetXResult.Single &&
+                    member is IMethodSymbol match)
+                {
+                    method = match;
+                    return true;
+                }
+            }
+
+            method = null;
+            return false;
+        }
+
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetMethod
         /// </summary>
-        internal static GetXResult? TryMatchGetConstructor(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
+        internal static GetXResult? TryMatchGetConstructor(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ISymbol member, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
         {
             targetType = null;
-            target = null;
+            member = null;
             flagsArg = null;
             effectiveFlags = 0;
             typesArg = null;
@@ -34,7 +51,7 @@ namespace ReflectionAnalyzers
                 TryGetFlagsOrDefault(invocation, getX, context, out flagsArg, out effectiveFlags) &&
                 TryGetTypesOrDefault(invocation, getX, context, out typesArg, out types))
             {
-                return TryGetMember(getX, targetType, ".ctor", effectiveFlags, types, context, out target);
+                return TryGetMember(getX, targetType, ".ctor", effectiveFlags, types, context, out member);
             }
 
             return null;
