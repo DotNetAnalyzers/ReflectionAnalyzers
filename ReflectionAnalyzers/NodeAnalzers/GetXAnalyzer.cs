@@ -66,13 +66,13 @@ namespace ReflectionAnalyzers
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     REFL005WrongBindingFlags.Descriptor,
-                                    argumentList.CloseParenToken.GetLocation(),
+                                    MissingFlagsLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
                                     $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     REFL008MissingBindingFlags.Descriptor,
-                                    argumentList.CloseParenToken.GetLocation(),
+                                    MissingFlagsLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
                                     $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                         }
@@ -98,7 +98,7 @@ namespace ReflectionAnalyzers
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
                                         REFL008MissingBindingFlags.Descriptor,
-                                        argumentList.CloseParenToken.GetLocation(),
+                                        MissingFlagsLocation(),
                                         ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
                                         $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
                             }
@@ -181,6 +181,13 @@ namespace ReflectionAnalyzers
                         explicitMemberAccess.Expression is TypeOfExpressionSyntax typeOf
                     ? typeOf.Type.GetLocation()
                     : invocation.Expression.GetLocation();
+            }
+
+            Location MissingFlagsLocation()
+            {
+                return invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out _)
+                    ? argumentList.OpenParenToken.GetLocation()
+                    : argumentList.CloseParenToken.GetLocation();
             }
         }
 
@@ -364,9 +371,16 @@ namespace ReflectionAnalyzers
                    flags.HasFlagFast(BindingFlags.IgnoreCase);
         }
 
-        private static bool HasMissingFlag(ISymbol target, ITypeSymbol targetType, BindingFlags flags)
+        private static bool HasMissingFlag(ISymbol member, ITypeSymbol targetType, BindingFlags flags)
         {
-            return Equals(target.ContainingType, targetType) &&
+            if (member is ITypeSymbol ||
+                (member is IMethodSymbol method &&
+                 method.MethodKind == MethodKind.Constructor))
+            {
+                return false;
+            }
+
+            return Equals(member.ContainingType, targetType) &&
                    !flags.HasFlagFast(BindingFlags.DeclaredOnly);
         }
 

@@ -318,6 +318,55 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
+        [TestCase("Type.EmptyTypes",             "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("Array.Empty<Type>()",         "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("new Type[0]",                 "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("new Type[1] { typeof(int) }", "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("new Type[] { typeof(int) }",  "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("new[] { typeof(int) }",       "BindingFlags.Public | BindingFlags.Instance")]
+        public void GetConstructorWhenMissingFlags(string types, string flags)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var ctor = typeof(Foo).GetConstructor↓(Type.EmptyTypes);
+        }
+
+        public Foo(int value)
+        {
+        }
+    }
+}".AssertReplace("Type.EmptyTypes", types);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var ctor = typeof(Foo).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
+        }
+
+        public Foo(int value)
+        {
+        }
+    }
+}".AssertReplace("Type.EmptyTypes", types)
+  .AssertReplace("BindingFlags.Public | BindingFlags.Instance", flags);
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
         [TestCase("PublicStatic",    "BindingFlags.Public")]
         [TestCase("PublicInstance",  "BindingFlags.Public")]
         [TestCase("PrivateStatic",   "BindingFlags.NonPublic")]

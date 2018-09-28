@@ -118,7 +118,7 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var methodInfo = typeof(Foo).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(Foo).GetNestedType(nameof(Public), BindingFlags.Public);
         }
 
         public static class PublicStatic
@@ -137,7 +137,7 @@ namespace RoslynSandbox
         {
         }
     }
-}".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)", call);
+}".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 

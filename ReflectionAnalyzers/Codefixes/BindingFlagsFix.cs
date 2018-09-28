@@ -30,14 +30,22 @@ namespace ReflectionAnalyzers.Codefixes
         {
             var syntaxRoot = await context.Document.GetSyntaxRootAsync(context.CancellationToken)
                                           .ConfigureAwait(false);
+            var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
+                    argumentList.Parent is InvocationExpressionSyntax invocation &&
                     diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {
                     if (argumentList.Arguments.Count == 1)
                     {
-                        context.RegisterCodeFix(
+                        if (invocation.TryGetTarget(KnownSymbol.Type.GetEvent, semanticModel, context.CancellationToken, out _) ||
+                            invocation.TryGetTarget(KnownSymbol.Type.GetField, semanticModel, context.CancellationToken, out _) ||
+                            invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out _) ||
+                            invocation.TryGetTarget(KnownSymbol.Type.GetNestedType, semanticModel, context.CancellationToken, out _) ||
+                            invocation.TryGetTarget(KnownSymbol.Type.GetProperty, semanticModel, context.CancellationToken, out _))
+                        {
+                            context.RegisterCodeFix(
                             $"Add argument: {argumentString}.",
                             (editor, __) =>
                             {
@@ -52,14 +60,8 @@ namespace ReflectionAnalyzers.Codefixes
                             },
                             nameof(BindingFlagsFix),
                             diagnostic);
-                    }
-                    else if (argumentList.Parent is InvocationExpressionSyntax invocation)
-                    {
-                        var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
-                        if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out var getMethod) &&
-                            getMethod.Parameters.Length == 2 &&
-                            getMethod.TryFindParameter("name", out _) &&
-                            getMethod.TryFindParameter("types", out _))
+                        }
+                        else if (invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, semanticModel, context.CancellationToken, out _))
                         {
                             context.RegisterCodeFix(
                                 $"Add argument: {argumentString}.",
@@ -73,13 +75,38 @@ namespace ReflectionAnalyzers.Codefixes
                                     _ = editor.ReplaceNode(
                                         argumentList,
                                         x => x.WithArguments(
-                                            x.Arguments.Insert(1, ParseArgument(argumentString))
-                                             .Insert(2, NullArgument)
+                                            x.Arguments.Insert(0, ParseArgument(argumentString))
+                                             .Insert(1, NullArgument)
                                              .Add(NullArgument)));
                                 },
                                 nameof(BindingFlagsFix),
                                 diagnostic);
                         }
+                    }
+                    else if (argumentList.Arguments.Count == 2 &&
+                             invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out var getMethod) &&
+                             getMethod.Parameters.Length == 2 &&
+                             getMethod.TryFindParameter("name", out _) &&
+                             getMethod.TryFindParameter("types", out _))
+                    {
+                        context.RegisterCodeFix(
+                            $"Add argument: {argumentString}.",
+                            (editor, __) =>
+                            {
+                                if (argumentString.Contains("BindingFlags"))
+                                {
+                                    _ = editor.AddUsing(SystemReflection);
+                                }
+
+                                _ = editor.ReplaceNode(
+                                    argumentList,
+                                    x => x.WithArguments(
+                                        x.Arguments.Insert(1, ParseArgument(argumentString))
+                                         .Insert(2, NullArgument)
+                                         .Add(NullArgument)));
+                            },
+                            nameof(BindingFlagsFix),
+                            diagnostic);
                     }
                 }
                 else if (diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var expressionString) &&

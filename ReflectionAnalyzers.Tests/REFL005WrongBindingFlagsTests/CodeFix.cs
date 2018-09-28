@@ -12,23 +12,23 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL005WrongBindingFlags.Descriptor);
 
-        [TestCase("Static",           "BindingFlags.Public | BindingFlags.Instance",                                "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("Static",           "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("Static",           "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("ReferenceEquals",  "BindingFlags.Public | BindingFlags.Static",                                  "BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy")]
-        [TestCase("this.Public",      "BindingFlags.Public | BindingFlags.Static",                                  "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Public",      "BindingFlags.NonPublic | BindingFlags.Instance",                             "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Public",      "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Public",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly",      "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.ToString",    "BindingFlags.Public",                                                        "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.ToString",    "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.ToString",    "BindingFlags.Public | BindingFlags.Static",                                  "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.GetHashCode", "BindingFlags.Public",                                                        "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("this.GetHashCode", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("this.GetHashCode", "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("this.GetHashCode", "BindingFlags.Public | BindingFlags.Static",                                  "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("this.Private",     "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Private",     "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly",   "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("Static", "BindingFlags.Public | BindingFlags.Instance", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("Static", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("ReferenceEquals", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy")]
+        [TestCase("this.Public", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public", "BindingFlags.NonPublic | BindingFlags.Instance", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.Public", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.GetHashCode", "BindingFlags.Public", "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("this.GetHashCode", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("this.GetHashCode", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("this.GetHashCode", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance")]
+        [TestCase("this.Private", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public void GetMethod(string method, string flags, string expected)
         {
             var code = @"
@@ -79,9 +79,9 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [TestCase("this.ToString", "BindingFlags.Public",                          "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.Public", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("this.ToString", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.ToString", "BindingFlags.Public | BindingFlags.Static",    "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.ToString", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public void GetMethodWhenShadowed(string method, string flags, string expected)
         {
             var code = @"
@@ -121,7 +121,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("ReferenceEquals", "BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy")]
-        [TestCase("this.Private",    "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public void GetMethodWhenMissingFlags(string method, string expected)
         {
             var code = @"
@@ -173,23 +173,23 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [TestCase("StaticMethod",       "Public | Instance",                   "Public | Static | DeclaredOnly")]
-        [TestCase("StaticMethod",       "Public | Instance | DeclaredOnly",    "Public | Static | DeclaredOnly")]
-        [TestCase("StaticMethod",       "NonPublic | Static",                  "Public | Static | DeclaredOnly")]
-        [TestCase("ReferenceEquals",    "Public | Static",                     "Public | Static | FlattenHierarchy")]
-        [TestCase("this.PublicMethod",  "Public | Static",                     "Public | Instance | DeclaredOnly")]
-        [TestCase("this.PublicMethod",  "NonPublic | Instance",                "Public | Instance | DeclaredOnly")]
-        [TestCase("this.PublicMethod",  "NonPublic | Instance | DeclaredOnly", "Public | Instance | DeclaredOnly")]
-        [TestCase("this.PublicMethod",  "Public | Static | DeclaredOnly",      "Public | Instance | DeclaredOnly")]
-        [TestCase("this.ToString",      "Public",                              "Public | Instance | DeclaredOnly")]
-        [TestCase("this.ToString",      "NonPublic | Static",                  "Public | Instance | DeclaredOnly")]
-        [TestCase("this.ToString",      "Public | Static",                     "Public | Instance | DeclaredOnly")]
-        [TestCase("this.GetHashCode",   "Public",                              "Public | Instance")]
-        [TestCase("this.GetHashCode",   "Public | Instance | DeclaredOnly",    "Public | Instance")]
-        [TestCase("this.GetHashCode",   "NonPublic | Static",                  "Public | Instance")]
-        [TestCase("this.GetHashCode",   "Public | Static",                     "Public | Instance")]
-        [TestCase("this.PrivateMethod", "Public | Instance | DeclaredOnly",    "NonPublic | Instance | DeclaredOnly")]
-        [TestCase("this.PrivateMethod", "NonPublic | Static | DeclaredOnly",   "NonPublic | Instance | DeclaredOnly")]
+        [TestCase("StaticMethod", "Public | Instance", "Public | Static | DeclaredOnly")]
+        [TestCase("StaticMethod", "Public | Instance | DeclaredOnly", "Public | Static | DeclaredOnly")]
+        [TestCase("StaticMethod", "NonPublic | Static", "Public | Static | DeclaredOnly")]
+        [TestCase("ReferenceEquals", "Public | Static", "Public | Static | FlattenHierarchy")]
+        [TestCase("this.PublicMethod", "Public | Static", "Public | Instance | DeclaredOnly")]
+        [TestCase("this.PublicMethod", "NonPublic | Instance", "Public | Instance | DeclaredOnly")]
+        [TestCase("this.PublicMethod", "NonPublic | Instance | DeclaredOnly", "Public | Instance | DeclaredOnly")]
+        [TestCase("this.PublicMethod", "Public | Static | DeclaredOnly", "Public | Instance | DeclaredOnly")]
+        [TestCase("this.ToString", "Public", "Public | Instance | DeclaredOnly")]
+        [TestCase("this.ToString", "NonPublic | Static", "Public | Instance | DeclaredOnly")]
+        [TestCase("this.ToString", "Public | Static", "Public | Instance | DeclaredOnly")]
+        [TestCase("this.GetHashCode", "Public", "Public | Instance")]
+        [TestCase("this.GetHashCode", "Public | Instance | DeclaredOnly", "Public | Instance")]
+        [TestCase("this.GetHashCode", "NonPublic | Static", "Public | Instance")]
+        [TestCase("this.GetHashCode", "Public | Static", "Public | Instance")]
+        [TestCase("this.PrivateMethod", "Public | Instance | DeclaredOnly", "NonPublic | Instance | DeclaredOnly")]
+        [TestCase("this.PrivateMethod", "NonPublic | Static | DeclaredOnly", "NonPublic | Instance | DeclaredOnly")]
         public void GetMethodUsingStatic(string method, string flags, string expected)
         {
             var code = @"
@@ -240,15 +240,15 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [TestCase("Static",       "BindingFlags.Public | BindingFlags.Instance",                                "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("Static",       "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("Static",       "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Public",  "BindingFlags.Public | BindingFlags.Static",                                  "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Public",  "BindingFlags.NonPublic | BindingFlags.Instance",                             "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Public",  "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Public",  "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly",      "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Private", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly",   "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("Static", "BindingFlags.Public | BindingFlags.Instance", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("Static", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public", "BindingFlags.NonPublic | BindingFlags.Instance", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Public", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Private", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+        [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public void GetProperty(string method, string flags, string expected)
         {
             var code = @"
@@ -299,14 +299,14 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [TestCase("PublicStatic",  "BindingFlags.NonPublic",                                                     "BindingFlags.Public")]
-        [TestCase("PublicStatic",  "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public")]
-        [TestCase("PublicStatic",  "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public")]
-        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Static",                               "BindingFlags.Public")]
-        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Instance",                             "BindingFlags.Public")]
-        [TestCase("Public",        "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public")]
-        [TestCase("PrivateStatic", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic")]
-        [TestCase("Private",       "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly",    "BindingFlags.NonPublic")]
+        [TestCase("PublicStatic", "BindingFlags.NonPublic", "BindingFlags.Public")]
+        [TestCase("PublicStatic", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public")]
+        [TestCase("PublicStatic", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public")]
+        [TestCase("Public", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public")]
+        [TestCase("Public", "BindingFlags.NonPublic | BindingFlags.Instance", "BindingFlags.Public")]
+        [TestCase("Public", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public")]
+        [TestCase("PrivateStatic", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic")]
+        [TestCase("Private", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic")]
         public void GetNestedType(string type, string flags, string expected)
         {
             var code = @"
@@ -423,13 +423,13 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
-        [TestCase("Type.EmptyTypes",                "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("Array.Empty<Type>()",            "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("new Type[0]",                    "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("new Type[1] { typeof(double) }", "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("new Type[] { typeof(double) }",  "BindingFlags.Public | BindingFlags.Instance")]
-        [TestCase("new[] { typeof(double) }",       "BindingFlags.Public | BindingFlags.Instance")]
-        public void GetConstructorWhenMissingFlags(string types, string flags)
+        [TestCase("Type.EmptyTypes")]
+        [TestCase("Array.Empty<Type>()")]
+        [TestCase("new Type[0]")]
+        [TestCase("new Type[1] { typeof(double) }")]
+        [TestCase("new Type[] { typeof(double) }")]
+        [TestCase("new[] { typeof(double) }")]
+        public void GetConstructorWhenMissingFlags(string types)
         {
             var code = @"
 namespace RoslynSandbox
@@ -438,12 +438,12 @@ namespace RoslynSandbox
 
     public class Foo
     {
-        public Foo()
+        private Foo()
         {
-            var ctor = typeof(Foo).GetConstructor(↓Type.EmptyTypes);
+            var ctor = typeof(Foo).GetConstructor↓(Type.EmptyTypes);
         }
 
-        public Foo(int value)
+        private Foo(int value)
         {
         }
     }
@@ -453,20 +453,20 @@ namespace RoslynSandbox
 namespace RoslynSandbox
 {
     using System;
+    using System.Reflection;
 
     public class Foo
     {
-        public Foo()
+        private Foo()
         {
-            var ctor = typeof(Foo).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
+            var ctor = typeof(Foo).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
         }
 
-        public Foo(int value)
+        private Foo(int value)
         {
         }
     }
-}".AssertReplace("Type.EmptyTypes", types)
-  .AssertReplace("BindingFlags.Public | BindingFlags.Instance", flags);
+}".AssertReplace("Type.EmptyTypes", types);
 
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
