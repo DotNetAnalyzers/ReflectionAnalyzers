@@ -6,36 +6,35 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericParametersTests
 
     public partial class Diagnostics
     {
-        public class MakeGenericMethod
+        public class MakeGenericType
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericMethodAnalyzer();
+            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericTypeAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
-            public void SingleUnconstrainedTwoTypeArguments()
+            public void SingleUnconstrained()
             {
                 var code = @"
 namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class Foo<T>
     {
-        public static void Bar<T>()
+        public static void Bar()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod↓(typeof(int), typeof(double));
+            var type = typeof(Foo<>).MakeGenericType(typeof(int), typeof(double));
         }
     }
 }";
-                var message = "Use correct generic parameters.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("where T : class",       "typeof(int)")]
             [TestCase("where T : struct",      "typeof(string)")]
-            [TestCase("where T : IComparable", "typeof(Foo)")]
+            [TestCase("where T : IComparable", "typeof(Foo<int>)")]
             [TestCase("where T : new()",       "typeof(Bar)")]
-            public void ConstrainedParameterWrongArg(string constraint, string arg)
+            public void ConstrainedParameter(string constraint, string arg)
             {
                 var barCode = @"
 namespace RoslynSandbox
@@ -47,23 +46,24 @@ namespace RoslynSandbox
         }
     }
 }";
+
                 var code = @"
 namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class Foo<T>
+        where T : class
     {
-        public static void Bar<T>()
-            where T : class
+        public static void Bar()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod(↓typeof(int));
+            var type = typeof(Foo<>).MakeGenericType(typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
-                var message = "Use correct generic parameters.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), barCode, code);
+
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, barCode, code);
             }
         }
     }

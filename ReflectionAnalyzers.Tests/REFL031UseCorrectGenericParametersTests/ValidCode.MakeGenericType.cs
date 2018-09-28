@@ -6,9 +6,9 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericParametersTests
 
     public partial class ValidCode
     {
-        public class MakeGenericMethod
+        public class MakeGenericType
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericMethodAnalyzer();
+            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericTypeAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
@@ -19,21 +19,21 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class Foo<T>
     {
-        public static void Bar<T>()
+        public static void Bar()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod(typeof(int));
+            var type = typeof(Foo<>).MakeGenericType(typeof(int));
         }
     }
 }";
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("where T : class", "typeof(string)")]
-            [TestCase("where T : struct", "typeof(int)")]
+            [TestCase("where T : class",       "typeof(string)")]
+            [TestCase("where T : struct",      "typeof(int)")]
             [TestCase("where T : IComparable", "typeof(int)")]
-            [TestCase("where T : new()", "typeof(Foo)")]
+            [TestCase("where T : new()",       "typeof(Foo<int>)")]
             public void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
@@ -41,12 +41,12 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class Foo<T>
+        where T : class
     {
-        public static void Bar<T>()
-            where T : class
+        public static void Bar()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod(typeof(int));
+            var type = typeof(Foo<>).MakeGenericType(typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint).AssertReplace("typeof(int)", arg);

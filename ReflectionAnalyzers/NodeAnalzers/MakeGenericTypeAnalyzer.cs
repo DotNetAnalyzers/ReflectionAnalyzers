@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers
     using Microsoft.CodeAnalysis.Diagnostics;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    internal class MakeGenericAnalyzer : DiagnosticAnalyzer
+    internal class MakeGenericTypeAnalyzer : DiagnosticAnalyzer
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
@@ -28,14 +28,13 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                invocation.TryGetTarget(KnownSymbol.MethodInfo.MakeGenericMethod, context.SemanticModel, context.CancellationToken, out var makeGenericMethod) &&
+                invocation.TryGetTarget(KnownSymbol.MethodInfo.MakeGenericType, context.SemanticModel, context.CancellationToken, out var makeGenericMethod) &&
                 makeGenericMethod.Parameters.Length == 1 &&
                 makeGenericMethod.TryFindParameter("typeArguments", out _) &&
-                GetX.TryGetMethod(memberAccess, context, out var method) &&
-                method.IsGenericMethod &&
+                GetX.TryGetType(memberAccess, context, out var type) &&
                 Array.TryGetTypes(invocation.ArgumentList, context, out var types))
             {
-                if (method.TypeParameters.Length != types.Length)
+                if (type.TypeParameters.Length != types.Length)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, argumentList.GetLocation()));
                 }
@@ -43,7 +42,7 @@ namespace ReflectionAnalyzers
                 {
                     for (var i = 0; i < types.Length; i++)
                     {
-                        if (!Type.SatisfiesConstraints(types[i], method.TypeParameters[i], context.Compilation))
+                        if (!Type.SatisfiesConstraints(types[i], type.TypeParameters[i], context.Compilation))
                         {
                             context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, argumentList.Arguments[i].GetLocation()));
                         }
