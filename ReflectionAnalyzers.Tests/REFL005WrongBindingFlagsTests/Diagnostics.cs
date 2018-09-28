@@ -9,7 +9,6 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL005WrongBindingFlags.Descriptor);
 
-        [Explicit("Temp")]
         [TestCase("GetConstructor(↓Type.EmptyTypes)")]
         [TestCase("GetConstructor(↓Array.Empty<Type>())")]
         [TestCase("GetConstructor(↓new Type[0])")]
