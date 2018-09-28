@@ -4,18 +4,20 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    internal partial class ValidCode
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL001CastReturnValue.Descriptor);
-
-        [TestCase("_ = ")]
-        [TestCase("var _ = ")]
-        [TestCase("var __ = ")]
-        [TestCase("")]
-        public void Discarding(string call)
+        public class MethodInfoInvoke
         {
-            var code = @"
+            private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL001CastReturnValue.Descriptor);
+
+            [TestCase("_ = ")]
+            [TestCase("var _ = ")]
+            [TestCase("var __ = ")]
+            [TestCase("")]
+            public void Discarding(string call)
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -31,13 +33,13 @@ namespace RoslynSandbox
     }
 }".AssertReplace("_ = ", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
 
-        [Test]
-        public void AssigningLocal()
-        {
-            var code = @"
+            [Test]
+            public void AssigningLocal()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -51,13 +53,13 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
 
-        [Test]
-        public void IsPattern()
-        {
-            var code = @"
+            [Test]
+            public void IsPattern()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -73,13 +75,13 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
 
-        [Test]
-        public void SwitchPattern()
-        {
-            var code = @"
+            [Test]
+            public void SwitchPattern()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -97,13 +99,13 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
 
-        [Test]
-        public void AssigningField()
-        {
-            var code = @"
+            [Test]
+            public void AssigningField()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -119,13 +121,13 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
 
-        [Test]
-        public void UsingInExpression()
-        {
-            var code = @"
+            [Test]
+            public void UsingInExpression()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -139,13 +141,13 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
 
-        [Test]
-        public void CallingToString()
-        {
-            var code = @"
+            [Test]
+            public void CallingToString()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -159,15 +161,15 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
 
-        [TestCase("_ = ")]
-        [TestCase("var _ = ")]
-        [TestCase("var __ = ")]
-        public void Discarded(string discard)
-        {
-            var code = @"
+            [TestCase("_ = ")]
+            [TestCase("var _ = ")]
+            [TestCase("var __ = ")]
+            public void Discarded(string discard)
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -181,7 +183,8 @@ namespace RoslynSandbox
     }
 }".AssertReplace("_ = ", discard);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }
