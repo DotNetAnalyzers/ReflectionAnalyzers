@@ -208,6 +208,11 @@ namespace ReflectionAnalyzers
 
         private static bool? TryFindConstructor(INamedTypeSymbol type, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context)
         {
+            if (type == null)
+            {
+                return null;
+            }
+
             var foundMatch = false;
             foreach (var constructor in type.Constructors)
             {

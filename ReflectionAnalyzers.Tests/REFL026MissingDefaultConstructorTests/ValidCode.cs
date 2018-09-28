@@ -113,5 +113,40 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+
+        [Test]
+        public void WhenUnknown()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public static object Bar(Type type) => Activator.CreateInstance(type, ""foo"");
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
+        public void WhenUnconstrainedGeneric()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public static object Bar<T>() => Activator.CreateInstance(typeof(T), ""foo"");
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

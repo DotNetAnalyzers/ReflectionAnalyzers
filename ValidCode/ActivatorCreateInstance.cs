@@ -27,6 +27,8 @@ namespace ValidCode
 
         public T Create<T>() => Activator.CreateInstance<T>();
 
+        public static object Foo<T>(object _) => Activator.CreateInstance(typeof(T), "foo");
+
         public class ImplicitDefaultConstructor
         {
         }
