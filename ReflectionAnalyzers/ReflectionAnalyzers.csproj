@@ -20,14 +20,16 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.8.0-dev</Version>
+    <Version>0.1.9.0-dev</Version>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
-    <PackageReleaseNotes>Analyzers for Activator.CreateInstance
-BUGFIX REFL018 when not visible member.
-Check arguments when calling MethodInfo.Invoke</PackageReleaseNotes>
+    <PackageReleaseNotes>BUGFIXES: NRES
+REFL032 check DependencyAttribute
+REFL001 in more places.
+REFL025 in more places.
+REFL031 check MakeGenericX</PackageReleaseNotes>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

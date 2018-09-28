@@ -4,9 +4,11 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  Analyzers for Activator.CreateInstance
-  BUGFIX REFL018 when not visible member.
-  Check arguments when calling MethodInfo.Invoke
+  BUGFIXES: NRES
+  REFL032 check DependencyAttribute
+  REFL001 in more places.
+  REFL025 in more places.
+  REFL031 check MakeGenericX
 
 
 excludedgroups

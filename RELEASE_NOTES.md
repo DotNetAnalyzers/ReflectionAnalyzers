@@ -1,3 +1,10 @@
+#### 0.1.9
+* BUGFIXES: NRES
+* REFL032 check DependencyAttribute
+* REFL001 in more places.
+* REFL025 in more places.
+* REFL031 check MakeGenericX
+
 #### 0.1.8
 * Analyzers for Activator.CreateInstance
 * BUGFIX REFL018 when not visible member.
