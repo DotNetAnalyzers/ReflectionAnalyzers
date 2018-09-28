@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL009WrongParameterTypesTests
+namespace ReflectionAnalyzers.Tests.REFL009WrongTypesTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -6,6 +6,6 @@ namespace ReflectionAnalyzers.Tests.REFL009WrongParameterTypesTests
     internal class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL007");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL009WrongTypes.Descriptor);
     }
 }
