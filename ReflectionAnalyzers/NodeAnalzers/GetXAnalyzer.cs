@@ -107,7 +107,7 @@ namespace ReflectionAnalyzers
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(NameSyntax), nameString)));
                     }
 
-                    if (ShouldUseStringLiteralName(member, name, context, out location, out nameString))
+                    if (ShouldUseStringLiteralName(member, name, out location, out nameString))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -339,12 +339,13 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool ShouldUseStringLiteralName(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameString)
+        private static bool ShouldUseStringLiteralName(ReflectedMember member, Name name, out Location location, out string nameString)
         {
             if (name.Argument is ArgumentSyntax argument &&
                 IsNameOf(argument, out _) &&
-                (member.Match == FilterMatch.Unknown ||
-                 member.Match == FilterMatch.NoMatch))
+                (member.Match == FilterMatch.NoMatch ||
+                 member.Match == FilterMatch.Unknown &&
+                 !Type.HasVisibleNonPublicMembers(member.ReflectedType, true)))
             {
                 nameString = name.MetadataName;
                 location = argument.GetLocation();

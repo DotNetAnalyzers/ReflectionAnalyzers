@@ -37,6 +37,7 @@ namespace ReflectionAnalyzers
         internal static bool HasVisibleNonPublicMembers(ITypeSymbol type, bool recursive)
         {
             if (type == null ||
+                type.TypeKind == TypeKind.Interface ||
                 type == KnownSymbol.Object)
             {
                 return true;

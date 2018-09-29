@@ -90,6 +90,66 @@ namespace TestApp.Infrastructure
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
         }
 
+        [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
+        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void InterfaceMethod(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+    sealed class Foo : IDisposable
+    {
+        public Foo()
+        {
+            var method = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
+        }
+        void IDisposable.Dispose()
+        {
+        }
+    }
+}".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+        [TestCase("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
+        [TestCase("GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+        [TestCase("GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
+        [TestCase("GetMethod(nameof(this.PublicInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+        [TestCase("GetMethod(nameof(this.PublicInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
+        [TestCase("GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+        [TestCase("GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
+        public void GetOverloadedMethod(string call)
+        {
+            var code = @"
+namespace ValidCode
+{
+    using System.Reflection;
+
+    public class OverloadedMethods
+    {
+        public OverloadedMethods()
+        {
+            typeof(OverloadedMethods).GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        }
+         public static int PublicStatic(int value) => value;
+         public static double PublicStatic(double value) => value;
+         public static int PublicStaticInstance(int value) => value;
+         public double PublicStaticInstance(double value) => value;
+         public int PublicInstance(int value) => value;
+         public double PublicInstance(double value) => value;
+         public int PublicPrivateInstance(int value) => value;
+         private double PublicPrivateInstance(double value) => value;
+    }
+}".AssertReplace("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [Test]
         public void AnonymousTypeNameofInstanceProperty()
         {
