@@ -103,6 +103,41 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("GetMethod(\"op_Addition\").Invoke(null, new object[] { null, null })")]
+        [TestCase("GetMethod(\"op_Addition\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })")]
+        [TestCase("GetMethod(\"op_Equality\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })")]
+        [TestCase("GetMethod(\"op_Inequality\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })")]
+        [TestCase("GetMethod(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { 1 })")]
+        [TestCase("GetMethod(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { (Foo)null })")]
+        public void Operators(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            _ = typeof(Foo).GetMethod(""op_Addition"", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null });
+        }
+
+        public static Foo operator +(Foo left, Foo right) => null;
+
+        public static bool operator ==(Foo left, Foo right) => false;
+
+        public static bool operator !=(Foo left, Foo right) => false;
+
+        public static explicit operator int(Foo c) => 0;
+
+        public static explicit operator Foo(int c) => null;
+    }
+}
+".AssertReplace("GetMethod(\"op_Addition\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("GetNestedType(\"Generic`1\", BindingFlags.Public)")]
         public void GetNestedGenericType(string call)
         {

@@ -325,6 +325,7 @@ namespace ReflectionAnalyzers
         {
             if (name.Argument is ArgumentSyntax argument &&
                 member.Symbol != null &&
+                member.Symbol.CanBeReferencedByName &&
                 (member.Match == FilterMatch.Single ||
                  member.Match == FilterMatch.Ambiguous ||
                  member.Match == FilterMatch.WrongFlags ||
