@@ -146,6 +146,15 @@ namespace ReflectionAnalyzers
                                 types.Argument?.GetLocation() ?? invocation.GetNameLocation()));
                     }
 
+                    if (HasMissingTypes(member, types, context, out var typeArrayText))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL029MissingTypes.Descriptor,
+                                argumentList.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayText)));
+                    }
+
                     switch (member.Match)
                     {
                         case FilterMatch.WrongFlags when TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var correctFlags):
@@ -184,15 +193,7 @@ namespace ReflectionAnalyzers
                                 }
                             }
 
-                            if (types.Argument == null &&
-                                HasMissingTypes(invocation, member.Symbol as IMethodSymbol, context, out var typeArrayString))
-                            {
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL029MissingTypes.Descriptor,
-                                        argumentList.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayString)));
-                            }
+
 
                             break;
 
@@ -573,39 +574,33 @@ namespace ReflectionAnalyzers
                    !flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly);
         }
 
-        private static bool HasMissingTypes(InvocationExpressionSyntax invocation, IMethodSymbol member, SyntaxNodeAnalysisContext context, out string typesString)
+        private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out string typesString)
         {
-            if (member != null &&
-                !member.IsGenericMethod)
+            if (member.Match == FilterMatch.Single &&
+                types.Argument == null &&
+                member.GetX == KnownSymbol.Type.GetMethod &&
+                member.Symbol is IMethodSymbol method &&
+                !method.IsGenericMethod)
             {
-                if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out _))
+                if (method.Parameters.Length == 0)
                 {
-                    if (member.Parameters.Length == 0)
-                    {
-                        typesString = "Type.EmptyTypes";
-                        return true;
-                    }
-
-                    if (TryGetTypesArray(out typesString))
-                    {
-                        return true;
-                    }
-
-                    typesString = null;
-                    return false;
+                    typesString = "Type.EmptyTypes";
+                    return true;
                 }
+
+                return TryGetTypesArray(method.Parameters, out typesString);
             }
 
             typesString = null;
             return false;
 
-            bool TryGetTypesArray(out string typesArrayString)
+            bool TryGetTypesArray(ImmutableArray<IParameterSymbol> parameters, out string typesArrayString)
             {
                 var builder = StringBuilderPool.Borrow().Append("new[] { ");
-                for (var i = 0; i < member.Parameters.Length; i++)
+                for (var i = 0; i < parameters.Length; i++)
                 {
-                    var parameter = member.Parameters[i];
-                    if (!context.SemanticModel.IsAccessible(invocation.SpanStart, parameter.Type))
+                    var parameter = parameters[i];
+                    if (!context.SemanticModel.IsAccessible(context.Node.SpanStart, parameter.Type))
                     {
                         _ = builder.Return();
                         typesArrayString = null;
@@ -618,7 +613,7 @@ namespace ReflectionAnalyzers
                     }
 
                     _ = builder.Append("typeof(")
-                               .Append(parameter.Type.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart))
+                               .Append(parameter.Type.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart))
                                .Append(")");
                 }
 
