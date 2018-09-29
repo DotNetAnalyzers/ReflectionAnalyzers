@@ -31,6 +31,27 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
+            [Test]
+            public void WalkType()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public static void Bar()
+        {
+            var type = typeof(Foo);
+            var foo = ↓Activator.CreateInstance(type);
+        }
+    }
+}";
+
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
+
             [TestCase("Activator.CreateInstance(typeof(T))")]
             [TestCase("Activator.CreateInstance(typeof(T), true)")]
             [TestCase("Activator.CreateInstance(typeof(T), false)")]

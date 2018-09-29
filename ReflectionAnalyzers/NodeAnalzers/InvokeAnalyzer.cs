@@ -47,7 +47,7 @@ namespace ReflectionAnalyzers
                     context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, parametersArg.GetLocation()));
                 }
 
-                if (GetX.TryGetMethod(memberAccess, context, out var method))
+                if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
                 {
                     if (method.ReturnsVoid &&
                         !IsResultDiscarded(invocation))
@@ -93,7 +93,7 @@ namespace ReflectionAnalyzers
                     }
                 }
 
-                if (GetX.TryGetConstructor(memberAccess, context, out var ctor))
+                if (GetX.TryGetConstructorInfo(memberAccess, context, out var ctor))
                 {
                     if (ReturnValue.ShouldCast(invocation))
                     {

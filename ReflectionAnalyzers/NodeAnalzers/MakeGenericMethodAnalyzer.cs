@@ -31,7 +31,7 @@ namespace ReflectionAnalyzers
                 invocation.TryGetTarget(KnownSymbol.MethodInfo.MakeGenericMethod, context.SemanticModel, context.CancellationToken, out var makeGenericMethod) &&
                 makeGenericMethod.Parameters.Length == 1 &&
                 makeGenericMethod.TryFindParameter("typeArguments", out _) &&
-                GetX.TryGetMethod(memberAccess, context, out var method) &&
+                GetX.TryGetMethodInfo(memberAccess, context, out var method) &&
                 method.IsGenericMethod &&
                 Array.TryGetTypes(invocation.ArgumentList, context, out var types))
             {

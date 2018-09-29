@@ -28,6 +28,25 @@ namespace RoslynSandbox
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
+
+            [Test]
+            public void Walk()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        public Foo(int i)
+        {
+            var info = typeof(Foo).GetConstructor(new[] { typeof(int) });
+            var value = ↓info.Invoke(new object[] { 1 });
+        }
+    }
+}";
+
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }

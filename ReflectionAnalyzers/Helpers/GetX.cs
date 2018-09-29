@@ -11,10 +11,10 @@ namespace ReflectionAnalyzers
     /// </summary>
     internal static class GetX
     {
-        internal static bool TryGetConstructor(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol constructor)
+        internal static bool TryGetConstructorInfo(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol constructor)
         {
-            if (memberAccess.Expression is InvocationExpressionSyntax parentInvocation &&
-                TryMatchGetConstructor(parentInvocation, context, out var member, out _, out _) &&
+            if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetConstructor, context, out var invocation) &&
+                TryMatchGetConstructor(invocation, context, out var member, out _, out _) &&
                 member.Match == FilterMatch.Single &&
                 member.Symbol is IMethodSymbol match)
             {
@@ -23,6 +23,21 @@ namespace ReflectionAnalyzers
             }
 
             constructor = null;
+            return false;
+        }
+
+        internal static bool TryGetMethodInfo(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol method)
+        {
+            if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetMethod, context, out var invocation) &&
+                TryMatchGetMethod(invocation, context, out var member, out _, out _, out _) &&
+                member.Match == FilterMatch.Single &&
+                member.Symbol is IMethodSymbol match)
+            {
+                method = match;
+                return true;
+            }
+
+            method = null;
             return false;
         }
 
@@ -61,21 +76,6 @@ namespace ReflectionAnalyzers
         internal static bool TryMatchGetField(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
         {
             return TryMatchGetX(invocation, KnownSymbol.Type.GetField, context, out member, out name, out flags);
-        }
-
-        internal static bool TryGetMethod(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol method)
-        {
-            if (memberAccess.Expression is InvocationExpressionSyntax parentInvocation &&
-                TryMatchGetMethod(parentInvocation, context, out var member, out _, out _, out _) &&
-                member.Match == FilterMatch.Single &&
-                member.Symbol is IMethodSymbol match)
-            {
-                method = match;
-                return true;
-            }
-
-            method = null;
-            return false;
         }
 
         /// <summary>
@@ -127,8 +127,8 @@ namespace ReflectionAnalyzers
             }
 
             if (expression is MemberAccessExpressionSyntax memberAccess &&
-                memberAccess.Expression is InvocationExpressionSyntax parentInvocation &&
-                TryMatchGetNestedType(parentInvocation, context, out var nestedType, out _, out _) &&
+                TryFindInvocation(memberAccess, KnownSymbol.Type.GetNestedType, context, out var invocation) &&
+                TryMatchGetNestedType(invocation, context, out var nestedType, out _, out _) &&
                 nestedType.Match == FilterMatch.Single &&
                 nestedType.Symbol is INamedTypeSymbol namedNested)
             {
@@ -137,6 +137,25 @@ namespace ReflectionAnalyzers
             }
 
             type = null;
+            return false;
+        }
+
+        private static bool TryFindInvocation(MemberAccessExpressionSyntax memberAccess, QualifiedMethod expected, SyntaxNodeAnalysisContext context, out InvocationExpressionSyntax invocation)
+        {
+            switch (memberAccess.Expression)
+            {
+                case InvocationExpressionSyntax candidate when candidate.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out _):
+                    invocation = candidate;
+                    return true;
+                case IdentifierNameSyntax identifierName when context.SemanticModel.TryGetSymbol(identifierName, context.CancellationToken, out ILocalSymbol local) &&
+                                                              AssignedValueWalker.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var expression) &&
+                                                              expression is InvocationExpressionSyntax candidate &&
+                                                              candidate.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out _):
+                    invocation = candidate;
+                    return true;
+            }
+
+            invocation = null;
             return false;
         }
 
