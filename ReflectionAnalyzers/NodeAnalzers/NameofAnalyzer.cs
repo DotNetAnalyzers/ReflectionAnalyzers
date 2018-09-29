@@ -121,7 +121,7 @@ namespace ReflectionAnalyzers
         {
             optionalInstance = default(Optional<IdentifierNameSyntax>);
             optionalMember = default(Optional<ISymbol>);
-            if (GetX.TryGetType(invocation, context, out var targetType, out var typeSource))
+            if (ReflectedMember.TryGetType(invocation, context, out var targetType, out var typeSource))
             {
                 if (typeSource.HasValue &&
                     typeSource.Value is InvocationExpressionSyntax getType &&
@@ -133,7 +133,7 @@ namespace ReflectionAnalyzers
                 }
 
                 const BindingFlags searchAll = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
-                var result = GetX.TryGetMember(getX, targetType, new Name(null, name), searchAll, Types.Any, context, out var member);
+                var result = ReflectedMember.TryGetMember(getX, targetType, new Name(null, name), searchAll, Types.Any, context, out var member);
                 if (result == GetXResult.Unknown &&
                     member != null)
                 {

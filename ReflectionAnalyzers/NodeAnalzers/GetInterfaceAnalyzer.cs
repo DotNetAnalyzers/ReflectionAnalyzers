@@ -32,7 +32,7 @@ namespace ReflectionAnalyzers
                 getInterface.TryFindParameter(KnownSymbol.String, out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out var nameArg) &&
                 TryGetName(nameArg, context, out var maybeNameSyntax, out var name) &&
-                GetX.TryGetType(invocation, context, out var type, out _))
+                ReflectedMember.TryGetType(invocation, context, out var type, out _))
             {
                 var count = CountInterfaces(type, name, out var match);
 

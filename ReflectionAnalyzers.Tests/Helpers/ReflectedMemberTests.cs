@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.Helpers
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class GetXTests
+    public class ReflectedMemberTests
     {
         [TestCase("typeof(Foo).GetMethod(nameof(this.ToString))",                                                                             "Foo",           "typeof(Foo)")]
         [TestCase("new Foo().GetType().GetMethod(nameof(this.ToString))",                                                                     "Foo",           "new Foo().GetType()")]
@@ -37,17 +37,17 @@ namespace RoslynSandbox
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation(call);
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true,           GetX.TryGetType(node, context, out var type, out var source));
-            Assert.AreEqual(expected,       type.MetadataName);
+            Assert.AreEqual(true, ReflectedMember.TryGetType(node, context, out var type, out var source));
+            Assert.AreEqual(expected, type.MetadataName);
             Assert.AreEqual(expectedSource, source.Value.ToString());
         }
 
-        [TestCase("typeof(Foo)",                                                                             "Foo")]
-        [TestCase("new Foo().GetType()",                                                                     "Foo")]
-        [TestCase("foo.GetType()",                                                                           "Foo")]
-        [TestCase("this.GetType()",                                                                          "Foo")]
-        [TestCase("GetType()",                                                                               "Foo")]
-        [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")",                                       "Int32")]
+        [TestCase("typeof(Foo)", "Foo")]
+        [TestCase("new Foo().GetType()", "Foo")]
+        [TestCase("foo.GetType()", "Foo")]
+        [TestCase("this.GetType()", "Foo")]
+        [TestCase("GetType()", "Foo")]
+        [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "Int32")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "IEnumerable`1")]
         public void TryGetTypeFromLocal(string typeExpression, string expected)
         {
@@ -71,7 +71,7 @@ namespace RoslynSandbox
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true,     GetX.TryGetType(node, context, out var type, out var instance));
+            Assert.AreEqual(true, ReflectedMember.TryGetType(node, context, out var type, out var instance));
             Assert.AreEqual(expected, type.MetadataName);
             Assert.AreEqual(typeExpression, instance.Value.ToString());
         }
@@ -99,7 +99,7 @@ namespace RoslynSandbox
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(false, GetX.TryGetType(node, context, out _, out _));
+            Assert.AreEqual(false, ReflectedMember.TryGetType(node, context, out _, out _));
         }
 
         [Test]
