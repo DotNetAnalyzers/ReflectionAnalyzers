@@ -584,6 +584,12 @@ namespace ReflectionAnalyzers
 
         private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out string typesString)
         {
+            if ((member.Symbol as IMethodSymbol)?.AssociatedSymbol != null)
+            {
+                typesString = null;
+                return false;
+            }
+
             if (member.Match == FilterMatch.Single &&
                 types.Argument == null &&
                 member.GetX == KnownSymbol.Type.GetMethod &&
