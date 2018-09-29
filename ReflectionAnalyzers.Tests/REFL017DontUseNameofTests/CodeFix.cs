@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameof.Descriptor);
 
         [Test]
-        public void AggregateExceptionInnerExceptionCountWhenUsingNameofInstanceInClass()
+        public void WrongContainingTypeWhenNotAccessible()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -49,6 +49,47 @@ namespace RoslynSandbox
     }
 }";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+        }
+
+        [Test]
+        public void NonPublicNotVisible()
+        {
+            var exception = @"
+namespace RoslynSandbox
+{
+    using System;
+     public class CustomAggregateException : AggregateException
+    {
+        public int InnerExceptionCount { get; }
+    }
+}";
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+     class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(CustomAggregateException).GetProperty(↓nameof(CustomAggregateException.InnerExceptionCount), BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}";
+            var fixedCode = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+     class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(CustomAggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { exception, code }, fixedCode);
         }
     }
 }

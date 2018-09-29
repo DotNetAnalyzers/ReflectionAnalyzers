@@ -127,6 +127,34 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void NonPublicNotVisible()
+        {
+            var exception = @"
+namespace RoslynSandbox
+{
+    using System;
+     public class CustomAggregateException : AggregateException
+    {
+        public int InnerExceptionCount { get; }
+    }
+}";
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+     class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(CustomAggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, exception, code);
+        }
+
+        [Test]
         //// ReSharper disable once InconsistentNaming
         public void IEnumeratorGetCurrent()
         {
