@@ -1,3 +1,9 @@
+#### 0.1.10
+* REFL016 should not suggest nameof(Finalize).
+* REFL016 should not suggest nameof(op_Equality).
+* REFL018 should warn when public not in source.
+* Walk some to find out ctor & method info
+
 #### 0.1.9
 * BUGFIXES: NRES
 * REFL032 check DependencyAttribute

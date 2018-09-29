@@ -20,16 +20,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.9.0-dev</Version>
+    <Version>0.1.10.0-dev</Version>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
-    <PackageReleaseNotes>BUGFIXES: NRES
-REFL032 check DependencyAttribute
-REFL001 in more places.
-REFL025 in more places.
-REFL031 check MakeGenericX</PackageReleaseNotes>
+    <PackageReleaseNotes>REFL016 should not suggest nameof(Finalize).
+REFL016 should not suggest nameof(op_Equality).
+REFL018 should warn when public not in source.
+Walk some to find out ctor &amp; method info</PackageReleaseNotes>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
