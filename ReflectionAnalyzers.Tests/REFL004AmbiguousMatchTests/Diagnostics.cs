@@ -93,5 +93,36 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod↓(\"op_Explicit\")", call);
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("GetProperty↓(\"Item\")")]
+        [TestCase("GetProperty↓(\"Item\", BindingFlags.Public | BindingFlags.Instance)")]
+        public void IndexerAndPropertyNamedItem(string call)
+        {
+            var baseCode = @"
+namespace RoslynSandbox
+{
+    public class Base
+    {
+        public int Item { get; }
+    }
+}";
+
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Foo : Base
+    {
+        public Foo()
+        {
+            _ = typeof(Foo).GetProperty↓(""Item"");
+        }
+
+        public int this[int i] => 0;
+    }
+}".AssertReplace("GetProperty↓(\"Item\")", call);
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseCode, code);
+        }
     }
 }
