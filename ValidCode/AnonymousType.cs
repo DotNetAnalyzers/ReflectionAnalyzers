@@ -1,3 +1,4 @@
+// ReSharper disable All
 namespace ValidCode
 {
     using System.Reflection;
@@ -7,7 +8,7 @@ namespace ValidCode
         public AnonymousType()
         {
             var anon = new { Foo = 1 };
-            var member = anon.GetType().GetProperty(nameof(anon.Foo), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            _ = anon.GetType().GetProperty(nameof(anon.Foo), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
     }
 }

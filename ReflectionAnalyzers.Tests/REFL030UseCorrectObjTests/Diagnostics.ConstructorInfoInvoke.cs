@@ -6,13 +6,15 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
 
     public partial class Diagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL030UseCorrectObj.Descriptor);
-
-        [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })")]
-        public void SingleIntParameter(string call)
+        public class ConstructorInfoInvoke
         {
-            var code = @"
+            private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL030UseCorrectObj.Descriptor);
+
+            [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })")]
+            public void SingleIntParameter(string call)
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     public class Foo
@@ -26,8 +28,9 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })", call);
 
-            var message = "Use overload of Invoke without obj parameter.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                var message = "Use overload of Invoke without obj parameter.";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            }
         }
     }
 }

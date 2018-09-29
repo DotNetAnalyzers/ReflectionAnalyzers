@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL027PreferTypeEmptyTypesTests
+namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;

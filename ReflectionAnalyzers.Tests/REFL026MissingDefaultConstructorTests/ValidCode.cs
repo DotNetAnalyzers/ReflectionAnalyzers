@@ -114,7 +114,6 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
-
         [Test]
         public void WhenUnknown()
         {

@@ -7,32 +7,32 @@ namespace ValidCode
     {
         public UnknownType(Type type)
         {
-            type.GetMethod("Foo");
-            type.GetMethod("Foo", new[] { typeof(int) });
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            _ = type.GetMethod("Foo");
+            _ = type.GetMethod("Foo", new[] { typeof(int) });
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.IgnoreCase);
 
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
-            type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
-            type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
+            _ = type.GetMethod("Foo", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
+            _ = type.GetMethod("Foo", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase);
         }
     }
 }

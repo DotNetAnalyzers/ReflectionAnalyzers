@@ -6,10 +6,10 @@ namespace ValidCode
     {
         public GetNestedType()
         {
-            typeof(GetNestedType).GetNestedType(nameof(PublicStatic),  BindingFlags.Public);
-            typeof(GetNestedType).GetNestedType(nameof(Public),        BindingFlags.Public);
-            typeof(GetNestedType).GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic);
-            typeof(GetNestedType).GetNestedType(nameof(Private),       BindingFlags.NonPublic);
+            _ = typeof(GetNestedType).GetNestedType(nameof(PublicStatic), BindingFlags.Public);
+            _ = typeof(GetNestedType).GetNestedType(nameof(Public), BindingFlags.Public);
+            _ = typeof(GetNestedType).GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic);
+            _ = typeof(GetNestedType).GetNestedType(nameof(Private), BindingFlags.NonPublic);
         }
 
         public static class PublicStatic
