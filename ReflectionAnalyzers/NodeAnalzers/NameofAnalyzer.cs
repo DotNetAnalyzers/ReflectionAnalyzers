@@ -133,7 +133,7 @@ namespace ReflectionAnalyzers
                 }
 
                 const BindingFlags searchAll = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
-                var result = GetX.TryGetMember(getX, targetType, name, searchAll, GetX.AnyTypes, context, out var member);
+                var result = GetX.TryGetMember(getX, targetType, new Name(null, name), searchAll, GetX.AnyTypes, context, out var member);
                 if (result == GetXResult.Unknown &&
                     member != null)
                 {

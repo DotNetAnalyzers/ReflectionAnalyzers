@@ -49,7 +49,7 @@ namespace ReflectionAnalyzers
                 Flags.TryCreate(invocation, getX, context, out flags) &&
                 TryGetTypesOrDefault(invocation, getX, context, out typesArg, out types))
             {
-                var result = TryGetMember(getX, type, ".ctor", flags.Effective, types, context, out var symbol);
+                var result = TryGetMember(getX, type, new Name(null, ".ctor"), flags.Effective, types, context, out var symbol);
                 member = new ReflectedMember(type, symbol);
                 return result;
             }
@@ -60,24 +60,24 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetEvent.
         /// </summary>
-        internal static GetXResult? TryMatchGetEvent(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out ArgumentSyntax nameArg, out string targetName, out Flags flags)
+        internal static GetXResult? TryMatchGetEvent(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
         {
-            return TryMatchGetX(invocation, KnownSymbol.Type.GetEvent, context, out member, out nameArg, out targetName, out flags);
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetEvent, context, out member, out name, out flags);
         }
 
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetField.
         /// </summary>
-        internal static GetXResult? TryMatchGetField(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out ArgumentSyntax nameArg, out string targetName, out Flags flags)
+        internal static GetXResult? TryMatchGetField(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
         {
-            return TryMatchGetX(invocation, KnownSymbol.Type.GetField, context, out member, out nameArg, out targetName, out flags);
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetField, context, out member, out name, out flags);
         }
 
         internal static bool TryGetMethod(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol method)
         {
             if (memberAccess.Expression is InvocationExpressionSyntax parentInvocation)
             {
-                var result = TryMatchGetMethod(parentInvocation, context, out var member, out _, out _, out _, out _, out _);
+                var result = TryMatchGetMethod(parentInvocation, context, out var member, out _, out _, out _, out _);
                 if (result == GetXResult.Single &&
                     member.Symbol is IMethodSymbol match)
                 {
@@ -93,50 +93,50 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
         /// </summary>
-        internal static GetXResult? TryMatchGetMethod(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out ArgumentSyntax nameArg, out string targetName, out Flags flags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
+        internal static GetXResult? TryMatchGetMethod(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
         {
-            nameArg = null;
-            targetName = null;
-            member = default(ReflectedMember);
-            flags = default(Flags);
             typesArg = null;
             types = null;
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetType(invocation, context, out var type, out _) &&
                 IsKnownSignature(invocation, getX) &&
-                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
+                Name.TryCreate(invocation, getX, context, out name) &&
                 Flags.TryCreate(invocation, getX, context, out flags) &&
                 TryGetTypesOrDefault(invocation, getX, context, out typesArg, out types))
             {
                 if (type == KnownSymbol.Delegate &&
-                    targetName == "Invoke")
+                    name.MetadataName == "Invoke")
                 {
+                    member = new ReflectedMember(type, null);
                     return GetXResult.Single;
                 }
 
-                var result = TryGetMember(getX, type, targetName, flags.Effective, types, context, out var symbol);
+                var result = TryGetMember(getX, type, name, flags.Effective, types, context, out var symbol);
                 member = new ReflectedMember(type, symbol);
                 return result;
             }
 
+            member = default(ReflectedMember);
+            flags = default(Flags);
+            name = default(Name);
             return null;
         }
 
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetNestedType.
         /// </summary>
-        internal static GetXResult? TryMatchGetNestedType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out ArgumentSyntax nameArg, out string targetName, out Flags flags)
+        internal static GetXResult? TryMatchGetNestedType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
         {
-            return TryMatchGetX(invocation, KnownSymbol.Type.GetNestedType, context, out member, out nameArg, out targetName, out flags);
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetNestedType, context, out member, out name, out flags);
         }
 
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetProperty.
         /// </summary>
-        internal static GetXResult? TryMatchGetProperty(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out ArgumentSyntax nameArg, out string targetName, out Flags flags)
+        internal static GetXResult? TryMatchGetProperty(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
         {
-            return TryMatchGetX(invocation, KnownSymbol.Type.GetProperty, context, out member, out nameArg, out targetName, out flags);
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetProperty, context, out member, out name, out flags);
         }
 
         internal static bool TryGetType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out INamedTypeSymbol type)
@@ -150,7 +150,7 @@ namespace ReflectionAnalyzers
 
             if (expression is MemberAccessExpressionSyntax memberAccess &&
                 memberAccess.Expression is InvocationExpressionSyntax parentInvocation &&
-                TryMatchGetNestedType(parentInvocation, context, out var nestedType, out _, out _, out _) == GetXResult.Single &&
+                TryMatchGetNestedType(parentInvocation, context, out var nestedType, out _, out _) == GetXResult.Single &&
                 nestedType.Symbol is INamedTypeSymbol namedNested)
             {
                 type = namedNested;
@@ -177,9 +177,8 @@ namespace ReflectionAnalyzers
                    Type.TryGet(memberAccess.Expression, context, out result, out typeSource);
         }
 
-        internal static GetXResult TryGetMember(IMethodSymbol getX, ITypeSymbol type, string targetMetadataName, BindingFlags flags, IReadOnlyList<ITypeSymbol> types, SyntaxNodeAnalysisContext context, out ISymbol member)
+        internal static GetXResult TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, IReadOnlyList<ITypeSymbol> types, SyntaxNodeAnalysisContext context, out ISymbol member)
         {
-            var name = TrimName();
             member = null;
             if (type is ITypeParameterSymbol typeParameter)
             {
@@ -207,9 +206,9 @@ namespace ReflectionAnalyzers
                  !flags.HasFlagFast(BindingFlags.Instance) &&
                  !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
-                foreach (var candidate in type.GetMembers(name))
+                foreach (var candidate in type.GetMembers(name.MemberName()))
                 {
-                    if (!MatchesFilter(candidate, targetMetadataName, flags, types))
+                    if (!MatchesFilter(candidate, name, flags, types))
                     {
                         continue;
                     }
@@ -233,9 +232,9 @@ namespace ReflectionAnalyzers
                 var current = type;
                 while (current != null)
                 {
-                    foreach (var candidate in current.GetMembers(name))
+                    foreach (var candidate in current.GetMembers(name.MemberName()))
                     {
-                        if (!MatchesFilter(candidate, targetMetadataName, flags, types))
+                        if (!MatchesFilter(candidate, name, flags, types))
                         {
                             continue;
                         }
@@ -280,7 +279,7 @@ namespace ReflectionAnalyzers
                 return GetXResult.Single;
             }
 
-            if (type.TryFindFirstMemberRecursive(name, out member))
+            if (type.TryFindFirstMemberRecursive(name.MemberName(), out member))
             {
                 if (IsUseContainingType(member))
                 {
@@ -388,8 +387,8 @@ namespace ReflectionAnalyzers
 
             bool IsWrongFlags(ISymbol symbol)
             {
-                if (symbol.MetadataName == targetMetadataName &&
-                    !MatchesFilter(symbol, symbol.MetadataName, flags, null))
+                if (symbol.MetadataName == name.MetadataName &&
+                    !MatchesFilter(symbol, name, flags, null))
                 {
                     return true;
                 }
@@ -413,15 +412,15 @@ namespace ReflectionAnalyzers
                 }
 
                 const BindingFlags everything = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
-                return symbol.MetadataName == targetMetadataName &&
-                       !MatchesFilter(symbol, symbol.MetadataName, everything, types);
+                return symbol.MetadataName == name.MetadataName &&
+                       !MatchesFilter(symbol, name, everything, types);
             }
 
             bool IsExplicitImplementation(out ISymbol result)
             {
                 foreach (var @interface in type.AllInterfaces)
                 {
-                    if (@interface.TryFindFirstMemberRecursive(name, out var interfaceMember))
+                    if (@interface.TryFindFirstMemberRecursive(name.MemberName(), out var interfaceMember))
                     {
                         result = interfaceMember;
                         return true;
@@ -430,17 +429,6 @@ namespace ReflectionAnalyzers
 
                 result = null;
                 return false;
-            }
-
-            string TrimName()
-            {
-                var index = targetMetadataName.IndexOf('`');
-                if (index > 0)
-                {
-                    return targetMetadataName.Substring(0, index);
-                }
-
-                return targetMetadataName;
             }
         }
 
@@ -475,33 +463,23 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// Handles GetField, GetEvent, GetMember, GetMethod...
         /// </summary>
-        private static GetXResult? TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ReflectedMember member, out ArgumentSyntax nameArg, out string targetName, out Flags flags)
+        private static GetXResult? TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
         {
-            nameArg = null;
-            targetName = null;
-            member = default(ReflectedMember);
-            flags = default(Flags);
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetType(invocation, context, out var type, out _) &&
-                TryGetName(invocation, getX, context, out nameArg, out targetName) &&
+                Name.TryCreate(invocation, getX, context, out name) &&
                 Flags.TryCreate(invocation, getX, context, out flags))
             {
-                var result = TryGetMember(getX, type, targetName, flags.Effective, null, context, out var symbol);
+                var result = TryGetMember(getX, type, name, flags.Effective, null, context, out var symbol);
                 member = new ReflectedMember(type, symbol);
                 return result;
             }
 
+            name = default(Name);
+            member = default(ReflectedMember);
+            flags = default(Flags);
             return null;
-        }
-
-        private static bool TryGetName(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out string name)
-        {
-            argument = null;
-            name = null;
-            return getX.TryFindParameter(KnownSymbol.String, out var parameter) &&
-                   invocation.TryFindArgument(parameter, out argument) &&
-                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out name);
         }
 
         private static bool TryGetTypesOrDefault(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
@@ -522,9 +500,9 @@ namespace ReflectionAnalyzers
                    invocation.TryFindArgument(parameter, out argument);
         }
 
-        private static bool MatchesFilter(ISymbol candidate, string metadataName, BindingFlags flags, IReadOnlyList<ITypeSymbol> types)
+        private static bool MatchesFilter(ISymbol candidate, Name name, BindingFlags flags, IReadOnlyList<ITypeSymbol> types)
         {
-            if (candidate.MetadataName != metadataName)
+            if (candidate.MetadataName != name.MetadataName)
             {
                 return false;
             }

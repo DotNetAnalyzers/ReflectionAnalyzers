@@ -84,6 +84,5 @@ namespace ReflectionAnalyzers
                    invocation.TryFindArgument(parameter, out argument) &&
                    context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
         }
-
     }
 }
