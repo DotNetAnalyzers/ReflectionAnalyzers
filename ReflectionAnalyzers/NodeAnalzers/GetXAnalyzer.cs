@@ -55,14 +55,24 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatchMember.Descriptor, argumentList.GetLocation()));
                     }
 
-                    if (HasWrongFlags(member, flags, out var location, out var flagString))
+                    if (HasWrongFlags(member, flags, out var location, out var flagsText))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL005WrongBindingFlags.Descriptor,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagString),
-                                $" Expected: {flagString}."));
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
+                                $" Expected: {flagsText}."));
+                    }
+
+                    if (HasRedundantFlag(member, flags, out flagsText))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL006RedundantBindingFlags.Descriptor,
+                                flags.Argument.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
+                                $" Expected: {flagsText}."));
                     }
 
                     if (member.Match == FilterMatch.WrongMemberType)
@@ -144,17 +154,6 @@ namespace ReflectionAnalyzers
                         case FilterMatch.Single:
                             if (TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
                             {
-                                if (flags.Argument != null &&
-                                    HasRedundantFlag(member, flags))
-                                {
-                                    context.ReportDiagnostic(
-                                        Diagnostic.Create(
-                                            REFL006RedundantBindingFlags.Descriptor,
-                                            flags.Argument.GetLocation(),
-                                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
-                                            $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
-                                }
-
                                 if (flags.Argument == null)
                                 {
                                     context.ReportDiagnostic(
@@ -245,6 +244,62 @@ namespace ReflectionAnalyzers
             return false;
         }
 
+        private static bool HasRedundantFlag(ReflectedMember member, Flags flags, out string flagsText)
+        {
+            if (member.Match != FilterMatch.Single ||
+                !member.ReflectedType.Locations.Any(x => x.IsInSource))
+            {
+                flagsText = null;
+                return false;
+            }
+
+            if (flags.Argument is ArgumentSyntax argument &&
+                TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
+            {
+                if (member.Symbol is IMethodSymbol method &&
+                    method.MethodKind == MethodKind.Constructor &&
+                    (flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                     flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)))
+                {
+                    flagsText = expectedFlags.ToDisplayString(argument);
+                    return true;
+                }
+
+                if (member.Symbol is ITypeSymbol &&
+                    (flags.Explicit.HasFlagFast(BindingFlags.Instance) ||
+                     flags.Explicit.HasFlagFast(BindingFlags.Static) ||
+                     flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                     flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)))
+                {
+                    flagsText = expectedFlags.ToDisplayString(argument);
+                    return true;
+                }
+
+                if ((member.Symbol.DeclaredAccessibility == Accessibility.Public &&
+                     flags.Explicit.HasFlagFast(BindingFlags.NonPublic)) ||
+                    (member.Symbol.DeclaredAccessibility != Accessibility.Public &&
+                     flags.Explicit.HasFlagFast(BindingFlags.Public)) ||
+                    (member.Symbol.IsStatic &&
+                     flags.Explicit.HasFlagFast(BindingFlags.Instance)) ||
+                    (!member.Symbol.IsStatic &&
+                     flags.Explicit.HasFlagFast(BindingFlags.Static)) ||
+                    (!member.Symbol.IsStatic &&
+                     flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
+                    (Equals(member.Symbol.ContainingType, member.ReflectedType) &&
+                     flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
+                    (!Equals(member.Symbol.ContainingType, member.ReflectedType) &&
+                     flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly)) ||
+                    flags.Explicit.HasFlagFast(BindingFlags.IgnoreCase))
+                {
+                    flagsText = expectedFlags.ToDisplayString(argument);
+                    return true;
+                }
+            }
+
+            flagsText = null;
+            return false;
+        }
+
         private static bool IsNameOf(ArgumentSyntax argument, out ExpressionSyntax expression)
         {
             if (argument.Expression is InvocationExpressionSyntax candidate &&
@@ -261,7 +316,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameString)
+        private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameText)
         {
             if (name.Argument is ArgumentSyntax argument &&
                 member.Symbol != null &&
@@ -275,7 +330,7 @@ namespace ReflectionAnalyzers
                     TryGetTargetName(out var target))
                 {
                     location = literal.GetLocation();
-                    nameString = $"nameof({target})";
+                    nameText = $"nameof({target})";
                     return true;
                 }
 
@@ -285,13 +340,13 @@ namespace ReflectionAnalyzers
                     TryGetTargetName(out target))
                 {
                     location = expression.GetLocation();
-                    nameString = target;
+                    nameText = target;
                     return true;
                 }
             }
 
             location = null;
-            nameString = null;
+            nameText = null;
             return false;
 
             bool TryGetSymbol(ExpressionSyntax expression, out ISymbol symbol)
@@ -358,7 +413,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool ShouldUseStringLiteralName(ReflectedMember member, Name name, out Location location, out string nameString)
+        private static bool ShouldUseStringLiteralName(ReflectedMember member, Name name, out Location location, out string nameText)
         {
             if (name.Argument is ArgumentSyntax argument &&
                 IsNameOf(argument, out _) &&
@@ -366,13 +421,13 @@ namespace ReflectionAnalyzers
                  (member.Match == FilterMatch.Unknown &&
                   !Type.HasVisibleNonPublicMembers(member.ReflectedType, recursive: true))))
             {
-                nameString = name.MetadataName;
+                nameText = name.MetadataName;
                 location = argument.GetLocation();
                 return true;
             }
 
             location = null;
-            nameString = null;
+            nameText = null;
             return false;
         }
 
@@ -503,52 +558,6 @@ namespace ReflectionAnalyzers
             }
 
             return true;
-        }
-
-        private static bool HasRedundantFlag(ReflectedMember member, Flags flags)
-        {
-            if (flags.Argument == null)
-            {
-                return false;
-            }
-
-            if (member.Symbol is IMethodSymbol method &&
-                method.MethodKind == MethodKind.Constructor &&
-                (flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly) ||
-                 flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)))
-            {
-                return true;
-            }
-
-            if (member.Symbol is ITypeSymbol &&
-                (flags.Explicit.HasFlagFast(BindingFlags.Instance) ||
-                 flags.Explicit.HasFlagFast(BindingFlags.Static) ||
-                 flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly) ||
-                 flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)))
-            {
-                return true;
-            }
-
-            if (!member.ReflectedType.Locations.Any(x => x.IsInSource))
-            {
-                return false;
-            }
-
-            return (member.Symbol.DeclaredAccessibility == Accessibility.Public &&
-                    flags.Explicit.HasFlagFast(BindingFlags.NonPublic)) ||
-                   (member.Symbol.DeclaredAccessibility != Accessibility.Public &&
-                    flags.Explicit.HasFlagFast(BindingFlags.Public)) ||
-                   (member.Symbol.IsStatic &&
-                    flags.Explicit.HasFlagFast(BindingFlags.Instance)) ||
-                   (!member.Symbol.IsStatic &&
-                    flags.Explicit.HasFlagFast(BindingFlags.Static)) ||
-                   (!member.Symbol.IsStatic &&
-                    flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
-                   (Equals(member.Symbol.ContainingType, member.ReflectedType) &&
-                    flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
-                   (!Equals(member.Symbol.ContainingType, member.ReflectedType) &&
-                    flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly)) ||
-                   flags.Explicit.HasFlagFast(BindingFlags.IgnoreCase);
         }
 
         private static bool HasMissingFlag(ReflectedMember member, Flags flags)
