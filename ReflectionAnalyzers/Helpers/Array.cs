@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers
 {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
@@ -50,7 +49,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            var builder = ImmutableArray.CreateBuilder<ITypeSymbol>();
+            var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(argumentList.Arguments.Count);
             foreach (var argument in argumentList.Arguments)
             {
                 if (Type.TryGet(argument.Expression, context, out var type, out _))
@@ -68,12 +67,11 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        internal static bool TryGetTypes(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out IReadOnlyList<ITypeSymbol> types)
+        internal static bool TryGetTypes(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
         {
-            types = null;
             if (IsCreatingEmpty(creation, context))
             {
-                types = System.Array.Empty<ITypeSymbol>();
+                types = ImmutableArray<ITypeSymbol>.Empty;
                 return true;
             }
 
@@ -85,29 +83,29 @@ namespace ReflectionAnalyzers
                     return TryGetTypesFromInitializer(initializer, out types);
                 case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out ISymbol symbol) &&
                                                                     symbol == KnownSymbol.Type.EmptyTypes:
-                    types = System.Array.Empty<ITypeSymbol>();
+                    types = ImmutableArray<ITypeSymbol>.Empty;
                     return true;
             }
 
             return false;
 
-            bool TryGetTypesFromInitializer(InitializerExpressionSyntax initializer, out IReadOnlyList<ITypeSymbol> result)
+            bool TryGetTypesFromInitializer(InitializerExpressionSyntax initializer, out ImmutableArray<ITypeSymbol> result)
             {
-                var temp = new ITypeSymbol[initializer.Expressions.Count];
+                var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(initializer.Expressions.Count);
                 for (var i = 0; i < initializer.Expressions.Count; i++)
                 {
                     if (Type.TryGet(initializer.Expressions[i], context, out var type, out _))
                     {
-                        temp[i] = type;
+                        builder.Add(type);
                     }
                     else
                     {
-                        result = null;
+                        result = ImmutableArray<ITypeSymbol>.Empty;
                         return false;
                     }
                 }
 
-                result = temp;
+                result = builder.ToImmutable();
                 return true;
             }
         }

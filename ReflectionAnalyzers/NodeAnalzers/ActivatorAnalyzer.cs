@@ -185,7 +185,7 @@ namespace ReflectionAnalyzers
 
         private static bool TryGetValues(ArgumentListSyntax argumentList, int startIndex, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
         {
-            var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>();
+            var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>(argumentList.Arguments.Count - startIndex);
             switch (argumentList.Arguments[startIndex].Expression)
             {
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):

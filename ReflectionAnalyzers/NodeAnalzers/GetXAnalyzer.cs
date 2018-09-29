@@ -41,7 +41,7 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                switch (TryGetX(context, out var member, out var name, out var flags, out var typesArg))
+                switch (TryGetX(context, out var member, out var name, out var flags, out var types))
                 {
                     case GetXResult.NoMatch:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
@@ -113,7 +113,7 @@ namespace ReflectionAnalyzers
                             }
                         }
 
-                        if (typesArg == null &&
+                        if (types.Argument == null &&
                             HasMissingTypes(invocation, member.Symbol as IMethodSymbol, context, out var typeArrayString))
                         {
                             context.ReportDiagnostic(
@@ -148,7 +148,7 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL019NoMemberMatchesTheTypes.Descriptor,
-                                typesArg?.GetLocation() ?? invocation.GetNameLocation()));
+                                types.Argument?.GetLocation() ?? invocation.GetNameLocation()));
                         break;
                     case GetXResult.UseContainingType:
                         context.ReportDiagnostic(
@@ -191,16 +191,15 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out ArgumentSyntax typesArg)
+        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
             name = default(Name);
-            typesArg = null;
             if (context.Node is InvocationExpressionSyntax candidate)
             {
-                var result = GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out typesArg, out _) ??
+                var result = GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out types) ??
                              GetX.TryMatchGetEvent(candidate, context, out member, out name, out flags) ??
                              GetX.TryMatchGetField(candidate, context, out member, out name, out flags) ??
-                             GetX.TryMatchGetMethod(candidate, context, out member, out name, out flags, out typesArg, out _) ??
+                             GetX.TryMatchGetMethod(candidate, context, out member, out name, out flags, out types) ??
                              GetX.TryMatchGetNestedType(candidate, context, out member, out name, out flags) ??
                              GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags);
                 if (result != null)
@@ -211,6 +210,7 @@ namespace ReflectionAnalyzers
 
             member = default(ReflectedMember);
             flags = default(Flags);
+            types = default(Types);
             return GetXResult.Unknown;
         }
 
