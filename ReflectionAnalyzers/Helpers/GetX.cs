@@ -34,7 +34,7 @@ namespace ReflectionAnalyzers
         }
 
         /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod
+        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
         /// </summary>
         internal static GetXResult? TryMatchGetConstructor(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ISymbol member, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
         {
@@ -58,7 +58,7 @@ namespace ReflectionAnalyzers
         }
 
         /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetEvent
+        /// Check if <paramref name="invocation"/> is a call to Type.GetEvent.
         /// </summary>
         internal static GetXResult? TryMatchGetEvent(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol type, out ArgumentSyntax nameArg, out string targetName, out ISymbol member, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags)
         {
@@ -66,7 +66,7 @@ namespace ReflectionAnalyzers
         }
 
         /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetField
+        /// Check if <paramref name="invocation"/> is a call to Type.GetField.
         /// </summary>
         internal static GetXResult? TryMatchGetField(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol type, out ArgumentSyntax nameArg, out string targetName, out ISymbol member, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags)
         {
@@ -91,7 +91,7 @@ namespace ReflectionAnalyzers
         }
 
         /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod
+        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
         /// </summary>
         internal static GetXResult? TryMatchGetMethod(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol type, out ArgumentSyntax nameArg, out string targetName, out ISymbol member, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
         {
@@ -124,7 +124,7 @@ namespace ReflectionAnalyzers
         }
 
         /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod
+        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
         /// </summary>
         internal static GetXResult? TryMatchGetMember(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
         {
@@ -151,7 +151,7 @@ namespace ReflectionAnalyzers
         }
 
         /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetNestedType
+        /// Check if <paramref name="invocation"/> is a call to Type.GetNestedType.
         /// </summary>
         internal static GetXResult? TryMatchGetNestedType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags)
         {
@@ -159,7 +159,7 @@ namespace ReflectionAnalyzers
         }
 
         /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetProperty
+        /// Check if <paramref name="invocation"/> is a call to Type.GetProperty.
         /// </summary>
         internal static GetXResult? TryMatchGetProperty(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol targetType, out ArgumentSyntax nameArg, out string targetName, out ISymbol target, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags)
         {
