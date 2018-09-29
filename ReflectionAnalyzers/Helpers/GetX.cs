@@ -33,12 +33,12 @@ namespace ReflectionAnalyzers
         {
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out var getX) &&
-                ReflectedMember.TryGetType(invocation, context, out var type, out _) &&
+                ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
                 IsKnownSignature(invocation, getX) &&
                 Flags.TryCreate(invocation, getX, context, out flags) &&
                 Types.TryCreate(invocation, getX, context, out types))
             {
-                return ReflectedMember.TryCreate(getX, type, new Name(null, ".ctor"), flags.Effective, types, context, out member);
+                return ReflectedMember.TryCreate(getX, type, typeSource, new Name(null, ".ctor"), flags.Effective, types, context, out member);
             }
 
             member = default(ReflectedMember);
@@ -85,13 +85,13 @@ namespace ReflectionAnalyzers
         {
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
-                ReflectedMember.TryGetType(invocation, context, out var type, out _) &&
+                ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
                 IsKnownSignature(invocation, getX) &&
                 Name.TryCreate(invocation, getX, context, out name) &&
                 Flags.TryCreate(invocation, getX, context, out flags) &&
                 Types.TryCreate(invocation, getX, context, out types))
             {
-                return ReflectedMember.TryCreate(getX, type, name, flags.Effective, types, context, out member);
+                return ReflectedMember.TryCreate(getX, type, typeSource, name, flags.Effective, types, context, out member);
             }
 
             member = default(ReflectedMember);
@@ -175,10 +175,10 @@ namespace ReflectionAnalyzers
         {
             if (invocation.ArgumentList != null &&
                 invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
-                ReflectedMember.TryGetType(invocation, context, out var type, out _) &&
+                ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
                 Name.TryCreate(invocation, getX, context, out name) &&
                 Flags.TryCreate(invocation, getX, context, out flags) &&
-                ReflectedMember.TryCreate(getX, type, name, flags.Effective, Types.Any, context, out member))
+                ReflectedMember.TryCreate(getX, type, typeSource, name, flags.Effective, Types.Any, context, out member))
             {
                 return true;
             }

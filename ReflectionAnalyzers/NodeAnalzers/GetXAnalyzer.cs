@@ -118,7 +118,7 @@ namespace ReflectionAnalyzers
 
                     switch (member.Match)
                     {
-                        case FilterMatch.WrongFlags when TryGetExpectedFlags(member, out var correctFlags):
+                        case FilterMatch.WrongFlags when TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var correctFlags):
                             if (flags.Argument != null)
                             {
                                 context.ReportDiagnostic(
@@ -147,7 +147,7 @@ namespace ReflectionAnalyzers
                             break;
 
                         case FilterMatch.Single:
-                            if (TryGetExpectedFlags(member, out var expectedFlags))
+                            if (TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
                             {
                                 if (flags.Argument != null &&
                                     HasRedundantFlag(member, flags))
@@ -285,9 +285,7 @@ namespace ReflectionAnalyzers
                 targetName = null;
                 if (member.Symbol.ContainingType.IsAnonymousType)
                 {
-                    if (ReflectedMember.TryGetType(context.Node as InvocationExpressionSyntax, context, out _, out var typeSource) &&
-                        typeSource.HasValue &&
-                        typeSource.Value is InvocationExpressionSyntax getType &&
+                    if (member.TypeSource is InvocationExpressionSyntax getType &&
                         getType.TryGetTarget(KnownSymbol.Object.GetType, context.SemanticModel, context.CancellationToken, out _) &&
                         getType.Expression is MemberAccessExpressionSyntax memberAccess &&
                         memberAccess.Expression is IdentifierNameSyntax identifierName)
@@ -344,8 +342,8 @@ namespace ReflectionAnalyzers
             if (name.Argument is ArgumentSyntax argument &&
                 IsNameOf(argument, out _) &&
                 (member.Match == FilterMatch.NoMatch ||
-                 member.Match == FilterMatch.Unknown &&
-                 !Type.HasVisibleNonPublicMembers(member.ReflectedType, true)))
+                 (member.Match == FilterMatch.Unknown &&
+                  !Type.HasVisibleNonPublicMembers(member.ReflectedType, recursive: true))))
             {
                 nameString = name.MetadataName;
                 location = argument.GetLocation();
@@ -382,7 +380,7 @@ namespace ReflectionAnalyzers
                 getX.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 if (targetMethod.AssociatedSymbol is IPropertySymbol property &&
-                    TryGetExpectedFlags(new ReflectedMember(property.ContainingType, property, FilterMatch.Single), out var flags))
+                    TryGetExpectedFlags(property.ContainingType, property, out var flags))
                 {
                     if (targetMethod.Name.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
                     {
@@ -397,7 +395,7 @@ namespace ReflectionAnalyzers
                     }
                 }
                 else if (targetMethod.AssociatedSymbol is IEventSymbol eventSymbol &&
-                         TryGetExpectedFlags(new ReflectedMember(eventSymbol.ContainingType, eventSymbol, FilterMatch.Single), out flags))
+                         TryGetExpectedFlags(eventSymbol.ContainingType, eventSymbol, out flags))
                 {
                     if (targetMethod.Name.StartsWith("add_", StringComparison.OrdinalIgnoreCase))
                     {
@@ -440,16 +438,16 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetExpectedFlags(ReflectedMember member, out BindingFlags flags)
+        private static bool TryGetExpectedFlags(ITypeSymbol reflectedType, ISymbol member, out BindingFlags flags)
         {
             flags = 0;
-            if (member.Symbol is null ||
-                member.ReflectedType is null)
+            if (member is null ||
+                reflectedType is null)
             {
                 return false;
             }
 
-            if (member.Symbol.DeclaredAccessibility == Accessibility.Public)
+            if (member.DeclaredAccessibility == Accessibility.Public)
             {
                 flags |= BindingFlags.Public;
             }
@@ -458,9 +456,9 @@ namespace ReflectionAnalyzers
                 flags |= BindingFlags.NonPublic;
             }
 
-            if (!(member.Symbol is ITypeSymbol))
+            if (!(member is ITypeSymbol))
             {
-                if (member.Symbol.IsStatic)
+                if (member.IsStatic)
                 {
                     flags |= BindingFlags.Static;
                 }
@@ -469,14 +467,14 @@ namespace ReflectionAnalyzers
                     flags |= BindingFlags.Instance;
                 }
 
-                if (!(member.Symbol is IMethodSymbol method &&
+                if (!(member is IMethodSymbol method &&
                       method.MethodKind == MethodKind.Constructor))
                 {
-                    if (Equals(member.Symbol.ContainingType, member.ReflectedType))
+                    if (Equals(member.ContainingType, reflectedType))
                     {
                         flags |= BindingFlags.DeclaredOnly;
                     }
-                    else if (member.Symbol.IsStatic)
+                    else if (member.IsStatic)
                     {
                         flags |= BindingFlags.FlattenHierarchy;
                     }

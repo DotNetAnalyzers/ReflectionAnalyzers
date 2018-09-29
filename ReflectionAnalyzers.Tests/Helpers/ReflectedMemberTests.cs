@@ -39,7 +39,7 @@ namespace RoslynSandbox
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
             Assert.AreEqual(true, ReflectedMember.TryGetType(node, context, out var type, out var source));
             Assert.AreEqual(expected, type.MetadataName);
-            Assert.AreEqual(expectedSource, source.Value.ToString());
+            Assert.AreEqual(expectedSource, source.ToString());
         }
 
         [TestCase("typeof(Foo)", "Foo")]
@@ -73,7 +73,7 @@ namespace RoslynSandbox
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
             Assert.AreEqual(true, ReflectedMember.TryGetType(node, context, out var type, out var instance));
             Assert.AreEqual(expected, type.MetadataName);
-            Assert.AreEqual(typeExpression, instance.Value.ToString());
+            Assert.AreEqual(typeExpression, instance.ToString());
         }
 
         [Test]

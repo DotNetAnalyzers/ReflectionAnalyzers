@@ -86,23 +86,16 @@ namespace ReflectionAnalyzers
 
             if (createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
                invocation.TryFindArgument(typeParameter, out var typeArg) &&
-               Type.TryGet(typeArg.Expression, context, out createdType, out var optionalTypeSource))
+               Type.TryGet(typeArg.Expression, context, out createdType, out var source))
             {
-                if (optionalTypeSource.HasValue)
+                switch (source)
                 {
-                    switch (optionalTypeSource.Value)
-                    {
-                        case TypeOfExpressionSyntax typeOf:
-                            typeSource = typeOf.Type;
-                            break;
-                        default:
-                            typeSource = optionalTypeSource.Value;
-                            break;
-                    }
-                }
-                else
-                {
-                    typeSource = typeArg.Expression;
+                    case TypeOfExpressionSyntax typeOf:
+                        typeSource = typeOf.Type;
+                        break;
+                    default:
+                        typeSource = typeArg.Expression;
+                        break;
                 }
 
                 return true;
