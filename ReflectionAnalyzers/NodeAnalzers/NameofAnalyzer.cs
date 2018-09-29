@@ -143,7 +143,7 @@ namespace ReflectionAnalyzers
                 if (member is IMethodSymbol method)
                 {
                     optionalMember = method.AssociatedSymbol == null
-                        ? new Optional<ISymbol>(member)
+                        ? new Optional<ISymbol>(method)
                         : default(Optional<ISymbol>);
                 }
                 else

@@ -141,8 +141,7 @@ namespace ReflectionAnalyzers
                                                               !createdType.Constructors.TrySingle(
                                                                   x => x.Parameters.Length == 0 &&
                                                                        !x.IsStatic,
-                                                                  out _)
-                                                               :
+                                                                  out _):
                         return true;
                     case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.FalseLiteralExpression) &&
                                                               !HasDefaultConstructor():
