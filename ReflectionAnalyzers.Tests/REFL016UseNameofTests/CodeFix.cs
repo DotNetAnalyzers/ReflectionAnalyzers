@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
 
     internal class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new NameofAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new NameofFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
 
@@ -524,7 +524,7 @@ namespace RoslynSandbox.Dump
     {
         public Foo()
         {
-            var member = typeof(AggregateException).GetProperty(""Message"", BindingFlags.NonPublic | BindingFlags.Instance);
+            var member = typeof(AggregateException).GetProperty(""Message"", BindingFlags.Public | BindingFlags.Instance);
         }
     }
 }";
@@ -539,7 +539,7 @@ namespace RoslynSandbox.Dump
     {
         public Foo()
         {
-            var member = typeof(AggregateException).GetProperty(nameof(Exception.Message), BindingFlags.NonPublic | BindingFlags.Instance);
+            var member = typeof(AggregateException).GetProperty(nameof(Exception.Message), BindingFlags.Public | BindingFlags.Instance);
         }
     }
 }";

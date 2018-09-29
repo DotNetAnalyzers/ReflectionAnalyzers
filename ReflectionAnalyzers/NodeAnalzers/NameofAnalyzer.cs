@@ -15,7 +15,6 @@ namespace ReflectionAnalyzers
 
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL016UseNameof.Descriptor,
             REFL017DontUseNameof.Descriptor);
 
         /// <inheritdoc/>
@@ -23,30 +22,7 @@ namespace ReflectionAnalyzers
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
             context.EnableConcurrentExecution();
-            context.RegisterSyntaxNodeAction(c => HandleLiteral(c), SyntaxKind.StringLiteralExpression);
             context.RegisterSyntaxNodeAction(c => HandleNameof(c), SyntaxKind.InvocationExpression);
-        }
-
-        private static void HandleLiteral(SyntaxNodeAnalysisContext context)
-        {
-            if (!context.IsExcludedFromAnalysis() &&
-                context.Node is LiteralExpressionSyntax literal &&
-                literal.Parent is ArgumentSyntax argument &&
-                literal.Token.ValueText is string text &&
-                SyntaxFacts.IsValidIdentifier(text) &&
-                argument.Parent is ArgumentListSyntax argumentList &&
-                argumentList.Parent is InvocationExpressionSyntax invocation &&
-                TryGetX(invocation, context, out var getX) &&
-                TryGetMember(invocation, getX, literal.Token.ValueText, context, out var member, out var instance) &&
-                member.HasValue &&
-                TryGetTargetName(member.Value, instance, context, out var targetName))
-            {
-                context.ReportDiagnostic(
-                    Diagnostic.Create(
-                        REFL016UseNameof.Descriptor,
-                        literal.GetLocation(),
-                        ImmutableDictionary<string, string>.Empty.Add(Key, $"nameof({targetName})")));
-            }
         }
 
         private static void HandleNameof(SyntaxNodeAnalysisContext context)

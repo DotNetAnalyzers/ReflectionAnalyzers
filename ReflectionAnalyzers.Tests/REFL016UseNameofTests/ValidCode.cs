@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
 
     internal class ValidCode
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new NameofAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
 
         [Test]
@@ -143,7 +143,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
         }
 
         [TestCase("GetMethod(\"add_Public\")")]
@@ -407,7 +407,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
         }
 
         [TestCase("typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
@@ -462,7 +462,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
-            AnalyzerAssert.Valid(Analyzer, baseClass, code);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, baseClass, code);
         }
     }
 }
