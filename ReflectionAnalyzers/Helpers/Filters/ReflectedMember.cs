@@ -7,6 +7,8 @@ namespace ReflectionAnalyzers
 
     internal struct ReflectedMember
     {
+        internal static readonly ReflectedMember NoMatch = new ReflectedMember(null, null, FilterMatch.NoMatch);
+
         /// <summary>
         /// The type that was used to obtain <see cref="Symbol"/>.
         /// </summary>
@@ -14,10 +16,20 @@ namespace ReflectionAnalyzers
 
         internal readonly ISymbol Symbol;
 
-        public ReflectedMember(ITypeSymbol reflectedType, ISymbol symbol)
+        internal readonly FilterMatch Match;
+
+        public ReflectedMember(ITypeSymbol reflectedType, ISymbol symbol, FilterMatch match)
         {
             this.ReflectedType = reflectedType;
             this.Symbol = symbol;
+            this.Match = match;
+        }
+
+        internal static bool TryCreate(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ReflectedMember member)
+        {
+            var match = TryGetMember(getX, type, name, flags, types, context, out var memberSymbol);
+            member = new ReflectedMember(type, memberSymbol, match);
+            return true;
         }
 
         /// <summary>
@@ -36,7 +48,7 @@ namespace ReflectionAnalyzers
                    Type.TryGet(memberAccess.Expression, context, out result, out typeSource);
         }
 
-        internal static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ISymbol member)
+        private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ISymbol member)
         {
             member = null;
             if (type is ITypeParameterSymbol typeParameter)
@@ -134,6 +146,12 @@ namespace ReflectionAnalyzers
             }
 
             if (member != null)
+            {
+                return FilterMatch.Single;
+            }
+
+            if (type == KnownSymbol.Delegate &&
+                name.MetadataName == "Invoke")
             {
                 return FilterMatch.Single;
             }

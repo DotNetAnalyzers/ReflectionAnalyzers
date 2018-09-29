@@ -133,14 +133,18 @@ namespace ReflectionAnalyzers
                 }
 
                 const BindingFlags searchAll = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
-                var result = ReflectedMember.TryGetMember(getX, targetType, new Name(null, name), searchAll, Types.Any, context, out var member);
-                if (result == FilterMatch.Unknown &&
-                    member != null)
+                if (ReflectedMember.TryCreate(getX, targetType, new Name(null, name), searchAll, Types.Any, context, out var member))
                 {
                     return false;
                 }
 
-                if (member is IMethodSymbol method)
+                if (member.Match == FilterMatch.Unknown &&
+                    member.Symbol != null)
+                {
+                    return false;
+                }
+
+                if (member.Symbol is IMethodSymbol method)
                 {
                     optionalMember = method.AssociatedSymbol == null
                         ? new Optional<ISymbol>(method)
@@ -148,8 +152,8 @@ namespace ReflectionAnalyzers
                 }
                 else
                 {
-                    optionalMember = member != null
-                        ? new Optional<ISymbol>(member)
+                    optionalMember = member.Symbol != null
+                        ? new Optional<ISymbol>(member.Symbol)
                         : default(Optional<ISymbol>);
                 }
 

@@ -41,137 +41,140 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                switch (TryGetX(context, out var member, out var name, out var flags, out var types))
+                if (TryGetX(context, out var member, out var name, out var flags, out var types))
                 {
-                    case FilterMatch.NoMatch:
-                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
-                        break;
+                    switch (member.Match)
+                    {
+                        case FilterMatch.NoMatch:
+                            context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
+                            break;
 
-                    case FilterMatch.Ambiguous:
-                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatchMember.Descriptor, argumentList.GetLocation()));
-                        break;
+                        case FilterMatch.Ambiguous:
+                            context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatchMember.Descriptor, argumentList.GetLocation()));
+                            break;
 
-                    case FilterMatch.WrongFlags when TryGetExpectedFlags(member, out var correctFlags):
-                        if (flags.Argument != null)
-                        {
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    REFL005WrongBindingFlags.Descriptor,
-                                    flags.Argument.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
-                                    $" Expected: {correctFlags.ToDisplayString(invocation)}."));
-                        }
-                        else
-                        {
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    REFL005WrongBindingFlags.Descriptor,
-                                    MissingFlagsLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
-                                    $" Expected: {correctFlags.ToDisplayString(invocation)}."));
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    REFL008MissingBindingFlags.Descriptor,
-                                    MissingFlagsLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
-                                    $" Expected: {correctFlags.ToDisplayString(invocation)}."));
-                        }
-
-                        break;
-
-                    case FilterMatch.Single:
-                        if (TryGetExpectedFlags(member, out var expectedFlags))
-                        {
-                            if (flags.Argument != null &&
-                                HasRedundantFlag(member, flags))
+                        case FilterMatch.WrongFlags when TryGetExpectedFlags(member, out var correctFlags):
+                            if (flags.Argument != null)
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
-                                        REFL006RedundantBindingFlags.Descriptor,
+                                        REFL005WrongBindingFlags.Descriptor,
                                         flags.Argument.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
-                                        $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
+                                        $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                             }
-
-                            if (flags.Argument == null)
+                            else
                             {
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        REFL005WrongBindingFlags.Descriptor,
+                                        MissingFlagsLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
+                                        $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
                                         REFL008MissingBindingFlags.Descriptor,
                                         MissingFlagsLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
-                                        $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
+                                        $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                             }
-                            else if (HasMissingFlag(member, flags))
+
+                            break;
+
+                        case FilterMatch.Single:
+                            if (TryGetExpectedFlags(member, out var expectedFlags))
+                            {
+                                if (flags.Argument != null &&
+                                    HasRedundantFlag(member, flags))
+                                {
+                                    context.ReportDiagnostic(
+                                        Diagnostic.Create(
+                                            REFL006RedundantBindingFlags.Descriptor,
+                                            flags.Argument.GetLocation(),
+                                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
+                                            $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
+                                }
+
+                                if (flags.Argument == null)
+                                {
+                                    context.ReportDiagnostic(
+                                        Diagnostic.Create(
+                                            REFL008MissingBindingFlags.Descriptor,
+                                            MissingFlagsLocation(),
+                                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
+                                            $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
+                                }
+                                else if (HasMissingFlag(member, flags))
+                                {
+                                    context.ReportDiagnostic(
+                                        Diagnostic.Create(
+                                            REFL008MissingBindingFlags.Descriptor,
+                                            flags.Argument.GetLocation(),
+                                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
+                                            $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
+                                }
+                            }
+
+                            if (types.Argument == null &&
+                                HasMissingTypes(invocation, member.Symbol as IMethodSymbol, context, out var typeArrayString))
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
-                                        REFL008MissingBindingFlags.Descriptor,
-                                        flags.Argument.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
-                                        $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
+                                        REFL029MissingTypes.Descriptor,
+                                        argumentList.GetLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayString)));
                             }
-                        }
 
-                        if (types.Argument == null &&
-                            HasMissingTypes(invocation, member.Symbol as IMethodSymbol, context, out var typeArrayString))
-                        {
+                            if (IsPreferGetMemberThenAccessor(invocation, member, context, out var call))
+                            {
+                                context.ReportDiagnostic(
+                                    Diagnostic.Create(
+                                        REFL014PreferGetMemberThenAccessor.Descriptor,
+                                        invocation.GetNameLocation(),
+                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), call),
+                                        call));
+                            }
+
+                            break;
+
+                        case FilterMatch.WrongMemberType:
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
-                                    REFL029MissingTypes.Descriptor,
-                                    argumentList.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayString)));
-                        }
-
-                        if (IsPreferGetMemberThenAccessor(invocation, member, context, out var call))
-                        {
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    REFL014PreferGetMemberThenAccessor.Descriptor,
+                                    REFL013MemberIsOfWrongType.Descriptor,
                                     invocation.GetNameLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), call),
-                                    call));
-                        }
-
-                        break;
-
-                    case FilterMatch.WrongMemberType:
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL013MemberIsOfWrongType.Descriptor,
-                                invocation.GetNameLocation(),
-                                member.ReflectedType,
-                                name.MetadataName,
-                                member.Symbol.GetType().Name));
-                        break;
-                    case FilterMatch.WrongTypes:
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL019NoMemberMatchesTheTypes.Descriptor,
-                                types.Argument?.GetLocation() ?? invocation.GetNameLocation()));
-                        break;
-                    case FilterMatch.UseContainingType:
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL015UseContainingType.Descriptor,
-                                TargetTypeLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
-                                    nameof(ISymbol.ContainingType),
-                                    member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                member.Symbol.ContainingType.Name));
-                        break;
-                    case FilterMatch.ExplicitImplementation:
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL018ExplicitImplementation.Descriptor,
-                                TargetTypeLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
-                                    nameof(ISymbol.ContainingType),
-                                    member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                member.Symbol.Name));
-                        break;
-                    case FilterMatch.Unknown:
-                        break;
+                                    member.ReflectedType,
+                                    name.MetadataName,
+                                    member.Symbol.GetType().Name));
+                            break;
+                        case FilterMatch.WrongTypes:
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL019NoMemberMatchesTheTypes.Descriptor,
+                                    types.Argument?.GetLocation() ?? invocation.GetNameLocation()));
+                            break;
+                        case FilterMatch.UseContainingType:
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL015UseContainingType.Descriptor,
+                                    TargetTypeLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(
+                                        nameof(ISymbol.ContainingType),
+                                        member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                    member.Symbol.ContainingType.Name));
+                            break;
+                        case FilterMatch.ExplicitImplementation:
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL018ExplicitImplementation.Descriptor,
+                                    TargetTypeLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(
+                                        nameof(ISymbol.ContainingType),
+                                        member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                    member.Symbol.Name));
+                            break;
+                        case FilterMatch.Unknown:
+                            break;
+                    }
                 }
             }
 
@@ -191,27 +194,23 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static FilterMatch TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
+        private static bool TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
             name = default(Name);
             if (context.Node is InvocationExpressionSyntax candidate)
             {
-                var result = GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out types) ??
-                             GetX.TryMatchGetEvent(candidate, context, out member, out name, out flags) ??
-                             GetX.TryMatchGetField(candidate, context, out member, out name, out flags) ??
-                             GetX.TryMatchGetMethod(candidate, context, out member, out name, out flags, out types) ??
-                             GetX.TryMatchGetNestedType(candidate, context, out member, out name, out flags) ??
-                             GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags);
-                if (result != null)
-                {
-                    return result.Value;
-                }
+                return GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out types) ||
+                       GetX.TryMatchGetEvent(candidate, context, out member, out name, out flags) ||
+                       GetX.TryMatchGetField(candidate, context, out member, out name, out flags) ||
+                       GetX.TryMatchGetMethod(candidate, context, out member, out name, out flags, out types) ||
+                       GetX.TryMatchGetNestedType(candidate, context, out member, out name, out flags) ||
+                       GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags);
             }
 
             member = default(ReflectedMember);
             flags = default(Flags);
             types = default(Types);
-            return FilterMatch.Unknown;
+            return false;
         }
 
         private static bool IsPreferGetMemberThenAccessor(InvocationExpressionSyntax getX, ReflectedMember member, SyntaxNodeAnalysisContext context, out string call)
@@ -220,7 +219,7 @@ namespace ReflectionAnalyzers
                 getX.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 if (targetMethod.AssociatedSymbol is IPropertySymbol property &&
-                    TryGetExpectedFlags(new ReflectedMember(property.ContainingType, property), out var flags))
+                    TryGetExpectedFlags(new ReflectedMember(property.ContainingType, property, FilterMatch.Single), out var flags))
                 {
                     if (targetMethod.Name.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
                     {
@@ -235,7 +234,7 @@ namespace ReflectionAnalyzers
                     }
                 }
                 else if (targetMethod.AssociatedSymbol is IEventSymbol eventSymbol &&
-                    TryGetExpectedFlags(new ReflectedMember(eventSymbol.ContainingType, eventSymbol), out flags))
+                         TryGetExpectedFlags(new ReflectedMember(eventSymbol.ContainingType, eventSymbol, FilterMatch.Single), out flags))
                 {
                     if (targetMethod.Name.StartsWith("add_", StringComparison.OrdinalIgnoreCase))
                     {
