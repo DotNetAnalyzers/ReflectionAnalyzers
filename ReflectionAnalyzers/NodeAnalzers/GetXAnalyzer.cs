@@ -76,14 +76,6 @@ namespace ReflectionAnalyzers
                                 member.Symbol.GetType().Name));
                     }
 
-                    if (member.Match == FilterMatch.WrongTypes)
-                    {
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL019NoMemberMatchesTheTypes.Descriptor,
-                                types.Argument?.GetLocation() ?? invocation.GetNameLocation()));
-                    }
-
                     if (member.Match == FilterMatch.UseContainingType)
                     {
                         context.ReportDiagnostic(
@@ -94,18 +86,6 @@ namespace ReflectionAnalyzers
                                     nameof(ISymbol.ContainingType),
                                     member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
                                 member.Symbol.ContainingType.Name));
-                    }
-
-                    if (member.Match == FilterMatch.ExplicitImplementation)
-                    {
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL018ExplicitImplementation.Descriptor,
-                                TargetTypeLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
-                                    nameof(ISymbol.ContainingType),
-                                    member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                member.Symbol.Name));
                     }
 
                     if (ShouldUseNameof(member, name, context, out location, out var nameString))
@@ -124,6 +104,26 @@ namespace ReflectionAnalyzers
                                 REFL017DontUseNameof.Descriptor,
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(SyntaxKind.StringLiteralExpression), nameString)));
+                    }
+
+                    if (member.Match == FilterMatch.ExplicitImplementation)
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL018ExplicitImplementation.Descriptor,
+                                TargetTypeLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(ISymbol.ContainingType),
+                                    member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                member.Symbol.Name));
+                    }
+
+                    if (member.Match == FilterMatch.WrongTypes)
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL019NoMemberMatchesTheTypes.Descriptor,
+                                types.Argument?.GetLocation() ?? invocation.GetNameLocation()));
                     }
 
                     switch (member.Match)
