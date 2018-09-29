@@ -1,6 +1,6 @@
 namespace ReflectionAnalyzers
 {
-    internal enum GetXResult
+    internal enum FilterMatch
     {
         Unknown,
         Single,

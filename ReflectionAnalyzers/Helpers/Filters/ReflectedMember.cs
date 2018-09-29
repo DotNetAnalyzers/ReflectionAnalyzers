@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers
                    Type.TryGet(memberAccess.Expression, context, out result, out typeSource);
         }
 
-        internal static GetXResult TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ISymbol member)
+        internal static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ISymbol member)
         {
             member = null;
             if (type is ITypeParameterSymbol typeParameter)
@@ -49,7 +49,7 @@ namespace ReflectionAnalyzers
                 foreach (var constraintType in typeParameter.ConstraintTypes)
                 {
                     var result = TryGetMember(getX, constraintType, name, flags, types, context, out member);
-                    if (result != GetXResult.NoMatch)
+                    if (result != FilterMatch.NoMatch)
                     {
                         return result;
                     }
@@ -77,12 +77,12 @@ namespace ReflectionAnalyzers
                         member = candidate;
                         if (IsWrongMemberType(member))
                         {
-                            return GetXResult.WrongMemberType;
+                            return FilterMatch.WrongMemberType;
                         }
                     }
                     else
                     {
-                        return GetXResult.Ambiguous;
+                        return FilterMatch.Ambiguous;
                     }
                 }
             }
@@ -108,24 +108,24 @@ namespace ReflectionAnalyzers
                             member = candidate;
                             if (IsUseContainingType(member))
                             {
-                                return GetXResult.UseContainingType;
+                                return FilterMatch.UseContainingType;
                             }
 
                             if (candidate.IsStatic &&
                                 !current.Equals(type) &&
                                 !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
                             {
-                                return GetXResult.WrongFlags;
+                                return FilterMatch.WrongFlags;
                             }
 
                             if (IsWrongMemberType(candidate))
                             {
-                                return GetXResult.WrongMemberType;
+                                return FilterMatch.WrongMemberType;
                             }
                         }
                         else
                         {
-                            return GetXResult.Ambiguous;
+                            return FilterMatch.Ambiguous;
                         }
                     }
 
@@ -135,29 +135,29 @@ namespace ReflectionAnalyzers
 
             if (member != null)
             {
-                return GetXResult.Single;
+                return FilterMatch.Single;
             }
 
             if (type.TryFindFirstMemberRecursive(name.MemberName(), out member))
             {
                 if (IsUseContainingType(member))
                 {
-                    return GetXResult.UseContainingType;
+                    return FilterMatch.UseContainingType;
                 }
 
                 if (!Type.HasVisibleMembers(type, flags))
                 {
-                    return GetXResult.Unknown;
+                    return FilterMatch.Unknown;
                 }
 
                 if (IsWrongFlags(member))
                 {
-                    return GetXResult.WrongFlags;
+                    return FilterMatch.WrongFlags;
                 }
 
                 if (IsWrongTypes(member))
                 {
-                    return GetXResult.WrongTypes;
+                    return FilterMatch.WrongTypes;
                 }
             }
 
@@ -165,15 +165,15 @@ namespace ReflectionAnalyzers
             {
                 // Assigning member if it is explicit. Useful info but we can't be sure still.
                 _ = IsExplicitImplementation(out member);
-                return GetXResult.Unknown;
+                return FilterMatch.Unknown;
             }
 
             if (IsExplicitImplementation(out member))
             {
-                return GetXResult.ExplicitImplementation;
+                return FilterMatch.ExplicitImplementation;
             }
 
-            return GetXResult.NoMatch;
+            return FilterMatch.NoMatch;
 
             bool IsWrongMemberType(ISymbol symbol)
             {

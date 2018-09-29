@@ -43,15 +43,15 @@ namespace ReflectionAnalyzers
             {
                 switch (TryGetX(context, out var member, out var name, out var flags, out var types))
                 {
-                    case GetXResult.NoMatch:
+                    case FilterMatch.NoMatch:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
                         break;
 
-                    case GetXResult.Ambiguous:
+                    case FilterMatch.Ambiguous:
                         context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatchMember.Descriptor, argumentList.GetLocation()));
                         break;
 
-                    case GetXResult.WrongFlags when TryGetExpectedFlags(member, out var correctFlags):
+                    case FilterMatch.WrongFlags when TryGetExpectedFlags(member, out var correctFlags):
                         if (flags.Argument != null)
                         {
                             context.ReportDiagnostic(
@@ -79,7 +79,7 @@ namespace ReflectionAnalyzers
 
                         break;
 
-                    case GetXResult.Single:
+                    case FilterMatch.Single:
                         if (TryGetExpectedFlags(member, out var expectedFlags))
                         {
                             if (flags.Argument != null &&
@@ -135,7 +135,7 @@ namespace ReflectionAnalyzers
 
                         break;
 
-                    case GetXResult.WrongMemberType:
+                    case FilterMatch.WrongMemberType:
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL013MemberIsOfWrongType.Descriptor,
@@ -144,13 +144,13 @@ namespace ReflectionAnalyzers
                                 name.MetadataName,
                                 member.Symbol.GetType().Name));
                         break;
-                    case GetXResult.WrongTypes:
+                    case FilterMatch.WrongTypes:
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL019NoMemberMatchesTheTypes.Descriptor,
                                 types.Argument?.GetLocation() ?? invocation.GetNameLocation()));
                         break;
-                    case GetXResult.UseContainingType:
+                    case FilterMatch.UseContainingType:
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL015UseContainingType.Descriptor,
@@ -160,7 +160,7 @@ namespace ReflectionAnalyzers
                                     member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
                                 member.Symbol.ContainingType.Name));
                         break;
-                    case GetXResult.ExplicitImplementation:
+                    case FilterMatch.ExplicitImplementation:
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL018ExplicitImplementation.Descriptor,
@@ -170,7 +170,7 @@ namespace ReflectionAnalyzers
                                     member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
                                 member.Symbol.Name));
                         break;
-                    case GetXResult.Unknown:
+                    case FilterMatch.Unknown:
                         break;
                 }
             }
@@ -191,7 +191,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
+        private static FilterMatch TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
             name = default(Name);
             if (context.Node is InvocationExpressionSyntax candidate)
@@ -211,7 +211,7 @@ namespace ReflectionAnalyzers
             member = default(ReflectedMember);
             flags = default(Flags);
             types = default(Types);
-            return GetXResult.Unknown;
+            return FilterMatch.Unknown;
         }
 
         private static bool IsPreferGetMemberThenAccessor(InvocationExpressionSyntax getX, ReflectedMember member, SyntaxNodeAnalysisContext context, out string call)
