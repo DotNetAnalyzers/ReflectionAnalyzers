@@ -52,6 +52,24 @@ namespace RoslynSandbox
 
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
+
+            [TestCase("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null)")]
+            [TestCase("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke((int?)42, null)")]
+            public void Invoke(string call)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public static class Foo
+    {
+        public static object Bar() => typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null);
+    }
+}".AssertReplace("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null)", call);
+
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }
