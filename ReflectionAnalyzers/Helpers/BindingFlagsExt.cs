@@ -64,6 +64,11 @@ namespace ReflectionAnalyzers
 
         private static bool IsUsingStatic(SyntaxNode location)
         {
+            if (location is null)
+            {
+                return false;
+            }
+
             if (location.TryFirstAncestor(out NamespaceDeclarationSyntax namespaceDeclaration))
             {
                 return namespaceDeclaration.Usings.TryFirst(x => IsBindingFlags(x), out _) ||

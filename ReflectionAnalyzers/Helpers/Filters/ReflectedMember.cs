@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers
 
     internal struct ReflectedMember
     {
-        internal static readonly ReflectedMember NoMatch = new ReflectedMember(null, null, null, FilterMatch.NoMatch);
+        internal static readonly ReflectedMember NoMatch = new ReflectedMember(null, null, null, null, null, FilterMatch.NoMatch);
 
         /// <summary>
         /// The type that was used to obtain <see cref="Symbol"/>.
@@ -21,20 +21,26 @@ namespace ReflectionAnalyzers
 
         internal readonly ISymbol Symbol;
 
+        internal readonly IMethodSymbol GetX;
+
+        internal readonly InvocationExpressionSyntax Invocation;
+
         internal readonly FilterMatch Match;
 
-        public ReflectedMember(ITypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, FilterMatch match)
+        public ReflectedMember(ITypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)
         {
             this.ReflectedType = reflectedType;
             this.TypeSource = typeSource;
             this.Symbol = symbol;
+            this.GetX = getX;
+            this.Invocation = invocation;
             this.Match = match;
         }
 
-        internal static bool TryCreate(IMethodSymbol getX, ITypeSymbol type, ExpressionSyntax typeSource, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ReflectedMember member)
+        internal static bool TryCreate(IMethodSymbol getX, InvocationExpressionSyntax invocation, ITypeSymbol type, ExpressionSyntax typeSource, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ReflectedMember member)
         {
             var match = TryGetMember(getX, type, name, flags, types, context, out var memberSymbol);
-            member = new ReflectedMember(type, typeSource, memberSymbol, match);
+            member = new ReflectedMember(type, typeSource, memberSymbol, getX, invocation, match);
             return true;
         }
 

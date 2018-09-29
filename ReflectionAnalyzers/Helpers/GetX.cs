@@ -53,7 +53,7 @@ namespace ReflectionAnalyzers
                 Flags.TryCreate(invocation, getX, context, out flags) &&
                 Types.TryCreate(invocation, getX, context, out types))
             {
-                return ReflectedMember.TryCreate(getX, type, typeSource, new Name(null, ".ctor"), flags.Effective, types, context, out member);
+                return ReflectedMember.TryCreate(getX, invocation, type, typeSource, new Name(null, ".ctor"), flags.Effective, types, context, out member);
             }
 
             member = default(ReflectedMember);
@@ -91,7 +91,7 @@ namespace ReflectionAnalyzers
                 Flags.TryCreate(invocation, getX, context, out flags) &&
                 Types.TryCreate(invocation, getX, context, out types))
             {
-                return ReflectedMember.TryCreate(getX, type, typeSource, name, flags.Effective, types, context, out member);
+                return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context, out member);
             }
 
             member = default(ReflectedMember);
@@ -197,7 +197,7 @@ namespace ReflectionAnalyzers
                 ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
                 Name.TryCreate(invocation, getX, context, out name) &&
                 Flags.TryCreate(invocation, getX, context, out flags) &&
-                ReflectedMember.TryCreate(getX, type, typeSource, name, flags.Effective, Types.Any, context, out member))
+                ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, Types.Any, context, out member))
             {
                 return true;
             }

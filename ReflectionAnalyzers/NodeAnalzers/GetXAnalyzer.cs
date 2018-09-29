@@ -55,6 +55,16 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatchMember.Descriptor, argumentList.GetLocation()));
                     }
 
+                    if (HasWrongFlags(member, flags, out var location, out var flagString))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL005WrongBindingFlags.Descriptor,
+                                location,
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagString),
+                                $" Expected: {flagString}."));
+                    }
+
                     if (member.Match == FilterMatch.WrongMemberType)
                     {
                         context.ReportDiagnostic(
@@ -98,7 +108,7 @@ namespace ReflectionAnalyzers
                                 member.Symbol.Name));
                     }
 
-                    if (ShouldUseNameof(member, name, context, out var location, out var nameString))
+                    if (ShouldUseNameof(member, name, context, out location, out var nameString))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -119,23 +129,8 @@ namespace ReflectionAnalyzers
                     switch (member.Match)
                     {
                         case FilterMatch.WrongFlags when TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var correctFlags):
-                            if (flags.Argument != null)
+                            if (flags.Argument == null)
                             {
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL005WrongBindingFlags.Descriptor,
-                                        flags.Argument.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
-                                        $" Expected: {correctFlags.ToDisplayString(invocation)}."));
-                            }
-                            else
-                            {
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL005WrongBindingFlags.Descriptor,
-                                        MissingFlagsLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
-                                        $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
                                         REFL008MissingBindingFlags.Descriptor,
@@ -222,6 +217,32 @@ namespace ReflectionAnalyzers
                     ? argumentList.OpenParenToken.GetLocation()
                     : argumentList.CloseParenToken.GetLocation();
             }
+        }
+
+        private static bool HasWrongFlags(ReflectedMember member, Flags flags, out Location location, out string flagText)
+        {
+            if (member.Match == FilterMatch.WrongFlags &&
+                TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var correctFlags))
+            {
+                flagText = correctFlags.ToDisplayString(flags.Argument);
+                if (flags.Argument is ArgumentSyntax argument)
+                {
+                    location = argument.GetLocation();
+                    return true;
+                }
+
+                if (member.Invocation?.ArgumentList is ArgumentListSyntax argumentList)
+                {
+                    location = member.GetX == KnownSymbol.Type.GetConstructor
+                        ? argumentList.OpenParenToken.GetLocation()
+                        : argumentList.CloseParenToken.GetLocation();
+                    return true;
+                }
+            }
+
+            location = null;
+            flagText = null;
+            return false;
         }
 
         private static bool IsNameOf(ArgumentSyntax argument, out ExpressionSyntax expression)
