@@ -104,5 +104,53 @@ namespace RoslynSandbox
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("GetProperty(\"Item\")")]
+        [TestCase("GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void Indexer(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            _ = typeof(Foo).GetProperty(""Item"");
+        }
+
+        public int this[int p1] => 0;
+    }
+}".AssertReplace("GetProperty(\"Item\")", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("GetProperty(\"Bar\")")]
+        [TestCase("GetProperty(\"Bar\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void NamedIndexer(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            _ = typeof(Foo).GetProperty(""Bar"");
+        }
+
+        [IndexerName(""Bar"")]
+        public int this[int p1] => 0;
+    }
+}".AssertReplace("GetProperty(\"Bar\")", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

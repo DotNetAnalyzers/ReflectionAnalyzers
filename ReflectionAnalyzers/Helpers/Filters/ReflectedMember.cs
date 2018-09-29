@@ -89,7 +89,7 @@ namespace ReflectionAnalyzers
                  !flags.HasFlagFast(BindingFlags.Instance) &&
                  !flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
-                foreach (var candidate in type.GetMembers(name.MemberName()))
+                foreach (var candidate in type.GetMembers())
                 {
                     if (!MatchesFilter(candidate, name, flags, types))
                     {
@@ -115,7 +115,7 @@ namespace ReflectionAnalyzers
                 var current = type;
                 while (current != null)
                 {
-                    foreach (var candidate in current.GetMembers(name.MemberName()))
+                    foreach (var candidate in current.GetMembers())
                     {
                         if (!MatchesFilter(candidate, name, flags, types))
                         {
