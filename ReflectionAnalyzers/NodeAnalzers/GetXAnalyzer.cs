@@ -86,6 +86,16 @@ namespace ReflectionAnalyzers
                                 member.Symbol.GetType().Name));
                     }
 
+                    if (IsPreferGetMemberThenAccessor(member, context, out var callText))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL014PreferGetMemberThenAccessor.Descriptor,
+                                invocation.GetNameLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), callText),
+                                callText));
+                    }
+
                     if (member.Match == FilterMatch.UseContainingType)
                     {
                         context.ReportDiagnostic(
@@ -96,16 +106,6 @@ namespace ReflectionAnalyzers
                                     nameof(ISymbol.ContainingType),
                                     member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
                                 member.Symbol.ContainingType.Name));
-                    }
-
-                    if (IsPreferGetMemberThenAccessor(member, context, out var callText))
-                    {
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL014PreferGetMemberThenAccessor.Descriptor,
-                                invocation.GetNameLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), callText),
-                                callText));
                     }
 
                     if (ShouldUseNameof(member, name, context, out location, out var nameString))
