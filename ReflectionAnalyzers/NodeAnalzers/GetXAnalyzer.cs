@@ -98,6 +98,16 @@ namespace ReflectionAnalyzers
                                 member.Symbol.ContainingType.Name));
                     }
 
+                    if (IsPreferGetMemberThenAccessor(member, context, out var callText))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL014PreferGetMemberThenAccessor.Descriptor,
+                                invocation.GetNameLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), callText),
+                                callText));
+                    }
+
                     if (ShouldUseNameof(member, name, context, out location, out var nameString))
                     {
                         context.ReportDiagnostic(
@@ -182,16 +192,6 @@ namespace ReflectionAnalyzers
                                         REFL029MissingTypes.Descriptor,
                                         argumentList.GetLocation(),
                                         ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayString)));
-                            }
-
-                            if (IsPreferGetMemberThenAccessor(invocation, member, context, out var call))
-                            {
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL014PreferGetMemberThenAccessor.Descriptor,
-                                        invocation.GetNameLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), call),
-                                        call));
                             }
 
                             break;
@@ -450,42 +450,42 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool IsPreferGetMemberThenAccessor(InvocationExpressionSyntax getX, ReflectedMember member, SyntaxNodeAnalysisContext context, out string call)
+        private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, SyntaxNodeAnalysisContext context, out string call)
         {
-            if (member.Symbol is IMethodSymbol targetMethod &&
-                getX.Expression is MemberAccessExpressionSyntax memberAccess)
+            if (member.Symbol is IMethodSymbol method &&
+                member.Invocation?.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                if (targetMethod.AssociatedSymbol is IPropertySymbol property &&
+                if (method.AssociatedSymbol is IPropertySymbol property &&
                     TryGetExpectedFlags(property.ContainingType, property, out var flags))
                 {
-                    if (targetMethod.Name.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
+                    if (method.Name.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
                     {
                         call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString(memberAccess)}).GetMethod";
                         return true;
                     }
 
-                    if (targetMethod.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase))
+                    if (method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase))
                     {
                         call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString(memberAccess)}).SetMethod";
                         return true;
                     }
                 }
-                else if (targetMethod.AssociatedSymbol is IEventSymbol eventSymbol &&
+                else if (method.AssociatedSymbol is IEventSymbol eventSymbol &&
                          TryGetExpectedFlags(eventSymbol.ContainingType, eventSymbol, out flags))
                 {
-                    if (targetMethod.Name.StartsWith("add_", StringComparison.OrdinalIgnoreCase))
+                    if (method.Name.StartsWith("add_", StringComparison.OrdinalIgnoreCase))
                     {
                         call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).AddMethod";
                         return true;
                     }
 
-                    if (targetMethod.Name.StartsWith("remove_", StringComparison.OrdinalIgnoreCase))
+                    if (method.Name.StartsWith("remove_", StringComparison.OrdinalIgnoreCase))
                     {
                         call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).RemoveMethod";
                         return true;
                     }
 
-                    if (targetMethod.Name.StartsWith("raise_", StringComparison.OrdinalIgnoreCase))
+                    if (method.Name.StartsWith("raise_", StringComparison.OrdinalIgnoreCase))
                     {
                         call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).RaiseMethod";
                         return true;
