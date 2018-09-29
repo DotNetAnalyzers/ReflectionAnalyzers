@@ -41,7 +41,7 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.ArgumentList is ArgumentListSyntax argumentList)
             {
-                switch (TryGetX(context, out var member, out var nameArg, out var memberName, out var flagsArg, out var effectiveFlags, out var typesArg))
+                switch (TryGetX(context, out var member, out var nameArg, out var memberName, out var flags, out var typesArg))
                 {
                     case GetXResult.NoMatch:
                         context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, nameArg.GetLocation(), member.ReflectedType, memberName));
@@ -52,12 +52,12 @@ namespace ReflectionAnalyzers
                         break;
 
                     case GetXResult.WrongFlags when TryGetExpectedFlags(member, out var correctFlags):
-                        if (flagsArg != null)
+                        if (flags.Argument != null)
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
                                     REFL005WrongBindingFlags.Descriptor,
-                                    flagsArg.GetLocation(),
+                                    flags.Argument.GetLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
                                     $" Expected: {correctFlags.ToDisplayString(invocation)}."));
                         }
@@ -82,18 +82,18 @@ namespace ReflectionAnalyzers
                     case GetXResult.Single:
                         if (TryGetExpectedFlags(member, out var expectedFlags))
                         {
-                            if (flagsArg != null &&
-                                HasRedundantFlag(member, effectiveFlags))
+                            if (flags.Argument != null &&
+                                HasRedundantFlag(member, flags))
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
                                         REFL006RedundantBindingFlags.Descriptor,
-                                        flagsArg.GetLocation(),
+                                        flags.Argument.GetLocation(),
                                         ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
                                         $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
                             }
 
-                            if (flagsArg == null)
+                            if (flags.Argument == null)
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
@@ -102,12 +102,12 @@ namespace ReflectionAnalyzers
                                         ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
                                         $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
                             }
-                            else if (HasMissingFlag(member, effectiveFlags))
+                            else if (HasMissingFlag(member, flags))
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
                                         REFL008MissingBindingFlags.Descriptor,
-                                        flagsArg.GetLocation(),
+                                        flags.Argument.GetLocation(),
                                         ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
                                         $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
                             }
@@ -191,19 +191,19 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out ArgumentSyntax nameArg, out string targetName, out ArgumentSyntax flagsArg, out BindingFlags effectiveFlags, out ArgumentSyntax typesArg)
+        private static GetXResult TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out ArgumentSyntax nameArg, out string targetName, out Flags flags, out ArgumentSyntax typesArg)
         {
             nameArg = null;
             targetName = null;
             typesArg = null;
             if (context.Node is InvocationExpressionSyntax candidate)
             {
-                var result = GetX.TryMatchGetConstructor(candidate, context, out member, out flagsArg, out effectiveFlags, out typesArg, out _) ??
-                             GetX.TryMatchGetEvent(candidate, context, out member, out nameArg, out targetName, out flagsArg, out effectiveFlags) ??
-                             GetX.TryMatchGetField(candidate, context, out member, out nameArg, out targetName, out flagsArg, out effectiveFlags) ??
-                             GetX.TryMatchGetMethod(candidate, context, out member, out nameArg, out targetName, out flagsArg, out effectiveFlags, out typesArg, out _) ??
-                             GetX.TryMatchGetNestedType(candidate, context, out member, out nameArg, out targetName, out flagsArg, out effectiveFlags) ??
-                             GetX.TryMatchGetProperty(candidate, context, out member, out nameArg, out targetName, out flagsArg, out effectiveFlags);
+                var result = GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out typesArg, out _) ??
+                             GetX.TryMatchGetEvent(candidate, context, out member, out nameArg, out targetName, out flags) ??
+                             GetX.TryMatchGetField(candidate, context, out member, out nameArg, out targetName, out flags) ??
+                             GetX.TryMatchGetMethod(candidate, context, out member, out nameArg, out targetName, out flags, out typesArg, out _) ??
+                             GetX.TryMatchGetNestedType(candidate, context, out member, out nameArg, out targetName, out flags) ??
+                             GetX.TryMatchGetProperty(candidate, context, out member, out nameArg, out targetName, out flags);
                 if (result != null)
                 {
                     return result.Value;
@@ -213,8 +213,7 @@ namespace ReflectionAnalyzers
             member = default(ReflectedMember);
             nameArg = null;
             targetName = null;
-            flagsArg = null;
-            effectiveFlags = BindingFlags.Default;
+            flags = default(Flags);
             return GetXResult.Unknown;
         }
 
@@ -328,21 +327,26 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        private static bool HasRedundantFlag(ReflectedMember member, BindingFlags flags)
+        private static bool HasRedundantFlag(ReflectedMember member, Flags flags)
         {
+            if (flags.Argument == null)
+            {
+                return false;
+            }
+
             if (member.Symbol is IMethodSymbol method &&
                 method.MethodKind == MethodKind.Constructor &&
-                (flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
-                 flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
+                (flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                 flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
                 return true;
             }
 
             if (member.Symbol is ITypeSymbol &&
-                (flags.HasFlagFast(BindingFlags.Instance) ||
-                 flags.HasFlagFast(BindingFlags.Static) ||
-                 flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
-                 flags.HasFlagFast(BindingFlags.FlattenHierarchy)))
+                (flags.Explicit.HasFlagFast(BindingFlags.Instance) ||
+                 flags.Explicit.HasFlagFast(BindingFlags.Static) ||
+                 flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly) ||
+                 flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)))
             {
                 return true;
             }
@@ -353,23 +357,23 @@ namespace ReflectionAnalyzers
             }
 
             return (member.Symbol.DeclaredAccessibility == Accessibility.Public &&
-                    flags.HasFlagFast(BindingFlags.NonPublic)) ||
+                    flags.Explicit.HasFlagFast(BindingFlags.NonPublic)) ||
                    (member.Symbol.DeclaredAccessibility != Accessibility.Public &&
-                    flags.HasFlagFast(BindingFlags.Public)) ||
+                    flags.Explicit.HasFlagFast(BindingFlags.Public)) ||
                    (member.Symbol.IsStatic &&
-                    flags.HasFlagFast(BindingFlags.Instance)) ||
+                    flags.Explicit.HasFlagFast(BindingFlags.Instance)) ||
                    (!member.Symbol.IsStatic &&
-                    flags.HasFlagFast(BindingFlags.Static)) ||
+                    flags.Explicit.HasFlagFast(BindingFlags.Static)) ||
                    (!member.Symbol.IsStatic &&
-                    flags.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
+                    flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
                    (Equals(member.Symbol.ContainingType, member.ReflectedType) &&
-                    flags.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
+                    flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
                    (!Equals(member.Symbol.ContainingType, member.ReflectedType) &&
-                    flags.HasFlagFast(BindingFlags.DeclaredOnly)) ||
-                   flags.HasFlagFast(BindingFlags.IgnoreCase);
+                    flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly)) ||
+                   flags.Explicit.HasFlagFast(BindingFlags.IgnoreCase);
         }
 
-        private static bool HasMissingFlag(ReflectedMember member, BindingFlags flags)
+        private static bool HasMissingFlag(ReflectedMember member, Flags flags)
         {
             if (member.Symbol is ITypeSymbol ||
                 (member.Symbol is IMethodSymbol method &&
@@ -379,7 +383,7 @@ namespace ReflectionAnalyzers
             }
 
             return Equals(member.Symbol.ContainingType, member.ReflectedType) &&
-                   !flags.HasFlagFast(BindingFlags.DeclaredOnly);
+                   !flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly);
         }
 
         private static bool HasMissingTypes(InvocationExpressionSyntax invocation, IMethodSymbol member, SyntaxNodeAnalysisContext context, out string typesString)
@@ -387,7 +391,7 @@ namespace ReflectionAnalyzers
             if (member != null &&
                 !member.IsGenericMethod)
             {
-                if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getMethod))
+                if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out _))
                 {
                     if (member.Parameters.Length == 0)
                     {
