@@ -138,6 +138,24 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [Test]
+        public void Finalizer()
+        {
+            var code = @"
+class C
+{
+    void M()
+    {
+        typeof(C).GetMethod(""Finalize"");
+    }
+
+    ~C()
+    {
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [TestCase("GetNestedType(\"Generic`1\", BindingFlags.Public)")]
         public void GetNestedGenericType(string call)
         {

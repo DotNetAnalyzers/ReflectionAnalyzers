@@ -324,8 +324,7 @@ namespace ReflectionAnalyzers
         private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameText)
         {
             if (name.Argument is ArgumentSyntax argument &&
-                member.Symbol != null &&
-                member.Symbol.CanBeReferencedByName &&
+                CanNameof(member.Symbol) &&
                 (member.Match == FilterMatch.Single ||
                  member.Match == FilterMatch.Ambiguous ||
                  member.Match == FilterMatch.WrongFlags ||
@@ -354,6 +353,23 @@ namespace ReflectionAnalyzers
             location = null;
             nameText = null;
             return false;
+
+            bool CanNameof(ISymbol symbol)
+            {
+                if (symbol == null ||
+                    !symbol.CanBeReferencedByName)
+                {
+                    return false;
+                }
+
+                switch (member.Symbol)
+                {
+                        case IMethodSymbol method:
+                            return method.MethodKind == MethodKind.Ordinary;
+                        default:
+                            return true;
+                }
+            }
 
             bool TryGetSymbol(ExpressionSyntax expression, out ISymbol symbol)
             {
