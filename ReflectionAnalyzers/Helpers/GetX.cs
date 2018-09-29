@@ -46,7 +46,7 @@ namespace ReflectionAnalyzers
                 invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetType(invocation, context, out var type, out _) &&
                 IsKnownSignature(invocation, getX) &&
-                TryGetFlags(invocation, getX, context, out flags) &&
+                Flags.TryCreate(invocation, getX, context, out flags) &&
                 TryGetTypesOrDefault(invocation, getX, context, out typesArg, out types))
             {
                 var result = TryGetMember(getX, type, ".ctor", flags.Effective, types, context, out var symbol);
@@ -106,7 +106,7 @@ namespace ReflectionAnalyzers
                 TryGetType(invocation, context, out var type, out _) &&
                 IsKnownSignature(invocation, getX) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
-                TryGetFlags(invocation, getX, context, out flags) &&
+                Flags.TryCreate(invocation, getX, context, out flags) &&
                 TryGetTypesOrDefault(invocation, getX, context, out typesArg, out types))
             {
                 if (type == KnownSymbol.Delegate &&
@@ -444,11 +444,6 @@ namespace ReflectionAnalyzers
             }
         }
 
-        internal static bool TryGetDefaultBindingFlags(QualifiedMethod getX, out BindingFlags defaultFlags)
-        {
-            return TryGetDefaultBindingFlags(getX.Name, out defaultFlags);
-        }
-
         /// <summary>
         /// Defensive check to only handle known cases. Don't know how the binder works.
         /// </summary>
@@ -490,7 +485,7 @@ namespace ReflectionAnalyzers
                 invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX) &&
                 TryGetType(invocation, context, out var type, out _) &&
                 TryGetName(invocation, getX, context, out nameArg, out targetName) &&
-                TryGetFlags(invocation, getX, context, out flags))
+                Flags.TryCreate(invocation, getX, context, out flags))
             {
                 var result = TryGetMember(getX, type, targetName, flags.Effective, null, context, out var symbol);
                 member = new ReflectedMember(type, symbol);
@@ -507,60 +502,6 @@ namespace ReflectionAnalyzers
             return getX.TryFindParameter(KnownSymbol.String, out var parameter) &&
                    invocation.TryFindArgument(parameter, out argument) &&
                    context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out name);
-        }
-
-        private static bool TryGetFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out Flags flags)
-        {
-            if (TryGetBindingFlags(invocation, getX, context, out var argument, out var explicitFlags))
-            {
-                _ = TryGetDefaultBindingFlags(getX.MetadataName, out var defaultFlags);
-                flags = new Flags(argument, explicitFlags, defaultFlags);
-                return true;
-            }
-            else if (TryGetDefaultBindingFlags(getX.MetadataName, out var defaultFlags))
-            {
-                flags = new Flags(argument, (BindingFlags)(-1), defaultFlags);
-                return true;
-            }
-
-            flags = default(Flags);
-            return false;
-        }
-
-        private static bool TryGetDefaultBindingFlags(string getXName, out BindingFlags flags)
-        {
-            switch (getXName)
-            {
-                case "GetConstructor":
-                    flags = BindingFlags.Public | BindingFlags.Instance;
-                    return true;
-                case "GetField":
-                case "GetFields":
-                case "GetEvent":
-                case "GetEvents":
-                case "GetMethod":
-                case "GetMethods":
-                case "GetMember":
-                case "GetMembers":
-                case "GetNestedType": // https://referencesource.microsoft.com/#mscorlib/system/type.cs,751
-                case "GetNestedTypes":
-                case "GetProperty":
-                case "GetProperties":
-                    flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public;
-                    return true;
-            }
-
-            flags = 0;
-            return false;
-        }
-
-        private static bool TryGetBindingFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out BindingFlags bindingFlags)
-        {
-            argument = null;
-            bindingFlags = 0;
-            return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
-                   invocation.TryFindArgument(parameter, out argument) &&
-                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
         }
 
         private static bool TryGetTypesOrDefault(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax typesArg, out IReadOnlyList<ITypeSymbol> types)
