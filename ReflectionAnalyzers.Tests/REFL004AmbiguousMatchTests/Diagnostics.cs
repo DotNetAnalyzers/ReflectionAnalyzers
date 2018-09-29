@@ -70,5 +70,28 @@ namespace RoslynSandbox
             var message = "More than one member is matching the criteria.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
+
+        [TestCase("GetMethod↓(\"op_Explicit\")")]
+        [TestCase("GetMethod↓(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static)")]
+        public void OverloadedOperatorExplicit(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class C
+    {
+        void M()
+        {
+            typeof(C).GetMethod↓(""op_Explicit"");
+        }
+
+        public static explicit operator int(C c) => default;
+        public static explicit operator C(int c) => default;
+    }
+}".AssertReplace("GetMethod↓(\"op_Explicit\")", call);
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
