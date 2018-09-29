@@ -75,6 +75,16 @@ namespace ReflectionAnalyzers
                                 $" Expected: {flagsText}."));
                     }
 
+                    if (HasMissingFlags(member, flags, out location, out flagsText))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL008MissingBindingFlags.Descriptor,
+                                location,
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
+                                $" Expected: {flagsText}."));
+                    }
+
                     if (member.Match == FilterMatch.WrongMemberType)
                     {
                         context.ReportDiagnostic(
@@ -154,52 +164,6 @@ namespace ReflectionAnalyzers
                                 argumentList.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayText)));
                     }
-
-                    switch (member.Match)
-                    {
-                        case FilterMatch.WrongFlags when TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var correctFlags):
-                            if (flags.Argument == null)
-                            {
-                                context.ReportDiagnostic(
-                                    Diagnostic.Create(
-                                        REFL008MissingBindingFlags.Descriptor,
-                                        MissingFlagsLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), correctFlags.ToDisplayString(invocation)),
-                                        $" Expected: {correctFlags.ToDisplayString(invocation)}."));
-                            }
-
-                            break;
-
-                        case FilterMatch.Single:
-                            if (TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
-                            {
-                                if (flags.Argument == null)
-                                {
-                                    context.ReportDiagnostic(
-                                        Diagnostic.Create(
-                                            REFL008MissingBindingFlags.Descriptor,
-                                            MissingFlagsLocation(),
-                                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
-                                            $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
-                                }
-                                else if (HasMissingFlag(member, flags))
-                                {
-                                    context.ReportDiagnostic(
-                                        Diagnostic.Create(
-                                            REFL008MissingBindingFlags.Descriptor,
-                                            flags.Argument.GetLocation(),
-                                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags.ToDisplayString(invocation)),
-                                            $" Expected: {expectedFlags.ToDisplayString(invocation)}."));
-                                }
-                            }
-
-
-
-                            break;
-
-                        case FilterMatch.Unknown:
-                            break;
-                    }
                 }
             }
 
@@ -210,10 +174,50 @@ namespace ReflectionAnalyzers
                     ? typeOf.Type.GetLocation()
                     : invocation.Expression.GetLocation();
             }
+        }
+
+        private static bool HasMissingFlags(ReflectedMember member, Flags flags, out Location location, out string flagsText)
+        {
+            if (TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var correctFlags) &&
+                member.Invocation?.ArgumentList is ArgumentListSyntax argumentList &&
+                (member.Match == FilterMatch.Single || member.Match == FilterMatch.WrongFlags))
+            {
+                if (flags.Argument == null)
+                {
+                    location = MissingFlagsLocation();
+                    flagsText = correctFlags.ToDisplayString(member.Invocation);
+                    return true;
+                }
+
+                if (flags.Argument is ArgumentSyntax argument &&
+                    HasMissingFlag())
+                {
+                    location = argument.GetLocation();
+                    flagsText = correctFlags.ToDisplayString(member.Invocation);
+                    return true;
+                }
+            }
+
+            location = null;
+            flagsText = null;
+            return false;
+
+            bool HasMissingFlag()
+            {
+                if (member.Symbol is ITypeSymbol ||
+                    (member.Symbol is IMethodSymbol method &&
+                     method.MethodKind == MethodKind.Constructor))
+                {
+                    return false;
+                }
+
+                return Equals(member.Symbol.ContainingType, member.ReflectedType) &&
+                       !flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly);
+            }
 
             Location MissingFlagsLocation()
             {
-                return invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out _)
+                return member.GetX == KnownSymbol.Type.GetConstructor
                     ? argumentList.OpenParenToken.GetLocation()
                     : argumentList.CloseParenToken.GetLocation();
             }
@@ -559,19 +563,6 @@ namespace ReflectionAnalyzers
             }
 
             return true;
-        }
-
-        private static bool HasMissingFlag(ReflectedMember member, Flags flags)
-        {
-            if (member.Symbol is ITypeSymbol ||
-                (member.Symbol is IMethodSymbol method &&
-                 method.MethodKind == MethodKind.Constructor))
-            {
-                return false;
-            }
-
-            return Equals(member.Symbol.ContainingType, member.ReflectedType) &&
-                   !flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly);
         }
 
         private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out string typesString)
