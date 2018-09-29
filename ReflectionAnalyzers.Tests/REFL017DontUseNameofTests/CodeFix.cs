@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofTests
 
     internal class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new NameofAnalyzer();
+        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new NameofFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameof.Descriptor);
 

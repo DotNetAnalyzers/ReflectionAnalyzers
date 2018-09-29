@@ -24,6 +24,7 @@ namespace ReflectionAnalyzers
             REFL014PreferGetMemberThenAccessor.Descriptor,
             REFL015UseContainingType.Descriptor,
             REFL016UseNameof.Descriptor,
+            REFL017DontUseNameof.Descriptor,
             REFL018ExplicitImplementation.Descriptor,
             REFL019NoMemberMatchesTheTypes.Descriptor,
             REFL029MissingTypes.Descriptor);
@@ -104,6 +105,15 @@ namespace ReflectionAnalyzers
                                 REFL016UseNameof.Descriptor,
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(NameSyntax), nameString)));
+                    }
+
+                    if (ShouldUseStringLiteralName(member, name, context, out location, out nameString))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL017DontUseNameof.Descriptor,
+                                location,
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(SyntaxKind.StringLiteralExpression), nameString)));
                     }
 
                     switch (member.Match)
@@ -214,6 +224,22 @@ namespace ReflectionAnalyzers
             }
         }
 
+        private static bool IsNameOf(ArgumentSyntax argument, out ExpressionSyntax expression)
+        {
+            if (argument.Expression is InvocationExpressionSyntax candidate &&
+                candidate.ArgumentList is ArgumentListSyntax argumentList &&
+                argumentList.Arguments.TrySingle(out var arg) &&
+                candidate.Expression is IdentifierNameSyntax identifierName &&
+                identifierName.Identifier.ValueText == "nameof")
+            {
+                expression = arg.Expression;
+                return true;
+            }
+
+            expression = null;
+            return false;
+        }
+
         private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameString)
         {
             if (name.Argument is ArgumentSyntax argument &&
@@ -232,7 +258,7 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                if (IsNameOf(out var expression) &&
+                if (IsNameOf(argument, out var expression) &&
                     TryGetSymbol(expression, out var symbol) &&
                     !symbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.Compilation) &&
                     TryGetTargetName(out target))
@@ -246,22 +272,6 @@ namespace ReflectionAnalyzers
             location = null;
             nameString = null;
             return false;
-
-            bool IsNameOf(out ExpressionSyntax result)
-            {
-                if (argument.Expression is InvocationExpressionSyntax candidate &&
-                    candidate.ArgumentList is ArgumentListSyntax argumentList &&
-                    argumentList.Arguments.TrySingle(out var arg) &&
-                    candidate.Expression is IdentifierNameSyntax identifierName &&
-                    identifierName.Identifier.ValueText == "nameof")
-                {
-                    result = arg.Expression;
-                    return true;
-                }
-
-                result = null;
-                return false;
-            }
 
             bool TryGetSymbol(ExpressionSyntax expression, out ISymbol symbol)
             {
@@ -327,6 +337,23 @@ namespace ReflectionAnalyzers
 
                 return !context.Node.TryFirstAncestor<AttributeArgumentListSyntax>(out _);
             }
+        }
+
+        private static bool ShouldUseStringLiteralName(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameString)
+        {
+            if (name.Argument is ArgumentSyntax argument &&
+                IsNameOf(argument, out _) &&
+                (member.Match == FilterMatch.Unknown ||
+                 member.Match == FilterMatch.NoMatch))
+            {
+                nameString = name.MetadataName;
+                location = argument.GetLocation();
+                return true;
+            }
+
+            location = null;
+            nameString = null;
+            return false;
         }
 
         private static bool TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
