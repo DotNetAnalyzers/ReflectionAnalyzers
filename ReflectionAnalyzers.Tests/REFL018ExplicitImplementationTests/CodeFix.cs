@@ -58,5 +58,45 @@ namespace RoslynSandbox
             var message = "Dispose is explicitly implemented.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
+
+        [TestCase("GetMethod(\"ToBoolean\")")]
+        [TestCase("GetMethod(nameof(IConvertible.ToBoolean))")]
+        [TestCase("GetMethod(\"ToBoolean\", BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"ToBoolean\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void WhenExplicitImplementationPublicNotInSource(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(string).GetMethod(""ToBoolean"");
+        }
+    }
+}".AssertReplace("GetMethod(\"ToBoolean\")", call);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(IConvertible).GetMethod(""ToBoolean"");
+        }
+    }
+}".AssertReplace("GetMethod(\"ToBoolean\")", call);
+
+            var message = "ToBoolean is explicitly implemented.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }
