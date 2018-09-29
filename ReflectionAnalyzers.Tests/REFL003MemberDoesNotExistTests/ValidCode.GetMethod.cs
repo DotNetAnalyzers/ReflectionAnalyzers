@@ -49,7 +49,7 @@ namespace RoslynSandbox
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static)")]
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-            public void ExlucdeNonPublicNotInSource(string invocation)
+            public void ExcludeNonPublicNotInSource(string invocation)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -255,6 +255,27 @@ namespace RoslynSandbox
         public int Bar { get; set; }
     }
 }".AssertReplace("get_Bar", name);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [TestCase("Delegate")]
+            [TestCase("Action")]
+            [TestCase("Action<int>")]
+            public void DelegateInvoke(string type)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public Foo(Delegate foo)
+        {
+            var methodInfo = foo.GetType().GetMethod(""Invoke"");
+        }
+    }
+}".AssertReplace("Delegate", type);
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
         }
