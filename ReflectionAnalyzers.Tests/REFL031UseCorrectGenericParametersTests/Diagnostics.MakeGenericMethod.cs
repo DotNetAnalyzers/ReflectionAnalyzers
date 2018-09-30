@@ -23,7 +23,7 @@ namespace RoslynSandbox
     {
         public static void Bar<T>()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod↓(typeof(int), typeof(double));
+            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod↓(typeof(int), typeof(double));
         }
     }
 }";
@@ -57,7 +57,7 @@ namespace RoslynSandbox
         public static void Bar<T>()
             where T : class
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod(↓typeof(int));
+            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(↓typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint)

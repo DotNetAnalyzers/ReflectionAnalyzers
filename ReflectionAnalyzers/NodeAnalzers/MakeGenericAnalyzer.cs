@@ -29,11 +29,11 @@ namespace ReflectionAnalyzers
                 (TypeArguments.TryCreate(invocation, KnownSymbol.MethodInfo.MakeGenericType, context, out var typeArguments) ||
                  TypeArguments.TryCreate(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context, out typeArguments)))
             {
-                if (typeArguments.GenericDefinition.TypeParameters.Length != typeArguments.Types.Length)
+                if (typeArguments.Parameters.Length != typeArguments.Arguments.Length)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, invocation.ArgumentList.GetLocation()));
                 }
-                else if (!typeArguments.TryFindMisMatch(context.Compilation, out var mismatch))
+                else if (typeArguments.TryFindMisMatch(context.Compilation, out var mismatch))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, mismatch.GetLocation()));
                 }
@@ -44,25 +44,24 @@ namespace ReflectionAnalyzers
         {
             internal readonly ArgumentListSyntax ArgumentList;
 #pragma warning disable RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
-            internal readonly INamedTypeSymbol GenericDefinition;
-            internal readonly ImmutableArray<ITypeSymbol> Types;
+            internal readonly ImmutableArray<ITypeParameterSymbol> Parameters;
+            internal readonly ImmutableArray<ITypeSymbol> Arguments;
 #pragma warning restore RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
 
-            public TypeArguments(ArgumentListSyntax argumentList, INamedTypeSymbol genericDefinition, ImmutableArray<ITypeSymbol> types)
+            public TypeArguments(ArgumentListSyntax argumentList, ImmutableArray<ITypeParameterSymbol> parameters, ImmutableArray<ITypeSymbol> arguments)
             {
                 this.ArgumentList = argumentList;
-                this.GenericDefinition = genericDefinition;
-                this.Types = types;
+                this.Parameters = parameters;
+                this.Arguments = arguments;
             }
 
             internal static bool TryCreate(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context, out TypeArguments typeArguments)
             {
                 if (invocation?.ArgumentList is ArgumentListSyntax argumentList &&
-                    invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                    invocation.TryGetTarget(KnownSymbol.MethodInfo.MakeGenericType, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
+                    invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
                     makeGeneric.Parameters.Length == 1 &&
-                    makeGeneric.TryFindParameter("typeArguments", out var parameter) &&
-                    GetX.TryGetType(memberAccess, context, out var type) &&
+                    makeGeneric.TryFindParameter("typeArguments", out _) &&
+                    TryGetParameters(invocation, expected, context, out var type) &&
                     Array.TryGetTypes(argumentList, context, out var types))
                 {
                     typeArguments = new TypeArguments(argumentList, type, types);
@@ -75,9 +74,9 @@ namespace ReflectionAnalyzers
 
             internal bool TryFindMisMatch(Compilation compilation, out ArgumentSyntax argument)
             {
-                for (var i = 0; i < this.Types.Length; i++)
+                for (var i = 0; i < this.Arguments.Length; i++)
                 {
-                    if (!Type.SatisfiesConstraints(this.Types[i], this.GenericDefinition.TypeParameters[i], compilation))
+                    if (!Type.SatisfiesConstraints(this.Arguments[i], this.Parameters[i], compilation))
                     {
                         _ = this.ArgumentList.Arguments.TryElementAt(i, out argument);
                         return true;
@@ -85,6 +84,30 @@ namespace ReflectionAnalyzers
                 }
 
                 argument = null;
+                return false;
+            }
+
+            private static bool TryGetParameters(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeParameterSymbol> parameters)
+            {
+                if (invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+                {
+                    if (expected.Name == KnownSymbol.Type.GetNestedType.Name &&
+                        GetX.TryGetType(memberAccess, context, out var type) &&
+                        type.TypeParameters.Length > 0)
+                    {
+                        parameters = type.TypeParameters;
+                        return true;
+                    }
+
+                    if (expected.Name == KnownSymbol.MethodInfo.MakeGenericMethod.Name &&
+                        GetX.TryGetMethodInfo(memberAccess, context, out var methodInfo) &&
+                        methodInfo.TypeParameters.Length > 0)
+                    {
+                        parameters = methodInfo.TypeParameters;
+                        return true;
+                    }
+                }
+
                 return false;
             }
         }
