@@ -66,7 +66,6 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
             }
 
-            [Explicit("temp")]
             [Test]
             public void NestedType()
             {

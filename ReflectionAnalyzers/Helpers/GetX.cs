@@ -41,6 +41,22 @@ namespace ReflectionAnalyzers
             return false;
         }
 
+        internal static bool TryGetNestedType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out INamedTypeSymbol type)
+        {
+            if (expression is MemberAccessExpressionSyntax memberAccess &&
+                TryFindInvocation(memberAccess, KnownSymbol.Type.GetNestedType, context, out var invocation) &&
+                TryMatchGetNestedType(invocation, context, out var nestedType, out _, out _) &&
+                nestedType.Match == FilterMatch.Single &&
+                nestedType.Symbol is INamedTypeSymbol namedNested)
+            {
+                type = namedNested;
+                return true;
+            }
+
+            type = null;
+            return false;
+        }
+
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
         /// </summary>

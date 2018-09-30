@@ -110,6 +110,12 @@ namespace ReflectionAnalyzers
                         parameters = (type as INamedTypeSymbol)?.TypeParameters ?? ImmutableArray<ITypeParameterSymbol>.Empty;
                         return true;
                     }
+
+                    if (GetX.TryGetNestedType(memberAccess, context, out var nestedType))
+                    {
+                        parameters = nestedType.TypeParameters;
+                        return true;
+                    }
                 }
 
                 return false;
