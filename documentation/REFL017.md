@@ -46,7 +46,7 @@ public class Foo
 }
 ```
 
-In the above example we are getting the `private` property [`AggregateException.InnerExceptionCount`](https://referencesource.microsoft.com/#mscorlib/system/AggregateException.cs,466) but using `nameof(this.InnerExceptionCount) to get the name. 
+In the above example we are getting the `private` property [`AggregateException.InnerExceptionCount`](https://referencesource.microsoft.com/#mscorlib/system/AggregateException.cs,466) but using `nameof(this.InnerExceptionCount)` to get the name. This rule checks that the same member is used. 
 
 ## How to fix violations
 
