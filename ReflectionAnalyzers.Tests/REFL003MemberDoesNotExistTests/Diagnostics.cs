@@ -13,12 +13,12 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         [TestCase("new Foo().GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("GetType().GetMethod(↓\"MISSING\")")]
-        public void MissingMethod(string type)
+        public void MissingMethodWhenSealed(string type)
         {
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    public sealed class Foo
     {
         public Foo()
         {
@@ -28,6 +28,68 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Foo).GetMethod(↓nameof(Foo))", type);
             var message = "The type RoslynSandbox.Foo does not have a member named MISSING.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
+
+        [Test]
+        public void MissingMethodWhenStruct()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public struct Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(↓""MISSING"");
+        }
+    }
+}";
+            var message = "The type RoslynSandbox.Foo does not have a member named MISSING.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
+
+        [Test]
+        public void MissingMethodWhenStatic()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public static class Foo
+    {
+        public void Bar()
+        {
+            var methodInfo = typeof(Foo).GetMethod(↓""MISSING"");
+        }
+    }
+}";
+            var message = "The type RoslynSandbox.Foo does not have a member named MISSING.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
+
+        [Test]
+        public void MissingMethodWhenInterface()
+        {
+            var interfaceCode = @"
+namespace RoslynSandbox
+{
+    public interface IFoo
+    {
+    }
+}";
+
+            var code = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(IFoo).GetMethod(↓""MISSING"");
+        }
+    }
+}";
+            var message = "The type RoslynSandbox.IFoo does not have a member named MISSING.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), interfaceCode, code);
         }
 
         [TestCase("typeof(string).GetMethod(↓\"MISSING\")")]
@@ -60,7 +122,7 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    public sealed class Foo
     {
         public Foo()
         {
@@ -79,7 +141,7 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    public sealed class Foo
     {
         public Foo()
         {
@@ -118,7 +180,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class CustomAggregateException : AggregateException
+    public sealed class CustomAggregateException : AggregateException
     {
         private readonly int value;
     }
@@ -176,7 +238,7 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
-    public class Foo
+    public sealed class Foo
     {
         public Foo()
         {

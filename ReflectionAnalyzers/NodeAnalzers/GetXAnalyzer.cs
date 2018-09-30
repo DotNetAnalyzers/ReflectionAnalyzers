@@ -20,6 +20,7 @@ namespace ReflectionAnalyzers
             REFL005WrongBindingFlags.Descriptor,
             REFL006RedundantBindingFlags.Descriptor,
             REFL008MissingBindingFlags.Descriptor,
+            REFL009MemberCantBeFound.Descriptor,
             REFL013MemberIsOfWrongType.Descriptor,
             REFL014PreferGetMemberThenAccessor.Descriptor,
             REFL015UseContainingType.Descriptor,
@@ -47,7 +48,18 @@ namespace ReflectionAnalyzers
                 {
                     if (member.Match == FilterMatch.NoMatch)
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
+                        if (member.ReflectedType?.IsSealed == true ||
+                            member.ReflectedType?.IsStatic == true ||
+                            member.ReflectedType?.TypeKind == TypeKind.Interface ||
+                            member.GetX == KnownSymbol.Type.GetNestedType ||
+                            member.GetX == KnownSymbol.Type.GetConstructor)
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
+                        }
+                        else
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL009MemberCantBeFound.Descriptor, name.Argument.GetLocation(), name.MetadataName, member.ReflectedType));
+                        }
                     }
 
                     if (member.Match == FilterMatch.Ambiguous)

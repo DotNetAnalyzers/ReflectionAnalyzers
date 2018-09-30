@@ -41,6 +41,10 @@ Analyzers checking System.Reflection
     <td>Specify binding flags for better performance and less fragile code.</td>
   </tr>
   <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL009.md">REFL009</a></td>
+    <td>The referenced member is not known to exist.</td>
+  </tr>
+  <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL010.md">REFL010</a></td>
     <td>Prefer the generic extension method GetCustomAttribute<T>.</td>
   </tr>
