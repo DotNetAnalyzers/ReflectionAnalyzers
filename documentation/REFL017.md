@@ -32,11 +32,23 @@ Don't use nameof.
 
 ## Motivation
 
-ADD MOTIVATION HERE
+```cs
+public class Foo
+{
+    public Foo()
+    {
+        var member = typeof(AggregateException).GetProperty(↓nameof(this.InnerExceptionCount), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+    }
+
+    public int InnerExceptionCount => 0;
+}
+```
+
+In the above example we are getting the `private` property [`AggregateException.InnerExceptionCount`](https://referencesource.microsoft.com/#mscorlib/system/AggregateException.cs,466) but using `nameof(this.InnerExceptionCount) to get the name. 
 
 ## How to fix violations
 
-ADD HOW TO FIX VIOLATIONS HERE
+Use the code fix.
 
 <!-- start generated config severity -->
 ## Configure severity
