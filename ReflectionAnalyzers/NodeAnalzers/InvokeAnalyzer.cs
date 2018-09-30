@@ -107,10 +107,17 @@ namespace ReflectionAnalyzers
                     }
 
                     if (invoke.TryFindParameter("obj", out var objParameter) &&
-                        invocation.TryFindArgument(objParameter, out var objArg) &&
-                        objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                        invocation.TryFindArgument(objParameter, out var objArg))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), "Use overload of Invoke without obj parameter."));
+                        if (objArg.Expression.IsKind(SyntaxKind.NullLiteralExpression))
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), "Use overload of Invoke without obj parameter."));
+                        }
+                        else if (!context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var instanceType) ||
+                            (instanceType != KnownSymbol.Object && !instanceType.Equals(ctor.ContainingType)))
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Use an instance of type {ctor.ContainingType}."));
+                        }
                     }
                 }
             }
