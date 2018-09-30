@@ -45,7 +45,6 @@ namespace RoslynSandbox
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("typeof(Foo).GetMethod(\"MISSING\")")]
             [TestCase("new Foo().GetType().GetMethod(\"MISSING\")")]
             [TestCase("this.GetType().GetMethod(\"MISSING\")")]
             [TestCase("GetType().GetMethod(\"MISSING\")")]

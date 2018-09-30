@@ -9,7 +9,6 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL009MemberCantBeFound.Descriptor);
 
-        [TestCase("typeof(Foo).GetMethod(↓\"MISSING\")")]
         [TestCase("foo.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("new Foo().GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
@@ -37,12 +36,9 @@ namespace RoslynSandbox
 {
     class Foo
     {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(↓""set_Bar"");
-        }
-
         public int Bar { get; }
+
+        public static object Get(Foo foo) => foo.GetType().GetMethod(↓""set_Bar"");
     }
 }";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -56,12 +52,9 @@ namespace RoslynSandbox
 {
     class Foo
     {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(↓""get_Bar"");
-        }
-
         public int Bar { set; }
+
+        public static object Get(Foo foo) => foo.GetType().GetMethod(↓""get_Bar"");
     }
 }";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -88,10 +81,8 @@ namespace RoslynSandbox.Dump
 
     class Foo
     {
-        public Foo()
-        {
-            var member = typeof(CustomAggregateException).GetField(↓""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-        }
+        public static object Get(CustomAggregateException foo) => foo.GetType()
+                                                                     .GetField(↓""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
 
@@ -110,13 +101,10 @@ namespace RoslynSandbox
 
     public class Foo
     {
-        public Foo()
-        {
-            _ = typeof(Foo).GetProperty(""Item"");
-        }
-
         [IndexerName(""Bar"")]
         public int this[int i] => 0;
+
+        public static object Get(Foo foo) => foo.GetType().GetProperty(""Item"");
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 

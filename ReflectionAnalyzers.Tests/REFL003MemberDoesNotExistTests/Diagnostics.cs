@@ -10,6 +10,22 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL003MemberDoesNotExist.Descriptor);
 
         [TestCase("typeof(Foo).GetMethod(↓\"MISSING\")")]
+        public void MissingMethodWhenKnownExactType(string type)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        public object Bar(Foo foo) => typeof(Foo).GetMethod(↓""MISSING"");
+    }
+}".AssertReplace("typeof(Foo).GetMethod(↓\"MISSING\")", type);
+
+            var message = "The type RoslynSandbox.Foo does not have a member named MISSING.";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
+
+        [TestCase("typeof(Foo).GetMethod(↓\"MISSING\")")]
         [TestCase("foo.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("new Foo().GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]

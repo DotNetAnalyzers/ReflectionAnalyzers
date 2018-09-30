@@ -52,7 +52,8 @@ namespace ReflectionAnalyzers
                             member.ReflectedType?.IsStatic == true ||
                             member.ReflectedType?.TypeKind == TypeKind.Interface ||
                             member.GetX == KnownSymbol.Type.GetNestedType ||
-                            member.GetX == KnownSymbol.Type.GetConstructor)
+                            member.GetX == KnownSymbol.Type.GetConstructor ||
+                            member.TypeSource is TypeOfExpressionSyntax)
                         {
                             context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
                         }
