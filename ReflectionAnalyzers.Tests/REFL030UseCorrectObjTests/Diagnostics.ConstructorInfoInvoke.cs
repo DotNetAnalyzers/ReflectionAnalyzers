@@ -21,10 +21,8 @@ namespace RoslynSandbox
     {
         public Foo(int value)
         {
-            var foo = (int)typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 });
+            var foo = typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 });
         }
-
-        public static int Bar(int value) => value;
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })", call);
 

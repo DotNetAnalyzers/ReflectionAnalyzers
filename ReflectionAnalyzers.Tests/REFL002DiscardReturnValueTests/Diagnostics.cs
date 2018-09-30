@@ -76,5 +76,37 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)")]
+        [TestCase("type.GetConstructor(new[] { typeof(int) }).Invoke(instance, new object[] { 1 })")]
+        public void InvokeWithGetUninitializedObjectAndArgument(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Runtime.Serialization;
+
+    public class Foo
+    {
+        public Foo()
+        {
+        }
+
+        public Foo(int value)
+        {
+        }
+
+        public static void Bar()
+        {
+            var type = typeof(Foo);
+            var instance = FormatterServices.GetUninitializedObject(type);
+            var foo = type.GetConstructor(Type.EmptyTypes).Invoke(instance, null);
+        }
+    }
+}".AssertReplace("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)", call);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

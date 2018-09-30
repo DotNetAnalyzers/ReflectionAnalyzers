@@ -114,8 +114,13 @@ namespace ReflectionAnalyzers
                             context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), "Use overload of Invoke without obj parameter."));
                         }
                         else if (!context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var instanceType) ||
-                            (instanceType != KnownSymbol.Object && !instanceType.Equals(ctor.ContainingType)))
+                                 (instanceType != KnownSymbol.Object && !instanceType.Equals(ctor.ContainingType)))
                         {
+                            if (!IsResultDiscarded(invocation, context))
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
+                            }
+
                             context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Use an instance of type {ctor.ContainingType}."));
                         }
                     }
