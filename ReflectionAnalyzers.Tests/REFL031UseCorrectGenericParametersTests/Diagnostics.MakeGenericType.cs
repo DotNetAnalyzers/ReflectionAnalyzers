@@ -27,7 +27,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("where T : class",       "typeof(int)")]
@@ -63,7 +63,30 @@ namespace RoslynSandbox
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, barCode, code);
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
+            }
+
+            [Test]
+            public void NestedType()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public static void Bar()
+        {
+            var type = typeof(Foo).GetNestedType(""Baz`1"").MakeGenericType↓(typeof(int), typeof(double));
+        }
+
+        public class Baz<T>
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

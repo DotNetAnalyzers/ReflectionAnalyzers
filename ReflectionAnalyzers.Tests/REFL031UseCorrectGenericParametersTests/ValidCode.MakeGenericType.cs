@@ -75,6 +75,29 @@ namespace RoslynSandbox
                 var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), AnalyzerAssert.MetadataReferences);
                 AnalyzerAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
             }
+
+            [Test]
+            public void NestedType()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public static void Bar()
+        {
+            var type = typeof(Foo).GetNestedType(""Baz`1"").MakeGenericType(typeof(int));
+        }
+
+        public class Baz<T>
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }

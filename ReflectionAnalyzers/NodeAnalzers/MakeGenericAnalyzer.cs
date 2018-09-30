@@ -28,8 +28,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                (TypeArguments.TryCreate(invocation, KnownSymbol.MethodInfo.MakeGenericType, context, out var typeArguments) ||
-                 TypeArguments.TryCreate(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context, out typeArguments)))
+                TypeArguments.TryCreate(invocation, context, out var typeArguments))
             {
                 if (typeArguments.Parameters.Length != typeArguments.Arguments.Length)
                 {
@@ -55,13 +54,10 @@ namespace ReflectionAnalyzers
                 this.Arguments = arguments;
             }
 
-            internal static bool TryCreate(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context, out TypeArguments typeArguments)
+            internal static bool TryCreate(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeArguments typeArguments)
             {
                 if (invocation?.ArgumentList is ArgumentListSyntax argumentList &&
-                    invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
-                    makeGeneric.Parameters.Length == 1 &&
-                    makeGeneric.TryFindParameter("typeArguments", out _) &&
-                    TryGetParameters(invocation, expected, context, out var parameters))
+                    TryGetTypeParameters(invocation, context, out var parameters))
                 {
                     if (argumentList.Arguments.TrySingle(out var argument) &&
                         Array.TryGetValues(argument.Expression, context, out var arrayExpressions))
@@ -105,21 +101,27 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            private static bool TryGetParameters(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeParameterSymbol> parameters)
+            private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeParameterSymbol> parameters)
             {
-                if (invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+                if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context) &&
+                    invocation.Expression is MemberAccessExpressionSyntax memberAccess)
                 {
-                    if (expected.Name == KnownSymbol.Type.GetNestedType.Name &&
-                        GetX.TryGetType(memberAccess, context, out var type) &&
-                        type.TypeParameters.Length > 0)
+                    if (Type.TryGet(memberAccess.Expression, context, out var type, out _))
                     {
-                        parameters = type.TypeParameters;
+                        parameters = (type as INamedTypeSymbol)?.TypeParameters ?? ImmutableArray<ITypeParameterSymbol>.Empty;
                         return true;
                     }
+                }
 
-                    if (expected.Name == KnownSymbol.MethodInfo.MakeGenericMethod.Name &&
-                        GetX.TryGetMethodInfo(memberAccess, context, out var methodInfo) &&
-                        methodInfo.TypeParameters.Length > 0)
+                return false;
+            }
+
+            private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeParameterSymbol> parameters)
+            {
+                if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context) &&
+                    invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+                {
+                    if (GetX.TryGetMethodInfo(memberAccess, context, out var methodInfo))
                     {
                         parameters = methodInfo.TypeParameters;
                         return true;
@@ -127,6 +129,13 @@ namespace ReflectionAnalyzers
                 }
 
                 return false;
+            }
+
+            private static bool IsMakeGeneric(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context)
+            {
+                return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out IMethodSymbol makeGeneric) &&
+                       makeGeneric.Parameters.TrySingle(out var parameter) &&
+                       parameter.Type == KnownSymbol.Type;
             }
         }
     }
