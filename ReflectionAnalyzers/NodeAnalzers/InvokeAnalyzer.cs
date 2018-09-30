@@ -107,7 +107,8 @@ namespace ReflectionAnalyzers
                     }
 
                     if (invoke.TryFindParameter("obj", out var objParameter) &&
-                        invocation.TryFindArgument(objParameter, out var objArg))
+                        invocation.TryFindArgument(objParameter, out var objArg) &&
+                        objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), "Use overload of Invoke without obj parameter."));
                     }
