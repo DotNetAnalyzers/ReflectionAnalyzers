@@ -24,7 +24,7 @@ namespace ReflectionAnalyzers
             REFL014PreferGetMemberThenAccessor.Descriptor,
             REFL015UseContainingType.Descriptor,
             REFL016UseNameof.Descriptor,
-            REFL017DontUseNameof.Descriptor,
+            REFL017DontUseNameofWrongMember.Descriptor,
             REFL018ExplicitImplementation.Descriptor,
             REFL019NoMemberMatchesTheTypes.Descriptor,
             REFL029MissingTypes.Descriptor);
@@ -131,7 +131,7 @@ namespace ReflectionAnalyzers
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL017DontUseNameof.Descriptor,
+                                REFL017DontUseNameofWrongMember.Descriptor,
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(SyntaxKind.StringLiteralExpression), nameString)));
                     }

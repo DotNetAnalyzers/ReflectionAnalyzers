@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofTests
+namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new NameofFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameof.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.Descriptor);
 
         [Test]
         public void WrongContainingTypeWhenNotAccessible()

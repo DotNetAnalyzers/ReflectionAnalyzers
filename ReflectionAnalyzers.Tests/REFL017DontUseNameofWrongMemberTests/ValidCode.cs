@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofTests
+namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofTests
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameof.DiagnosticId);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.DiagnosticId);
 
         [TestCase("Class")]
         [TestCase("Enum")]
