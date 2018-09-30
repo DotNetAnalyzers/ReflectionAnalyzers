@@ -10,6 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL009MemberCantBeFound.Descriptor);
 
         [TestCase("typeof(Foo).GetMethod(↓\"MISSING\")")]
+        [TestCase("foo.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("new Foo().GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("GetType().GetMethod(↓\"MISSING\")")]
@@ -18,14 +19,12 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    public class Foo
     {
-        public Foo()
-        {
-            var methodInfo = typeof(Foo).GetMethod(↓nameof(Foo));
-        }
+        public object Bar(Foo foo) => typeof(Foo).GetMethod(↓""MISSING"");
     }
-}".AssertReplace("typeof(Foo).GetMethod(↓nameof(Foo))", type);
+}".AssertReplace("typeof(Foo).GetMethod(↓\"MISSING\")", type);
+
             var message = "The referenced member MISSING is not known to exist in RoslynSandbox.Foo.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
