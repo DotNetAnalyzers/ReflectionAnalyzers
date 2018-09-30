@@ -6,7 +6,7 @@ namespace ValidCode
 
     public class CustomAggregateException : AggregateException
     {
-        private int Innerexceptioncount { get; }
+        private int InnerExceptionCount { get; }
     }
 
     class NotInSource
@@ -14,11 +14,11 @@ namespace ValidCode
         [Test]
         public void Valid()
         {
-            const string Innerexceptioncount = "InnerExceptionCount";
-            Assert.NotNull(typeof(AggregateException).GetProperty(Innerexceptioncount, BindingFlags.NonPublic | BindingFlags.Instance));
-            Assert.NotNull(typeof(AggregateException).GetProperty(Innerexceptioncount, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-            ////Assert.NotNull(typeof(CustomAggregateException).GetProperty(Innerexceptioncount, BindingFlags.NonPublic | BindingFlags.Instance));
-            ////Assert.NotNull(typeof(CustomAggregateException).GetProperty(Innerexceptioncount, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            const string InnerExceptionCount = "InnerExceptionCount";
+            Assert.NotNull(typeof(AggregateException).GetProperty(InnerExceptionCount, BindingFlags.NonPublic | BindingFlags.Instance));
+            Assert.NotNull(typeof(AggregateException).GetProperty(InnerExceptionCount, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(CustomAggregateException).GetProperty(InnerExceptionCount, BindingFlags.NonPublic | BindingFlags.Instance));
+            Assert.NotNull(typeof(CustomAggregateException).GetProperty(InnerExceptionCount, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
         }
     }
 }
