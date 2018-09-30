@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
     internal class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL003");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL003MemberDoesNotExist.Descriptor);
 
         [TestCase("typeof(Foo).GetMethod(↓\"MISSING\")")]
         [TestCase("new Foo().GetType().GetMethod(↓\"MISSING\")")]
