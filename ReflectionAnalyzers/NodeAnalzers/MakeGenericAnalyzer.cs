@@ -1,6 +1,8 @@
 namespace ReflectionAnalyzers
 {
+    using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -33,7 +35,7 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, invocation.ArgumentList.GetLocation()));
                 }
-                else if (typeArguments.TryFindMisMatch(context.Compilation, out var mismatch))
+                else if (typeArguments.TryFindMisMatch(context, out var mismatch))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, mismatch.GetLocation()));
                 }
@@ -42,15 +44,13 @@ namespace ReflectionAnalyzers
 
         private struct TypeArguments
         {
-            internal readonly ArgumentListSyntax ArgumentList;
 #pragma warning disable RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
             internal readonly ImmutableArray<ITypeParameterSymbol> Parameters;
-            internal readonly ImmutableArray<ITypeSymbol> Arguments;
+            internal readonly ImmutableArray<ExpressionSyntax> Arguments;
 #pragma warning restore RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
 
-            public TypeArguments(ArgumentListSyntax argumentList, ImmutableArray<ITypeParameterSymbol> parameters, ImmutableArray<ITypeSymbol> arguments)
+            public TypeArguments(ImmutableArray<ITypeParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> arguments)
             {
-                this.ArgumentList = argumentList;
                 this.Parameters = parameters;
                 this.Arguments = arguments;
             }
@@ -61,24 +61,42 @@ namespace ReflectionAnalyzers
                     invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
                     makeGeneric.Parameters.Length == 1 &&
                     makeGeneric.TryFindParameter("typeArguments", out _) &&
-                    TryGetParameters(invocation, expected, context, out var type) &&
-                    Array.TryGetTypes(argumentList, context, out var types))
+                    TryGetParameters(invocation, expected, context, out var parameters))
                 {
-                    typeArguments = new TypeArguments(argumentList, type, types);
+                    if (argumentList.Arguments.TrySingle(out var argument) &&
+                        Array.TryGetValues(argument.Expression, context, out var arrayExpressions))
+                    {
+                        typeArguments = new TypeArguments(parameters, arrayExpressions);
+                        return true;
+                    }
+
+                    typeArguments = new TypeArguments(parameters, Expressions());
                     return true;
                 }
 
                 typeArguments = default(TypeArguments);
                 return false;
+
+                ImmutableArray<ExpressionSyntax> Expressions()
+                {
+                    var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>(argumentList.Arguments.Count);
+                    foreach (var arg in argumentList.Arguments)
+                    {
+                        builder.Add(arg.Expression);
+                    }
+
+                    return builder.ToImmutable();
+                }
             }
 
-            internal bool TryFindMisMatch(Compilation compilation, out ArgumentSyntax argument)
+            internal bool TryFindMisMatch(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument)
             {
                 for (var i = 0; i < this.Arguments.Length; i++)
                 {
-                    if (!Type.SatisfiesConstraints(this.Arguments[i], this.Parameters[i], compilation))
+                    if (Type.TryGet(this.Arguments[i], context, out var type, out _) &&
+                        !Type.SatisfiesConstraints(type, this.Parameters[i], context.Compilation))
                     {
-                        _ = this.ArgumentList.Arguments.TryElementAt(i, out argument);
+                        argument = this.Arguments[i];
                         return true;
                     }
                 }
