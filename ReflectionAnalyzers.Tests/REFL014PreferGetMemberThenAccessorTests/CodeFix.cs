@@ -103,6 +103,7 @@ namespace RoslynSandbox
         private static int PrivateGetSet { get; set; }
     }
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", before);
+
             var fixedCode = @"
 namespace RoslynSandbox
 {
@@ -124,6 +125,7 @@ namespace RoslynSandbox
         private static int PrivateGetSet { get; set; }
     }
 }".AssertReplace("GetProperty(nameof(PublicGetSet), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetMethod", after);
+
             var message = $"Prefer typeof(Foo).{after}.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
@@ -184,7 +186,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty(nameof(Foo.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", after);
 
             var message = $"Prefer typeof(Foo).{after}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] {foo, code}, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_PublicGetSet\")",                                                                                   "GetProperty(nameof(Foo.PublicGetSet), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetMethod")]
@@ -243,7 +245,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty(nameof(Foo.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", after);
 
             var message = $"Prefer typeof(Foo).{after}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] {foo, code}, fixedCode);
         }
 
         [TestCase("GetMethod(\"add_Public\")",    "GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod")]
@@ -322,6 +324,43 @@ namespace RoslynSandbox
 
             var message = "Prefer typeof(IEnumerator).GetProperty(nameof(IEnumerator.Current), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public void AggregateException(string call)
+        {
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(AggregateException).GetMethod(""get_InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
+
+            var fixedCode = @"
+namespace RoslynSandbox.Dump
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var member = typeof(AggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod;
+        }
+    }
+}";
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
 }
