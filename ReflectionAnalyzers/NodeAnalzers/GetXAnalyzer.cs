@@ -96,7 +96,7 @@ namespace ReflectionAnalyzers
                                 member.Symbol.GetType().Name));
                     }
 
-                    if (IsPreferGetMemberThenAccessor(member, context, out var callText))
+                    if (IsPreferGetMemberThenAccessor(member, name, flags, types, context, out var callText))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -364,10 +364,10 @@ namespace ReflectionAnalyzers
 
                 switch (member.Symbol)
                 {
-                        case IMethodSymbol method:
-                            return method.MethodKind == MethodKind.Ordinary;
-                        default:
-                            return true;
+                    case IMethodSymbol method:
+                        return method.MethodKind == MethodKind.Ordinary;
+                    default:
+                        return true;
                 }
             }
 
@@ -472,51 +472,102 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, SyntaxNodeAnalysisContext context, out string call)
+        private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, Name name, Flags flags, Types types, SyntaxNodeAnalysisContext context, out string call)
         {
-            if (member.Symbol is IMethodSymbol method &&
+            // Not handling when explicit types are passed for now. No reason for this other than that I think it will be rare.
+            if (types.Argument is null &&
                 member.Invocation?.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                if (method.AssociatedSymbol is IPropertySymbol property &&
-                    TryGetExpectedFlags(property.ContainingType, property, out var flags))
+                if (member.Symbol is IMethodSymbol method)
                 {
-                    if (method.Name.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
+                    if (method.AssociatedSymbol is IPropertySymbol property &&
+                        TryGetExpectedFlags(property.ContainingType, property, out var bindingFlags))
                     {
-                        call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString(memberAccess)}).GetMethod";
-                        return true;
+                        return TryGetPropertyAccessor(MemberName(property), bindingFlags, out call);
                     }
 
-                    if (method.Name.StartsWith("set_", StringComparison.OrdinalIgnoreCase))
+                    if (method.AssociatedSymbol is IEventSymbol eventSymbol &&
+                        TryGetExpectedFlags(eventSymbol.ContainingType, eventSymbol, out bindingFlags))
                     {
-                        call = $"{memberAccess.Expression}.GetProperty({MemberName(property)}, {flags.ToDisplayString(memberAccess)}).SetMethod";
-                        return true;
+                        return TryGetEventAccessor(MemberName(eventSymbol), bindingFlags, out call);
                     }
                 }
-                else if (method.AssociatedSymbol is IEventSymbol eventSymbol &&
-                         TryGetExpectedFlags(eventSymbol.ContainingType, eventSymbol, out flags))
+                //// For symbols not in source and not visible in metadata.
+                else if (member.Symbol is null &&
+                         flags.Explicit.HasFlagFast(BindingFlags.NonPublic))
                 {
-                    if (method.Name.StartsWith("add_", StringComparison.OrdinalIgnoreCase))
+                    if (TryGetInvisibleMemberName("get_", out var memberName) ||
+                        TryGetInvisibleMemberName("set_", out memberName))
                     {
-                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).AddMethod";
-                        return true;
+                        return TryGetPropertyAccessor(memberName, flags.Explicit, out call);
                     }
 
-                    if (method.Name.StartsWith("remove_", StringComparison.OrdinalIgnoreCase))
+                    if (TryGetInvisibleMemberName("add_", out memberName) ||
+                        TryGetInvisibleMemberName("remove_", out memberName) ||
+                        TryGetInvisibleMemberName("raise_", out memberName))
                     {
-                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).RemoveMethod";
-                        return true;
-                    }
-
-                    if (method.Name.StartsWith("raise_", StringComparison.OrdinalIgnoreCase))
-                    {
-                        call = $"{memberAccess.Expression}.GetEvent({MemberName(eventSymbol)}, {flags.ToDisplayString(memberAccess)}).RaiseMethod";
-                        return true;
+                        return TryGetEventAccessor(memberName, flags.Explicit, out call);
                     }
                 }
             }
 
             call = null;
             return false;
+
+            bool TryGetPropertyAccessor(string propertyName, BindingFlags bindingFlags, out string result)
+            {
+                if (name.MetadataName.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}).GetMethod";
+                    return true;
+                }
+
+                if (name.MetadataName.StartsWith("set_", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}).SetMethod";
+                    return true;
+                }
+
+                result = null;
+                return false;
+            }
+
+            bool TryGetEventAccessor(string eventName, BindingFlags bindingFlags, out string result)
+            {
+                if (name.MetadataName.StartsWith("add_", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)}).AddMethod";
+                    return true;
+                }
+
+                if (name.MetadataName.StartsWith("remove_", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)}).RemoveMethod";
+                    return true;
+                }
+
+                if (name.MetadataName.StartsWith("raise_", StringComparison.OrdinalIgnoreCase))
+                {
+                    result = $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)}).RaiseMethod";
+                    return true;
+                }
+
+                result = null;
+                return false;
+            }
+
+            bool TryGetInvisibleMemberName(string prefix, out string memberName)
+            {
+                if (name.MetadataName is string metadataName &&
+                    metadataName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    memberName = $"\"{metadataName.Substring(prefix.Length)}\"";
+                    return true;
+                }
+
+                memberName = null;
+                return false;
+            }
 
             string MemberName(ISymbol associatedSymbol)
             {

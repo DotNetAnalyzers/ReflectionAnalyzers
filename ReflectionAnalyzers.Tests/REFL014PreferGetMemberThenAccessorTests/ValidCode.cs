@@ -46,26 +46,5 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
-
-        [Test]
-        public void IgnoreAggregateExceptionInnerExceptionCountGetter()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System;
-    using System.Reflection;
-
-    class Foo
-    {
-        public Foo()
-        {
-            var methodInfo = typeof(AggregateException).GetMethod(""get_InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
-        }
-    }
-}";
-
-            AnalyzerAssert.Valid(Analyzer, code);
-        }
     }
 }
