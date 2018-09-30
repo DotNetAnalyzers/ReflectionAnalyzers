@@ -17,7 +17,6 @@ namespace ValidCode
             const string InnerExceptionCount = "InnerExceptionCount";
             Assert.NotNull(typeof(AggregateException).GetProperty(InnerExceptionCount, BindingFlags.NonPublic | BindingFlags.Instance));
             Assert.NotNull(typeof(AggregateException).GetProperty(InnerExceptionCount, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-            Assert.NotNull(typeof(CustomAggregateException).GetProperty(InnerExceptionCount, BindingFlags.NonPublic | BindingFlags.Instance));
             Assert.NotNull(typeof(CustomAggregateException).GetProperty(InnerExceptionCount, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
         }
     }
