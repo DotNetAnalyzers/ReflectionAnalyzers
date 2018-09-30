@@ -1,5 +1,6 @@
 namespace ValidCode
 {
+    using NUnit.Framework;
     using System;
     using System.Reflection;
 
@@ -10,10 +11,11 @@ namespace ValidCode
 
     public class ExplicitImplicit : IExplicitImplicit
     {
-        public ExplicitImplicit()
+        [Test]
+        public void Valid()
         {
-            _ = typeof(ExplicitImplicit).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-            _ = typeof(IExplicitImplicit).GetEvent(nameof(IExplicitImplicit.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            Assert.NotNull(typeof(ExplicitImplicit).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(IExplicitImplicit).GetEvent(nameof(IExplicitImplicit.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
         }
 
         internal event EventHandler Bar;

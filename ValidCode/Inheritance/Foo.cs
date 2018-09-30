@@ -3,6 +3,7 @@
 #pragma warning disable 169
 namespace ValidCode.Inheritance
 {
+    using NUnit.Framework;
     using System;
     using System.Reflection;
 
@@ -27,21 +28,22 @@ namespace ValidCode.Inheritance
 
     public class Foo : FooBase
     {
-        public Foo()
+        [Test]
+        public void Valid()
         {
-            typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            typeof(Foo).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            typeof(Foo).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            typeof(Foo).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, Type.EmptyTypes, null);
+            Assert.NotNull(typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy));
+            Assert.NotNull(typeof(Foo).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy));
+            Assert.NotNull(typeof(Foo).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy));
+            Assert.NotNull(typeof(Foo).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, Type.EmptyTypes, null));
 
-            typeof(FooBase).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            typeof(FooBase).GetField("PrivateStaticField", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            typeof(FooBase).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            typeof(FooBase).GetEvent("PrivateStaticEvent", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            typeof(FooBase).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            typeof(FooBase).GetProperty("PrivateStaticProperty", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
-            typeof(FooBase).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
-            typeof(FooBase).GetMethod("PrivateStaticMethod", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+            Assert.NotNull(typeof(FooBase).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(FooBase).GetField("PrivateStaticField", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(FooBase).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(FooBase).GetEvent("PrivateStaticEvent", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(FooBase).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(FooBase).GetProperty("PrivateStaticProperty", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(FooBase).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null));
+            Assert.NotNull(typeof(FooBase).GetMethod("PrivateStaticMethod", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null));
         }
     }
 }

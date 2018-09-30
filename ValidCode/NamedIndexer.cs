@@ -1,13 +1,15 @@
 namespace ValidCode
 {
+    using NUnit.Framework;
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
     public class NamedIndexer
     {
-        public NamedIndexer()
+        [Test]
+        public void Valid()
         {
-            _ = typeof(NamedIndexer).GetProperty("Bar", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            Assert.NotNull(typeof(NamedIndexer).GetProperty("Bar", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
         }
 
         [IndexerName("Bar")]

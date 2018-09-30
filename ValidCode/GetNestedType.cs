@@ -1,15 +1,17 @@
 namespace ValidCode
 {
+    using NUnit.Framework;
     using System.Reflection;
 
     public class GetNestedType
     {
-        public GetNestedType()
+        [Test]
+        public void Valid()
         {
-            _ = typeof(GetNestedType).GetNestedType(nameof(PublicStatic), BindingFlags.Public);
-            _ = typeof(GetNestedType).GetNestedType(nameof(Public), BindingFlags.Public);
-            _ = typeof(GetNestedType).GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic);
-            _ = typeof(GetNestedType).GetNestedType(nameof(Private), BindingFlags.NonPublic);
+            Assert.NotNull(typeof(GetNestedType).GetNestedType(nameof(PublicStatic), BindingFlags.Public));
+            Assert.NotNull(typeof(GetNestedType).GetNestedType(nameof(Public), BindingFlags.Public));
+            Assert.NotNull(typeof(GetNestedType).GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic));
+            Assert.NotNull(typeof(GetNestedType).GetNestedType(nameof(Private), BindingFlags.NonPublic));
         }
 
         public static class PublicStatic

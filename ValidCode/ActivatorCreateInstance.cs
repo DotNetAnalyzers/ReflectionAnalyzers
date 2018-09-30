@@ -1,34 +1,36 @@
 // ReSharper disable All
 namespace ValidCode
 {
+    using NUnit.Framework;
     using System;
 
     public class ActivatorCreateInstance
     {
-        public ActivatorCreateInstance()
+        [Test]
+        public void Valid()
         {
-            _ = Activator.CreateInstance<ImplicitDefaultConstructor>();
-            _ = (ImplicitDefaultConstructor)Activator.CreateInstance(typeof(ImplicitDefaultConstructor));
-            _ = (ImplicitDefaultConstructor)Activator.CreateInstance(typeof(ImplicitDefaultConstructor), true);
-            _ = (ImplicitDefaultConstructor)Activator.CreateInstance(typeof(ImplicitDefaultConstructor), false);
+            Assert.NotNull(Activator.CreateInstance<ImplicitDefaultConstructor>());
+            Assert.NotNull((ImplicitDefaultConstructor)Activator.CreateInstance(typeof(ImplicitDefaultConstructor)));
+            Assert.NotNull((ImplicitDefaultConstructor)Activator.CreateInstance(typeof(ImplicitDefaultConstructor), true));
+            Assert.NotNull((ImplicitDefaultConstructor)Activator.CreateInstance(typeof(ImplicitDefaultConstructor), false));
 
-            _ = Activator.CreateInstance<ExplicitDefaultConstructor>();
-            _ = (ExplicitDefaultConstructor)Activator.CreateInstance(typeof(ExplicitDefaultConstructor));
-            _ = (ExplicitDefaultConstructor)Activator.CreateInstance(typeof(ExplicitDefaultConstructor), true);
-            _ = (ExplicitDefaultConstructor)Activator.CreateInstance(typeof(ExplicitDefaultConstructor), false);
+            Assert.NotNull(Activator.CreateInstance<ExplicitDefaultConstructor>());
+            Assert.NotNull((ExplicitDefaultConstructor)Activator.CreateInstance(typeof(ExplicitDefaultConstructor)));
+            Assert.NotNull((ExplicitDefaultConstructor)Activator.CreateInstance(typeof(ExplicitDefaultConstructor), true));
+            Assert.NotNull((ExplicitDefaultConstructor)Activator.CreateInstance(typeof(ExplicitDefaultConstructor), false));
 
-            _ = (PrivateDefaultConstructor)Activator.CreateInstance(typeof(PrivateDefaultConstructor), true);
+            Assert.NotNull((PrivateDefaultConstructor)Activator.CreateInstance(typeof(PrivateDefaultConstructor), true));
 
-            _ = (SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), 1);
-            _ = (SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), 1.2);
-            _ = (SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), new object[] { 1 });
-            _ = (SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), new object[] { 1.2 });
+            Assert.NotNull((SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), 1));
+            Assert.NotNull((SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), 1.2));
+            Assert.NotNull((SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), new object[] { 1 }));
+            Assert.NotNull((SingleDoubleParameter)Activator.CreateInstance(typeof(SingleDoubleParameter), new object[] { 1.2 }));
         }
 
         public T Create<T>() => Activator.CreateInstance<T>();
 
         public static object Foo<T>(object _) => Activator.CreateInstance(typeof(T), "foo");
-     
+
         public static object Foo<T>() => Activator.CreateInstance(typeof(T));
 
         public class ImplicitDefaultConstructor

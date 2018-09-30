@@ -1,18 +1,21 @@
 // ReSharper disable All
 namespace ValidCode
 {
+    using NUnit.Framework;
     using System;
     using System.Reflection;
 
     public class GetConstructor
     {
-        public GetConstructor()
+        [Test]
+        public void Valid()
         {
-            _ = typeof(Default).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
-            _ = typeof(Single).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
-            _ = typeof(Two).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) }, null);
-            _ = typeof(Two).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(double) }, null);
+            Assert.NotNull(typeof(Default).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null));
+            Assert.NotNull(typeof(Single).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null));
+            Assert.NotNull(typeof(Two).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) }, null));
+            Assert.NotNull(typeof(Two).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(double) }, null));
         }
+
         public class Default
         {
         }

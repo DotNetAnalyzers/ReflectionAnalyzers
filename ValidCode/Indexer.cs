@@ -1,14 +1,17 @@
 namespace ValidCode
 {
+    using NUnit.Framework;
     using System.Reflection;
 
     public class Indexer
     {
-        public Indexer()
+        [Test]
+        public void Valid()
         {
-            _ = typeof(Indexer).GetProperty("Item", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            Assert.NotNull(typeof(Indexer).GetProperty("Item", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(Indexer).GetProperty("Item", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null));
         }
 
-        public int this[int p1] => 0;
+        public int this[int i] => 0;
     }
 }

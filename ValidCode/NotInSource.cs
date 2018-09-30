@@ -1,6 +1,7 @@
 #pragma warning disable CS0169
 namespace ValidCode
 {
+    using NUnit.Framework;
     using System;
     using System.Reflection;
 
@@ -11,11 +12,13 @@ namespace ValidCode
 
     class NotInSource
     {
-        public NotInSource()
+        [Test]
+        public void Valid()
         {
-            _ = typeof(AggregateException).GetProperty("InnerExceptionCount", BindingFlags.NonPublic | BindingFlags.Instance);
-            _ = typeof(AggregateException).GetProperty("InnerExceptionCount", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-            _ = typeof(CustomAggregateException).GetProperty("InnerExceptionCount", BindingFlags.NonPublic | BindingFlags.Instance);
+            const string Innerexceptioncount = "InnerExceptionCount";
+            Assert.NotNull(typeof(AggregateException).GetProperty(Innerexceptioncount, BindingFlags.NonPublic | BindingFlags.Instance));
+            Assert.NotNull(typeof(AggregateException).GetProperty(Innerexceptioncount, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(CustomAggregateException).GetProperty(Innerexceptioncount, BindingFlags.NonPublic | BindingFlags.Instance));
         }
     }
 }
