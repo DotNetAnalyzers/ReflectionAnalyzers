@@ -117,29 +117,6 @@ namespace ReflectionAnalyzers
             return TryMatchGetX(invocation, KnownSymbol.Type.GetProperty, context, out member, out name, out flags);
         }
 
-        internal static bool TryGetType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out INamedTypeSymbol type)
-        {
-            if (Type.TryGet(expression, context, out var temp, out _) &&
-                temp is INamedTypeSymbol namedType)
-            {
-                type = namedType;
-                return true;
-            }
-
-            if (expression is MemberAccessExpressionSyntax memberAccess &&
-                TryFindInvocation(memberAccess, KnownSymbol.Type.GetNestedType, context, out var invocation) &&
-                TryMatchGetNestedType(invocation, context, out var nestedType, out _, out _) &&
-                nestedType.Match == FilterMatch.Single &&
-                nestedType.Symbol is INamedTypeSymbol namedNested)
-            {
-                type = namedNested;
-                return true;
-            }
-
-            type = null;
-            return false;
-        }
-
         private static bool TryFindInvocation(MemberAccessExpressionSyntax memberAccess, QualifiedMethod expected, SyntaxNodeAnalysisContext context, out InvocationExpressionSyntax invocation)
         {
             switch (memberAccess.Expression)

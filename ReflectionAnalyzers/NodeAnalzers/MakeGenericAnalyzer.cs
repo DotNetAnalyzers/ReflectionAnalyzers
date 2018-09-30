@@ -1,8 +1,6 @@
 namespace ReflectionAnalyzers
 {
-    using System.Collections.Generic;
     using System.Collections.Immutable;
-    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -57,7 +55,8 @@ namespace ReflectionAnalyzers
             internal static bool TryCreate(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeArguments typeArguments)
             {
                 if (invocation?.ArgumentList is ArgumentListSyntax argumentList &&
-                    TryGetTypeParameters(invocation, context, out var parameters))
+                    (TryGetTypeParameters(invocation, context, out var parameters) ||
+                     TryGetMethodParameters(invocation, context, out parameters)))
                 {
                     if (argumentList.Arguments.TrySingle(out var argument) &&
                         Array.TryGetValues(argument.Expression, context, out var arrayExpressions))
@@ -135,7 +134,9 @@ namespace ReflectionAnalyzers
             {
                 return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out IMethodSymbol makeGeneric) &&
                        makeGeneric.Parameters.TrySingle(out var parameter) &&
-                       parameter.Type == KnownSymbol.Type;
+                       parameter.IsParams &&
+                       parameter.Type is IArrayTypeSymbol arrayType &&
+                       arrayType.ElementType == KnownSymbol.Type;
             }
         }
     }

@@ -57,7 +57,7 @@ namespace RoslynSandbox
     {
         public static void Bar()
         {
-            var type = typeof(Foo<>).MakeGenericType(typeof(int));
+            var type = typeof(Foo<>).MakeGenericType(↓typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint)
@@ -66,6 +66,7 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
             }
 
+            [Explicit("temp")]
             [Test]
             public void NestedType()
             {
