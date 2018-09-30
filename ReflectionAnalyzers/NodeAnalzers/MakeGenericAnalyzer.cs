@@ -42,13 +42,15 @@ namespace ReflectionAnalyzers
 
         private struct TypeArguments
         {
-            internal readonly ArgumentSyntax Argument;
+            internal readonly ArgumentListSyntax ArgumentList;
+#pragma warning disable RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
             internal readonly INamedTypeSymbol GenericDefinition;
             internal readonly ImmutableArray<ITypeSymbol> Types;
+#pragma warning restore RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
 
-            public TypeArguments(ArgumentSyntax argument, INamedTypeSymbol genericDefinition, ImmutableArray<ITypeSymbol> types)
+            public TypeArguments(ArgumentListSyntax argumentList, INamedTypeSymbol genericDefinition, ImmutableArray<ITypeSymbol> types)
             {
-                this.Argument = argument;
+                this.ArgumentList = argumentList;
                 this.GenericDefinition = genericDefinition;
                 this.Types = types;
             }
@@ -60,11 +62,10 @@ namespace ReflectionAnalyzers
                     invocation.TryGetTarget(KnownSymbol.MethodInfo.MakeGenericType, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
                     makeGeneric.Parameters.Length == 1 &&
                     makeGeneric.TryFindParameter("typeArguments", out var parameter) &&
-                    invocation.TryFindArgument(parameter, out var argument) &&
                     GetX.TryGetType(memberAccess, context, out var type) &&
                     Array.TryGetTypes(argumentList, context, out var types))
                 {
-                    typeArguments = new TypeArguments(argument, type, types);
+                    typeArguments = new TypeArguments(argumentList, type, types);
                     return true;
                 }
 
@@ -72,15 +73,19 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            public bool TryFindMisMatch(Compilation compilation, out ArgumentSyntax argument)
+            internal bool TryFindMisMatch(Compilation compilation, out ArgumentSyntax argument)
             {
                 for (var i = 0; i < this.Types.Length; i++)
                 {
                     if (!Type.SatisfiesConstraints(this.Types[i], this.GenericDefinition.TypeParameters[i], compilation))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, argumentList.Arguments[i].GetLocation()));
+                        _ = this.ArgumentList.Arguments.TryElementAt(i, out argument);
+                        return true;
                     }
                 }
+
+                argument = null;
+                return false;
             }
         }
     }

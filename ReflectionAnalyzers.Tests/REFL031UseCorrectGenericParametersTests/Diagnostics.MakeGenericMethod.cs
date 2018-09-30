@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericParametersTests
     {
         public class MakeGenericMethod
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericMethodAnalyzer();
+            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
