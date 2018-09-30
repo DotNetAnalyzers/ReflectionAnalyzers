@@ -10,7 +10,6 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
     {
         public class WhenInAccessibleMember
         {
-
             private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
             private static readonly CodeFixProvider Fix = new NameofFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.Descriptor);
@@ -52,7 +51,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "Don't use name of wrong member. Expected: \"InnerExceptionCount\"";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use \"InnerExceptionCount\"");
+                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use \"InnerExceptionCount\".");
             }
 
             [Test]

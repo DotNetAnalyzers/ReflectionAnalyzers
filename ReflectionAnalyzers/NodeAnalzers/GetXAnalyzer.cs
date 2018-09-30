@@ -118,23 +118,23 @@ namespace ReflectionAnalyzers
                                 member.Symbol.ContainingType.Name));
                     }
 
-                    if (ShouldUseNameof(member, name, context, out location, out var nameString))
+                    if (ShouldUseNameof(member, name, context, out location, out var nameText))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL016UseNameof.Descriptor,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(NameSyntax), nameString)));
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(NameSyntax), nameText)));
                     }
 
-                    if (UsesNameOfWrongMember(member, name, out location, out nameString))
+                    if (UsesNameOfWrongMember(member, name, context, out location, out nameText))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL017DontUseNameofWrongMember.Descriptor,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), nameString),
-                                nameString));
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), nameText),
+                                nameText));
                     }
 
                     if (member.Match == FilterMatch.ExplicitImplementation)
@@ -306,26 +306,10 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool IsNameOf(ArgumentSyntax argument, out ExpressionSyntax expression)
-        {
-            if (argument.Expression is InvocationExpressionSyntax candidate &&
-                candidate.ArgumentList is ArgumentListSyntax argumentList &&
-                argumentList.Arguments.TrySingle(out var arg) &&
-                candidate.Expression is IdentifierNameSyntax identifierName &&
-                identifierName.Identifier.ValueText == "nameof")
-            {
-                expression = arg.Expression;
-                return true;
-            }
-
-            expression = null;
-            return false;
-        }
-
         private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameText)
         {
             if (name.Argument is ArgumentSyntax argument &&
-                CanNameof(member.Symbol) &&
+                NameOf.CanUseFor(member.Symbol) &&
                 (member.Match == FilterMatch.Single ||
                  member.Match == FilterMatch.Ambiguous ||
                  member.Match == FilterMatch.WrongFlags ||
@@ -333,20 +317,11 @@ namespace ReflectionAnalyzers
             {
                 if (argument.Expression is LiteralExpressionSyntax literal &&
                     literal.IsKind(SyntaxKind.StringLiteralExpression) &&
-                    TryGetTargetName(out var target))
+                    NameOf.TryGetExpressionText(member, context, out var expressionText) &&
+                    !expressionText.StartsWith("\"", StringComparison.OrdinalIgnoreCase))
                 {
+                    nameText = $"nameof({expressionText})";
                     location = literal.GetLocation();
-                    nameText = $"nameof({target})";
-                    return true;
-                }
-
-                if (IsNameOf(argument, out var expression) &&
-                    TryGetSymbol(expression, out var symbol) &&
-                    !symbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.Compilation) &&
-                    TryGetTargetName(out target))
-                {
-                    location = expression.GetLocation();
-                    nameText = target;
                     return true;
                 }
             }
@@ -354,104 +329,42 @@ namespace ReflectionAnalyzers
             location = null;
             nameText = null;
             return false;
-
-            bool CanNameof(ISymbol symbol)
-            {
-                if (symbol == null ||
-                    !symbol.CanBeReferencedByName)
-                {
-                    return false;
-                }
-
-                switch (member.Symbol)
-                {
-                    case IMethodSymbol method:
-                        return method.MethodKind == MethodKind.Ordinary;
-                    default:
-                        return true;
-                }
-            }
-
-            bool TryGetSymbol(ExpressionSyntax expression, out ISymbol symbol)
-            {
-                return context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out symbol) ||
-                       context.SemanticModel.GetSymbolInfo(expression, context.CancellationToken)
-                              .CandidateSymbols.TryFirst(out symbol);
-            }
-
-            bool TryGetTargetName(out string targetName)
-            {
-                targetName = null;
-                if (member.Symbol.ContainingType.IsAnonymousType)
-                {
-                    if (member.TypeSource is InvocationExpressionSyntax getType &&
-                        getType.TryGetTarget(KnownSymbol.Object.GetType, context.SemanticModel, context.CancellationToken, out _) &&
-                        getType.Expression is MemberAccessExpressionSyntax memberAccess &&
-                        memberAccess.Expression is IdentifierNameSyntax identifierName)
-                    {
-                        targetName = $"{identifierName}.{member.Symbol.Name}";
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                if (!context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol) ||
-                    (member.Symbol is INamedTypeSymbol type && type.IsGenericType) ||
-                    (member.Symbol is IMethodSymbol method &&
-                     method.AssociatedSymbol != null))
-                {
-                    return false;
-                }
-
-                if (member.Symbol.ContainingType.IsAssignableTo(context.ContainingSymbol.ContainingType, context.Compilation))
-                {
-                    targetName = member.Symbol.IsStatic ||
-                                 member.Symbol is ITypeSymbol ||
-                                 IsStaticContext()
-                        ? member.Symbol.Name
-                        : context.SemanticModel.UnderscoreFields() ? member.Symbol.Name : $"this.{member.Symbol.Name}";
-                    return true;
-                }
-
-                targetName = context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol)
-                    ? $"{member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{member.Symbol.Name}"
-                    : $"\"{member.Symbol.Name}\"";
-                return true;
-            }
-
-            bool IsStaticContext()
-            {
-                if (context.Node.TryFirstAncestor(out AccessorDeclarationSyntax accessor))
-                {
-                    return context.SemanticModel.GetDeclaredSymbolSafe(accessor.FirstAncestor<PropertyDeclarationSyntax>(), context.CancellationToken)?.IsStatic != false;
-                }
-
-                if (context.Node.TryFirstAncestor(out BaseMethodDeclarationSyntax methodDeclaration))
-                {
-                    return context.SemanticModel.GetDeclaredSymbolSafe(methodDeclaration, context.CancellationToken)?.IsStatic != false;
-                }
-
-                return !context.Node.TryFirstAncestor<AttributeArgumentListSyntax>(out _);
-            }
         }
 
-        private static bool UsesNameOfWrongMember(ReflectedMember member, Name name, out Location location, out string nameText)
+        private static bool UsesNameOfWrongMember(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameText)
         {
             if (name.Argument is ArgumentSyntax argument &&
-                IsNameOf(argument, out _) &&
-                (member.Match == FilterMatch.NoMatch ||
-                 (member.Match == FilterMatch.Unknown &&
-                  !Type.HasVisibleNonPublicMembers(member.ReflectedType, recursive: true))))
+                NameOf.IsNameOf(argument, out var expression))
             {
-                nameText = $"\"{name.MetadataName}\"";
-                location = argument.GetLocation();
-                return true;
+                if (member.Match == FilterMatch.NoMatch ||
+                     (member.Match == FilterMatch.Unknown &&
+                      !Type.HasVisibleNonPublicMembers(member.ReflectedType, recursive: true)))
+                {
+                    nameText = $"\"{name.MetadataName}\"";
+                    location = argument.GetLocation();
+                    return true;
+                }
+
+                if (member.Symbol is ISymbol memberSymbol &&
+                    TryGetSymbol(expression, out var symbol) &&
+                    !symbol.ContainingType.IsAssignableTo(memberSymbol.ContainingType, context.Compilation) &&
+                    NameOf.TryGetExpressionText(member, context, out nameText))
+                {
+                    location = expression.GetLocation();
+                    return true;
+                }
             }
 
             location = null;
             nameText = null;
             return false;
+
+            bool TryGetSymbol(ExpressionSyntax e, out ISymbol symbol)
+            {
+                return context.SemanticModel.TryGetSymbol(e, context.CancellationToken, out symbol) ||
+                       context.SemanticModel.GetSymbolInfo(e, context.CancellationToken)
+                              .CandidateSymbols.TryFirst(out symbol);
+            }
         }
 
         private static bool TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)

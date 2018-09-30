@@ -45,7 +45,7 @@ namespace ReflectionAnalyzers.Codefixes
                     else if (diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionText))
                     {
                         context.RegisterCodeFix(
-                            $"Use {expressionText}",
+                            $"Use {expressionText}.",
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
                                 SyntaxFactory.ParseExpression(expressionText)
