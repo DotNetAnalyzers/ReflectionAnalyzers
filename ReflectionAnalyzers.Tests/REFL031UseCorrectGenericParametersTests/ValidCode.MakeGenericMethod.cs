@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericParametersTests
     {
         public class MakeGenericMethod
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericMethodAnalyzer();
+            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
@@ -23,7 +23,7 @@ namespace RoslynSandbox
     {
         public static void Bar<T>()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod(typeof(int));
+            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(typeof(int));
         }
     }
 }";
@@ -46,7 +46,7 @@ namespace RoslynSandbox
         public static void Bar<T>()
             where T : class
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar), Type.EmptyTypes).MakeGenericMethod(typeof(int));
+            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint).AssertReplace("typeof(int)", arg);

@@ -21,11 +21,7 @@
   </tr>
   <tr>
     <td>Code</td>
-     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/MakeGenericMethodAnalyzer.cs">MakeGenericMethodAnalyzer</a></td>
-  </tr>
-  <tr>
-    <td></td>
-     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/MakeGenericTypeAnalyzer.cs">MakeGenericTypeAnalyzer</a></td>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/MakeGenericAnalyzer.cs">MakeGenericAnalyzer</a></td>
   </tr>
 </table>
 <!-- end generated table -->
