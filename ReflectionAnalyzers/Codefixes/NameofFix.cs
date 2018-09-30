@@ -28,27 +28,27 @@ namespace ReflectionAnalyzers.Codefixes
             {
                 if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument))
                 {
-                    if (diagnostic.Properties.TryGetValue(nameof(NameSyntax), out var expressionString))
+                    if (diagnostic.Properties.TryGetValue(nameof(NameSyntax), out var nameText))
                     {
                         var title = argument.Expression.IsKind(SyntaxKind.StringLiteralExpression)
-                            ? $"Use {expressionString}."
-                            : $"Use nameof({expressionString}).";
+                            ? $"Use {nameText}."
+                            : $"Use nameof({nameText}).";
                         context.RegisterCodeFix(
                             title,
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
-                                SyntaxFactory.ParseExpression(expressionString)
+                                SyntaxFactory.ParseExpression(nameText)
                                              .WithTriviaFrom(argument.Expression)),
                             nameof(NameofFix),
                             diagnostic);
                     }
-                    else if (diagnostic.Properties.TryGetValue(nameof(SyntaxKind.StringLiteralExpression), out var literalString))
+                    else if (diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionText))
                     {
                         context.RegisterCodeFix(
-                            $"Use string literal \"{literalString}\"",
+                            $"Use {expressionText}",
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
-                                SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(literalString))
+                                SyntaxFactory.ParseExpression(expressionText)
                                              .WithTriviaFrom(argument.Expression)),
                             nameof(NameofFix),
                             diagnostic);

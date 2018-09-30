@@ -70,7 +70,7 @@ Analyzers checking System.Reflection
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL017.md">REFL017</a></td>
-    <td>Don't use name of wrong member</td>
+    <td>Don't use name of wrong member.</td>
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL018.md">REFL018</a></td>

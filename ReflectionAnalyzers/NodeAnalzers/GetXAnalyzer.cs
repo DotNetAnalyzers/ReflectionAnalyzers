@@ -127,13 +127,14 @@ namespace ReflectionAnalyzers
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(NameSyntax), nameString)));
                     }
 
-                    if (ShouldUseStringLiteralName(member, name, out location, out nameString))
+                    if (UsesNameOfWrongMember(member, name, out location, out nameString))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 REFL017DontUseNameofWrongMember.Descriptor,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(SyntaxKind.StringLiteralExpression), nameString)));
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), nameString),
+                                nameString));
                     }
 
                     if (member.Match == FilterMatch.ExplicitImplementation)
@@ -435,7 +436,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool ShouldUseStringLiteralName(ReflectedMember member, Name name, out Location location, out string nameText)
+        private static bool UsesNameOfWrongMember(ReflectedMember member, Name name, out Location location, out string nameText)
         {
             if (name.Argument is ArgumentSyntax argument &&
                 IsNameOf(argument, out _) &&
@@ -443,7 +444,7 @@ namespace ReflectionAnalyzers
                  (member.Match == FilterMatch.Unknown &&
                   !Type.HasVisibleNonPublicMembers(member.ReflectedType, recursive: true))))
             {
-                nameText = name.MetadataName;
+                nameText = $"\"{name.MetadataName}\"";
                 location = argument.GetLocation();
                 return true;
             }

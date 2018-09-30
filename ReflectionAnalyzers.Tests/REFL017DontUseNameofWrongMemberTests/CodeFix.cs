@@ -6,16 +6,19 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public partial class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly CodeFixProvider Fix = new NameofFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.Descriptor);
-
-        [Test]
-        public void WrongContainingTypeWhenNotAccessible()
+        public class WhenInAccessibleMember
         {
-            var testCode = @"
+
+            private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
+            private static readonly CodeFixProvider Fix = new NameofFix();
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.Descriptor);
+
+            [Test]
+            public void WrongContainingTypeWhenNotAccessible()
+            {
+                var testCode = @"
 namespace RoslynSandbox
 {
     using System;
@@ -32,7 +35,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+                var fixedCode = @"
 namespace RoslynSandbox
 {
     using System;
@@ -48,13 +51,14 @@ namespace RoslynSandbox
         public int InnerExceptionCount => 0;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
-        }
+                var message = "Don't use name of wrong member. Expected: \"InnerExceptionCount\"";
+                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use \"InnerExceptionCount\"");
+            }
 
-        [Test]
-        public void NonPublicNotVisible()
-        {
-            var exception = @"
+            [Test]
+            public void NonPublicNotVisible()
+            {
+                var exception = @"
 namespace RoslynSandbox
 {
     using System;
@@ -63,7 +67,7 @@ namespace RoslynSandbox
         public int InnerExceptionCount { get; }
     }
 }";
-            var code = @"
+                var code = @"
 namespace RoslynSandbox.Dump
 {
     using System;
@@ -76,7 +80,7 @@ namespace RoslynSandbox.Dump
         }
     }
 }";
-            var fixedCode = @"
+                var fixedCode = @"
 namespace RoslynSandbox.Dump
 {
     using System;
@@ -89,7 +93,8 @@ namespace RoslynSandbox.Dump
         }
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { exception, code }, fixedCode);
+                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { exception, code }, fixedCode);
+            }
         }
     }
 }

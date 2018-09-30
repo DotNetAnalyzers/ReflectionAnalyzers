@@ -8,12 +8,12 @@ namespace ReflectionAnalyzers
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Don't use name of wrong member",
-            messageFormat: "Don't use name of wrong member",
+            title: "Don't use name of wrong member.",
+            messageFormat: "Don't use name of wrong member. Expected: {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Don't use name of wrong member",
+            description: "Don't use name of wrong member.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }
