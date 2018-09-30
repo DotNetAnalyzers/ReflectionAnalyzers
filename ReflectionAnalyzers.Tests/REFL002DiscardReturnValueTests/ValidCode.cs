@@ -34,6 +34,32 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
+        [TestCase("Assert.Null(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))")]
+        [TestCase("Assert.IsNull(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))")]
+        [TestCase("Assert.AreEqual(null, typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))")]
+        public void WhenUsedInAssert(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using NUnit.Framework;
+
+    public class Foo
+    {
+        public Foo()
+        {
+            Assert.Null(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null));
+        }
+
+        public static void Bar()
+        {
+        }
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
         [Test]
         public void AssigningLocal()
         {

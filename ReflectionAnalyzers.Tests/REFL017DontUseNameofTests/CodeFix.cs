@@ -25,7 +25,7 @@ namespace RoslynSandbox
     {
         public Foo()
         {
-            var member = typeof(AggregateException).GetProperty(↓nameof(InnerExceptionCount), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var member = typeof(AggregateException).GetProperty(↓nameof(this.InnerExceptionCount), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int InnerExceptionCount => 0;

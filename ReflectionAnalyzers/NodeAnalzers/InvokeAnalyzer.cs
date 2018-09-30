@@ -50,7 +50,7 @@ namespace ReflectionAnalyzers
                 if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
                 {
                     if (method.ReturnsVoid &&
-                        !IsResultDiscarded(invocation))
+                        !IsResultDiscarded(invocation, context))
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
                     }
@@ -115,10 +115,14 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool IsResultDiscarded(InvocationExpressionSyntax invocation)
+        private static bool IsResultDiscarded(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context)
         {
             switch (invocation.Parent)
             {
+                case ArgumentSyntax argument when argument.Parent is ArgumentListSyntax argumentList &&
+                                                  argumentList.Parent is InvocationExpressionSyntax candidate &&
+                                                  IsAssert(candidate):
+                    return true;
                 case ArgumentSyntax _:
                 case MemberAccessExpressionSyntax _:
                 case CastExpressionSyntax _:
@@ -130,6 +134,13 @@ namespace ReflectionAnalyzers
                     return IsDiscardName(variableDeclarator.Identifier.ValueText);
                 default:
                     return true;
+            }
+
+            bool IsAssert(InvocationExpressionSyntax candidate)
+            {
+                return candidate.TryGetTarget(KnownSymbol.NUnitAssert.Null, context.SemanticModel, context.CancellationToken, out _) ||
+                       candidate.TryGetTarget(KnownSymbol.NUnitAssert.IsNull, context.SemanticModel, context.CancellationToken, out _) ||
+                       candidate.TryGetTarget(KnownSymbol.NUnitAssert.AreEqual, context.SemanticModel, context.CancellationToken, out _);
             }
         }
 
