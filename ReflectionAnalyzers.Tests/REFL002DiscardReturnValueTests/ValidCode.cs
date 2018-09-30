@@ -55,7 +55,7 @@ namespace RoslynSandbox
         {
         }
     }
-}";
+}".AssertReplace("Assert.Null(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))", call);
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }

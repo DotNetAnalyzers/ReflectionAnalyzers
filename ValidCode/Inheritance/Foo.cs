@@ -1,6 +1,4 @@
 // ReSharper disable All
-#pragma warning disable 67
-#pragma warning disable 169
 namespace ValidCode.Inheritance
 {
     using NUnit.Framework;

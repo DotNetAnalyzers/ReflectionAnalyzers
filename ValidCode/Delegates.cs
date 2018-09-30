@@ -1,4 +1,3 @@
-#pragma warning disable IDE0007 // Use implicit type
 namespace ValidCode
 {
     using NUnit.Framework;
