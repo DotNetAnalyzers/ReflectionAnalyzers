@@ -55,5 +55,50 @@ namespace RoslynSandbox
             var message = "Use the same type as the parameter. Expected: IComparable.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
+
+        [Test]
+        public void TwoProjects()
+        {
+            var fooCode = @"
+namespace Project1
+{
+    using System;
+
+    public class Foo
+    {
+        public static IComparable Static(IComparable i) => i;
+    }
+}";
+
+            var code = @"
+namespace Project2
+{
+    using System;
+    using System.Reflection;
+
+    using Project1;
+
+    public class Bar
+    {
+        public object Get() => typeof(Foo).GetMethod(nameof(Foo.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null);
+    }
+}";
+
+            var fixedCode = @"
+namespace Project2
+{
+    using System;
+    using System.Reflection;
+
+    using Project1;
+
+    public class Bar
+    {
+        public object Get() => typeof(Foo).GetMethod(nameof(Foo.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
+    }
+}";
+            var message = "Use the same type as the parameter. Expected: IComparable.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { fooCode, code }, fixedCode);
+        }
     }
 }
