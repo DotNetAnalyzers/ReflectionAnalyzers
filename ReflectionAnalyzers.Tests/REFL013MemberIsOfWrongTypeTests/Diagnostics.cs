@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
     internal class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL013MemberIsOfWrongType.DiagnosticId);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL013MemberIsOfWrongType.Descriptor);
 
         [TestCase("GetEvent(nameof(this.Bar))")]
         [TestCase("GetEvent(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
