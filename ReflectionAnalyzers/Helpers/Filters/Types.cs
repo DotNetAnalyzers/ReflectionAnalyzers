@@ -8,23 +8,26 @@ namespace ReflectionAnalyzers
 
     internal struct Types
     {
-        internal static readonly Types Any = new Types(null, ImmutableArray<ITypeSymbol>.Empty);
+        internal static readonly Types Any = new Types(null, ImmutableArray<ExpressionSyntax>.Empty, ImmutableArray<ITypeSymbol>.Empty);
         internal readonly ArgumentSyntax Argument;
-        internal readonly ImmutableArray<ITypeSymbol> Values;
+        internal readonly ImmutableArray<ExpressionSyntax> Expressions;
+        internal readonly ImmutableArray<ITypeSymbol> Symbols;
 
-        public Types(ArgumentSyntax argument, ImmutableArray<ITypeSymbol> values)
+        public Types(ArgumentSyntax argument, ImmutableArray<ExpressionSyntax> expressions, ImmutableArray<ITypeSymbol> symbols)
         {
             this.Argument = argument;
-            this.Values = values;
+            this.Expressions = expressions;
+            this.Symbols = symbols;
         }
 
         internal static bool TryCreate(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out Types types)
         {
             if (TryGetTypesArgument(invocation, getX, out var typesArg))
             {
-                if (Array.TryGetTypes(typesArg.Expression, context, out var typeArray))
+                if (Array.TryGetValues(typesArg.Expression, context, out var expressions) &&
+                    Array.TryGetTypes(typesArg.Expression, context, out var symbols))
                 {
-                    types = new Types(typesArg, typeArray);
+                    types = new Types(typesArg, expressions, symbols);
                     return true;
                 }
 
@@ -38,14 +41,14 @@ namespace ReflectionAnalyzers
 
         internal bool Matches(ImmutableArray<IParameterSymbol> parameters)
         {
-            if (parameters.Length != this.Values.Length)
+            if (parameters.Length != this.Expressions.Length)
             {
                 return false;
             }
 
             for (var i = 0; i < parameters.Length; i++)
             {
-                if (!this.Values[i].Is(parameters[i].Type))
+                if (!this.Symbols[i].Is(parameters[i].Type))
                 {
                     return false;
                 }
@@ -56,14 +59,14 @@ namespace ReflectionAnalyzers
 
         internal bool IsExactMatch(ImmutableArray<IParameterSymbol> parameters)
         {
-            if (parameters.Length != this.Values.Length)
+            if (parameters.Length != this.Expressions.Length)
             {
                 return false;
             }
 
             for (var i = 0; i < parameters.Length; i++)
             {
-                if (!this.Values[i].Equals(parameters[i].Type))
+                if (!this.Symbols[i].Equals(parameters[i].Type))
                 {
                     return false;
                 }

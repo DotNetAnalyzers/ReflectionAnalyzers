@@ -180,12 +180,14 @@ namespace ReflectionAnalyzers
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayText)));
                     }
 
-                    if (ShouldUseMoreSpecificTypes(member, types, out location))
+                    if (ShouldUseSameTypeAsParameter(member, types, context, out location, out var typeText))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL033UseMoreSpecificTypes.Descriptor,
-                                location));
+                                REFL033UseSameTypeAsParameter.Descriptor,
+                                location,
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeText),
+                                typeText));
                     }
                 }
             }
@@ -623,17 +625,37 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool ShouldUseMoreSpecificTypes(ReflectedMember member, Types types, out Location location)
+        private static bool ShouldUseSameTypeAsParameter(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out Location location, out string typeText)
         {
             if (types.Argument is ArgumentSyntax argument &&
-                member.Symbol is IMethodSymbol method &&
-                !types.IsExactMatch(method.Parameters))
+                member.Symbol is IMethodSymbol method)
             {
-                location = argument.GetLocation();
-                return true;
+                if (method.Parameters.Length != types.Expressions.Length)
+                {
+                    location = null;
+                    typeText = null;
+                    return false;
+                }
+
+                for (var i = 0; i < method.Parameters.Length; i++)
+                {
+                    if (!types.Symbols[i].Equals(method.Parameters[i].Type) &&
+                        context.SemanticModel.IsAccessible(context.Node.SpanStart, method.Parameters[i].Type))
+                    {
+                        typeText = method.Parameters[i].Type.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart);
+                        var expression = types.Expressions[i];
+                        location = argument.Contains(expression)
+                            ? expression is TypeOfExpressionSyntax typeOf
+                                ? typeOf.Type.GetLocation()
+                                : expression.GetLocation()
+                            : argument.GetLocation();
+                        return true;
+                    }
+                }
             }
 
             location = null;
+            typeText = null;
             return false;
         }
     }
