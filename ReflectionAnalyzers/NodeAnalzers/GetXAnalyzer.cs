@@ -28,7 +28,8 @@ namespace ReflectionAnalyzers
             REFL017DontUseNameofWrongMember.Descriptor,
             REFL018ExplicitImplementation.Descriptor,
             REFL019NoMemberMatchesTheTypes.Descriptor,
-            REFL029MissingTypes.Descriptor);
+            REFL029MissingTypes.Descriptor,
+            REFL033UseMoreSpecificTypes.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -177,6 +178,14 @@ namespace ReflectionAnalyzers
                                 REFL029MissingTypes.Descriptor,
                                 argumentList.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayText)));
+                    }
+
+                    if (ShouldUseMoreSpecificTypes(member, types, out location))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL033UseMoreSpecificTypes.Descriptor,
+                                location));
                     }
                 }
             }
@@ -612,6 +621,20 @@ namespace ReflectionAnalyzers
                 typesArrayString = builder.Append(" }").Return();
                 return true;
             }
+        }
+
+        private static bool ShouldUseMoreSpecificTypes(ReflectedMember member, Types types, out Location location)
+        {
+            if (types.Argument is ArgumentSyntax argument &&
+                member.Symbol is IMethodSymbol method &&
+                !types.IsExactMatch(method.Parameters))
+            {
+                location = argument.GetLocation();
+                return true;
+            }
+
+            location = null;
+            return false;
         }
     }
 }
