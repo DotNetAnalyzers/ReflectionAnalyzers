@@ -42,7 +42,7 @@ namespace RoslynSandbox
         private int PrivateInstance() => 0;
     }
 }".AssertReplace("typeof(Foo).GetMethod(nameof(this.ToString))", call);
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Instance)")]
@@ -64,7 +64,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static)", invocation);
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -83,7 +83,7 @@ namespace RoslynSandbox
         public override string ToString() => base.ToString();
     }
 }";
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -102,7 +102,7 @@ namespace RoslynSandbox
         public new string ToString() => base.ToString();
     }
 }";
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -125,7 +125,7 @@ namespace RoslynSandbox
         public int Bar(int i) => i;
     }
 }";
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("GetMethod(nameof(IConvertible.ToBoolean))")]
@@ -146,7 +146,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -165,7 +165,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -181,7 +181,7 @@ namespace RoslynSandbox
         public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("where T : Foo", "GetMethod(nameof(this.Baz))")]
@@ -214,7 +214,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("where T : Foo", constraint)
       .AssertReplace("GetMethod(nameof(this.Baz))", call);
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -235,7 +235,7 @@ namespace RoslynSandbox
         public T Id<T>(T value) => value;
     }
 }";
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("get_Bar")]
@@ -255,7 +255,7 @@ namespace RoslynSandbox
         public int Bar { get; set; }
     }
 }".AssertReplace("get_Bar", name);
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("Delegate")]
@@ -276,7 +276,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("Delegate", type);
-                AnalyzerAssert.Valid(ValidCode.Analyzer, ValidCode.ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }
