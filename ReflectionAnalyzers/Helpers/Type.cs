@@ -119,6 +119,14 @@ namespace ReflectionAnalyzers
                                TryGet(assignedValue, context, visited, out result, out source);
                     }
 
+                case MemberAccessExpressionSyntax memberAccess when memberAccess.Name.Identifier.ValueText == "ReturnType" &&
+                                                                    memberAccess.Expression is InvocationExpressionSyntax invocation &&
+                                                                    GetX.TryMatchGetMethod(invocation, context, out var reflectedMember, out _, out _, out _) &&
+                                                                    reflectedMember.Match == FilterMatch.Single &&
+                                                                    reflectedMember.Symbol is IMethodSymbol method:
+                    source = memberAccess;
+                    result = method.ReturnType;
+                    return true;
                 case TypeOfExpressionSyntax typeOf:
                     source = typeOf;
                     return context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out result);

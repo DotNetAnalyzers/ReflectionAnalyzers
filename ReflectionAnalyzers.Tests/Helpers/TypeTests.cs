@@ -18,7 +18,8 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")",                                       "int",                                       "typeof(string).Assembly.GetType(\"System.Int32\")")]
         [TestCase("new Exception().GetType()",                                                               "Exception",                                 "new Exception().GetType()")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "System.Collections.Generic.IEnumerable<T>", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
-        public void TryGetFromExpression(string expression, string expected, string expectedSource)
+        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString)).ReturnType",                                 "string",                                    "typeof(Foo).GetMethod(nameof(this.ToString)).ReturnType")]
+        public void TryGet(string expression, string expected, string expectedSource)
         {
             var code = @"
 namespace RoslynSandbox
