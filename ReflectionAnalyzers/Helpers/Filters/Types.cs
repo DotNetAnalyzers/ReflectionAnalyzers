@@ -1,6 +1,8 @@
 namespace ReflectionAnalyzers
 {
+    using System;
     using System.Collections.Immutable;
+    using System.Diagnostics;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -46,6 +48,99 @@ namespace ReflectionAnalyzers
             for (var i = 0; i < parameters.Length; i++)
             {
                 if (!this.Values[i].Is(parameters[i].Type))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        internal bool TryDisambiguate(ISymbol x, ISymbol y, out ISymbol unique)
+        {
+            if (x is null &&
+                y is null)
+            {
+                unique = null;
+                return false;
+            }
+
+            if (ByNull(x, y, out unique) ||
+                ByNull(x, y, out unique))
+            {
+                return true;
+            }
+
+            return this.TryDisambiguate(x as IMethodSymbol, y as IMethodSymbol, out unique);
+            bool ByNull(ISymbol first, ISymbol other, out ISymbol result)
+            {
+                if (first is null &&
+                    !(other is null))
+                {
+                    result = other;
+                    return true;
+                }
+
+                result = null;
+                return false;
+            }
+        }
+
+        private bool TryDisambiguate(IMethodSymbol x, IMethodSymbol y, out ISymbol unique)
+        {
+            if (this.Argument is null ||
+                x is null ||
+                y is null)
+            {
+                unique = null;
+                return false;
+            }
+
+            if (this.Matches(x.Parameters) &&
+                this.Matches(y.Parameters))
+            {
+                if (this.ExactMatch(x.Parameters))
+                {
+                    unique = x;
+                    return true;
+                }
+
+                if (this.ExactMatch(y.Parameters))
+                {
+                    unique = y;
+                    return true;
+                }
+
+                unique = null;
+                return false;
+            }
+
+            if (this.Matches(x.Parameters))
+            {
+                unique = x;
+                return true;
+            }
+
+            if (this.Matches(y.Parameters))
+            {
+                unique = y;
+                return true;
+            }
+
+            unique = null;
+            return false;
+        }
+
+        private bool ExactMatch(ImmutableArray<IParameterSymbol> parameters)
+        {
+            if (parameters.Length != this.Values.Length)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                if (!this.Values[i].Equals(parameters[i].Type))
                 {
                     return false;
                 }

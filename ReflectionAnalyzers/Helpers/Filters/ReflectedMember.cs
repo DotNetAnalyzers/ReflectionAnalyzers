@@ -96,17 +96,14 @@ namespace ReflectionAnalyzers
                         continue;
                     }
 
-                    if (member == null)
-                    {
-                        member = candidate;
-                        if (IsWrongMemberType(member))
-                        {
-                            return FilterMatch.WrongMemberType;
-                        }
-                    }
-                    else
+                    if (!types.TryDisambiguate(member, candidate, out member))
                     {
                         return FilterMatch.Ambiguous;
+                    }
+
+                    if (IsWrongMemberType(member))
+                    {
+                        return FilterMatch.WrongMemberType;
                     }
                 }
             }
@@ -127,29 +124,26 @@ namespace ReflectionAnalyzers
                             continue;
                         }
 
-                        if (member == null)
-                        {
-                            member = candidate;
-                            if (IsUseContainingType(member))
-                            {
-                                return FilterMatch.UseContainingType;
-                            }
-
-                            if (candidate.IsStatic &&
-                                !current.Equals(type) &&
-                                !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
-                            {
-                                return FilterMatch.WrongFlags;
-                            }
-
-                            if (IsWrongMemberType(candidate))
-                            {
-                                return FilterMatch.WrongMemberType;
-                            }
-                        }
-                        else
+                        if (!types.TryDisambiguate(member, candidate, out member))
                         {
                             return FilterMatch.Ambiguous;
+                        }
+
+                        if (IsUseContainingType(member))
+                        {
+                            return FilterMatch.UseContainingType;
+                        }
+
+                        if (candidate.IsStatic &&
+                            !current.Equals(type) &&
+                            !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                        {
+                            return FilterMatch.WrongFlags;
+                        }
+
+                        if (IsWrongMemberType(candidate))
+                        {
+                            return FilterMatch.WrongMemberType;
                         }
                     }
 

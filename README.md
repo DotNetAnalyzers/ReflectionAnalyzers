@@ -132,5 +132,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL032.md">REFL032</a></td>
     <td>The dependency does not exist.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL033.md">REFL033</a></td>
+    <td>Use more specific types in the filter.</td>
+  </tr>
 <table>
 <!-- end generated table -->

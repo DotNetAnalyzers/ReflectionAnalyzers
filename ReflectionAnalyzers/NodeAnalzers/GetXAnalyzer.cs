@@ -28,7 +28,8 @@ namespace ReflectionAnalyzers
             REFL017DontUseNameofWrongMember.Descriptor,
             REFL018ExplicitImplementation.Descriptor,
             REFL019NoMemberMatchesTheTypes.Descriptor,
-            REFL029MissingTypes.Descriptor);
+            REFL029MissingTypes.Descriptor,
+            REFL033UseMoreSpecificTypes.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
