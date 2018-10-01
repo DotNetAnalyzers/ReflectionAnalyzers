@@ -1,3 +1,9 @@
+#### 0.11.0
+* REFL033 types can be more specific.
+* Understand MethodInfo.ReturnType, FieldInfo.FieldType, PropertyInfo.PropertyType
+* BUGFIX REFL003 handles overload resolution.
+* REFL003 when typeof
+
 #### 0.1.10
 * REFL016 should not suggest nameof(Finalize).
 * REFL016 should not suggest nameof(op_Equality).
