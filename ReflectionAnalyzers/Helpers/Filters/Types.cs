@@ -75,7 +75,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        internal bool TryDisambiguate(ISymbol x, ISymbol y, out ISymbol unique)
+        internal bool TryMostSpecific(ISymbol x, ISymbol y, out ISymbol unique)
         {
             if (x is null &&
                 y is null)
@@ -90,7 +90,8 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
-            return this.TryDisambiguate(x as IMethodSymbol, y as IMethodSymbol, out unique);
+            return this.TryMostSpecific(x as IMethodSymbol, y as IMethodSymbol, out unique);
+
             bool ByNull(ISymbol first, ISymbol other, out ISymbol result)
             {
                 if (first is null &&
@@ -112,7 +113,7 @@ namespace ReflectionAnalyzers
                    invocation.TryFindArgument(parameter, out argument);
         }
 
-        private bool TryDisambiguate(IMethodSymbol x, IMethodSymbol y, out ISymbol unique)
+        private bool TryMostSpecific(IMethodSymbol x, IMethodSymbol y, out ISymbol unique)
         {
             if (this.Argument is null ||
                 x is null ||

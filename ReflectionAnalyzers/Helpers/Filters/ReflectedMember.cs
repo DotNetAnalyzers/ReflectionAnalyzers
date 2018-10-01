@@ -96,7 +96,7 @@ namespace ReflectionAnalyzers
                         continue;
                     }
 
-                    if (!types.TryDisambiguate(member, candidate, out member))
+                    if (!types.TryMostSpecific(member, candidate, out member))
                     {
                         return FilterMatch.Ambiguous;
                     }
@@ -124,7 +124,7 @@ namespace ReflectionAnalyzers
                             continue;
                         }
 
-                        if (!types.TryDisambiguate(member, candidate, out member))
+                        if (!types.TryMostSpecific(member, candidate, out member))
                         {
                             return FilterMatch.Ambiguous;
                         }

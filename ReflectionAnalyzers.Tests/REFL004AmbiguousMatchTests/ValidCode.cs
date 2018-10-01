@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    internal partial class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL004");
@@ -50,27 +50,6 @@ namespace RoslynSandbox
         private double PublicPrivateInstance(double value) => value;
     }
 }".AssertReplace("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-        }
-
-        [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-        public void OverloadResolution(string call)
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System;
-    using System.Reflection;
-
-    class Foo
-    {
-        public static object Get() => typeof(Foo).GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
-
-        public static int Static(int i) => i;
-
-        public static IFormattable Static(IFormattable i) => i;
-    }
-}".AssertReplace("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
 
