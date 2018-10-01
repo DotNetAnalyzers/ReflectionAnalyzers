@@ -98,6 +98,25 @@ namespace RoslynSandbox
 }";
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
+
+            [Test]
+            public void PassingArrayOfUnknownToMakeGenericType()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class C<T1, T2>
+    {
+        void M(Type[] types)
+        {
+            typeof(C<,>).MakeGenericType(types);
+        }
+    }
+}";
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }

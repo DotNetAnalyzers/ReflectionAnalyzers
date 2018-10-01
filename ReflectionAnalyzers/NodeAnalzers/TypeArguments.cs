@@ -32,8 +32,11 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                typeArguments = new TypeArguments(parameters, ArgumentsExpressions());
-                return true;
+                if (!IsUnknownArray())
+                {
+                    typeArguments = new TypeArguments(parameters, ArgumentsExpressions());
+                    return true;
+                }
             }
 
             typeArguments = default(TypeArguments);
@@ -48,6 +51,14 @@ namespace ReflectionAnalyzers
                 }
 
                 return builder.ToImmutable();
+            }
+
+            bool IsUnknownArray()
+            {
+                return argumentList.Arguments.TrySingle(out var single) &&
+                       single.Expression is IdentifierNameSyntax identifierName &&
+                       context.SemanticModel.TryGetType(identifierName, context.CancellationToken, out var type) &&
+                       type is IArrayTypeSymbol;
             }
         }
 
