@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -121,36 +122,57 @@ namespace ReflectionAnalyzers
                 case TypeOfExpressionSyntax typeOf:
                     source = typeOf;
                     return context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out result);
-                case InvocationExpressionSyntax getType when getType.TryGetMethodName(out var name) &&
-                                                 name == "GetType" &&
-                                                 getType.ArgumentList is ArgumentListSyntax args:
-                    if (args.Arguments.Count == 0)
+                case InvocationExpressionSyntax invocation when invocation.ArgumentList is ArgumentListSyntax args &&
+                                                                args.Arguments.Count == 0 &&
+                                                                invocation.TryGetMethodName(out var name) &&
+                                                                name == "GetType":
+                    switch (invocation.Expression)
                     {
-                        switch (getType.Expression)
-                        {
-                            case MemberAccessExpressionSyntax typeAccess:
-                                source = getType;
-                                return context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out result);
-                            case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
-                                source = getType;
-                                return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);
-                        }
+                        case MemberAccessExpressionSyntax typeAccess:
+                            source = invocation;
+                            return context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out result);
+                        case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
+                            source = invocation;
+                            return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);
                     }
-                    else if (args.Arguments.TrySingle(out var arg) &&
-                             arg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var typeName) &&
-                             getType.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out _))
+
+                    break;
+                case InvocationExpressionSyntax invocation when invocation.ArgumentList is ArgumentListSyntax args &&
+                                                                args.Arguments.TrySingle(out var arg) &&
+                                                                arg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var typeName) &&
+                                                                invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out _):
+
+                    switch (invocation.Expression)
                     {
-                        switch (getType.Expression)
+                        case MemberAccessExpressionSyntax typeAccess when context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out var typeInAssembly):
+                            source = invocation;
+                            result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
+                            return result != null;
+                        case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType) &&
+                                                         context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out var typeInAssembly):
+                            source = invocation;
+                            result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
+                            return result != null;
+                    }
+
+                    break;
+                case InvocationExpressionSyntax invocation when GetX.TryMatchGetNestedType(invocation, context, out var reflectedMember, out _, out _):
+                    source = invocation;
+                    result = reflectedMember.Symbol as ITypeSymbol;
+                    return result != null && reflectedMember.Match == FilterMatch.Single;
+                case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.MakeGenericType, context.SemanticModel, context.CancellationToken, out _) &&
+                                                                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                                                                TypeArguments.TryCreate(invocation, context, out var typeArguments) &&
+                                                                Array.TryGetTypes(typeArguments, context, out var types):
+                    using (visited = visited.IncrementUsage())
+                    {
+                        if (visited.Add(invocation) &&
+                            TryGet(memberAccess.Expression, context, visited, out var definition, out _) &&
+                            definition is INamedTypeSymbol namedType)
                         {
-                            case MemberAccessExpressionSyntax typeAccess when context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out var typeInAssembly):
-                                source = getType;
-                                result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
-                                return result != null;
-                            case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType) &&
-                                                             context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out var typeInAssembly):
-                                source = getType;
-                                result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
-                                return result != null;
+                            source = invocation;
+                            result = namedType.Construct(types.ToArray());
+                            return result != null;
                         }
                     }
 

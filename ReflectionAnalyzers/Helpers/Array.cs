@@ -40,19 +40,18 @@ namespace ReflectionAnalyzers
             }
         }
 
-        internal static bool TryGetTypes(ArgumentListSyntax argumentList, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
+        internal static bool TryGetTypes(TypeArguments typeArguments, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
         {
-            if (argumentList == null ||
-                argumentList.Arguments.Count == 0)
+            if (typeArguments.Arguments.Length == 0)
             {
                 types = ImmutableArray<ITypeSymbol>.Empty;
                 return false;
             }
 
-            var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(argumentList.Arguments.Count);
-            foreach (var argument in argumentList.Arguments)
+            var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(typeArguments.Arguments.Length);
+            foreach (var argument in typeArguments.Arguments)
             {
-                if (Type.TryGet(argument.Expression, context, out var type, out _))
+                if (Type.TryGet(argument, context, out var type, out _))
                 {
                     builder.Add(type);
                 }

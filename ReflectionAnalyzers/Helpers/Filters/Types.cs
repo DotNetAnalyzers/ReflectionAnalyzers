@@ -102,6 +102,13 @@ namespace ReflectionAnalyzers
             }
         }
 
+        private static bool TryGetTypesArgument(InvocationExpressionSyntax invocation, IMethodSymbol getX, out ArgumentSyntax argument)
+        {
+            argument = null;
+            return getX.TryFindParameter("types", out var parameter) &&
+                   invocation.TryFindArgument(parameter, out argument);
+        }
+
         private bool TryDisambiguate(IMethodSymbol x, IMethodSymbol y, out ISymbol unique)
         {
             if (this.Argument is null ||
@@ -145,13 +152,6 @@ namespace ReflectionAnalyzers
 
             unique = null;
             return false;
-        }
-
-        private static bool TryGetTypesArgument(InvocationExpressionSyntax invocation, IMethodSymbol getX, out ArgumentSyntax argument)
-        {
-            argument = null;
-            return getX.TryFindParameter("types", out var parameter) &&
-                   invocation.TryFindArgument(parameter, out argument);
         }
     }
 }
