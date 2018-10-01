@@ -1,5 +1,5 @@
 # REFL033
-## Use more specific types in the filter.
+## Use the same type as the parameter.
 
 <!-- start generated table -->
 <table>
@@ -28,7 +28,7 @@
 
 ## Description
 
-Use more specific types in the filter.
+Use the same type as the parameter.
 
 ## Motivation
 
@@ -47,21 +47,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL033 // Use more specific types in the filter.
+#pragma warning disable REFL033 // Use the same type as the parameter.
 Code violating the rule here
-#pragma warning restore REFL033 // Use more specific types in the filter.
+#pragma warning restore REFL033 // Use the same type as the parameter.
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL033 // Use more specific types in the filter.
+#pragma warning disable REFL033 // Use the same type as the parameter.
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL033:Use more specific types in the filter.", 
+    "REFL033:Use the same type as the parameter.", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

@@ -134,7 +134,7 @@ Analyzers checking System.Reflection
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL033.md">REFL033</a></td>
-    <td>Use more specific types in the filter.</td>
+    <td>Use the same type as the parameter.</td>
   </tr>
 <table>
 <!-- end generated table -->

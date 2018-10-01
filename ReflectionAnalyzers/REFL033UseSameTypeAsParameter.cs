@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL033UseMoreSpecificTypes
+    internal static class REFL033UseSameTypeAsParameter
     {
         public const string DiagnosticId = "REFL033";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Use more specific types in the filter.",
-            messageFormat: "Use more specific types in the filter.",
+            title: "Use the same type as the parameter.",
+            messageFormat: "Use the same type as the parameter. {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Use more specific types in the filter.",
+            description: "Use the same type as the parameter.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }
