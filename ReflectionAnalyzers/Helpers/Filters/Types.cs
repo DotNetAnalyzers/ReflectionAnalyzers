@@ -36,6 +36,24 @@ namespace ReflectionAnalyzers
             return true;
         }
 
+        internal bool Matches(ImmutableArray<IParameterSymbol> parameters)
+        {
+            if (parameters.Length != this.Values.Length)
+            {
+                return false;
+            }
+
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                if (!this.Values[i].Is(parameters[i].Type))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private static bool TryGetTypesArgument(InvocationExpressionSyntax invocation, IMethodSymbol getX, out ArgumentSyntax argument)
         {
             argument = null;

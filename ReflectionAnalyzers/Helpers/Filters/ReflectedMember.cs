@@ -358,21 +358,8 @@ namespace ReflectionAnalyzers
             {
                 switch (candidate)
                 {
-                    case IMethodSymbol method:
-                        if (method.Parameters.Length != types.Values.Length)
-                        {
-                            return false;
-                        }
-
-                        for (var i = 0; i < method.Parameters.Length; i++)
-                        {
-                            if (!method.Parameters[i].Type.Equals(types.Values[i]))
-                            {
-                                return false;
-                            }
-                        }
-
-                        break;
+                    case IMethodSymbol method when !types.Matches(method.Parameters):
+                        return false;
                 }
             }
 
