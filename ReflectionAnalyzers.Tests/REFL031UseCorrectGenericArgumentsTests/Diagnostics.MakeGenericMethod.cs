@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericParametersTests
+namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericParametersTests
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
-            public void SingleUnconstrainedTwoTypeArguments()
+            public void CountError()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -27,7 +27,28 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "Use correct generic parameters.";
+                var message = "Use generic arguments that satisfies the type parameters. The member has 1 parameter but 2 arguments are passed in.";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            }
+
+            [Test]
+            public void ConstraintError()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo
+    {
+        public static void Bar<T>()
+            where T : struct
+        {
+            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(↓typeof(string));
+        }
+    }
+}";
+                var message = "Use generic arguments that satisfies the type parameters. The argument typeof(string) does not satisfy the constraints of the parameter T.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -50,8 +71,8 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("MakeGenericMethod(↓typeof(string))", call);
-                var message = "Use correct generic parameters.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("where T : class", "typeof(int)")]
@@ -85,8 +106,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
-                var message = "Use correct generic parameters.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), barCode, code);
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
             }
         }
     }

@@ -8,12 +8,12 @@ namespace ReflectionAnalyzers
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Use correct generic parameters.",
-            messageFormat: "Use correct generic parameters.",
+            title: "Use generic arguments that satisfies the type parameters.",
+            messageFormat: "Use generic arguments that satisfies the type parameters. {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Use correct generic parameters.",
+            description: "Use generic arguments that satisfies the type parameters.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }

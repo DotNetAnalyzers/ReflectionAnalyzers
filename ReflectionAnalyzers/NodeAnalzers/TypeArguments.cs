@@ -62,7 +62,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        internal bool TryFindMisMatch(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument)
+        internal bool TryFindMisMatch(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument, out ITypeParameterSymbol parameter)
         {
             for (var i = 0; i < this.Arguments.Length; i++)
             {
@@ -70,11 +70,13 @@ namespace ReflectionAnalyzers
                     !Type.SatisfiesConstraints(type, this.Parameters[i], context.Compilation))
                 {
                     argument = this.Arguments[i];
+                    parameter = this.Parameters[i];
                     return true;
                 }
             }
 
             argument = null;
+            parameter = null;
             return false;
         }
 

@@ -30,13 +30,23 @@ namespace ReflectionAnalyzers
             {
                 if (typeArguments.Parameters.Length != typeArguments.Arguments.Length)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, invocation.ArgumentList.GetLocation()));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL031UseCorrectGenericArguments.Descriptor,
+                            invocation.ArgumentList.GetLocation(),
+                            $"The member has {typeArguments.Parameters.Length} parameter{PluralS(typeArguments.Parameters.Length)} but {typeArguments.Arguments.Length} argument{PluralS(typeArguments.Arguments.Length)} are passed in."));
                 }
-                else if (typeArguments.TryFindMisMatch(context, out var mismatch))
+                else if (typeArguments.TryFindMisMatch(context, out var argument, out var parameter))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor, mismatch.GetLocation()));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL031UseCorrectGenericArguments.Descriptor,
+                            argument.GetLocation(),
+                            $"The argument {argument} does not satisfy the constraints of the parameter {parameter}."));
                 }
             }
+
+            string PluralS(int i) => i == 1 ? string.Empty : "s";
         }
     }
 }

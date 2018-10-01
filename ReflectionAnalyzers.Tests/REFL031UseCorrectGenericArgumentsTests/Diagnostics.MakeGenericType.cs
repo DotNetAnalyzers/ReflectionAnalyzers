@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericParametersTests
+namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
