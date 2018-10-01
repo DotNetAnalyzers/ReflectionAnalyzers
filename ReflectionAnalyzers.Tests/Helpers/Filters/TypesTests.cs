@@ -9,6 +9,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Filters
 
     public class TypesTests
     {
+        [TestCase("int", "IFormattable", "object")]
         [TestCase("object", "object", "IFormattable")]
         [TestCase("int", "int", "object")]
         [TestCase("int", "int", "IFormattable")]

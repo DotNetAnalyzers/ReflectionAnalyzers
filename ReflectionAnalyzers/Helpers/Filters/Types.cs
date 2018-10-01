@@ -57,24 +57,6 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        internal bool IsExactMatch(ImmutableArray<IParameterSymbol> parameters)
-        {
-            if (parameters.Length != this.Expressions.Length)
-            {
-                return false;
-            }
-
-            for (var i = 0; i < parameters.Length; i++)
-            {
-                if (!this.Symbols[i].Equals(parameters[i].Type))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
         internal bool TryMostSpecific(ISymbol x, ISymbol y, out ISymbol unique)
         {
             if (x is null &&
@@ -85,7 +67,7 @@ namespace ReflectionAnalyzers
             }
 
             if (ByNull(x, y, out unique) ||
-                ByNull(x, y, out unique))
+                ByNull(y, x, out unique))
             {
                 return true;
             }
@@ -123,19 +105,21 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
+            if (TryExact(this.Symbols, x, out unique) ||
+                TryExact(this.Symbols, y, out unique))
+            {
+                return true;
+            }
+
             if (this.Matches(x.Parameters) &&
                 this.Matches(y.Parameters))
             {
-                if (this.IsExactMatch(x.Parameters))
+                for (var i = 0; i < this.Symbols.Length; i++)
                 {
-                    unique = x;
-                    return true;
-                }
-
-                if (this.IsExactMatch(y.Parameters))
-                {
-                    unique = y;
-                    return true;
+                    if (TryIndex(i, this.Symbols, out unique))
+                    {
+                        return true;
+                    }
                 }
 
                 unique = null;
@@ -156,6 +140,65 @@ namespace ReflectionAnalyzers
 
             unique = null;
             return false;
+
+            bool TryExact(ImmutableArray<ITypeSymbol> symbols, IMethodSymbol method, out ISymbol result)
+            {
+                if (method.Parameters.Length != symbols.Length)
+                {
+                    result = null;
+                    return false;
+                }
+
+                for (var i = 0; i < method.Parameters.Length; i++)
+                {
+                    if (!symbols[i].Equals(method.Parameters[i].Type))
+                    {
+                        result = null;
+                        return false;
+                    }
+                }
+
+                result = method;
+                return true;
+            }
+
+            bool TryIndex(int index, ImmutableArray<ITypeSymbol> symbols, out ISymbol result)
+            {
+                var xt = x.Parameters[index].Type;
+                var yt = y.Parameters[index].Type;
+                if (xt.Equals(yt))
+                {
+                    result = null;
+                    return false;
+                }
+
+                if (xt.Equals(symbols[index]))
+                {
+                    result = x;
+                    return true;
+                }
+
+                if (yt.Equals(symbols[index]))
+                {
+                    result = y;
+                    return true;
+                }
+
+                if (xt == KnownSymbol.Object)
+                {
+                    result = y;
+                    return true;
+                }
+
+                if (yt == KnownSymbol.Object)
+                {
+                    result = x;
+                    return true;
+                }
+
+                result = null;
+                return false;
+            }
         }
     }
 }
