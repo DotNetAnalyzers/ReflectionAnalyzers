@@ -297,6 +297,51 @@ namespace RoslynSandbox
 }".AssertReplace("Delegate", type);
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
+
+            [TestCase("Static",           "BindingFlags.Public | BindingFlags.Instance")]
+            [TestCase("Static",           "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+            [TestCase("Static",           "BindingFlags.NonPublic | BindingFlags.Static")]
+            [TestCase("ReferenceEquals",  "BindingFlags.Public | BindingFlags.Static")]
+            [TestCase("this.Public",      "BindingFlags.Public | BindingFlags.Static")]
+            [TestCase("this.Public",      "BindingFlags.NonPublic | BindingFlags.Instance")]
+            [TestCase("this.Public",      "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+            [TestCase("this.Public",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+            [TestCase("this.ToString",    "BindingFlags.Public")]
+            [TestCase("this.ToString",    "BindingFlags.NonPublic | BindingFlags.Static")]
+            [TestCase("this.ToString",    "BindingFlags.Public | BindingFlags.Static")]
+            [TestCase("this.GetHashCode", "BindingFlags.Public")]
+            [TestCase("this.GetHashCode", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+            [TestCase("this.GetHashCode", "BindingFlags.NonPublic | BindingFlags.Static")]
+            [TestCase("this.GetHashCode", "BindingFlags.Public | BindingFlags.Static")]
+            [TestCase("this.Private",     "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
+            [TestCase("this.Private",     "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+            public void WrongFlags(string method, string flags)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    class Foo
+    {
+        public Foo()
+        {
+            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Static);
+        }
+
+        public static int Static() => 0;
+
+        public int Public() => 0;
+
+        public override string ToString() => string.Empty;
+
+        private int Private() => 0;
+    }
+}".AssertReplace("nameof(this.Public)", $"nameof({method})")
+  .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
+
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }
