@@ -23,7 +23,26 @@ namespace RoslynSandbox
     {
         public static void Bar()
         {
-            var type = typeof(Foo<>).MakeGenericType(typeof(int), typeof(double));
+            var type = typeof(Foo<>).MakeGenericType↓(typeof(int), typeof(double));
+        }
+    }
+}";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [Test]
+            public void GetGenericTypeDefinition()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo<T>
+    {
+        public static void Bar()
+        {
+            var type = typeof(Foo<int>).GetGenericTypeDefinition().MakeGenericType↓(typeof(int), typeof(double));
         }
     }
 }";

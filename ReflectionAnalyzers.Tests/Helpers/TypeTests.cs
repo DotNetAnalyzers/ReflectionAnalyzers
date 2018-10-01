@@ -15,6 +15,7 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("GetType()",                                                                               "RoslynSandbox.Foo",                         "GetType()")]
         [TestCase("typeof(Foo).GetNestedType(\"Baz`1\")",                                                    "RoslynSandbox.Foo.Baz<T>",                  "typeof(Foo).GetNestedType(\"Baz`1\")")]
         [TestCase("typeof(Foo).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))",                       "RoslynSandbox.Foo.Baz<int>",                "typeof(Foo).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))")]
+        [TestCase("typeof(Foo.Baz<int>).GetGenericTypeDefinition()",                                         "RoslynSandbox.Foo.Baz<T>",                  "typeof(Foo.Baz<int>).GetGenericTypeDefinition()")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")",                                       "int",                                       "typeof(string).Assembly.GetType(\"System.Int32\")")]
         [TestCase("new Exception().GetType()",                                                               "Exception",                                 "new Exception().GetType()")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "System.Collections.Generic.IEnumerable<T>", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]

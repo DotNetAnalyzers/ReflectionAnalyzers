@@ -178,8 +178,16 @@ namespace ReflectionAnalyzers
                             result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
                             return result != null;
                     }
-
                     break;
+
+                case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.GetGenericTypeDefinition, context.SemanticModel, context.CancellationToken, out _) &&
+                                                                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                                                                TryGet(memberAccess.Expression, context, visited, out var definingType, out _) &&
+                                                                definingType is INamedTypeSymbol namedType:
+                    source = invocation;
+                    result = namedType.ConstructedFrom;
+                    return true;
+
                 case InvocationExpressionSyntax invocation when GetX.TryMatchGetNestedType(invocation, context, out var reflectedMember, out _, out _):
                     source = invocation;
                     result = reflectedMember.Symbol as ITypeSymbol;

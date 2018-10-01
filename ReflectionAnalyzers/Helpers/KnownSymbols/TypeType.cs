@@ -9,6 +9,7 @@ namespace ReflectionAnalyzers
         internal readonly QualifiedMethod GetEvent;
         internal readonly QualifiedMethod GetField;
         internal readonly QualifiedMethod GetInterface;
+        internal readonly QualifiedMethod GetGenericTypeDefinition;
         internal readonly QualifiedMethod GetMember;
         internal readonly QualifiedMethod GetMethod;
         internal readonly QualifiedMethod GetNestedType;
@@ -23,6 +24,7 @@ namespace ReflectionAnalyzers
             this.GetEvent = new QualifiedMethod(this, nameof(this.GetEvent));
             this.GetField = new QualifiedMethod(this, nameof(this.GetField));
             this.GetInterface = new QualifiedMethod(this, nameof(this.GetInterface));
+            this.GetGenericTypeDefinition = new QualifiedMethod(this, nameof(this.GetGenericTypeDefinition));
             this.GetMember = new QualifiedMethod(this, nameof(this.GetMember));
             this.GetNestedType = new QualifiedMethod(this, nameof(this.GetNestedType));
             this.GetMethod = new QualifiedMethod(this, nameof(this.GetMethod));
