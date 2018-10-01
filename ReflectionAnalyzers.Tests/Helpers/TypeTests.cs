@@ -18,7 +18,8 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")",                                       "int",                                       "typeof(string).Assembly.GetType(\"System.Int32\")")]
         [TestCase("new Exception().GetType()",                                                               "Exception",                                 "new Exception().GetType()")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "System.Collections.Generic.IEnumerable<T>", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
-        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString)).ReturnType",                                 "string",                                    "typeof(Foo).GetMethod(nameof(this.ToString)).ReturnType")]
+        [TestCase("typeof(Foo).GetField(nameof(Foo.Field)).FieldType",                                       "int",                                       "typeof(Foo).GetField(nameof(Foo.Field)).FieldType")]
+        [TestCase("typeof(Foo).GetProperty(nameof(Foo.Property)).PropertyType",                              "int",                                       "typeof(Foo).GetProperty(nameof(Foo.Property)).PropertyType")]
         public void TryGet(string expression, string expected, string expectedSource)
         {
             var code = @"
@@ -29,10 +30,14 @@ namespace RoslynSandbox
 
     class Foo
     {
+        public readonly int Field;
+
         public Foo(Foo foo)
         {
             var type = typeof(Foo);
         }
+
+        public int Property { get; }
 
         public class Baz<T>
         {

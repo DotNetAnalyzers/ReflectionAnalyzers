@@ -127,6 +127,22 @@ namespace ReflectionAnalyzers
                     source = memberAccess;
                     result = method.ReturnType;
                     return true;
+                case MemberAccessExpressionSyntax memberAccess when memberAccess.Name.Identifier.ValueText == "FieldType" &&
+                                                                    memberAccess.Expression is InvocationExpressionSyntax invocation &&
+                                                                    GetX.TryMatchGetField(invocation, context, out var reflectedMember, out _, out _) &&
+                                                                    reflectedMember.Match == FilterMatch.Single &&
+                                                                    reflectedMember.Symbol is IFieldSymbol field:
+                    source = memberAccess;
+                    result = field.Type;
+                    return true;
+                case MemberAccessExpressionSyntax memberAccess when memberAccess.Name.Identifier.ValueText == "PropertyType" &&
+                                                                    memberAccess.Expression is InvocationExpressionSyntax invocation &&
+                                                                    GetX.TryMatchGetProperty(invocation, context, out var reflectedMember, out _, out _) &&
+                                                                    reflectedMember.Match == FilterMatch.Single &&
+                                                                    reflectedMember.Symbol is IPropertySymbol field:
+                    source = memberAccess;
+                    result = field.Type;
+                    return true;
                 case TypeOfExpressionSyntax typeOf:
                     source = typeOf;
                     return context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out result);
