@@ -21,15 +21,15 @@ namespace RoslynSandbox
 
     public class Foo
     {
-        public object Get() => typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int) });
+        public object Get() => typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(FilterType) });
 
-        public void Bar(IFormattable _) { }
+        public void Bar(Type1 _) { }
 
-        public void Bar(object _) { }
+        public void Bar(Type2 _) { }
     }
-}".AssertReplace("int", filterType)
-  .AssertReplace("IFormattable", type1)
-  .AssertReplace("object", type2);
+}".AssertReplace("FilterType", filterType)
+  .AssertReplace("Type1", type1)
+  .AssertReplace("Type2", type2);
 
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
