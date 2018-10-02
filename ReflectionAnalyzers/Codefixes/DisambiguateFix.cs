@@ -59,6 +59,35 @@ namespace ReflectionAnalyzers.Codefixes
                             }
                         }
                     }
+
+                    if (invocation.TryGetTarget(KnownSymbol.Type.GetProperty, semanticModel, context.CancellationToken, out _))
+                    {
+                        foreach (var member in type.GetMembers(methodName))
+                        {
+                            if (member is IPropertySymbol property &&
+                                Flags.TryGetExpectedBindingFlags(type, property, out var flags) &&
+                                flags.ToDisplayString(invocation) is string flagsText &&
+                                Types.TryGetTypesArrayText(property.Parameters, semanticModel, invocation.SpanStart, out var typesArrayText))
+                            {
+                                context.RegisterCodeFix(
+                                    $"Use: {flagsText}, {typesArrayText}.",
+                                    (editor, _) => editor.AddUsing(SystemReflection)
+                                                         .ReplaceNode(
+                                                             argumentList,
+                                                             x => x.WithArguments(x.Arguments.AddRange(new[]
+                                                                   {
+                                                                       ParseArgument(flagsText),
+                                                                       NullArgument,
+                                                                       ParseArgument($"typeof({property.Type.ToMinimalDisplayString(semanticModel, invocation.SpanStart)})"),
+                                                                       ParseArgument(typesArrayText),
+                                                                       NullArgument
+                                                                   }))
+                                                                   .WithTriviaFrom(x)),
+                                    nameof(DisambiguateFix),
+                                    diagnostic);
+                            }
+                        }
+                    }
                 }
             }
         }
