@@ -189,7 +189,7 @@ namespace ReflectionAnalyzers
             {
                 // Assigning member if it is explicit. Useful info but we can't be sure still.
                 _ = IsExplicitImplementation(out member);
-                return FilterMatch.Unknown;
+                return FilterMatch.PotentiallyInvisible;
             }
 
             if (IsExplicitImplementation(out member))
@@ -305,7 +305,7 @@ namespace ReflectionAnalyzers
             {
                 foreach (var @interface in type.AllInterfaces)
                 {
-                    if (@interface.TryFindFirstMember(x => MatchesFilter(x, name, flags, types), out result))
+                    if (@interface.TryFindFirstMember(x => MatchesFilter(x, name, Flags.MatchAll.Effective, types), out result))
                     {
                         return true;
                     }

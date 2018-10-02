@@ -2,7 +2,6 @@ namespace ReflectionAnalyzers
 {
     internal enum FilterMatch
     {
-        Unknown,
         Single,
         NoMatch,
         ExplicitImplementation,
