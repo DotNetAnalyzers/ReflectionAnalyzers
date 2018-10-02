@@ -4,6 +4,7 @@ using Gu.Roslyn.Asserts;
 [assembly: MetadataReference(typeof(System.Diagnostics.Debug), new[] { "global", "System" })]
 [assembly: TransitiveMetadataReferences(typeof(Microsoft.CodeAnalysis.CSharp.CSharpCompilation))]
 [assembly: TransitiveMetadataReferences(typeof(Gu.Roslyn.CodeFixExtensions.DocumentEditorCodeFixProvider))]
+[assembly: TransitiveMetadataReferences(typeof(System.Windows.Forms.Control))]
 [assembly: MetadataReferences(
     typeof(System.Linq.Enumerable),
     typeof(System.Reflection.Assembly),
