@@ -30,21 +30,5 @@ namespace ReflectionAnalyzers
             name = default(Name);
             return false;
         }
-
-        /// <summary>
-        /// Trims generic part of <see cref="MetadataName"/> as typeSymbol.GetMembers() does not work with it.
-        /// IEnumerable`1 becomes IEnumerable.
-        /// </summary>
-        /// <returns></returns>
-        internal string MemberName()
-        {
-            var index = this.MetadataName.IndexOf('`');
-            if (index > 0)
-            {
-                return this.MetadataName.Substring(0, index);
-            }
-
-            return this.MetadataName;
-        }
     }
 }

@@ -186,7 +186,8 @@ namespace RoslynSandbox
 namespace RoslynSandbox
 {
     using System;
-     public class CustomAggregateException : AggregateException
+
+    public class CustomAggregateException : AggregateException
     {
         public int InnerExceptionCount { get; }
     }
@@ -196,7 +197,8 @@ namespace RoslynSandbox.Dump
 {
     using System;
     using System.Reflection;
-     class Foo
+
+    class Foo
     {
         public Foo()
         {

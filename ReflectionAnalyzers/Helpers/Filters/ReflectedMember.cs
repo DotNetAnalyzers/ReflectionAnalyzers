@@ -162,7 +162,7 @@ namespace ReflectionAnalyzers
                 return FilterMatch.Single;
             }
 
-            if (type.TryFindFirstMemberRecursive(name.MemberName(), out member))
+            if (type.TryFindFirstMemberRecursive(x => MatchesFilter(x, name, Flags.MatchAll.Effective, Types.Any), out member))
             {
                 if (IsUseContainingType(member))
                 {
@@ -305,9 +305,8 @@ namespace ReflectionAnalyzers
             {
                 foreach (var @interface in type.AllInterfaces)
                 {
-                    if (@interface.TryFindFirstMemberRecursive(name.MemberName(), out var interfaceMember))
+                    if (@interface.TryFindFirstMember(x => MatchesFilter(x, name, flags, types), out result))
                     {
-                        result = interfaceMember;
                         return true;
                     }
                 }
