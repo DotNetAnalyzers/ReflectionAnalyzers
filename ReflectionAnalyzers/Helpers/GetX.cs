@@ -128,9 +128,24 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetProperty.
         /// </summary>
-        internal static bool TryMatchGetProperty(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
+        internal static bool TryMatchGetProperty(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
-            return TryMatchGetX(invocation, KnownSymbol.Type.GetProperty, context, out member, out name, out flags);
+            if (invocation.ArgumentList != null &&
+                invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out var getX) &&
+                ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
+                IsKnownSignature(invocation, getX) &&
+                Name.TryCreate(invocation, getX, context, out name) &&
+                Flags.TryCreate(invocation, getX, context, out flags) &&
+                Types.TryCreate(invocation, getX, context, out types))
+            {
+                return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context, out member);
+            }
+
+            member = default(ReflectedMember);
+            flags = default(Flags);
+            name = default(Name);
+            types = default(Types);
+            return false;
         }
 
         private static bool TryFindInvocation(MemberAccessExpressionSyntax memberAccess, QualifiedMethod expected, SyntaxNodeAnalysisContext context, out InvocationExpressionSyntax invocation)

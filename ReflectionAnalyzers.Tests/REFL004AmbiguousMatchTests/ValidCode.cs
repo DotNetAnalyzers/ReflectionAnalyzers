@@ -88,5 +88,47 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("GetProperty(\"Item\", typeof(int), new[] { typeof(int) })")]
+        [TestCase("GetProperty(\"Item\", typeof(int), new[] { typeof(int), typeof(int) })")]
+        public void TwoIndexers(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        public object Get => typeof(Foo).GetProperty(""Item"", typeof(int), new[] { typeof(int) });
+
+        public int this[int i] => 0;
+
+        public int this[int i1, int i2] => 0;
+    }
+}".AssertReplace("GetProperty(\"Item\", typeof(int), new[] { typeof(int) })", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("GetProperty(\"Bar\", typeof(int), new[] { typeof(int) })")]
+        [TestCase("GetProperty(\"Bar\", typeof(int), new[] { typeof(int), typeof(int) })")]
+        public void TwoNamedIndexers(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Runtime.CompilerServices;
+
+    public class Foo
+    {
+        public object Get => typeof(Foo).GetProperty(""Bar"", typeof(int), new[] { typeof(int) });
+
+        [IndexerName(""Bar"")]
+        public int this[int i] => 0;
+
+        [IndexerName(""Bar"")]
+        public int this[int i1, int i2] => 0;
+    }
+}".AssertReplace("GetProperty(\"Bar\", typeof(int), new[] { typeof(int) })", call);
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

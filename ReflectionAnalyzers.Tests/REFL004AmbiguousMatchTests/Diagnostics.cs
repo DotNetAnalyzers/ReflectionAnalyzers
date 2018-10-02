@@ -39,5 +39,45 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty↓(\"Item\")", call);
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseCode, code);
         }
+
+        [Test]
+        public void TwoIndexers()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public class Foo : Base
+    {
+        public object Get => typeof(Foo).GetProperty↓(""Item"");
+
+        public int this[int i] => 0;
+
+        public int this[int i1, int i2] => 0;
+    }
+}";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
+        public void TwoNamedIndexers()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Runtime.CompilerServices;
+
+    public class Foo
+    {
+        public object Get => typeof(Foo).GetProperty↓(""Bar"");
+
+        [IndexerName(""Bar"")]
+        public int this[int i] => 0;
+
+        [IndexerName(""Bar"")]
+        public int this[int i1, int i2] => 0;
+    }
+}";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

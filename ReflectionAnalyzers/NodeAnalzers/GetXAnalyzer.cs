@@ -402,7 +402,7 @@ namespace ReflectionAnalyzers
                        GetX.TryMatchGetField(candidate, context, out member, out name, out flags) ||
                        GetX.TryMatchGetMethod(candidate, context, out member, out name, out flags, out types) ||
                        GetX.TryMatchGetNestedType(candidate, context, out member, out name, out flags) ||
-                       GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags);
+                       GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags, out types);
             }
 
             member = default(ReflectedMember);
