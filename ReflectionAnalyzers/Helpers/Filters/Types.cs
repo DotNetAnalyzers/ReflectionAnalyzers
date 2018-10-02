@@ -114,16 +114,20 @@ namespace ReflectionAnalyzers
             if (this.Matches(x.Parameters) &&
                 this.Matches(y.Parameters))
             {
+                var sum = 0;
                 for (var i = 0; i < this.Symbols.Length; i++)
                 {
-                    if (TryIndex(i, this.Symbols, out unique))
-                    {
-                        return true;
-                    }
+                    sum += ByIndex(i, this.Symbols);
                 }
 
-                unique = null;
-                return false;
+                if (sum == 0)
+                {
+                    unique = null;
+                    return false;
+                }
+
+                unique = sum < 0 ? x : y;
+                return true;
             }
 
             if (this.Matches(x.Parameters))
@@ -162,42 +166,36 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
-            bool TryIndex(int index, ImmutableArray<ITypeSymbol> symbols, out ISymbol result)
+            int ByIndex(int index, ImmutableArray<ITypeSymbol> symbols)
             {
                 var xt = x.Parameters[index].Type;
                 var yt = y.Parameters[index].Type;
                 if (xt.Equals(yt))
                 {
-                    result = null;
-                    return false;
+                    return 0;
                 }
 
                 if (xt.Equals(symbols[index]))
                 {
-                    result = x;
-                    return true;
+                    return -1;
                 }
 
                 if (yt.Equals(symbols[index]))
                 {
-                    result = y;
-                    return true;
+                    return 1;
                 }
 
                 if (xt == KnownSymbol.Object)
                 {
-                    result = y;
-                    return true;
+                    return 1;
                 }
 
                 if (yt == KnownSymbol.Object)
                 {
-                    result = x;
-                    return true;
+                    return -1;
                 }
 
-                result = null;
-                return false;
+                return 0;
             }
         }
     }
