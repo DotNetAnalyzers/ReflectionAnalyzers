@@ -39,6 +39,39 @@ namespace ReflectionAnalyzers
             return true;
         }
 
+        internal static bool TryGetTypesArrayText(ImmutableArray<IParameterSymbol> parameters, SemanticModel semanticModel, int position, out string typesArrayText)
+        {
+            if (parameters.Length == 0)
+            {
+                typesArrayText = "Type.EmptyTypes";
+                return true;
+            }
+
+            var builder = StringBuilderPool.Borrow().Append("new[] { ");
+            for (var i = 0; i < parameters.Length; i++)
+            {
+                var parameter = parameters[i];
+                if (!semanticModel.IsAccessible(position, parameter.Type))
+                {
+                    _ = builder.Return();
+                    typesArrayText = null;
+                    return false;
+                }
+
+                if (i != 0)
+                {
+                    _ = builder.Append(", ");
+                }
+
+                _ = builder.Append("typeof(")
+                           .Append(parameter.Type.ToMinimalDisplayString(semanticModel, position))
+                           .Append(")");
+            }
+
+            typesArrayText = builder.Append(" }").Return();
+            return true;
+        }
+
         internal bool Matches(ImmutableArray<IParameterSymbol> parameters)
         {
             if (parameters.Length != this.Expressions.Length)

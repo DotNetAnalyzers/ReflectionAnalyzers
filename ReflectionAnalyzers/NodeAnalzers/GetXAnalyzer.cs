@@ -66,7 +66,11 @@ namespace ReflectionAnalyzers
 
                     if (member.Match == FilterMatch.Ambiguous)
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL004AmbiguousMatch.Descriptor, argumentList.GetLocation()));
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL004AmbiguousMatch.Descriptor,
+                                argumentList.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(INamedTypeSymbol), member.ReflectedType?.ToString())));
                     }
 
                     if (HasWrongFlags(member, flags, out var location, out var flagsText))
@@ -526,11 +530,11 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out string typesString)
+        private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out string typesArrayText)
         {
             if ((member.Symbol as IMethodSymbol)?.AssociatedSymbol != null)
             {
-                typesString = null;
+                typesArrayText = null;
                 return false;
             }
 
@@ -540,44 +544,11 @@ namespace ReflectionAnalyzers
                 member.Symbol is IMethodSymbol method &&
                 !method.IsGenericMethod)
             {
-                if (method.Parameters.Length == 0)
-                {
-                    typesString = "Type.EmptyTypes";
-                    return true;
-                }
-
-                return TryGetTypesArray(method.Parameters, out typesString);
+                return Types.TryGetTypesArrayText(method.Parameters, context.SemanticModel, context.Node.SpanStart, out typesArrayText);
             }
 
-            typesString = null;
+            typesArrayText = null;
             return false;
-
-            bool TryGetTypesArray(ImmutableArray<IParameterSymbol> parameters, out string typesArrayString)
-            {
-                var builder = StringBuilderPool.Borrow().Append("new[] { ");
-                for (var i = 0; i < parameters.Length; i++)
-                {
-                    var parameter = parameters[i];
-                    if (!context.SemanticModel.IsAccessible(context.Node.SpanStart, parameter.Type))
-                    {
-                        _ = builder.Return();
-                        typesArrayString = null;
-                        return false;
-                    }
-
-                    if (i != 0)
-                    {
-                        _ = builder.Append(", ");
-                    }
-
-                    _ = builder.Append("typeof(")
-                               .Append(parameter.Type.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart))
-                               .Append(")");
-                }
-
-                typesArrayString = builder.Append(" }").Return();
-                return true;
-            }
         }
 
         private static bool ShouldUseSameTypeAsParameter(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out Location location, out string typeText)
