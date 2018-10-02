@@ -82,6 +82,7 @@ namespace ReflectionAnalyzers
                 return TryGetMember(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, flags, types, context, out member);
             }
 
+            var isAmbiguous = false;
             if (getX == KnownSymbol.Type.GetNestedType ||
                 getX == KnownSymbol.Type.GetConstructor ||
                 flags.HasFlagFast(BindingFlags.DeclaredOnly) ||
@@ -96,14 +97,17 @@ namespace ReflectionAnalyzers
                         continue;
                     }
 
-                    if (!types.TryMostSpecific(member, candidate, out member))
+                    if (types.TryMostSpecific(member, candidate, out member))
                     {
-                        return FilterMatch.Ambiguous;
+                        isAmbiguous = false;
+                        if (IsWrongMemberType(member))
+                        {
+                            return FilterMatch.WrongMemberType;
+                        }
                     }
-
-                    if (IsWrongMemberType(member))
+                    else
                     {
-                        return FilterMatch.WrongMemberType;
+                        isAmbiguous = true;
                     }
                 }
             }
@@ -124,31 +128,39 @@ namespace ReflectionAnalyzers
                             continue;
                         }
 
-                        if (!types.TryMostSpecific(member, candidate, out member))
+                        if (types.TryMostSpecific(member, candidate, out member))
                         {
-                            return FilterMatch.Ambiguous;
-                        }
+                            isAmbiguous = false;
+                            if (IsUseContainingType(member))
+                            {
+                                return FilterMatch.UseContainingType;
+                            }
 
-                        if (IsUseContainingType(member))
-                        {
-                            return FilterMatch.UseContainingType;
-                        }
+                            if (candidate.IsStatic &&
+                                !current.Equals(type) &&
+                                !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
+                            {
+                                return FilterMatch.WrongFlags;
+                            }
 
-                        if (candidate.IsStatic &&
-                            !current.Equals(type) &&
-                            !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
-                        {
-                            return FilterMatch.WrongFlags;
+                            if (IsWrongMemberType(candidate))
+                            {
+                                return FilterMatch.WrongMemberType;
+                            }
                         }
-
-                        if (IsWrongMemberType(candidate))
+                        else
                         {
-                            return FilterMatch.WrongMemberType;
+                            isAmbiguous = true;
                         }
                     }
 
                     current = current.BaseType;
                 }
+            }
+
+            if (isAmbiguous)
+            {
+                return FilterMatch.Ambiguous;
             }
 
             if (member != null)

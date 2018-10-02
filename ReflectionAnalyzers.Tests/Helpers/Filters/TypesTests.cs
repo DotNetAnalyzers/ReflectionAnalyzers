@@ -1,8 +1,5 @@
 namespace ReflectionAnalyzers.Tests.Helpers.Filters
 {
-    using System;
-    using System.Linq;
-    using System.Reflection;
     using System.Threading;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
