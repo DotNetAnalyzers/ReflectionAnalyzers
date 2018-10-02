@@ -2,7 +2,7 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL004AmbiguousMatchMember
+    internal static class REFL004AmbiguousMatch
     {
         public const string DiagnosticId = "REFL004";
 
