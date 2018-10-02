@@ -79,5 +79,30 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [Test]
+        public void InternalStaticFieldInBase()
+        {
+            var baseCode = @"
+namespace RoslynSandbox
+{
+    class B
+    {
+        internal static readonly int field;
+    }
+}";
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+     class C : B
+    {
+        public object Get => typeof(C).GetField(nameof(B.field), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, baseCode, code);
+        }
     }
 }

@@ -228,5 +228,42 @@ namespace RoslynSandbox
             var message = "Use the containing type FooBase.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
+
+        [Test]
+        public void PrivateFieldInBase()
+        {
+            var baseCode = @"
+namespace RoslynSandbox
+{
+    class B
+    {
+        private readonly int field;
+    }
+}";
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+     class C : B
+    {
+        public object Get => typeof(↓C).GetField(""field"", BindingFlags.NonPublic | BindingFlags.Instance);
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+     class C : B
+    {
+        public object Get => typeof(B).GetField(""field"", BindingFlags.NonPublic | BindingFlags.Instance);
+    }
+}";
+
+            var message = "Use the containing type B.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+        }
     }
 }

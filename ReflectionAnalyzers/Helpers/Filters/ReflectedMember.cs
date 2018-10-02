@@ -262,10 +262,13 @@ namespace ReflectionAnalyzers
 
             bool IsUseContainingType(ISymbol symbol)
             {
-                return !type.Equals(symbol.ContainingType) &&
-                       (getX == KnownSymbol.Type.GetNestedType ||
-                        (symbol.IsStatic &&
-                         symbol.DeclaredAccessibility == Accessibility.Private));
+                if (type.Equals(symbol.ContainingType))
+                {
+                    return false;
+                }
+
+                return getX == KnownSymbol.Type.GetNestedType ||
+                       symbol.DeclaredAccessibility == Accessibility.Private;
             }
 
             bool IsWrongFlags(ISymbol symbol)
