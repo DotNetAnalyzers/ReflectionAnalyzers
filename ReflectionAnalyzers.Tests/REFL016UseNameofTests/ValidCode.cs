@@ -186,7 +186,8 @@ namespace RoslynSandbox
 namespace RoslynSandbox
 {
     using System;
-     public class CustomAggregateException : AggregateException
+
+    public class CustomAggregateException : AggregateException
     {
         public int InnerExceptionCount { get; }
     }
@@ -196,7 +197,8 @@ namespace RoslynSandbox.Dump
 {
     using System;
     using System.Reflection;
-     class Foo
+
+    class Foo
     {
         public Foo()
         {
@@ -271,6 +273,25 @@ namespace RoslynSandbox
         public int Public { get; set; }
     }
 }".AssertReplace("GetMethod(\"get_Public\")", before);
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
+        public void SystemWindowsFormsControlCreateControl()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+    using System.Windows.Forms;
+
+    class Foo
+    {
+        public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+    }
+}";
 
             AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
         }

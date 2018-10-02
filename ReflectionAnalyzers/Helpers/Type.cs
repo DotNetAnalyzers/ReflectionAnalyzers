@@ -110,7 +110,9 @@ namespace ReflectionAnalyzers
             switch (expression)
             {
                 case IdentifierNameSyntax identifierName when context.SemanticModel.TryGetSymbol(identifierName, context.CancellationToken, out ILocalSymbol local):
+#pragma warning disable IDISP003 // Dispose previous before re-assigning.
                     using (visited = visited.IncrementUsage())
+#pragma warning restore IDISP003 // Dispose previous before re-assigning.
                     {
                         source = null;
                         result = null;
@@ -178,6 +180,7 @@ namespace ReflectionAnalyzers
                             result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName);
                             return result != null;
                     }
+
                     break;
 
                 case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.GetGenericTypeDefinition, context.SemanticModel, context.CancellationToken, out _) &&
@@ -196,7 +199,9 @@ namespace ReflectionAnalyzers
                                                                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                                                                 TypeArguments.TryCreate(invocation, context, out var typeArguments) &&
                                                                 Array.TryGetTypes(typeArguments, context, out var types):
+#pragma warning disable IDISP003 // Dispose previous before re-assigning.
                     using (visited = visited.IncrementUsage())
+#pragma warning restore IDISP003 // Dispose previous before re-assigning.
                     {
                         if (visited.Add(invocation) &&
                             TryGet(memberAccess.Expression, context, visited, out var definition, out _) &&

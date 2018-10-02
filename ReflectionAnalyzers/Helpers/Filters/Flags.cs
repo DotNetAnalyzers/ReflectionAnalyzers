@@ -7,6 +7,7 @@ namespace ReflectionAnalyzers
 
     internal struct Flags
     {
+        internal static readonly Flags MatchAll = new Flags(null, BindingFlags.Default, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
         internal readonly ArgumentSyntax Argument;
 
         /// <summary>

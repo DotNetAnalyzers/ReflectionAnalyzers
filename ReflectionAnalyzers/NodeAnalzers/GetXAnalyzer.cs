@@ -337,7 +337,8 @@ namespace ReflectionAnalyzers
                 (member.Match == FilterMatch.Single ||
                  member.Match == FilterMatch.Ambiguous ||
                  member.Match == FilterMatch.WrongFlags ||
-                 member.Match == FilterMatch.WrongTypes))
+                 member.Match == FilterMatch.WrongTypes ||
+                 (member.Match == FilterMatch.PotentiallyInvisible && member.Symbol is IMethodSymbol)))
             {
                 if (argument.Expression is LiteralExpressionSyntax literal &&
                     literal.IsKind(SyntaxKind.StringLiteralExpression) &&
@@ -361,8 +362,8 @@ namespace ReflectionAnalyzers
                 NameOf.IsNameOf(argument, out var expression))
             {
                 if (member.Match == FilterMatch.NoMatch ||
-                     (member.Match == FilterMatch.Unknown &&
-                      !Type.HasVisibleNonPublicMembers(member.ReflectedType, recursive: true)))
+                    (member.Match == FilterMatch.PotentiallyInvisible &&
+                     !(member.Symbol is IMethodSymbol)))
                 {
                     nameText = $"\"{name.MetadataName}\"";
                     location = argument.GetLocation();

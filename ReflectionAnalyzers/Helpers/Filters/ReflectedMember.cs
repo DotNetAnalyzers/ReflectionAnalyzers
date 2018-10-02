@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers
 
         internal readonly FilterMatch Match;
 
-        public ReflectedMember(ITypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)
+        internal ReflectedMember(ITypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)
         {
             this.ReflectedType = reflectedType;
             this.TypeSource = typeSource;
@@ -162,7 +162,7 @@ namespace ReflectionAnalyzers
                 return FilterMatch.Single;
             }
 
-            if (type.TryFindFirstMemberRecursive(name.MemberName(), out member))
+            if (type.TryFindFirstMemberRecursive(x => MatchesFilter(x, name, Flags.MatchAll.Effective, Types.Any), out member))
             {
                 if (IsUseContainingType(member))
                 {
@@ -171,7 +171,7 @@ namespace ReflectionAnalyzers
 
                 if (!Type.HasVisibleMembers(type, flags))
                 {
-                    return FilterMatch.Unknown;
+                    return FilterMatch.PotentiallyInvisible;
                 }
 
                 if (IsWrongFlags(member))
@@ -189,7 +189,7 @@ namespace ReflectionAnalyzers
             {
                 // Assigning member if it is explicit. Useful info but we can't be sure still.
                 _ = IsExplicitImplementation(out member);
-                return FilterMatch.Unknown;
+                return FilterMatch.PotentiallyInvisible;
             }
 
             if (IsExplicitImplementation(out member))
@@ -305,9 +305,8 @@ namespace ReflectionAnalyzers
             {
                 foreach (var @interface in type.AllInterfaces)
                 {
-                    if (@interface.TryFindFirstMemberRecursive(name.MemberName(), out var interfaceMember))
+                    if (@interface.TryFindFirstMember(x => MatchesFilter(x, name, Flags.MatchAll.Effective, types), out result))
                     {
-                        result = interfaceMember;
                         return true;
                     }
                 }
