@@ -65,6 +65,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{1C271AF2
 		documentation\REFL032.md = documentation\REFL032.md
 		documentation\REFL033.md = documentation\REFL033.md
 		documentation\REFL034.md = documentation\REFL034.md
+		documentation\REFL035.md = documentation\REFL035.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject

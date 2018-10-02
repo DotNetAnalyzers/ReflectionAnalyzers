@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -16,7 +17,8 @@ namespace ReflectionAnalyzers
             REFL002DiscardReturnValue.Descriptor,
             REFL024PreferNullOverEmptyArray.Descriptor,
             REFL025ArgumentsDontMatchParameters.Descriptor,
-            REFL030UseCorrectObj.Descriptor);
+            REFL030UseCorrectObj.Descriptor,
+            REFL035DontInvokeGenericDefinition.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -30,7 +32,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList != null &&
+                invocation.ArgumentList is ArgumentListSyntax argumentList &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 invocation.TryGetMethodName(out var name) &&
                 name == "Invoke" &&
@@ -89,6 +91,26 @@ namespace ReflectionAnalyzers
                             {
                                 context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Expected an argument of type {method.ContainingType}."));
                             }
+                        }
+                    }
+
+                    if (method.IsGenericDefinition())
+                    {
+                        if (values != null &&
+                            values.Length > 0 &&
+                            Array.TryGetAccessibleTypes(values, context, out var types))
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL035DontInvokeGenericDefinition.Descriptor,
+                                    invocation.GetNameLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(
+                                        nameof(TypeSyntax),
+                                        string.Join(", ", types.Select(x => $"typeof({x.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)})")))));
+                        }
+                        else
+                        {
+                            context.ReportDiagnostic(Diagnostic.Create(REFL035DontInvokeGenericDefinition.Descriptor, invocation.GetNameLocation()));
                         }
                     }
                 }

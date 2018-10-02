@@ -140,5 +140,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL034.md">REFL034</a></td>
     <td>Don't call MakeGeneric when not a generic definition.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL035.md">REFL035</a></td>
+    <td>Don't call Invoke on a generic definition.</td>
+  </tr>
 <table>
 <!-- end generated table -->
