@@ -79,22 +79,5 @@ namespace RoslynSandbox
             Assert.AreEqual(true, Types.TryCreate(invocation, (IMethodSymbol)semanticModel.GetSymbolInfo(invocation).Symbol, context, out var types));
             Assert.AreEqual(false, types.TryMostSpecific(m1, m2, out _));
         }
-
-        [Explicit("Script")]
-        [Test]
-        public void DumpOverloaded()
-        {
-            foreach (var type in typeof(object).Assembly.GetTypes())
-            {
-                foreach (var overloaded in type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
-                                               .GroupBy(x => (x.Name, x.GetParameters().Length)).Where(x => x.Count() > 1))
-                {
-                    foreach (var methodInfo in overloaded)
-                    {
-                        Console.WriteLine(methodInfo);
-                    }
-                }
-            }
-        }
     }
 }
