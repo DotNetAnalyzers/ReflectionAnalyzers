@@ -54,7 +54,7 @@ namespace ReflectionAnalyzers
                             invocation.GetNameLocation(),
                             typeArguments.Symbol is ITypeSymbol
                                 ? $"{typeArguments.Symbol} is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true."
-                                : $"{typeArguments.Symbol} is not a GenericMethodDefinition. MakeGenericMethod may only be called on a type for which MethodInfo.IsGenericMethodDefinition is true."));
+                                : $"{typeArguments.Symbol} is not a GenericMethodDefinition. MakeGenericMethod may only be called on a method for which MethodBase.IsGenericMethodDefinition is true."));
                 }
             }
 

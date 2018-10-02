@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class Diagnostics
+    public partial class Diagnostics
     {
         public class MakeGenericType
         {
