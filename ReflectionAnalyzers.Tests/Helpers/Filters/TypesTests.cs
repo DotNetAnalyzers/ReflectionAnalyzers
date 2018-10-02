@@ -1,5 +1,8 @@
 namespace ReflectionAnalyzers.Tests.Helpers.Filters
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -9,10 +12,10 @@ namespace ReflectionAnalyzers.Tests.Helpers.Filters
 
     public class TypesTests
     {
-        [TestCase("new[] { typeof(int) }",    "Bar(IFormattable _)", "Bar(object _)")]
-        [TestCase("new[] { typeof(object) }", "Bar(object _)",       "Bar(IFormattable _)")]
-        [TestCase("new[] { typeof(int) }",    "Bar(int _)",          "Bar(object _)")]
-        [TestCase("new[] { typeof(int) }",    "Bar(int _)",          "Bar(IFormattable _)")]
+        [TestCase("new[] { typeof(int) }", "Bar(IFormattable _)", "Bar(object _)")]
+        [TestCase("new[] { typeof(object) }", "Bar(object _)", "Bar(IFormattable _)")]
+        [TestCase("new[] { typeof(int) }", "Bar(int _)", "Bar(object _)")]
+        [TestCase("new[] { typeof(int) }", "Bar(int _)", "Bar(IFormattable _)")]
         public void TryMostSpecific(string filterType, string signature1, string signature2)
         {
             var code = @"
@@ -41,9 +44,9 @@ namespace RoslynSandbox
             var context = new SyntaxNodeAnalysisContext(null, semanticModel, null, null, null, CancellationToken.None);
             Assert.AreEqual(true, Types.TryCreate(invocation, (IMethodSymbol)semanticModel.GetSymbolInfo(invocation).Symbol, context, out var types));
             Assert.AreEqual(true, types.TryMostSpecific(m1, m2, out var match));
-            Assert.AreEqual(m1,   match);
+            Assert.AreEqual(m1, match);
             Assert.AreEqual(true, types.TryMostSpecific(m2, m1, out match));
-            Assert.AreEqual(m1,   match);
+            Assert.AreEqual(m1, match);
         }
 
         [TestCase("new[] { typeof(int), typeof(int) }", "Bar(IFormattable _, object __)", "Bar(object _, IFormattable __)")]
@@ -75,6 +78,23 @@ namespace RoslynSandbox
             var context = new SyntaxNodeAnalysisContext(null, semanticModel, null, null, null, CancellationToken.None);
             Assert.AreEqual(true, Types.TryCreate(invocation, (IMethodSymbol)semanticModel.GetSymbolInfo(invocation).Symbol, context, out var types));
             Assert.AreEqual(false, types.TryMostSpecific(m1, m2, out _));
+        }
+
+        [Explicit("Script")]
+        [Test]
+        public void DumpOverloaded()
+        {
+            foreach (var type in typeof(object).Assembly.GetTypes())
+            {
+                foreach (var overloaded in type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                                               .GroupBy(x => (x.Name, x.GetParameters().Length)).Where(x => x.Count() > 1))
+                {
+                    foreach (var methodInfo in overloaded)
+                    {
+                        Console.WriteLine(methodInfo);
+                    }
+                }
+            }
         }
     }
 }

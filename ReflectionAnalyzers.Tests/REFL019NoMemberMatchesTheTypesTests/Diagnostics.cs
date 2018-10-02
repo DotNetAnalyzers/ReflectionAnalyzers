@@ -88,5 +88,25 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(IEnumerable<int>) })")]
+        [TestCase("typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) })")]
+        public void OverloadResolution(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+
+    class Foo
+    {
+        public object Get => typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) });
+    }
+}".AssertReplace("typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) })", call);
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
