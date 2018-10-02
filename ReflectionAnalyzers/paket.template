@@ -4,10 +4,10 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  REFL033 types can be more specific.
-  Understand MethodInfo.ReturnType, FieldInfo.FieldType, PropertyInfo.PropertyType
-  BUGFIX REFL003 handles overload resolution.
-  REFL003 when typeof
+  BUGFIX: overload resolution.
+  REFL016 & REFL017 require nameof when potentially overloading invisible.
+  REFL035 Don't call Invoke on a generic definition.
+  REFL015 nag when private member is found in base class.
 
 excludedgroups
   Main

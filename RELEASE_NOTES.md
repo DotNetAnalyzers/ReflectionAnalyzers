@@ -1,3 +1,9 @@
+#### 0.12.0
+* BUGFIX: overload resolution.
+* REFL016 & REFL017 require nameof when potentially overloading invisible.
+* REFL035 Don't call Invoke on a generic definition.
+* REFL015 nag when private member is found in base class.
+
 #### 0.11.0
 * REFL033 types can be more specific.
 * Understand MethodInfo.ReturnType, FieldInfo.FieldType, PropertyInfo.PropertyType
