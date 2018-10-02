@@ -1,3 +1,7 @@
+#### 0.13.0
+* Fix for REFL004
+* BUGFIX REFL004 with indexers.
+
 #### 0.12.0
 * BUGFIX: overload resolution.
 * REFL016 & REFL017 require nameof when potentially overloading invisible.

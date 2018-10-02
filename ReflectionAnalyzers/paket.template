@@ -4,10 +4,8 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  BUGFIX: overload resolution.
-  REFL016 & REFL017 require nameof when potentially overloading invisible.
-  REFL035 Don't call Invoke on a generic definition.
-  REFL015 nag when private member is found in base class.
+  Fix for REFL004
+  BUGFIX REFL004 with indexers.
 
 excludedgroups
   Main

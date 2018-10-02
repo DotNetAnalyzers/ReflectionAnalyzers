@@ -20,15 +20,14 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.12.0-dev</Version>
+    <Version>0.1.13.0-dev</Version>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
-    <PackageReleaseNotes>BUGFIX: overload resolution.
-REFL016 &amp; REFL017 require nameof when potentially overloading invisible.
-REFL035 Don't call Invoke on a generic definition.
-REFL015 nag when private member is found in base class.
+    <PackageReleaseNotes>Fix for REFL004
+BUGFIX REFL004 with indexers.
+
 </PackageReleaseNotes>
   </PropertyGroup>
 
