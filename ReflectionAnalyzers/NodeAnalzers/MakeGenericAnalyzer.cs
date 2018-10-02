@@ -12,7 +12,8 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL031UseCorrectGenericArguments.Descriptor);
+            REFL031UseCorrectGenericArguments.Descriptor,
+            REFL034DontMakeGeneric.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -28,7 +29,8 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 TypeArguments.TryCreate(invocation, context, out var typeArguments))
             {
-                if (typeArguments.Parameters.Length != typeArguments.Arguments.Length)
+                if (IsGenericDefinition(typeArguments.Symbol) &&
+                    typeArguments.Parameters.Length != typeArguments.Arguments.Length)
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -44,9 +46,51 @@ namespace ReflectionAnalyzers
                             argument.GetLocation(),
                             $"The argument {argument} does not satisfy the constraints of the parameter {parameter}."));
                 }
+                else if (!IsGenericDefinition(typeArguments.Symbol))
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL034DontMakeGeneric.Descriptor,
+                            invocation.GetNameLocation(),
+                            typeArguments.Symbol is ITypeSymbol
+                                ? $"{typeArguments.Symbol} is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true."
+                                : $"{typeArguments.Symbol} is not a GenericMethodDefinition. MakeGenericMethod may only be called on a type for which MethodInfo.IsGenericMethodDefinition is true."));
+                }
             }
 
             string PluralS(int i) => i == 1 ? string.Empty : "s";
+        }
+
+        private static bool IsGenericDefinition(ISymbol symbol)
+        {
+            switch (symbol)
+            {
+                case INamedTypeSymbol type:
+                    return IsGenericDefinition(type.TypeArguments);
+                case IMethodSymbol method:
+                    return IsGenericDefinition(method.TypeArguments);
+                default:
+                    return false;
+            }
+
+            bool IsGenericDefinition(ImmutableArray<ITypeSymbol> arguments)
+            {
+                if (arguments.Length == 0)
+                {
+                    return false;
+                }
+
+                foreach (var argument in arguments)
+                {
+                    if (!(argument is ITypeParameterSymbol) &&
+                        !(argument is IErrorTypeSymbol))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
         }
     }
 }

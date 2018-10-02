@@ -17,14 +17,9 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
                 var code = @"
 namespace RoslynSandbox
 {
-    using System;
-
     public class Foo<T>
     {
-        public static void Bar()
-        {
-            var type = typeof(Foo<>).MakeGenericType↓(typeof(int), typeof(double));
-        }
+        public static object Get() => typeof(Foo<>).MakeGenericType(typeof(int), typeof(double));
     }
 }";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -40,10 +35,7 @@ namespace RoslynSandbox
 
     public class Foo<T>
     {
-        public static void Bar()
-        {
-            var type = typeof(Foo<int>).GetGenericTypeDefinition().MakeGenericType↓(typeof(int), typeof(double));
-        }
+        public static object Get() => typeof(Foo<int>).GetGenericTypeDefinition().MakeGenericType↓(typeof(int), typeof(double));
     }
 }";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -74,10 +66,7 @@ namespace RoslynSandbox
     public class Foo<T>
         where T : class
     {
-        public static void Bar()
-        {
-            var type = typeof(Foo<>).MakeGenericType(↓typeof(int));
-        }
+        public static object Get() => typeof(Foo<>).MakeGenericType(↓typeof(int));
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
@@ -95,10 +84,7 @@ namespace RoslynSandbox
 
     public class Foo
     {
-        public static void Bar()
-        {
-            var type = typeof(Foo).GetNestedType(""Baz`1"").MakeGenericType↓(typeof(int), typeof(double));
-        }
+        public static object Get() => typeof(Foo).GetNestedType(""Baz`1"").MakeGenericType↓(typeof(int), typeof(double));
 
         public class Baz<T>
         {

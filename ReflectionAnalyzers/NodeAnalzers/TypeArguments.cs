@@ -8,13 +8,13 @@ namespace ReflectionAnalyzers
 
     internal struct TypeArguments
     {
-#pragma warning disable RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
+        internal readonly ISymbol Symbol;
         internal readonly ImmutableArray<ITypeParameterSymbol> Parameters;
         internal readonly ImmutableArray<ExpressionSyntax> Arguments;
-#pragma warning restore RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
 
-        public TypeArguments(ImmutableArray<ITypeParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> arguments)
+        public TypeArguments(ISymbol symbol, ImmutableArray<ITypeParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> arguments)
         {
+            this.Symbol = symbol;
             this.Parameters = parameters;
             this.Arguments = arguments;
         }
@@ -22,19 +22,19 @@ namespace ReflectionAnalyzers
         internal static bool TryCreate(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeArguments typeArguments)
         {
             if (invocation?.ArgumentList is ArgumentListSyntax argumentList &&
-                (TryGetTypeParameters(invocation, context, out var parameters) ||
-                 TryGetMethodParameters(invocation, context, out parameters)))
+                (TryGetTypeParameters(invocation, context, out var symbol, out var parameters) ||
+                 TryGetMethodParameters(invocation, context, out symbol, out parameters)))
             {
                 if (argumentList.Arguments.TrySingle(out var argument) &&
                     Array.TryGetValues(argument.Expression, context, out var arrayExpressions))
                 {
-                    typeArguments = new TypeArguments(parameters, arrayExpressions);
+                    typeArguments = new TypeArguments(symbol, parameters, arrayExpressions);
                     return true;
                 }
 
                 if (!IsUnknownArray())
                 {
-                    typeArguments = new TypeArguments(parameters, ArgumentsExpressions());
+                    typeArguments = new TypeArguments(symbol, parameters, ArgumentsExpressions());
                     return true;
                 }
             }
@@ -64,7 +64,7 @@ namespace ReflectionAnalyzers
 
         internal bool TryFindMisMatch(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument, out ITypeParameterSymbol parameter)
         {
-            for (var i = 0; i < this.Arguments.Length; i++)
+            for (var i = 0; i < this.Parameters.Length; i++)
             {
                 if (Type.TryGet(this.Arguments[i], context, out var type, out _) &&
                     !Type.SatisfiesConstraints(type, this.Parameters[i], context.Compilation))
@@ -80,33 +80,37 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeParameterSymbol> parameters)
+        private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
             if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 if (Type.TryGet(memberAccess.Expression, context, out var type, out _))
                 {
+                    symbol = type;
                     parameters = (type as INamedTypeSymbol)?.TypeParameters ?? ImmutableArray<ITypeParameterSymbol>.Empty;
                     return true;
                 }
             }
 
+            symbol = null;
             return false;
         }
 
-        private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeParameterSymbol> parameters)
+        private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
             if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                if (GetX.TryGetMethodInfo(memberAccess, context, out var methodInfo))
+                if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
                 {
-                    parameters = methodInfo.TypeParameters;
+                    symbol = method;
+                    parameters = method.TypeParameters;
                     return true;
                 }
             }
 
+            symbol = null;
             return false;
         }
 

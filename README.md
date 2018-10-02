@@ -136,5 +136,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL033.md">REFL033</a></td>
     <td>Use the same type as the parameter.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL034.md">REFL034</a></td>
+    <td>Don't call MakeGeneric when not a generic definition.</td>
+  </tr>
 <table>
 <!-- end generated table -->
