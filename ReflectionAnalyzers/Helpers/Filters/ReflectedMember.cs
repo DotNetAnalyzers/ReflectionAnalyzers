@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers
 
         internal readonly FilterMatch Match;
 
-        public ReflectedMember(ITypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)
+        internal ReflectedMember(ITypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)
         {
             this.ReflectedType = reflectedType;
             this.TypeSource = typeSource;
@@ -171,7 +171,7 @@ namespace ReflectionAnalyzers
 
                 if (!Type.HasVisibleMembers(type, flags))
                 {
-                    return FilterMatch.Unknown;
+                    return FilterMatch.PotentiallyInvisible;
                 }
 
                 if (IsWrongFlags(member))
