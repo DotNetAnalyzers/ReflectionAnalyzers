@@ -46,7 +46,7 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo : Base
+    public class Foo
     {
         public object Get => typeof(Foo).GetProperty↓(""Item"");
 

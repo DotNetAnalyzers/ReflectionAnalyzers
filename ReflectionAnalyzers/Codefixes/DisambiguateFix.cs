@@ -33,22 +33,23 @@ namespace ReflectionAnalyzers.Codefixes
             {
                 if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
                     argumentList.Arguments.TrySingle(out var arg) &&
-                    arg.TryGetStringValue(semanticModel, context.CancellationToken, out var methodName) &&
+                    arg.TryGetStringValue(semanticModel, context.CancellationToken, out var memberName) &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
                     diagnostic.Properties.TryGetValue(nameof(INamedTypeSymbol), out var typeName) &&
                     semanticModel.Compilation.GetTypeByMetadataName(typeName) is INamedTypeSymbol type)
                 {
                     if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out _))
                     {
-                        foreach (var member in type.GetMembers(methodName))
+                        foreach (var member in type.GetMembers())
                         {
                             if (member is IMethodSymbol method &&
+                                method.MetadataName == memberName &&
                                 Flags.TryGetExpectedBindingFlags(type, method, out var flags) &&
                                 flags.ToDisplayString(invocation) is string flagsText &&
                                 Types.TryGetTypesArrayText(method.Parameters, semanticModel, invocation.SpanStart, out var typesArrayText))
                             {
                                 context.RegisterCodeFix(
-                                    $"Use: {flagsText}, {typesArrayText}.",
+                                    $"Use: {typesArrayText}.",
                                     (editor, _) => editor.AddUsing(SystemReflection)
                                                          .ReplaceNode(
                                                              argumentList,
@@ -62,15 +63,16 @@ namespace ReflectionAnalyzers.Codefixes
 
                     if (invocation.TryGetTarget(KnownSymbol.Type.GetProperty, semanticModel, context.CancellationToken, out _))
                     {
-                        foreach (var member in type.GetMembers(methodName))
+                        foreach (var member in type.GetMembers())
                         {
                             if (member is IPropertySymbol property &&
+                                property.MetadataName == memberName &&
                                 Flags.TryGetExpectedBindingFlags(type, property, out var flags) &&
                                 flags.ToDisplayString(invocation) is string flagsText &&
                                 Types.TryGetTypesArrayText(property.Parameters, semanticModel, invocation.SpanStart, out var typesArrayText))
                             {
                                 context.RegisterCodeFix(
-                                    $"Use: {flagsText}, {typesArrayText}.",
+                                    $"Use: {typesArrayText}.",
                                     (editor, _) => editor.AddUsing(SystemReflection)
                                                          .ReplaceNode(
                                                              argumentList,
@@ -80,7 +82,7 @@ namespace ReflectionAnalyzers.Codefixes
                                                                        NullArgument,
                                                                        ParseArgument($"typeof({property.Type.ToMinimalDisplayString(semanticModel, invocation.SpanStart)})"),
                                                                        ParseArgument(typesArrayText),
-                                                                       NullArgument
+                                                                       NullArgument,
                                                                    }))
                                                                    .WithTriviaFrom(x)),
                                     nameof(DisambiguateFix),
