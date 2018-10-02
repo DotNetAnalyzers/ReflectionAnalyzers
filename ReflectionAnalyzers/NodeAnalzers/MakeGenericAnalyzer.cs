@@ -29,7 +29,7 @@ namespace ReflectionAnalyzers
                 context.Node is InvocationExpressionSyntax invocation &&
                 TypeArguments.TryCreate(invocation, context, out var typeArguments))
             {
-                if (IsGenericDefinition(typeArguments.Symbol) &&
+                if (typeArguments.Symbol.IsGenericDefinition() &&
                     typeArguments.Parameters.Length != typeArguments.Arguments.Length)
                 {
                     context.ReportDiagnostic(
@@ -46,7 +46,7 @@ namespace ReflectionAnalyzers
                             argument.GetLocation(),
                             $"The argument {argument} does not satisfy the constraints of the parameter {parameter}."));
                 }
-                else if (!IsGenericDefinition(typeArguments.Symbol))
+                else if (!typeArguments.Symbol.IsGenericDefinition())
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -59,38 +59,6 @@ namespace ReflectionAnalyzers
             }
 
             string PluralS(int i) => i == 1 ? string.Empty : "s";
-        }
-
-        private static bool IsGenericDefinition(ISymbol symbol)
-        {
-            switch (symbol)
-            {
-                case INamedTypeSymbol type:
-                    return IsGenericDefinition(type.TypeArguments);
-                case IMethodSymbol method:
-                    return IsGenericDefinition(method.TypeArguments);
-                default:
-                    return false;
-            }
-
-            bool IsGenericDefinition(ImmutableArray<ITypeSymbol> arguments)
-            {
-                if (arguments.Length == 0)
-                {
-                    return false;
-                }
-
-                foreach (var argument in arguments)
-                {
-                    if (!(argument is ITypeParameterSymbol) &&
-                        !(argument is IErrorTypeSymbol))
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
         }
     }
 }
