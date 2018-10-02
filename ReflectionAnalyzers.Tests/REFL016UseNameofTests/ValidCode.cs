@@ -276,6 +276,25 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void SystemWindowsFormsControlCreateControl()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+    using System.Windows.Forms;
+
+    class Foo
+    {
+        public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
         public void WhenThrowingArgumentException()
         {
             var testCode = @"
