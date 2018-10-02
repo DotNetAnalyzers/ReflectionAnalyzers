@@ -50,6 +50,52 @@ namespace ReflectionAnalyzers
             return false;
         }
 
+        internal static bool TryGetExpectedBindingFlags(ITypeSymbol reflectedType, ISymbol member, out BindingFlags flags)
+        {
+            flags = 0;
+            if (member is null ||
+                reflectedType is null)
+            {
+                return false;
+            }
+
+            if (member.DeclaredAccessibility == Accessibility.Public)
+            {
+                flags |= BindingFlags.Public;
+            }
+            else
+            {
+                flags |= BindingFlags.NonPublic;
+            }
+
+            if (!(member is ITypeSymbol))
+            {
+                if (member.IsStatic)
+                {
+                    flags |= BindingFlags.Static;
+                }
+                else
+                {
+                    flags |= BindingFlags.Instance;
+                }
+
+                if (!(member is IMethodSymbol method &&
+                      method.MethodKind == MethodKind.Constructor))
+                {
+                    if (Equals(member.ContainingType, reflectedType))
+                    {
+                        flags |= BindingFlags.DeclaredOnly;
+                    }
+                    else if (member.IsStatic)
+                    {
+                        flags |= BindingFlags.FlattenHierarchy;
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private static bool TryGetDefaultBindingFlags(string getXName, out BindingFlags flags)
         {
             switch (getXName)

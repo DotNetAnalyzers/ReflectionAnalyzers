@@ -203,7 +203,7 @@ namespace ReflectionAnalyzers
 
         private static bool HasMissingFlags(ReflectedMember member, Flags flags, out Location location, out string flagsText)
         {
-            if (TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var correctFlags) &&
+            if (Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags) &&
                 member.Invocation?.ArgumentList is ArgumentListSyntax argumentList &&
                 (member.Match == FilterMatch.Single || member.Match == FilterMatch.WrongFlags))
             {
@@ -251,7 +251,7 @@ namespace ReflectionAnalyzers
         private static bool HasWrongFlags(ReflectedMember member, Flags flags, out Location location, out string flagText)
         {
             if (member.Match == FilterMatch.WrongFlags &&
-                TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var correctFlags))
+                Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags))
             {
                 flagText = correctFlags.ToDisplayString(flags.Argument);
                 if (flags.Argument is ArgumentSyntax argument)
@@ -284,7 +284,7 @@ namespace ReflectionAnalyzers
             }
 
             if (flags.Argument is ArgumentSyntax argument &&
-                TryGetExpectedFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
+                Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
             {
                 if (member.Symbol is IMethodSymbol method &&
                     method.MethodKind == MethodKind.Constructor &&
@@ -420,13 +420,13 @@ namespace ReflectionAnalyzers
                 if (member.Symbol is IMethodSymbol method)
                 {
                     if (method.AssociatedSymbol is IPropertySymbol property &&
-                        TryGetExpectedFlags(property.ContainingType, property, out var bindingFlags))
+                        Flags.TryGetExpectedBindingFlags(property.ContainingType, property, out var bindingFlags))
                     {
                         return TryGetPropertyAccessor(MemberName(property), bindingFlags, out call);
                     }
 
                     if (method.AssociatedSymbol is IEventSymbol eventSymbol &&
-                        TryGetExpectedFlags(eventSymbol.ContainingType, eventSymbol, out bindingFlags))
+                        Flags.TryGetExpectedBindingFlags(eventSymbol.ContainingType, eventSymbol, out bindingFlags))
                     {
                         return TryGetEventAccessor(MemberName(eventSymbol), bindingFlags, out call);
                     }
@@ -524,52 +524,6 @@ namespace ReflectionAnalyzers
                     ? $"nameof({associatedSymbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{associatedSymbol.Name})"
                     : $"\"{associatedSymbol.Name}\"";
             }
-        }
-
-        private static bool TryGetExpectedFlags(ITypeSymbol reflectedType, ISymbol member, out BindingFlags flags)
-        {
-            flags = 0;
-            if (member is null ||
-                reflectedType is null)
-            {
-                return false;
-            }
-
-            if (member.DeclaredAccessibility == Accessibility.Public)
-            {
-                flags |= BindingFlags.Public;
-            }
-            else
-            {
-                flags |= BindingFlags.NonPublic;
-            }
-
-            if (!(member is ITypeSymbol))
-            {
-                if (member.IsStatic)
-                {
-                    flags |= BindingFlags.Static;
-                }
-                else
-                {
-                    flags |= BindingFlags.Instance;
-                }
-
-                if (!(member is IMethodSymbol method &&
-                      method.MethodKind == MethodKind.Constructor))
-                {
-                    if (Equals(member.ContainingType, reflectedType))
-                    {
-                        flags |= BindingFlags.DeclaredOnly;
-                    }
-                    else if (member.IsStatic)
-                    {
-                        flags |= BindingFlags.FlattenHierarchy;
-                    }
-                }
-            }
-
-            return true;
         }
 
         private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out string typesString)
