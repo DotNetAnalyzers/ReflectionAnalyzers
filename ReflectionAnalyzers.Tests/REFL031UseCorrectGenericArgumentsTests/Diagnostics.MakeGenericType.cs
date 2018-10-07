@@ -60,10 +60,11 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("where T : class",       "int")]
-            [TestCase("where T : struct",      "string")]
-            [TestCase("where T : IComparable", "Foo<int>")]
-            [TestCase("where T : new()",       "Bar")]
+            [TestCase("where T : class",               "int")]
+            [TestCase("where T : struct",              "string")]
+            [TestCase("where T : IComparable",         "Foo<int>")]
+            [TestCase("where T : IComparable<double>", "Foo<int>")]
+            [TestCase("where T : new()",               "Bar")]
             public void ConstrainedParameter(string constraint, string arg)
             {
                 var barCode = @"
