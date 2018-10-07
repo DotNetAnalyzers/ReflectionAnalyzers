@@ -198,7 +198,7 @@ namespace ReflectionAnalyzers
                 case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.MakeGenericType, context.SemanticModel, context.CancellationToken, out _) &&
                                                                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                                                                 TypeArguments.TryCreate(invocation, context, out var typeArguments) &&
-                                                                Array.TryGetTypes(typeArguments, context, out var types):
+                                                                typeArguments.TryGetArgumentsTypes(context, out var types):
 #pragma warning disable IDISP003 // Dispose previous before re-assigning.
                     using (visited = visited.IncrementUsage())
 #pragma warning restore IDISP003 // Dispose previous before re-assigning.
@@ -208,7 +208,7 @@ namespace ReflectionAnalyzers
                             definition is INamedTypeSymbol namedType)
                         {
                             source = invocation;
-                            result = namedType.Construct(types.ToArray());
+                            result = namedType.Construct(types);
                             return result != null;
                         }
                     }

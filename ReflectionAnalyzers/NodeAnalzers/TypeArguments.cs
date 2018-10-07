@@ -80,6 +80,32 @@ namespace ReflectionAnalyzers
             return false;
         }
 
+        internal bool TryGetArgumentsTypes(SyntaxNodeAnalysisContext context, out ITypeSymbol[] types)
+        {
+            if (this.Arguments.Length == 0)
+            {
+                types = System.Array.Empty<ITypeSymbol>();
+                return false;
+            }
+
+            types = new ITypeSymbol[this.Arguments.Length];
+            for (var i = 0; i < this.Arguments.Length; i++)
+            {
+                var argument = this.Arguments[i];
+                if (Type.TryGet(argument, context, out var type, out _))
+                {
+                    types[i] = type;
+                }
+                else
+                {
+                    types = System.Array.Empty<ITypeSymbol>();
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
             if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context) &&

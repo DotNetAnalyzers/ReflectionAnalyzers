@@ -40,52 +40,6 @@ namespace ReflectionAnalyzers
             }
         }
 
-        internal static bool TryGetTypes(TypeArguments typeArguments, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
-        {
-            if (typeArguments.Arguments.Length == 0)
-            {
-                types = ImmutableArray<ITypeSymbol>.Empty;
-                return false;
-            }
-
-            var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(typeArguments.Arguments.Length);
-            foreach (var argument in typeArguments.Arguments)
-            {
-                if (Type.TryGet(argument, context, out var type, out _))
-                {
-                    builder.Add(type);
-                }
-                else
-                {
-                    types = ImmutableArray<ITypeSymbol>.Empty;
-                    return false;
-                }
-            }
-
-            types = builder.ToImmutable();
-            return true;
-        }
-
-        internal static bool TryGetTypes(ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
-        {
-            var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(values.Length);
-            foreach (var value in values)
-            {
-                if (context.SemanticModel.TryGetType(value, context.CancellationToken, out var type))
-                {
-                    builder.Add(type);
-                }
-                else
-                {
-                    types = ImmutableArray<ITypeSymbol>.Empty;
-                    return false;
-                }
-            }
-
-            types = builder.ToImmutable();
-            return true;
-        }
-
         internal static bool TryGetAccessibleTypes(ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
         {
             var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(values.Length);
