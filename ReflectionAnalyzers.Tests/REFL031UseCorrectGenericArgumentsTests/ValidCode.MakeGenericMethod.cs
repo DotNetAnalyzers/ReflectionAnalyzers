@@ -30,10 +30,11 @@ namespace RoslynSandbox
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("where T : class", "typeof(string)")]
-            [TestCase("where T : struct", "typeof(int)")]
-            [TestCase("where T : IComparable", "typeof(int)")]
-            [TestCase("where T : new()", "typeof(Foo)")]
+            [TestCase("where T : class",          "typeof(string)")]
+            [TestCase("where T : struct",         "typeof(int)")]
+            [TestCase("where T : IComparable",    "typeof(int)")]
+            [TestCase("where T : IComparable<T>", "typeof(int)")]
+            [TestCase("where T : new()",          "typeof(Foo)")]
             public void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
@@ -49,7 +50,8 @@ namespace RoslynSandbox
             var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(typeof(int));
         }
     }
-}".AssertReplace("where T : class", constraint).AssertReplace("typeof(int)", arg);
+}".AssertReplace("where T : class", constraint)
+  .AssertReplace("typeof(int)", arg);
 
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }

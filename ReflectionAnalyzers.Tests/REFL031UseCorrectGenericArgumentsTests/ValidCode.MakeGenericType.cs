@@ -33,6 +33,7 @@ namespace RoslynSandbox
             [TestCase("where T : class",          "typeof(string)")]
             [TestCase("where T : struct",         "typeof(int)")]
             [TestCase("where T : IComparable",    "typeof(int)")]
+            [TestCase("where T : IComparable<T>", "typeof(int)")]
             [TestCase("where T : new()",          "typeof(Foo<int>)")]
             public void ConstrainedParameter(string constraint, string arg)
             {

@@ -62,7 +62,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        internal bool TryFindMisMatch(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument, out ITypeParameterSymbol parameter)
+        internal bool TryFindConstraintViolation(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument, out ITypeParameterSymbol parameter)
         {
             for (var i = 0; i < this.Parameters.Length; i++)
             {
