@@ -10,6 +10,12 @@ namespace ReflectionAnalyzers
             switch (symbol)
             {
                 case INamedTypeSymbol type:
+                    if (type.ContainingType is INamedTypeSymbol containingType)
+                    {
+                        return IsGenericDefinition(containingType) ||
+                               IsGenericDefinition(type.TypeArguments);
+                    }
+
                     return IsGenericDefinition(type.TypeArguments);
                 case IMethodSymbol method:
                     return IsGenericDefinition(method.TypeArguments);
@@ -20,7 +26,18 @@ namespace ReflectionAnalyzers
 
         internal static bool IsGenericDefinition(this INamedTypeSymbol symbol)
         {
-            return symbol != null && IsGenericDefinition(symbol.TypeArguments);
+            if (symbol == null)
+            {
+                return false;
+            }
+
+            if (symbol.ContainingType is INamedTypeSymbol containingType)
+            {
+                return IsGenericDefinition(containingType) ||
+                       IsGenericDefinition(symbol.TypeArguments);
+            }
+
+            return IsGenericDefinition(symbol.TypeArguments);
         }
 
         internal static bool IsGenericDefinition(this IMethodSymbol symbol)
@@ -37,10 +54,13 @@ namespace ReflectionAnalyzers
 
             foreach (var argument in arguments)
             {
-                if (!(argument is ITypeParameterSymbol) &&
-                    !(argument is IErrorTypeSymbol))
+                switch (argument.TypeKind)
                 {
-                    return false;
+                    case TypeKind.Error:
+                    case TypeKind.TypeParameter:
+                        continue;
+                    default:
+                        return false;
                 }
             }
 
