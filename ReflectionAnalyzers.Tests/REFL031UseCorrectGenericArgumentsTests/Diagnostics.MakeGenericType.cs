@@ -12,6 +12,24 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
+            public void NestedGenericInGeneric()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    public class C<T>
+    {
+        public object Get => typeof(C<>.D<>).MakeGenericType(typeof(int), typeof(int));
+
+        public class D<U>
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [Test]
             public void SingleUnconstrained()
             {
                 var code = @"
@@ -22,7 +40,8 @@ namespace RoslynSandbox
         public static object Get() => typeof(Foo<>).MakeGenericType(typeof(int), typeof(double));
     }
 }";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                var message = "The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has 1 parameter but 2 arguments are passed in.";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -41,10 +60,10 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("where T : class",       "typeof(int)")]
-            [TestCase("where T : struct",      "typeof(string)")]
-            [TestCase("where T : IComparable", "typeof(Foo<int>)")]
-            [TestCase("where T : new()",       "typeof(Bar)")]
+            [TestCase("where T : class",       "int")]
+            [TestCase("where T : struct",      "string")]
+            [TestCase("where T : IComparable", "Foo<int>")]
+            [TestCase("where T : new()",       "Bar")]
             public void ConstrainedParameter(string constraint, string arg)
             {
                 var barCode = @"
@@ -69,9 +88,10 @@ namespace RoslynSandbox
         public static object Get() => typeof(Foo<>).MakeGenericType(↓typeof(int));
     }
 }".AssertReplace("where T : class", constraint)
-  .AssertReplace("typeof(int)", arg);
+  .AssertReplace("typeof(int)", $"typeof({arg})");
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
+                var message = $"The argument typeof({arg}), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), barCode, code);
             }
 
             [Test]

@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers
                         Diagnostic.Create(
                             REFL031UseCorrectGenericArguments.Descriptor,
                             invocation.ArgumentList.GetLocation(),
-                            $"The member has {typeArguments.Parameters.Length} parameter{PluralS(typeArguments.Parameters.Length)} but {typeArguments.Arguments.Length} argument{PluralS(typeArguments.Arguments.Length)} are passed in."));
+                            $"The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has {typeArguments.Parameters.Length} parameter{PluralS(typeArguments.Parameters.Length)} but {typeArguments.Arguments.Length} argument{PluralS(typeArguments.Arguments.Length)} are passed in."));
                 }
                 else if (typeArguments.TryFindMisMatch(context, out var argument, out var parameter))
                 {
@@ -44,7 +44,7 @@ namespace ReflectionAnalyzers
                         Diagnostic.Create(
                             REFL031UseCorrectGenericArguments.Descriptor,
                             argument.GetLocation(),
-                            $"The argument {argument} does not satisfy the constraints of the parameter {parameter}."));
+                            $"The argument {argument}, on '{typeArguments.Symbol}' violates the constraint of type '{parameter}'."));
                 }
                 else if (!typeArguments.Symbol.IsGenericDefinition())
                 {

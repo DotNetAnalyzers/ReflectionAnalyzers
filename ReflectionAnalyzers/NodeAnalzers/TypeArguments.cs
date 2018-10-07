@@ -85,10 +85,18 @@ namespace ReflectionAnalyzers
             if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                if (Type.TryGet(memberAccess.Expression, context, out var type, out _))
+                if (Type.TryGet(memberAccess.Expression, context, out var type, out _) &&
+                    type is INamedTypeSymbol namedType)
                 {
                     symbol = type;
-                    parameters = (type as INamedTypeSymbol)?.TypeParameters ?? ImmutableArray<ITypeParameterSymbol>.Empty;
+                    parameters = namedType.TypeParameters;
+
+                    while (type.ContainingType is INamedTypeSymbol containingType)
+                    {
+                        parameters = parameters.InsertRange(0, containingType.TypeParameters);
+                        type = containingType;
+                    }
+
                     return true;
                 }
             }

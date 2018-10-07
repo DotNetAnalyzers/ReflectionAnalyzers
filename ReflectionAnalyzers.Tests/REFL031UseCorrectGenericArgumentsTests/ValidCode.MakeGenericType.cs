@@ -30,10 +30,10 @@ namespace RoslynSandbox
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("where T : class",       "typeof(string)")]
-            [TestCase("where T : struct",      "typeof(int)")]
-            [TestCase("where T : IComparable", "typeof(int)")]
-            [TestCase("where T : new()",       "typeof(Foo<int>)")]
+            [TestCase("where T : class",          "typeof(string)")]
+            [TestCase("where T : struct",         "typeof(int)")]
+            [TestCase("where T : IComparable",    "typeof(int)")]
+            [TestCase("where T : new()",          "typeof(Foo<int>)")]
             public void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
@@ -44,12 +44,10 @@ namespace RoslynSandbox
     public class Foo<T>
         where T : class
     {
-        public static void Bar()
-        {
-            var type = typeof(Foo<>).MakeGenericType(typeof(int));
-        }
+        public static object Get => typeof(Foo<>).MakeGenericType(typeof(int));
     }
-}".AssertReplace("where T : class", constraint).AssertReplace("typeof(int)", arg);
+}".AssertReplace("where T : class", constraint)
+  .AssertReplace("typeof(int)", arg);
 
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
             }
@@ -92,6 +90,24 @@ namespace RoslynSandbox
         }
 
         public class Baz<T>
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [Test]
+            public void NestedGenericInGeneric()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    public class C<T>
+    {
+        public object Get => typeof(C<>.D<>).MakeGenericType(typeof(int), typeof(int));
+
+        public class D<U>
         {
         }
     }

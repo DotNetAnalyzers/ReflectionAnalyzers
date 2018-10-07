@@ -27,7 +27,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "Use generic arguments that satisfies the type parameters. The member has 1 parameter but 2 arguments are passed in.";
+                var message = "The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has 1 parameter but 2 arguments are passed in.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -48,7 +48,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "Use generic arguments that satisfies the type parameters. The argument typeof(string) does not satisfy the constraints of the parameter T.";
+                var message = "The argument typeof(string), on 'RoslynSandbox.Foo.Bar<T>()' violates the constraint of type 'T'.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
