@@ -61,7 +61,11 @@ namespace RoslynSandbox
             }
 
             [TestCase("where T : class",               "int")]
+            [TestCase("where T : class",               "int?")]
             [TestCase("where T : struct",              "string")]
+            [TestCase("where T : struct",              "int?")]
+            [TestCase("where T : struct",              "System.ValueType")]
+            [TestCase("where T : struct",              "System.Enum")]
             [TestCase("where T : IComparable",         "Foo<int>")]
             [TestCase("where T : IComparable<double>", "Foo<int>")]
             [TestCase("where T : new()",               "Bar")]
@@ -93,6 +97,26 @@ namespace RoslynSandbox
 
                 var message = $"The argument typeof({arg}), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), barCode, code);
+            }
+
+            [Test]
+            public void TransitiveConstraints()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System.Collections;
+
+    public class C<T1, T2> 
+        where T1 : class
+        where T2 : T1
+    {
+        public static object Get => typeof(C<,>).MakeGenericType(typeof(IEnumerable), typeof(object));
+    }
+}";
+
+                var message = $"The argument typeof(), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]

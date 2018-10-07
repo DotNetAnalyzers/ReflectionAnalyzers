@@ -54,6 +54,46 @@ namespace RoslynSandbox
             }
 
             [Test]
+            public void TransitiveConstraints()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C<T1, T2> 
+        where T1 : class
+        where T2 : T1
+    {
+        public static object Get => typeof(C<,>).MakeGenericType(typeof(object), typeof(int));
+    }
+}";
+
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [Test]
+            public void ImplicitDefaultConstructor()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    public struct S
+    {
+        public S(int param) { }
+    }
+
+    public class C<T> 
+        where T : new()
+    {
+        public static object Get => typeof(C<>).MakeGenericType(typeof(HasImplicitDefaultConstructor));
+    }
+}";
+
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [Test]
             public void Recursion()
             {
                 var code = @"
