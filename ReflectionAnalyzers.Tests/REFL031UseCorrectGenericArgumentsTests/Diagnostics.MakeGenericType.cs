@@ -119,6 +119,23 @@ namespace RoslynSandbox
             }
 
             [Test]
+            public void Static()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo<T>
+    {
+        public static object Get() => typeof(Foo<>).MakeGenericType(↓typeof(Console));
+    }
+}";
+                var message = "The argument typeof(Console), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            }
+
+            [Test]
             public void TransitiveConstraints()
             {
                 var code = @"
