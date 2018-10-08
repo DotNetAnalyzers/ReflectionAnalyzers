@@ -78,7 +78,7 @@ namespace ReflectionAnalyzers
             {
                 switch (type)
                 {
-                    case INamedTypeSymbol namedType when !namedType.IsValueType:
+                    case INamedTypeSymbol namedType when !namedType.IsValueType || namedType == KnownSymbol.NullableOfT:
                     case ITypeParameterSymbol parameter when !parameter.HasValueTypeConstraint:
                         return false;
                 }

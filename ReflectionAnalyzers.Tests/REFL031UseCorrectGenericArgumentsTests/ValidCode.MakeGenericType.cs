@@ -104,10 +104,12 @@ namespace RoslynSandbox
                 var safeCode = @"
 namespace RoslynSandbox
 {
+    using System;
+
     public struct Safe
     {
         public int Value1;
-        public AttributeTargets Value2
+        public AttributeTargets Value2;
     }
 }";
 
