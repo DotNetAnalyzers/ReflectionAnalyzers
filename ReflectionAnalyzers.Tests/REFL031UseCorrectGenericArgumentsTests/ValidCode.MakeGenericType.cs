@@ -86,11 +86,45 @@ namespace RoslynSandbox
     public class C<T> 
         where T : new()
     {
-        public static object Get => typeof(C<>).MakeGenericType(typeof(HasImplicitDefaultConstructor));
+        public static object Get => typeof(C<>).MakeGenericType(typeof(S));
     }
 }";
 
                 AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [TestCase("where T : Enum",                "AttributeTargets")]
+            [TestCase("where T : struct, System.Enum", "AttributeTargets")]
+            [TestCase("where T : Enum",                "Enum")]
+            [TestCase("where T : unmanaged",           "int")]
+            [TestCase("where T : unmanaged",           "Safe")]
+            [TestCase("where T : unmanaged",           "AttributeTargets")]
+            public void ConstrainedToEnum(string constraint, string arg)
+            {
+                var safeCode = @"
+namespace RoslynSandbox
+{
+    public struct Safe
+    {
+        public int Value1;
+        public AttributeTargets Value2
+    }
+}";
+
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C<T> 
+        where T : Enum
+    {
+        public static object Get => typeof(C<>).MakeGenericType(typeof(AttributeTargets));
+    }
+}".AssertReplace("where T : Enum", constraint)
+  .AssertReplace("AttributeTargets", arg);
+
+                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, safeCode, code);
             }
 
             [Test]

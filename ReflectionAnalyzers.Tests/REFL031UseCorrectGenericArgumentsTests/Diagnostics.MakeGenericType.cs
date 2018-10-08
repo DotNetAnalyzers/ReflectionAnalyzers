@@ -60,18 +60,21 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("where T : class",               "int")]
-            [TestCase("where T : class",               "int?")]
-            [TestCase("where T : struct",              "string")]
-            [TestCase("where T : struct",              "int?")]
-            [TestCase("where T : struct",              "System.ValueType")]
-            [TestCase("where T : struct",              "System.Enum")]
-            [TestCase("where T : IComparable",         "Foo<int>")]
+            [TestCase("where T : class", "int")]
+            [TestCase("where T : class", "int?")]
+            [TestCase("where T : struct", "string")]
+            [TestCase("where T : struct", "int?")]
+            [TestCase("where T : struct", "System.ValueType")]
+            [TestCase("where T : struct", "System.Enum")]
+            [TestCase("where T : struct, System.Enum", "System.Enum")]
+            [TestCase("where T : unmanaged", "object")]
+            [TestCase("where T : unmanaged", "NotSafe")]
+            [TestCase("where T : IComparable", "Foo<int>")]
             [TestCase("where T : IComparable<double>", "Foo<int>")]
-            [TestCase("where T : new()",               "Bar")]
+            [TestCase("where T : new()", "Bar")]
             public void ConstrainedParameter(string constraint, string arg)
             {
-                var barCode = @"
+                var bar = @"
 namespace RoslynSandbox
 {
     public class Bar
@@ -79,6 +82,15 @@ namespace RoslynSandbox
         public Bar(int i)
         {
         }
+    }
+}";
+
+                var notSafe = @"
+namespace RoslynSandbox
+{
+    public struct NotSafe
+    {
+        public object value;
     }
 }";
 
@@ -96,7 +108,32 @@ namespace RoslynSandbox
   .AssertReplace("typeof(int)", $"typeof({arg})");
 
                 var message = $"The argument typeof({arg}), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), barCode, code);
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, notSafe, code);
+            }
+
+            [Test]
+            public void RefStruct()
+            {
+                var refStruct = @"
+namespace RoslynSandbox
+{
+    public ref struct RefStruct
+    {
+        public int Value;
+    }
+}";
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class Foo<T>
+    {
+        public static object Get() => typeof(Foo<>).MakeGenericType(↓typeof(RefStruct));
+    }
+}";
+                var message = "The argument typeof(RefStruct), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), refStruct, code);
             }
 
             [Test]
