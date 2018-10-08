@@ -114,8 +114,7 @@ namespace ReflectionAnalyzers
                         }
                     }
                 }
-
-                if (GetX.TryGetConstructorInfo(memberAccess, context, out var ctor))
+                else if (GetX.TryGetConstructorInfo(memberAccess, context, out var ctor))
                 {
                     if (ReturnValue.ShouldCast(invocation))
                     {
@@ -135,15 +134,18 @@ namespace ReflectionAnalyzers
                         {
                             context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), "Use overload of Invoke without obj parameter."));
                         }
-                        else if (!context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var instanceType) ||
-                                 (instanceType != KnownSymbol.Object && !instanceType.Equals(ctor.ContainingType)))
+                        else
                         {
                             if (!IsResultDiscarded(invocation, context))
                             {
                                 context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
                             }
 
-                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Use an instance of type {ctor.ContainingType}."));
+                            if (!context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var instanceType) ||
+                                (instanceType != KnownSymbol.Object && !instanceType.Equals(ctor.ContainingType)))
+                            {
+                                context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Use an instance of type {ctor.ContainingType}."));
+                            }
                         }
                     }
                 }
