@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
@@ -9,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
         public class MakeGenericType
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL034DontMakeGeneric.Descriptor);
+            private static readonly DiagnosticDescriptor Descriptor = REFL034DontMakeGeneric.Descriptor;
 
             [Test]
             public void Vanilla()
@@ -22,7 +23,7 @@ namespace RoslynSandbox
         public object Get => typeof(C<>).MakeGenericType(typeof(int));
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -39,7 +40,7 @@ namespace RoslynSandbox
         public object Get => typeof(C<>).MakeGenericType(typeof(int));
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -59,7 +60,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -79,7 +80,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

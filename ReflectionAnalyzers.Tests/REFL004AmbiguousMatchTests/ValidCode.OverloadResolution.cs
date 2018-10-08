@@ -25,7 +25,7 @@ namespace RoslynSandbox
         public static IFormattable Static(IFormattable i) => i;
     }
 }".AssertReplace("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -46,7 +46,7 @@ namespace RoslynSandbox
         public static void Static(IFormattable i) { }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

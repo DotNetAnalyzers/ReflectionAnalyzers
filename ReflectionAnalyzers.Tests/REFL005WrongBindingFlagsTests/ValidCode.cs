@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL005WrongBindingFlags.Descriptor);
+        private static readonly DiagnosticDescriptor Descriptor = REFL005WrongBindingFlags.Descriptor;
 
         [TestCase("GetMethod(nameof(Static))")]
         [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static)")]
@@ -71,7 +72,7 @@ namespace RoslynSandbox
         private int PublicPrivate(int i) => i;
     }
 }".AssertReplace("GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(this.ToString))")]
@@ -93,7 +94,7 @@ namespace RoslynSandbox
         public new string ToString() => string.Empty;
     }
 }".AssertReplace("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
@@ -129,7 +130,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(\"Bar\")")]
@@ -157,7 +158,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetMethod(\"Bar\")", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(this.Bar), Public | Instance)")]
@@ -185,7 +186,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetProperty(nameof(Static), BindingFlags.Public | BindingFlags.Static)")]
@@ -227,7 +228,7 @@ namespace RoslynSandbox
         private int Private => 0;
     }
 }".AssertReplace("GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetNestedType(nameof(PublicStatic))")]
@@ -281,7 +282,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -312,7 +313,7 @@ namespace RoslynSandbox.Dump
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, exception, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, exception, code);
         }
     }
 }

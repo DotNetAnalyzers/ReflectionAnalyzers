@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL011");
+        private static readonly DiagnosticDescriptor Descriptor = REFL011DuplicateBindingFlags.Descriptor;
 
         [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
@@ -33,7 +34,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)")]
@@ -61,7 +62,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

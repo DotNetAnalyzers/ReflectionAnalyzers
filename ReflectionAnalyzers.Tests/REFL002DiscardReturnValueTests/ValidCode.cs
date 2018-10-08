@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL002DiscardReturnValue.Descriptor);
+        private static readonly DiagnosticDescriptor Descriptor = REFL002DiscardReturnValue.Descriptor;
 
         [TestCase("_ = ")]
         [TestCase("var _ = ")]
@@ -31,7 +32,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("_ = ", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("Assert.Null(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))")]
@@ -57,7 +58,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Assert.Null(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -77,7 +78,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -99,7 +100,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -119,7 +120,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

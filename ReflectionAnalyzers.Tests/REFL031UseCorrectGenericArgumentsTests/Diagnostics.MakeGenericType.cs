@@ -12,24 +12,6 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
-            public void NestedGenericInGeneric()
-            {
-                var code = @"
-namespace RoslynSandbox
-{
-    public class C<T>
-    {
-        public object Get => typeof(C<>.D<>).MakeGenericType(typeof(int), typeof(int));
-
-        public class D<U>
-        {
-        }
-    }
-}";
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-            }
-
-            [Test]
             public void SingleUnconstrained()
             {
                 var code = @"
@@ -169,6 +151,24 @@ namespace RoslynSandbox
         public static object Get() => typeof(Foo).GetNestedType(""Baz`1"").MakeGenericType↓(typeof(int), typeof(double));
 
         public class Baz<T>
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [Test]
+            public void NestedGenericInGeneric()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    public class C<T>
+    {
+        public object Get => typeof(C<>.D<>).MakeGenericType(typeof(int), typeof(int), typeof(int));
+
+        public class D<U>
         {
         }
     }

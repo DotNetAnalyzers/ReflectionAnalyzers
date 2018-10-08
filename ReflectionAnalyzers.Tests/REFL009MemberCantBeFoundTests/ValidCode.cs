@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public partial class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL009MemberCantBeFound.Descriptor);
+        private static readonly DiagnosticDescriptor Descriptor = REFL009MemberCantBeFound.Descriptor;
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
@@ -28,7 +29,7 @@ namespace RoslynSandbox.Dump
     }
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
@@ -59,7 +60,7 @@ namespace RoslynSandbox.Dump
     }
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, exception, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, exception, code);
         }
 
         [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public)")]
@@ -102,7 +103,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetProperty(\"Item\")")]
@@ -125,7 +126,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetProperty(\"Bar\")")]
@@ -150,7 +151,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Bar\")", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

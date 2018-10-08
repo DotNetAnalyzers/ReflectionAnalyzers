@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
@@ -9,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
         public class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
+            private static readonly DiagnosticDescriptor Descriptor = REFL025ArgumentsDontMatchParameters.Descriptor;
 
             [TestCase("Activator.CreateInstance(typeof(Foo))")]
             [TestCase("Activator.CreateInstance(this.GetType())")]
@@ -30,7 +31,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo))", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("(Foo)Activator.CreateInstance(typeof(Foo))")]
@@ -48,7 +49,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance<Foo>()", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
@@ -69,7 +70,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
@@ -92,7 +93,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
@@ -115,7 +116,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
@@ -141,7 +142,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
@@ -169,7 +170,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
@@ -198,7 +199,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(Foo))")]
@@ -223,7 +224,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
@@ -249,7 +250,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -266,7 +267,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -283,7 +284,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

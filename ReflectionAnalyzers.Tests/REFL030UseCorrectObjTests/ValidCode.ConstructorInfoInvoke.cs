@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
@@ -9,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
         public class ConstructorInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL030UseCorrectObj.Descriptor);
+            private static readonly DiagnosticDescriptor Descriptor = REFL030UseCorrectObj.Descriptor;
 
             [TestCase("GetConstructor(Type.EmptyTypes).Invoke(null)")]
             [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
@@ -34,7 +35,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(null)", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)")]
@@ -66,7 +67,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

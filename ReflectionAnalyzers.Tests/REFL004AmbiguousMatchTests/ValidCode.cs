@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     internal partial class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL004");
+        private static readonly DiagnosticDescriptor Descriptor = REFL004AmbiguousMatch.Descriptor;
 
         [TestCase("GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("GetMethod(nameof(this.ToString))")]
@@ -50,7 +51,7 @@ namespace RoslynSandbox
         private double PublicPrivateInstance(double value) => value;
     }
 }".AssertReplace("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
@@ -86,7 +87,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetProperty(\"Item\", typeof(int), new[] { typeof(int) })")]
@@ -105,7 +106,7 @@ namespace RoslynSandbox
         public int this[int i1, int i2] => 0;
     }
 }".AssertReplace("GetProperty(\"Item\", typeof(int), new[] { typeof(int) })", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetProperty(\"Bar\", typeof(int), new[] { typeof(int) })")]
@@ -128,7 +129,7 @@ namespace RoslynSandbox
         public int this[int i1, int i2] => 0;
     }
 }".AssertReplace("GetProperty(\"Bar\", typeof(int), new[] { typeof(int) })", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

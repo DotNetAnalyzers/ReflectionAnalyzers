@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL013MemberIsOfWrongType.Descriptor);
+        private static readonly DiagnosticDescriptor Descriptor = REFL013MemberIsOfWrongType.Descriptor;
 
         [Test]
         public void PassingArrayToMakeGenericType()
@@ -25,7 +26,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }
