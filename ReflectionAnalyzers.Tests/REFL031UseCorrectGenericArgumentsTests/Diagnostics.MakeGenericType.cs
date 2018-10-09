@@ -50,6 +50,7 @@ namespace RoslynSandbox
             [TestCase("where T : struct", "System.Enum")]
             [TestCase("where T : struct, System.Enum", "System.Enum")]
             [TestCase("where T : unmanaged", "object")]
+            [TestCase("where T : unmanaged", "Console")]
             [TestCase("where T : unmanaged", "NotSafe")]
             [TestCase("where T : IComparable", "Foo<int>")]
             [TestCase("where T : IComparable<double>", "Foo<int>")]

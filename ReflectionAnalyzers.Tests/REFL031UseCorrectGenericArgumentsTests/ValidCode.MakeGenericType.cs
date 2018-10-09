@@ -32,6 +32,7 @@ namespace RoslynSandbox
             }
 
             [TestCase("where T : class",          "typeof(string)")]
+            [TestCase("where T : class",          "typeof(Console)")]
             [TestCase("where T : struct",         "typeof(int)")]
             [TestCase("where T : IComparable",    "typeof(int)")]
             [TestCase("where T : IComparable<T>", "typeof(int)")]
