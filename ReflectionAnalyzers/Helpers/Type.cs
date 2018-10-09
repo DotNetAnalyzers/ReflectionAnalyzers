@@ -52,59 +52,6 @@ namespace ReflectionAnalyzers
             return !recursive || HasVisibleNonPublicMembers(type.BaseType, recursive: true);
         }
 
-        internal static bool SatisfiesConstraints(ITypeSymbol type, ITypeParameterSymbol typeParameter, Compilation compilation)
-        {
-            if (typeParameter.HasConstructorConstraint)
-            {
-                switch (type)
-                {
-                    case INamedTypeSymbol namedType when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.Length == 0, out _):
-                    case ITypeParameterSymbol parameter when !parameter.HasConstructorConstraint:
-                        return false;
-                }
-            }
-
-            if (typeParameter.HasReferenceTypeConstraint)
-            {
-                switch (type)
-                {
-                    case INamedTypeSymbol namedType when !namedType.IsReferenceType:
-                    case ITypeParameterSymbol parameter when !parameter.HasReferenceTypeConstraint:
-                        return false;
-                }
-            }
-
-            if (typeParameter.HasValueTypeConstraint)
-            {
-                switch (type)
-                {
-                    case INamedTypeSymbol namedType when !namedType.IsValueType || namedType == KnownSymbol.NullableOfT:
-                    case ITypeParameterSymbol parameter when !parameter.HasValueTypeConstraint:
-                        return false;
-                }
-            }
-
-            foreach (var constraintType in typeParameter.ConstraintTypes)
-            {
-                switch (constraintType)
-                {
-                    case ITypeParameterSymbol parameter when !SatisfiesConstraints(type, parameter, compilation):
-                        return false;
-                    case INamedTypeSymbol namedType:
-                        var conversion = compilation.ClassifyConversion(type, namedType);
-                        if (!conversion.Exists ||
-                            conversion.IsExplicit)
-                        {
-                            return false;
-                        }
-
-                        break;
-                }
-            }
-
-            return true;
-        }
-
         private static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out ExpressionSyntax source)
         {
             switch (expression)

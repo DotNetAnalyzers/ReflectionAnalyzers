@@ -3,6 +3,7 @@ namespace ReflectionAnalyzers
     using System.Collections.Immutable;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -67,7 +68,7 @@ namespace ReflectionAnalyzers
             for (var i = 0; i < this.Parameters.Length; i++)
             {
                 if (Type.TryGet(this.Arguments[i], context, out var type, out _) &&
-                    !Type.SatisfiesConstraints(type, this.Parameters[i], context.Compilation))
+                    !SatisfiesConstraints(type, this.Parameters[i], context.Compilation))
                 {
                     argument = this.Arguments[i];
                     parameter = this.Parameters[i];
@@ -100,6 +101,59 @@ namespace ReflectionAnalyzers
                 {
                     types = System.Array.Empty<ITypeSymbol>();
                     return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static bool SatisfiesConstraints(ITypeSymbol type, ITypeParameterSymbol typeParameter, Compilation compilation)
+        {
+            if (typeParameter.HasConstructorConstraint)
+            {
+                switch (type)
+                {
+                    case INamedTypeSymbol namedType when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.Length == 0, out _):
+                    case ITypeParameterSymbol parameter when !parameter.HasConstructorConstraint:
+                        return false;
+                }
+            }
+
+            if (typeParameter.HasReferenceTypeConstraint)
+            {
+                switch (type)
+                {
+                    case INamedTypeSymbol namedType when !namedType.IsReferenceType:
+                    case ITypeParameterSymbol parameter when !parameter.HasReferenceTypeConstraint:
+                        return false;
+                }
+            }
+
+            if (typeParameter.HasValueTypeConstraint)
+            {
+                switch (type)
+                {
+                    case INamedTypeSymbol namedType when !namedType.IsValueType || namedType == KnownSymbol.NullableOfT:
+                    case ITypeParameterSymbol parameter when !parameter.HasValueTypeConstraint:
+                        return false;
+                }
+            }
+
+            foreach (var constraintType in typeParameter.ConstraintTypes)
+            {
+                switch (constraintType)
+                {
+                    case ITypeParameterSymbol parameter when !SatisfiesConstraints(type, parameter, compilation):
+                        return false;
+                    case INamedTypeSymbol namedType:
+                        var conversion = compilation.ClassifyConversion(type, namedType);
+                        if (!conversion.Exists ||
+                            conversion.IsExplicit)
+                        {
+                            return false;
+                        }
+
+                        break;
                 }
             }
 
@@ -150,7 +204,7 @@ namespace ReflectionAnalyzers
 
         private static bool IsMakeGeneric(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context)
         {
-            return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out IMethodSymbol makeGeneric) &&
+            return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
                    makeGeneric.Parameters.TrySingle(out var parameter) &&
                    parameter.IsParams &&
                    parameter.Type is IArrayTypeSymbol arrayType &&
