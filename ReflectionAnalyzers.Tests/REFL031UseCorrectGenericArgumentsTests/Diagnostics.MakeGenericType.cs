@@ -97,31 +97,6 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, notSafe, code);
             }
 
-            [Test]
-            public void RefStruct()
-            {
-                var refStruct = @"
-namespace RoslynSandbox
-{
-    public ref struct RefStruct
-    {
-        public int Value;
-    }
-}";
-                var code = @"
-namespace RoslynSandbox
-{
-    using System;
-
-    public class Foo<T>
-    {
-        public static object Get() => typeof(Foo<>).MakeGenericType(↓typeof(RefStruct));
-    }
-}";
-                var message = "The argument typeof(RefStruct), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), refStruct, code);
-            }
-
             [TestCase("where T1 : class", "where T2 : T1", "typeof(IEnumerable), typeof(object)")]
             public void TransitiveConstraints(string where1, string where2, string types)
             {
