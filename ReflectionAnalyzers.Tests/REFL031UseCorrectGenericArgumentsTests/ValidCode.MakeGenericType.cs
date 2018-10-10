@@ -12,8 +12,11 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL031UseCorrectGenericArguments.Descriptor;
 
-            [Test]
-            public void SingleUnconstrained()
+            [TestCase("string")]
+            [TestCase("int")]
+            [TestCase("int?")]
+            [TestCase("Console")]
+            public void SingleUnconstrained(string type)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -27,7 +30,7 @@ namespace RoslynSandbox
             var type = typeof(Foo<>).MakeGenericType(typeof(int));
         }
     }
-}";
+}".AssertReplace("int", type);
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 

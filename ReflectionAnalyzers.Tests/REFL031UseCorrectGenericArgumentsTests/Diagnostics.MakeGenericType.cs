@@ -48,6 +48,7 @@ namespace RoslynSandbox
             [TestCase("where T : struct", "int?")]
             [TestCase("where T : struct", "System.ValueType")]
             [TestCase("where T : struct", "System.Enum")]
+            [TestCase("where T : struct", "System.Console")]
             [TestCase("where T : struct, System.Enum", "System.Enum")]
             [TestCase("where T : unmanaged", "object")]
             [TestCase("where T : unmanaged", "Console")]
@@ -117,23 +118,6 @@ namespace RoslynSandbox
 }";
                 var message = "The argument typeof(RefStruct), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), refStruct, code);
-            }
-
-            [Test]
-            public void Static()
-            {
-                var code = @"
-namespace RoslynSandbox
-{
-    using System;
-
-    public class Foo<T>
-    {
-        public static object Get() => typeof(Foo<>).MakeGenericType(↓typeof(Console));
-    }
-}";
-                var message = "The argument typeof(Console), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
