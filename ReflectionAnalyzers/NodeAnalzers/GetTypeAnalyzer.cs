@@ -46,7 +46,8 @@ namespace ReflectionAnalyzers
             }
 
             return target.Parameters.Length == 2 &&
-                   target.TryFindParameter("typeName", out _) &&
+                   target.Parameters.TryFirst(out parameter) &&
+                   parameter.Type == KnownSymbol.String &&
                    target.TryFindParameter("throwOnError", out parameter) &&
                    invocation.TryFindArgument(parameter, out var arg) &&
                    arg.Expression.IsKind(SyntaxKind.FalseLiteralExpression);
@@ -55,7 +56,8 @@ namespace ReflectionAnalyzers
         private static bool TryGetTarget(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out IMethodSymbol target)
         {
             return invocation.TryGetTarget(KnownSymbol.Type.GetType, context.SemanticModel, context.CancellationToken, out target) ||
-                   invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out target);
+                   invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out target) ||
+                   invocation.TryGetTarget(KnownSymbol.AssemblyBuilder.GetType, context.SemanticModel, context.CancellationToken, out target);
         }
     }
 }

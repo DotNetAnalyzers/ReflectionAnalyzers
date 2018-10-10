@@ -9,8 +9,13 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL036CheckNull.Descriptor);
 
-        [Test]
-        public void TypeGetTypeAssembly()
+        [TestCase("Get() => Type.GetType(\"Foo\").Assembly")]
+        [TestCase("Get() => Type.GetType(\"Foo\", throwOnError: false).Assembly")]
+        [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"Foo\").Assembly")]
+        [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"Foo\", throwOnError: false).Assembly")]
+        [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"Foo\").Assembly")]
+        [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"Foo\", throwOnError: false).Assembly")]
+        public void WhenMemberAccess(string body)
         {
             var code = @"
 namespace RoslynSandbox
@@ -19,25 +24,9 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static object Get => Type.GetType(""Foo"").Assembly;
+        public static object Get() => Type.GetType(""Foo"").Assembly;
     }
-}";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
-
-        [Test]
-        public void TypeGetTypeThrowOnErrorAssembly()
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System;
-
-    public class C
-    {
-        public static object Get => Type.GetType(""Foo"", throwOnError: false).Assembly;
-    }
-}";
+}".AssertReplace("Get() => Type.GetType(\"Foo\").Assembly", body);
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }

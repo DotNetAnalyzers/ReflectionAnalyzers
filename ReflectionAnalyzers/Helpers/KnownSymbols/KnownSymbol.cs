@@ -37,6 +37,7 @@ namespace ReflectionAnalyzers
         internal static readonly RuntimeParameterInfoType RuntimeParameterInfo = new RuntimeParameterInfoType();
         internal static readonly RuntimePropertyInfoType RuntimePropertyInfo = new RuntimePropertyInfoType();
         internal static readonly TypeInfoType TypeInfo = new TypeInfoType();
+        internal static readonly AssemblyBuilderType AssemblyBuilder = new AssemblyBuilderType();
         internal static readonly NUnitAssertType NUnitAssert = new NUnitAssertType();
 
         private static QualifiedType Create(string qualifiedName, string alias = null)
