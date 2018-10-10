@@ -52,16 +52,23 @@ namespace ReflectionAnalyzers
 
                 if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
                 {
+                    if (!method.ReturnsVoid &&
+                        ReturnValue.ShouldCast(invocation, method.ReturnType, context))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL001CastReturnValue.Descriptor,
+                                invocation.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(TypeSyntax),
+                                    method.ReturnType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                method.ReturnType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                    }
+
                     if (method.ReturnsVoid &&
                         !IsResultDiscarded(invocation, context))
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
-                    }
-
-                    if (!method.ReturnsVoid &&
-                        ReturnValue.ShouldCast(invocation))
-                    {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
                     }
 
                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
@@ -129,9 +136,16 @@ namespace ReflectionAnalyzers
                 }
                 else if (GetX.TryGetConstructorInfo(memberAccess, context, out var ctor))
                 {
-                    if (ReturnValue.ShouldCast(invocation))
+                    if (ReturnValue.ShouldCast(invocation, ctor.ReturnType, context))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL001CastReturnValue.Descriptor,
+                                invocation.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(TypeSyntax),
+                                    ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
                     }
 
                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&

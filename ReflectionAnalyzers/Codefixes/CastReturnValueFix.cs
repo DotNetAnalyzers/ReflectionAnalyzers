@@ -14,6 +14,7 @@ namespace ReflectionAnalyzers.Codefixes
     internal class CastReturnValueFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
+            REFL001CastReturnValue.DiagnosticId,
             REFL028CastReturnValueToCorrectType.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
@@ -22,16 +23,28 @@ namespace ReflectionAnalyzers.Codefixes
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax typeSyntax) &&
-                    diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeString))
+                if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeString))
                 {
-                    context.RegisterCodeFix(
-                        $"Cast to {typeString}.",
-                        (editor, _) => editor.ReplaceNode(
-                            typeSyntax,
-                            x => SyntaxFactory.ParseTypeName(typeString)),
-                        nameof(CastReturnValueFix),
-                        diagnostic);
+                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax typeSyntax))
+                    {
+                        context.RegisterCodeFix(
+                            $"Cast to {typeString}.",
+                            (editor, _) => editor.ReplaceNode(
+                                typeSyntax,
+                                x => SyntaxFactory.ParseTypeName(typeString)),
+                            nameof(CastReturnValueFix),
+                            diagnostic);
+                    }
+                    else if (syntaxRoot.TryFindNode(diagnostic, out InvocationExpressionSyntax invocation))
+                    {
+                        context.RegisterCodeFix(
+                            $"Cast to {typeString}.",
+                            (editor, _) => editor.ReplaceNode(
+                                invocation,
+                                x => SyntaxFactory.CastExpression(SyntaxFactory.ParseTypeName(typeString), x)),
+                            nameof(CastReturnValueFix),
+                            diagnostic);
+                    }
                 }
             }
         }

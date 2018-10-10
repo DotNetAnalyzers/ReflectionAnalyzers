@@ -108,6 +108,57 @@ namespace ReflectionAnalyzers
             return true;
         }
 
+        private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
+        {
+            if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context) &&
+                invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+            {
+                if (Type.TryGet(memberAccess.Expression, context, out var type, out _) &&
+                    type is INamedTypeSymbol namedType)
+                {
+                    symbol = type;
+                    parameters = namedType.TypeParameters;
+
+                    while (type.ContainingType is INamedTypeSymbol containingType)
+                    {
+                        parameters = parameters.InsertRange(0, containingType.TypeParameters);
+                        type = containingType;
+                    }
+
+                    return true;
+                }
+            }
+
+            symbol = null;
+            return false;
+        }
+
+        private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
+        {
+            if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context) &&
+                invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+            {
+                if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
+                {
+                    symbol = method;
+                    parameters = method.TypeParameters;
+                    return true;
+                }
+            }
+
+            symbol = null;
+            return false;
+        }
+
+        private static bool IsMakeGeneric(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context)
+        {
+            return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
+                   makeGeneric.Parameters.TrySingle(out var parameter) &&
+                   parameter.IsParams &&
+                   parameter.Type is IArrayTypeSymbol arrayType &&
+                   arrayType.ElementType == KnownSymbol.Type;
+        }
+
         private bool SatisfiesConstraints(ITypeSymbol type, ITypeParameterSymbol typeParameter, SyntaxNodeAnalysisContext context)
         {
             if (typeParameter.HasConstructorConstraint)
@@ -181,58 +232,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
-        {
-            if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context) &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess)
-            {
-                if (Type.TryGet(memberAccess.Expression, context, out var type, out _) &&
-                    type is INamedTypeSymbol namedType)
-                {
-                    symbol = type;
-                    parameters = namedType.TypeParameters;
-
-                    while (type.ContainingType is INamedTypeSymbol containingType)
-                    {
-                        parameters = parameters.InsertRange(0, containingType.TypeParameters);
-                        type = containingType;
-                    }
-
-                    return true;
-                }
-            }
-
-            symbol = null;
-            return false;
-        }
-
-        private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
-        {
-            if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context) &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess)
-            {
-                if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
-                {
-                    symbol = method;
-                    parameters = method.TypeParameters;
-                    return true;
-                }
-            }
-
-            symbol = null;
-            return false;
-        }
-
-        private static bool IsMakeGeneric(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context)
-        {
-            return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
-                   makeGeneric.Parameters.TrySingle(out var parameter) &&
-                   parameter.IsParams &&
-                   parameter.Type is IArrayTypeSymbol arrayType &&
-                   arrayType.ElementType == KnownSymbol.Type;
-        }
-
-        bool TryFindArgumentType(ITypeParameterSymbol parameter, SyntaxNodeAnalysisContext context, out ITypeSymbol type)
+        private bool TryFindArgumentType(ITypeParameterSymbol parameter, SyntaxNodeAnalysisContext context, out ITypeSymbol type)
         {
             var i = this.Parameters.IndexOf(parameter);
             if (i >= 0)

@@ -58,9 +58,16 @@ namespace ReflectionAnalyzers
                             createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
                 }
 
-                if (ReturnValue.ShouldCast(invocation))
+                if (ReturnValue.ShouldCast(invocation, createdType, context))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL001CastReturnValue.Descriptor, invocation.GetLocation()));
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL001CastReturnValue.Descriptor,
+                            invocation.GetLocation(),
+                            ImmutableDictionary<string, string>.Empty.Add(
+                                nameof(TypeSyntax),
+                                createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                            createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
                 }
             }
         }

@@ -1,14 +1,17 @@
 namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
+    using ReflectionAnalyzers.Codefixes;
 
-    internal partial class Diagnostics
+    internal partial class CodeFix
     {
         public class ConstructorInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
+            private static readonly CodeFixProvider Fix = new CastReturnValueFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL001CastReturnValue.Descriptor);
 
             [Test]
@@ -26,7 +29,18 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                var fixedCode = @"
+namespace RoslynSandbox
+{
+    public class Foo
+    {
+        public Foo(int i)
+        {
+            var value = (Foo)typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
+        }
+    }
+}";
+                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
             }
 
             [Test]
