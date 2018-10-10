@@ -144,5 +144,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL035.md">REFL035</a></td>
     <td>Don't call Invoke on a generic definition.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL036.md">REFL036</a></td>
+    <td>Check if null before using.</td>
+  </tr>
 <table>
 <!-- end generated table -->

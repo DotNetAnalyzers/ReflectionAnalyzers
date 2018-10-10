@@ -14,6 +14,7 @@ namespace ReflectionAnalyzers
         internal readonly QualifiedMethod GetMethod;
         internal readonly QualifiedMethod GetNestedType;
         internal readonly QualifiedMethod GetProperty;
+        internal new readonly QualifiedMethod GetType;
         internal readonly QualifiedMethod MakeGenericType;
 
         internal TypeType()
@@ -29,6 +30,7 @@ namespace ReflectionAnalyzers
             this.GetNestedType = new QualifiedMethod(this, nameof(this.GetNestedType));
             this.GetMethod = new QualifiedMethod(this, nameof(this.GetMethod));
             this.GetProperty = new QualifiedMethod(this, nameof(this.GetProperty));
+            this.GetType = new QualifiedMethod(this, nameof(this.GetType));
             this.MakeGenericType = new QualifiedMethod(this, nameof(this.MakeGenericType));
         }
     }
