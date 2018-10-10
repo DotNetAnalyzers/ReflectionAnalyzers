@@ -32,11 +32,19 @@ The type does not exist.
 
 ## Motivation
 
-ADD MOTIVATION HERE
+```cs
+var type = Type.GetType("Int32");
+```
+
+In the above the type name is not qualified and is not found at runtime. Should be:
+
+```cs
+var type = Type.GetType("System.Int32");
+```
 
 ## How to fix violations
 
-ADD HOW TO FIX VIOLATIONS HERE
+Use the code fix to pick from suggested types or edit so that the string points to an existing type.
 
 <!-- start generated config severity -->
 ## Configure severity
