@@ -13,8 +13,6 @@ namespace ReflectionAnalyzers.Codefixes
     [Shared]
     internal class UseParameterTypeFix : DocumentEditorCodeFixProvider
     {
-        private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
-
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL033UseSameTypeAsParameter.DiagnosticId);
 
@@ -24,19 +22,31 @@ namespace ReflectionAnalyzers.Codefixes
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText) &&
-                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out TypeOfExpressionSyntax typeOf) &&
-                    typeOf.Type is TypeSyntax typeSyntax)
+                if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText))
                 {
-                    context.RegisterCodeFix(
-                        $"Change to: {typeText}.",
-                        (editor, _) => editor.AddUsing(SystemReflection)
-                                             .ReplaceNode(
-                                                 typeSyntax,
-                                                 x => SyntaxFactory.ParseTypeName(typeText)
-                                                                   .WithTriviaFrom(x)),
-                        nameof(UseParameterTypeFix),
-                        diagnostic);
+                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax typeSyntax) &&
+                        typeSyntax.Parent is TypeOfExpressionSyntax)
+                    {
+                        context.RegisterCodeFix(
+                            $"Change to: {typeText}.",
+                            (editor, _) => editor.ReplaceNode(
+                                typeSyntax,
+                                x => SyntaxFactory.ParseTypeName(typeText)
+                                                  .WithTriviaFrom(x)),
+                            nameof(UseParameterTypeFix),
+                            diagnostic);
+                    }
+                    else if (syntaxRoot.TryFindNode(diagnostic, out ExpressionSyntax expression))
+                    {
+                        context.RegisterCodeFix(
+                            $"Change to: typeof({typeText}).",
+                            (editor, _) => editor.ReplaceNode(
+                                expression,
+                                x => SyntaxFactory.ParseExpression($"typeof({typeText})")
+                                                  .WithTriviaFrom(x)),
+                            nameof(UseParameterTypeFix),
+                            diagnostic);
+                    }
                 }
             }
         }

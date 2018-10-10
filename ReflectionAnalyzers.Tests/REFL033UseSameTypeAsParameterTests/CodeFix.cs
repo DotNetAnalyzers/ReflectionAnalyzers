@@ -100,5 +100,97 @@ namespace Project2
             var message = "Use the same type as the parameter. Expected: IComparable.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { fooCode, code }, fixedCode);
         }
+
+        [Test]
+        public void Issue121Inline()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Collections.Generic;
+
+    class C
+    {
+        public object Get => typeof(C).GetMethod(nameof(M), new[] { typeof(Type), typeof(↓Dictionary<string, object>) });
+
+        public void M(Type type, IReadOnlyDictionary<string, object> parameters)
+        {
+        }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Collections.Generic;
+
+    class C
+    {
+        public object Get => typeof(C).GetMethod(nameof(M), new[] { typeof(Type), typeof(IReadOnlyDictionary<string, object>) });
+
+        public void M(Type type, IReadOnlyDictionary<string, object> parameters)
+        {
+        }
+    }
+}";
+
+            var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode, fixTitle: "Change to: IReadOnlyDictionary<string, object>.");
+        }
+
+        [Test]
+        public void Issue121()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Collections.Generic;
+
+    class C
+    {
+        public object Get
+        {
+            get
+            {
+                var dictionaryType = typeof(Dictionary<string, object>);
+                return typeof(C).GetMethod(nameof(this.M), new[] { typeof(Type), ↓dictionaryType });
+            }
+        }
+
+        public void M(Type type, IReadOnlyDictionary<string, object> parameters)
+        {
+        }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Collections.Generic;
+
+    class C
+    {
+        public object Get
+        {
+            get
+            {
+                var dictionaryType = typeof(Dictionary<string, object>);
+                return typeof(C).GetMethod(nameof(this.M), new[] { typeof(Type), typeof(IReadOnlyDictionary<string, object>) });
+            }
+        }
+
+        public void M(Type type, IReadOnlyDictionary<string, object> parameters)
+        {
+        }
+    }
+}";
+
+            var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode, fixTitle: "Change to: typeof(IReadOnlyDictionary<string, object>).");
+        }
     }
 }
