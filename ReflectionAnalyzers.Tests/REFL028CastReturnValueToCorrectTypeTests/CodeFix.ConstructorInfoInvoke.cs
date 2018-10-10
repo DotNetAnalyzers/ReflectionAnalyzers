@@ -8,9 +8,9 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
 
     public partial class CodeFix
     {
-        public class ActivatorCreateInstance
+        public class ConstructorInfoInvoke
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
+            private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly CodeFixProvider Fix = new CastReturnValueFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL028CastReturnValueToCorrectType.Descriptor);
 
@@ -22,15 +22,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public sealed class Foo : IDisposable
+    public class Foo
     {
-        public Foo()
+        public Foo(int i)
         {
-            var foo = (↓string)Activator.CreateInstance(typeof(Foo));
-        }
-
-        public void Dispose()
-        {
+            var value = (↓string)typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
         }
     }
 }";
@@ -40,15 +36,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public sealed class Foo : IDisposable
+    public class Foo
     {
-        public Foo()
+        public Foo(int i)
         {
-            var foo = (Foo)Activator.CreateInstance(typeof(Foo));
-        }
-
-        public void Dispose()
-        {
+            var value = (Foo)typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
         }
     }
 }";

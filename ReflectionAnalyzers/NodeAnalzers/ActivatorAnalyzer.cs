@@ -45,23 +45,17 @@ namespace ReflectionAnalyzers
                     }
                 }
 
-                if (!createInstance.IsGenericMethod)
+                if (!createInstance.IsGenericMethod &&
+                    Type.IsCastToWrongType(invocation, createdType, context, out var typeSyntax))
                 {
-                    switch (invocation.Parent)
-                    {
-                        case CastExpressionSyntax castExpression when castExpression.Type is TypeSyntax typeSyntax &&
-                                                                      context.SemanticModel.TryGetType(typeSyntax, context.CancellationToken, out var castType) &&
-                                                                      !createdType.IsAssignableTo(castType, context.Compilation):
-                            context.ReportDiagnostic(
-                                Diagnostic.Create(
-                                    REFL028CastReturnValueToCorrectType.Descriptor,
-                                    typeSyntax.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(
-                                        nameof(TypeSyntax),
-                                        createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                    createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
-                            break;
-                    }
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL028CastReturnValueToCorrectType.Descriptor,
+                            typeSyntax.GetLocation(),
+                            ImmutableDictionary<string, string>.Empty.Add(
+                                nameof(TypeSyntax),
+                                createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                            createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
                 }
 
                 if (ReturnValue.ShouldCast(invocation))

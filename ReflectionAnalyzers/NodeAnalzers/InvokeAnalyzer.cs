@@ -17,6 +17,7 @@ namespace ReflectionAnalyzers
             REFL002DiscardReturnValue.Descriptor,
             REFL024PreferNullOverEmptyArray.Descriptor,
             REFL025ArgumentsDontMatchParameters.Descriptor,
+            REFL028CastReturnValueToCorrectType.Descriptor,
             REFL030UseCorrectObj.Descriptor,
             REFL035DontInvokeGenericDefinition.Descriptor);
 
@@ -67,6 +68,18 @@ namespace ReflectionAnalyzers
                         Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
+                    }
+
+                    if (Type.IsCastToWrongType(invocation, method.ReturnType, context, out var castType))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL028CastReturnValueToCorrectType.Descriptor,
+                                castType.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(TypeSyntax),
+                                    method.ReturnType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                method.ReturnType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
                     }
 
                     if (invoke.TryFindParameter("obj", out var objParameter) &&
@@ -146,6 +159,21 @@ namespace ReflectionAnalyzers
                             {
                                 context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Use an instance of type {ctor.ContainingType}."));
                             }
+                        }
+                    }
+                    else
+                    {
+                        if (!ctor.IsStatic &&
+                            Type.IsCastToWrongType(invocation, ctor.ContainingType, context, out var castType))
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL028CastReturnValueToCorrectType.Descriptor,
+                                    castType.GetLocation(),
+                                    ImmutableDictionary<string, string>.Empty.Add(
+                                        nameof(TypeSyntax),
+                                        ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                    ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
                         }
                     }
                 }

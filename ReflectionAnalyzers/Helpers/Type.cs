@@ -50,6 +50,23 @@ namespace ReflectionAnalyzers
             return !recursive || HasVisibleNonPublicMembers(type.BaseType, recursive: true);
         }
 
+        internal static bool IsCastToWrongType(InvocationExpressionSyntax invocation, ITypeSymbol expectedType, SyntaxNodeAnalysisContext context, out TypeSyntax typeSyntax)
+        {
+            if (context.SemanticModel.IsAccessible(context.Node.SpanStart, expectedType))
+            {
+                switch (invocation.Parent)
+                {
+                    case CastExpressionSyntax castExpression when context.SemanticModel.TryGetType(castExpression.Type, context.CancellationToken, out var castType) &&
+                                                                  !expectedType.IsAssignableTo(castType, context.Compilation):
+                        typeSyntax = castExpression.Type;
+                        return true;
+                }
+            }
+
+            typeSyntax = null;
+            return false;
+        }
+
         private static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out ExpressionSyntax source)
         {
             switch (expression)
