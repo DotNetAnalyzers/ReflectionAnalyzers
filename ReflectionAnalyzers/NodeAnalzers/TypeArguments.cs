@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -68,7 +69,7 @@ namespace ReflectionAnalyzers
             for (var i = 0; i < this.Parameters.Length; i++)
             {
                 if (Type.TryGet(this.Arguments[i], context, out var type, out _) &&
-                    !SatisfiesConstraints(type, this.Parameters[i], context.Compilation))
+                    !this.SatisfiesConstraints(type, this.Parameters[i], context))
                 {
                     argument = this.Arguments[i];
                     parameter = this.Parameters[i];
@@ -107,7 +108,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        private static bool SatisfiesConstraints(ITypeSymbol type, ITypeParameterSymbol typeParameter, Compilation compilation)
+        private bool SatisfiesConstraints(ITypeSymbol type, ITypeParameterSymbol typeParameter, SyntaxNodeAnalysisContext context)
         {
             if (typeParameter.HasConstructorConstraint)
             {
@@ -143,14 +144,27 @@ namespace ReflectionAnalyzers
             {
                 switch (constraintType)
                 {
-                    case ITypeParameterSymbol parameter when !SatisfiesConstraints(type, parameter, compilation):
-                        return false;
-                    case INamedTypeSymbol namedType:
-                        var conversion = compilation.ClassifyConversion(type, namedType);
-                        if (!conversion.Exists ||
-                            conversion.IsExplicit)
+                    case ITypeParameterSymbol parameter when this.TryFindArgumentType(parameter, context, out var argumentType):
+                        if (!IsAssignableTo(type, argumentType))
                         {
                             return false;
+                        }
+
+                        break;
+                    case INamedTypeSymbol namedType:
+                        if (!IsAssignableTo(type, namedType))
+                        {
+                            if (namedType.IsGenericType)
+                            {
+                                if (namedType.TypeArguments.All(x => x.TypeKind != TypeKind.TypeParameter))
+                                {
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
                         }
 
                         break;
@@ -158,6 +172,13 @@ namespace ReflectionAnalyzers
             }
 
             return true;
+
+            bool IsAssignableTo(ITypeSymbol source, ITypeSymbol destination)
+            {
+                var conversion = context.Compilation.ClassifyConversion(source, destination);
+                return conversion.IsIdentity ||
+                       conversion.IsImplicit;
+            }
         }
 
         private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
@@ -209,6 +230,18 @@ namespace ReflectionAnalyzers
                    parameter.IsParams &&
                    parameter.Type is IArrayTypeSymbol arrayType &&
                    arrayType.ElementType == KnownSymbol.Type;
+        }
+
+        bool TryFindArgumentType(ITypeParameterSymbol parameter, SyntaxNodeAnalysisContext context, out ITypeSymbol type)
+        {
+            var i = this.Parameters.IndexOf(parameter);
+            if (i >= 0)
+            {
+                return Type.TryGet(this.Arguments[i], context, out type, out _);
+            }
+
+            type = null;
+            return false;
         }
     }
 }

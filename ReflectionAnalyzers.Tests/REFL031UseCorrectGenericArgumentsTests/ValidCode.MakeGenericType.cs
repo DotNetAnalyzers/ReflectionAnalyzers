@@ -34,12 +34,13 @@ namespace RoslynSandbox
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
-            [TestCase("where T : class",          "typeof(string)")]
-            [TestCase("where T : class",          "typeof(Console)")]
-            [TestCase("where T : struct",         "typeof(int)")]
-            [TestCase("where T : IComparable",    "typeof(int)")]
+            [TestCase("where T : class", "typeof(string)")]
+            [TestCase("where T : class", "typeof(Console)")]
+            [TestCase("where T : struct", "typeof(int)")]
+            [TestCase("where T : unmanaged", "typeof(int)")]
+            [TestCase("where T : IComparable", "typeof(int)")]
             [TestCase("where T : IComparable<T>", "typeof(int)")]
-            [TestCase("where T : new()",          "typeof(Foo<int>)")]
+            [TestCase("where T : new()", "typeof(Foo<int>)")]
             public void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
@@ -58,8 +59,8 @@ namespace RoslynSandbox
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
-            [Test]
-            public void TransitiveConstraints()
+            [TestCase("where T1 : class", "where T2 : T1", "typeof(object), typeof(int)")]
+            public void TransitiveConstraints(string where1, string where2, string types)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -72,7 +73,9 @@ namespace RoslynSandbox
     {
         public static object Get => typeof(C<,>).MakeGenericType(typeof(object), typeof(int));
     }
-}";
+}".AssertReplace("where T1 : class", where1)
+  .AssertReplace("where T2 : T1", where2)
+  .AssertReplace("typeof(object), typeof(int)", types);
 
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
@@ -98,12 +101,12 @@ namespace RoslynSandbox
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
-            [TestCase("where T : Enum",                "AttributeTargets")]
+            [TestCase("where T : Enum", "AttributeTargets")]
             [TestCase("where T : struct, System.Enum", "AttributeTargets")]
-            [TestCase("where T : Enum",                "Enum")]
-            [TestCase("where T : unmanaged",           "int")]
-            [TestCase("where T : unmanaged",           "Safe")]
-            [TestCase("where T : unmanaged",           "AttributeTargets")]
+            [TestCase("where T : Enum", "Enum")]
+            [TestCase("where T : unmanaged", "int")]
+            [TestCase("where T : unmanaged", "Safe")]
+            [TestCase("where T : unmanaged", "AttributeTargets")]
             public void ConstrainedToEnum(string constraint, string arg)
             {
                 var safeCode = @"

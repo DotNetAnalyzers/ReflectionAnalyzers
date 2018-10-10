@@ -52,9 +52,11 @@ namespace RoslynSandbox
             [TestCase("where T : struct, System.Enum", "System.Enum")]
             [TestCase("where T : unmanaged", "object")]
             [TestCase("where T : unmanaged", "Console")]
+            [TestCase("where T : unmanaged", "int?")]
             [TestCase("where T : unmanaged", "NotSafe")]
             [TestCase("where T : IComparable", "Foo<int>")]
             [TestCase("where T : IComparable<double>", "Foo<int>")]
+            [TestCase("where T : IComparable<double>", "int")]
             [TestCase("where T : new()", "Bar")]
             public void ConstrainedParameter(string constraint, string arg)
             {
@@ -120,8 +122,8 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), refStruct, code);
             }
 
-            [Test]
-            public void TransitiveConstraints()
+            [TestCase("where T1 : class", "where T2 : T1", "typeof(IEnumerable), typeof(object)")]
+            public void TransitiveConstraints(string where1, string where2, string types)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -134,10 +136,11 @@ namespace RoslynSandbox
     {
         public static object Get => typeof(C<,>).MakeGenericType(typeof(IEnumerable), typeof(object));
     }
-}";
+}".AssertReplace("where T1 : class", where1)
+  .AssertReplace("where T2 : T1", where2)
+  .AssertReplace("typeof(IEnumerable), typeof(object)", types);
 
-                var message = $"The argument typeof(), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
