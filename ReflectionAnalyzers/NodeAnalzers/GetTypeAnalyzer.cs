@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -12,7 +13,8 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL036CheckNull.Descriptor);
+            REFL036CheckNull.Descriptor,
+            REFL037TypeDoesNotExits.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -34,6 +36,11 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL036CheckNull.Descriptor, invocation.GetLocation()));
                 }
+
+                if (TypeExists(invocation, target, context, out var nameArgument, out var suggestedName) == false)
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(REFL037TypeDoesNotExits.Descriptor, nameArgument.GetLocation()));
+                }
             }
         }
 
@@ -51,6 +58,55 @@ namespace ReflectionAnalyzers
                    target.TryFindParameter("throwOnError", out parameter) &&
                    invocation.TryFindArgument(parameter, out var arg) &&
                    arg.Expression.IsKind(SyntaxKind.FalseLiteralExpression);
+        }
+
+        private static bool? TypeExists(InvocationExpressionSyntax invocation, IMethodSymbol target, SyntaxNodeAnalysisContext context, out ArgumentSyntax nameArgument, out string suggestedName)
+        {
+            suggestedName = null;
+            if (TryGetName(out nameArgument, out var name))
+            {
+                if (target == KnownSymbol.Type.GetType)
+                {
+                    if (context.Compilation.GetTypeByMetadataName(name) != null)
+                    {
+                        return true;
+                    }
+
+                    var assemblies = context.Compilation.Assembly.Modules
+                                            .SelectMany(x => x.ReferencedAssemblySymbols)
+                                            .Prepend(context.Compilation.Assembly)
+                                            .SelectMany(x => x.TypeNames);
+                    //foreach (var reference in )
+                    //{
+                    //    context.Compilation.
+                    //}
+                }
+            }
+
+            return null;
+
+            bool TryGetName(out ArgumentSyntax nameArg, out string result)
+            {
+                if (target.Parameters.TrySingle(out var parameter) &&
+                    parameter.Type == KnownSymbol.String &&
+                    invocation.TryFindArgument(parameter, out nameArg))
+                {
+                    return nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out result);
+                }
+
+                if (target.Parameters.Length == 2 &&
+                   target.Parameters.TryFirst(out parameter) &&
+                   parameter.Type == KnownSymbol.String &&
+                   invocation.TryFindArgument(parameter, out nameArg) &&
+                   target.TryFindParameter("throwOnError", out parameter))
+                {
+                    return nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out result);
+                }
+
+                result = null;
+                nameArg = null;
+                return false;
+            }
         }
 
         private static bool TryGetTarget(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out IMethodSymbol target)
