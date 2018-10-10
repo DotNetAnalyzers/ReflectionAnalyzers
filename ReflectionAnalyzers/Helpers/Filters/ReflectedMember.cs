@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// The type that was used to obtain <see cref="Symbol"/>.
         /// </summary>
-        internal readonly ITypeSymbol ReflectedType;
+        internal readonly INamedTypeSymbol ReflectedType;
 
         /// <summary>
         /// The expression the type was determined from when walking. Example foo.GetType() or typeof(Foo).
@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers
 
         internal readonly FilterMatch Match;
 
-        internal ReflectedMember(ITypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)
+        internal ReflectedMember(INamedTypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)
         {
             this.ReflectedType = reflectedType;
             this.TypeSource = typeSource;
@@ -37,7 +37,7 @@ namespace ReflectionAnalyzers
             this.Match = match;
         }
 
-        internal static bool TryCreate(IMethodSymbol getX, InvocationExpressionSyntax invocation, ITypeSymbol type, ExpressionSyntax typeSource, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ReflectedMember member)
+        internal static bool TryCreate(IMethodSymbol getX, InvocationExpressionSyntax invocation, INamedTypeSymbol type, ExpressionSyntax typeSource, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ReflectedMember member)
         {
             var match = TryGetMember(getX, type, name, flags, types, context, out var memberSymbol);
             member = new ReflectedMember(type, typeSource, memberSymbol, getX, invocation, match);
@@ -52,12 +52,17 @@ namespace ReflectionAnalyzers
         /// <param name="result">The type.</param>
         /// <param name="typeSource">The expression the type was ultimately produced from.</param>
         /// <returns>True if the type could be determined.</returns>
-        internal static bool TryGetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out ExpressionSyntax typeSource)
+        internal static bool TryGetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, out INamedTypeSymbol result, out ExpressionSyntax typeSource)
         {
             result = null;
             typeSource = null;
-            return getX.Expression is MemberAccessExpressionSyntax memberAccess &&
-                   Type.TryGet(memberAccess.Expression, context, out result, out typeSource);
+            if (getX.Expression is MemberAccessExpressionSyntax memberAccess &&
+                Type.TryGet(memberAccess.Expression, context, out var type, out typeSource))
+            {
+                result = type as INamedTypeSymbol;
+            }
+
+            return result != null;
         }
 
         private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ISymbol member)

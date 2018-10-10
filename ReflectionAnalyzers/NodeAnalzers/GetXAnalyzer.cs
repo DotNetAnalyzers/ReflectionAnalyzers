@@ -70,7 +70,9 @@ namespace ReflectionAnalyzers
                             Diagnostic.Create(
                                 REFL004AmbiguousMatch.Descriptor,
                                 argumentList.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(INamedTypeSymbol), member.ReflectedType?.ToString())));
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(INamedTypeSymbol),
+                                    member.ReflectedType?.QualifiedMetadataName())));
                     }
 
                     if (HasWrongFlags(member, flags, out var location, out var flagsText))
