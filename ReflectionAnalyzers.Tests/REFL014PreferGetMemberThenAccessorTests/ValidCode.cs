@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL014PreferGetMemberThenAccessor.DiagnosticId);
+        private static readonly DiagnosticDescriptor Descriptor = REFL014PreferGetMemberThenAccessor.Descriptor;
 
         [Test]
         public void GetPropertyGetMethod()
@@ -25,7 +26,7 @@ namespace RoslynSandbox
         public int Value { get; set; }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -44,7 +45,7 @@ namespace RoslynSandbox
         public int Value { get; set; }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

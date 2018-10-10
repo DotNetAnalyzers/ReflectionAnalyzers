@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
@@ -9,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
         public class ConstructorInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
+            private static readonly DiagnosticDescriptor Descriptor = REFL025ArgumentsDontMatchParameters.Descriptor;
 
             [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
             public void SingleIntParameter(string call)
@@ -28,7 +29,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })", call);
 
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

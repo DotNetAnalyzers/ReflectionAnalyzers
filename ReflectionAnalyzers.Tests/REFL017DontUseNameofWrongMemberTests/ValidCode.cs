@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.DiagnosticId);
+        private static readonly DiagnosticDescriptor Descriptor = REFL017DontUseNameofWrongMember.Descriptor;
 
         [TestCase("Class")]
         [TestCase("Enum")]
@@ -43,7 +44,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetNestedType(\"Class\", BindingFlags.NonPublic)", $"GetNestedType(\"{type}\", BindingFlags.NonPublic)");
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, fooCode, testCode);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, fooCode, testCode);
         }
 
         [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
@@ -70,7 +71,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -87,7 +88,7 @@ namespace TestApp.Infrastructure
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
@@ -113,7 +114,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
@@ -147,7 +148,7 @@ namespace ValidCode
          private double PublicPrivateInstance(double value) => value;
     }
 }".AssertReplace("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -166,7 +167,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -184,7 +185,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -200,7 +201,7 @@ namespace RoslynSandbox
         public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -222,7 +223,7 @@ namespace RoslynSandbox
         public int Baz() => 0;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -241,7 +242,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -262,7 +263,7 @@ namespace RoslynSandbox
         private static int Add(int x, int y) => x + y;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -283,7 +284,7 @@ namespace RoslynSandbox
         private int Add(int x, int y) => x + y;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, testCode);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]

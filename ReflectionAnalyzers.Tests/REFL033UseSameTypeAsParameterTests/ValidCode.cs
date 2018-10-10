@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL033UseSameTypeAsParameter.Descriptor);
+        private static readonly DiagnosticDescriptor Descriptor = REFL033UseSameTypeAsParameter.Descriptor;
 
         [Test]
         public void ExactInterfaceParameter()
@@ -26,7 +27,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -50,7 +51,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

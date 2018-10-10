@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     internal class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL007");
+        private static readonly DiagnosticDescriptor Descriptor = REFL007BindingFlagsOrder.Descriptor;
 
         [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
@@ -38,7 +39,7 @@ namespace RoslynSandbox
         private int Private() => 0;
     }
 }".AssertReplace("GetMethod(nameof(this.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

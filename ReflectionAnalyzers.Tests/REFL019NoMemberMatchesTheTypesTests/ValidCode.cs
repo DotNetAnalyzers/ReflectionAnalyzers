@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL019NoMemberMatchesTheTypes.Descriptor);
+        private static readonly DiagnosticDescriptor Descriptor = REFL019NoMemberMatchesTheTypes.Descriptor;
 
         [TestCase("typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
@@ -45,7 +46,7 @@ namespace RoslynSandbox
         private int Private() => 0;
     }
 }".AssertReplace("typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
@@ -70,7 +71,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
@@ -95,7 +96,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetConstructor(new[] { typeof(int) })")]
@@ -117,7 +118,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) })", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetConstructor(Type.EmptyTypes)")]
@@ -151,7 +152,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes)", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

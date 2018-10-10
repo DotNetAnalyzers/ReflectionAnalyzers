@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL026NoDefaultConstructor.Descriptor);
+        private static readonly DiagnosticDescriptor Descriptor = REFL026NoDefaultConstructor.Descriptor;
 
         [TestCase("Activator.CreateInstance(typeof(Foo))")]
         [TestCase("Activator.CreateInstance(typeof(Foo), true)")]
@@ -30,7 +31,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo))", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("(Foo)Activator.CreateInstance(typeof(Foo))")]
@@ -48,7 +49,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance<Foo>()", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("Activator.CreateInstance(typeof(Foo), 1)")]
@@ -69,7 +70,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo))", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\")")]
@@ -91,7 +92,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(Foo), \"abc\")", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -111,7 +112,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -128,7 +129,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -145,7 +146,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

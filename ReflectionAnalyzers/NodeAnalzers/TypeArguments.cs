@@ -1,8 +1,10 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -62,12 +64,12 @@ namespace ReflectionAnalyzers
             }
         }
 
-        internal bool TryFindMisMatch(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument, out ITypeParameterSymbol parameter)
+        internal bool TryFindConstraintViolation(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument, out ITypeParameterSymbol parameter)
         {
             for (var i = 0; i < this.Parameters.Length; i++)
             {
                 if (Type.TryGet(this.Arguments[i], context, out var type, out _) &&
-                    !Type.SatisfiesConstraints(type, this.Parameters[i], context.Compilation))
+                    !this.SatisfiesConstraints(type, this.Parameters[i], context))
                 {
                     argument = this.Arguments[i];
                     parameter = this.Parameters[i];
@@ -104,6 +106,79 @@ namespace ReflectionAnalyzers
             }
 
             return true;
+        }
+
+        private bool SatisfiesConstraints(ITypeSymbol type, ITypeParameterSymbol typeParameter, SyntaxNodeAnalysisContext context)
+        {
+            if (typeParameter.HasConstructorConstraint)
+            {
+                switch (type)
+                {
+                    case INamedTypeSymbol namedType when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.Length == 0, out _):
+                    case ITypeParameterSymbol parameter when !parameter.HasConstructorConstraint:
+                        return false;
+                }
+            }
+
+            if (typeParameter.HasReferenceTypeConstraint)
+            {
+                switch (type)
+                {
+                    case INamedTypeSymbol namedType when !namedType.IsReferenceType:
+                    case ITypeParameterSymbol parameter when !parameter.HasReferenceTypeConstraint:
+                        return false;
+                }
+            }
+
+            if (typeParameter.HasValueTypeConstraint)
+            {
+                switch (type)
+                {
+                    case INamedTypeSymbol namedType when !namedType.IsValueType || namedType == KnownSymbol.NullableOfT:
+                    case ITypeParameterSymbol parameter when !parameter.HasValueTypeConstraint:
+                        return false;
+                }
+            }
+
+            foreach (var constraintType in typeParameter.ConstraintTypes)
+            {
+                switch (constraintType)
+                {
+                    case ITypeParameterSymbol parameter when this.TryFindArgumentType(parameter, context, out var argumentType):
+                        if (!IsAssignableTo(type, argumentType))
+                        {
+                            return false;
+                        }
+
+                        break;
+                    case INamedTypeSymbol namedType:
+                        if (!IsAssignableTo(type, namedType))
+                        {
+                            if (namedType.IsGenericType)
+                            {
+                                if (namedType.TypeArguments.All(x => x.TypeKind != TypeKind.TypeParameter))
+                                {
+                                    return false;
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+
+                        break;
+                }
+            }
+
+            return true;
+
+            bool IsAssignableTo(ITypeSymbol source, ITypeSymbol destination)
+            {
+                var conversion = context.Compilation.ClassifyConversion(source, destination);
+                return conversion.IsIdentity ||
+                       conversion.IsImplicit;
+            }
         }
 
         private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
@@ -150,11 +225,23 @@ namespace ReflectionAnalyzers
 
         private static bool IsMakeGeneric(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context)
         {
-            return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out IMethodSymbol makeGeneric) &&
+            return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
                    makeGeneric.Parameters.TrySingle(out var parameter) &&
                    parameter.IsParams &&
                    parameter.Type is IArrayTypeSymbol arrayType &&
                    arrayType.ElementType == KnownSymbol.Type;
+        }
+
+        bool TryFindArgumentType(ITypeParameterSymbol parameter, SyntaxNodeAnalysisContext context, out ITypeSymbol type)
+        {
+            var i = this.Parameters.IndexOf(parameter);
+            if (i >= 0)
+            {
+                return Type.TryGet(this.Arguments[i], context, out type, out _);
+            }
+
+            type = null;
+            return false;
         }
     }
 }

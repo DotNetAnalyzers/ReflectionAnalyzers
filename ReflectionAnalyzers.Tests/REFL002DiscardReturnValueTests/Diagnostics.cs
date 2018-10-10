@@ -106,7 +106,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)", call);
 
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

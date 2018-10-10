@@ -1,13 +1,14 @@
 namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
 {
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL029MissingTypes.Descriptor);
+        private static readonly DiagnosticDescriptor Descriptor = REFL029MissingTypes.Descriptor;
 
         [Test]
         public void GetMethodNoParameter()
@@ -27,7 +28,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -46,7 +47,7 @@ namespace RoslynSandbox
         public int Id(int value) => value;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -65,7 +66,7 @@ namespace RoslynSandbox
         public T Id<T>(T value) => value;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

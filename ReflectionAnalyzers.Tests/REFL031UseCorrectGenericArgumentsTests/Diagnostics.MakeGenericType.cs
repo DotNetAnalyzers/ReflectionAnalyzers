@@ -12,24 +12,6 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
-            public void NestedGenericInGeneric()
-            {
-                var code = @"
-namespace RoslynSandbox
-{
-    public class C<T>
-    {
-        public object Get => typeof(C<>.D<>).MakeGenericType(typeof(int), typeof(int));
-
-        public class D<U>
-        {
-        }
-    }
-}";
-                AnalyzerAssert.Valid(Analyzer, ExpectedDiagnostic, code);
-            }
-
-            [Test]
             public void SingleUnconstrained()
             {
                 var code = @"
@@ -60,13 +42,24 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("where T : class",       "int")]
-            [TestCase("where T : struct",      "string")]
+            [TestCase("where T : class", "int")]
+            [TestCase("where T : class", "int?")]
+            [TestCase("where T : struct", "string")]
+            [TestCase("where T : struct", "int?")]
+            [TestCase("where T : struct", "System.ValueType")]
+            [TestCase("where T : struct", "System.Enum")]
+            [TestCase("where T : struct", "System.Console")]
+            [TestCase("where T : struct, System.Enum", "System.Enum")]
+            [TestCase("where T : unmanaged", "object")]
+            [TestCase("where T : unmanaged", "Console")]
+            [TestCase("where T : unmanaged", "int?")]
             [TestCase("where T : IComparable", "Foo<int>")]
-            [TestCase("where T : new()",       "Bar")]
+            [TestCase("where T : IComparable<double>", "Foo<int>")]
+            [TestCase("where T : IComparable<double>", "int")]
+            [TestCase("where T : new()", "Bar")]
             public void ConstrainedParameter(string constraint, string arg)
             {
-                var barCode = @"
+                var bar = @"
 namespace RoslynSandbox
 {
     public class Bar
@@ -91,7 +84,28 @@ namespace RoslynSandbox
   .AssertReplace("typeof(int)", $"typeof({arg})");
 
                 var message = $"The argument typeof({arg}), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), barCode, code);
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, code);
+            }
+
+            [TestCase("where T1 : class", "where T2 : T1", "typeof(IEnumerable), typeof(object)")]
+            public void TransitiveConstraints(string where1, string where2, string types)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System.Collections;
+
+    public class C<T1, T2> 
+        where T1 : class
+        where T2 : T1
+    {
+        public static object Get => typeof(C<,>).MakeGenericType(typeof(IEnumerable), typeof(object));
+    }
+}".AssertReplace("where T1 : class", where1)
+  .AssertReplace("where T2 : T1", where2)
+  .AssertReplace("typeof(IEnumerable), typeof(object)", types);
+
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -107,6 +121,24 @@ namespace RoslynSandbox
         public static object Get() => typeof(Foo).GetNestedType(""Baz`1"").MakeGenericType↓(typeof(int), typeof(double));
 
         public class Baz<T>
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [Test]
+            public void NestedGenericInGeneric()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    public class C<T>
+    {
+        public object Get => typeof(C<>.D<>).MakeGenericType(typeof(int), typeof(int), typeof(int));
+
+        public class D<U>
         {
         }
     }
