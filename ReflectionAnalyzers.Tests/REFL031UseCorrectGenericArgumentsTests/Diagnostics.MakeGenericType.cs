@@ -53,7 +53,6 @@ namespace RoslynSandbox
             [TestCase("where T : unmanaged", "object")]
             [TestCase("where T : unmanaged", "Console")]
             [TestCase("where T : unmanaged", "int?")]
-            [TestCase("where T : unmanaged", "NotSafe")]
             [TestCase("where T : IComparable", "Foo<int>")]
             [TestCase("where T : IComparable<double>", "Foo<int>")]
             [TestCase("where T : IComparable<double>", "int")]
@@ -71,15 +70,6 @@ namespace RoslynSandbox
     }
 }";
 
-                var notSafe = @"
-namespace RoslynSandbox
-{
-    public struct NotSafe
-    {
-        public object value;
-    }
-}";
-
                 var code = @"
 namespace RoslynSandbox
 {
@@ -94,7 +84,7 @@ namespace RoslynSandbox
   .AssertReplace("typeof(int)", $"typeof({arg})");
 
                 var message = $"The argument typeof({arg}), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, notSafe, code);
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, code);
             }
 
             [TestCase("where T1 : class", "where T2 : T1", "typeof(IEnumerable), typeof(object)")]
