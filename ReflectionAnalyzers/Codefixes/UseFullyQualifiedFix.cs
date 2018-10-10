@@ -14,8 +14,7 @@ namespace ReflectionAnalyzers.Codefixes
     internal class UseFullyQualifiedFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL022UseFullyQualifiedName.DiagnosticId,
-            REFL037TypeDoesNotExits.DiagnosticId);
+            REFL022UseFullyQualifiedName.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

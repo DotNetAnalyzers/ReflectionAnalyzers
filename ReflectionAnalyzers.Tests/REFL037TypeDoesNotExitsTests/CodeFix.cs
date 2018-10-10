@@ -9,10 +9,13 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
     public class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseFullyQualifiedFix();
+        private static readonly CodeFixProvider Fix = new SuggestTypeFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL037TypeDoesNotExits.Descriptor);
 
         [TestCase("Int32", "System.Int32")]
+        [TestCase("Wrong.Int32", "System.Int32")]
+        [TestCase("Nullable`1", "System.Nullable`1")]
+        [TestCase("IComparable", "System.IComparable")]
         [TestCase("IEnumerable`1", "System.Collections.Generic.IEnumerable`1")]
         [TestCase("AppContextSwitches", "System.AppContextSwitches")]
         public void TypeGetTypeWithFix(string type, string fixedType)
@@ -35,7 +38,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static object Get => Type.GetType(↓""System.Int32"");
+        public static object Get => Type.GetType(""System.Int32"");
     }
 }".AssertReplace("System.Int32", fixedType);
 
