@@ -125,10 +125,17 @@ namespace ReflectionAnalyzers
                     }
 
                     break;
-                case InvocationExpressionSyntax invocation when invocation.ArgumentList is ArgumentListSyntax args &&
-                                                                args.Arguments.TrySingle(out var arg) &&
-                                                                arg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var typeName) &&
-                                                                invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out _):
+                case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
+                                                                target.TryFindParameter("typeName", out var nameParameter) &&
+                                                                invocation.TryFindArgument(nameParameter, out var arg) &&
+                                                                arg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var typeName):
+                    source = invocation;
+                    result = context.Compilation.GetTypeByMetadataName(typeName);
+                    return result != null;
+                case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
+                                                                target.TryFindParameter("name", out var nameParameter) &&
+                                                                invocation.TryFindArgument(nameParameter, out var arg) &&
+                                                                arg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var typeName):
 
                     switch (invocation.Expression)
                     {

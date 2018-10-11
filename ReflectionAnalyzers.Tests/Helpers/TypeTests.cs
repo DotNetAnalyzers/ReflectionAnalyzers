@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("typeof(Foo.Baz<int>).GetGenericTypeDefinition()",                                         "RoslynSandbox.Foo.Baz<T>",                  "typeof(Foo.Baz<int>).GetGenericTypeDefinition()")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")",                                       "int",                                       "typeof(string).Assembly.GetType(\"System.Int32\")")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\", true)",                                 "int",                                       "typeof(string).Assembly.GetType(\"System.Int32\", true)")]
-        [TestCase("new Exception().GetType()",                                                               "Exception",                                 "new Exception().GetType()")]
+        [TestCase("new Exception().GetType()",                                                               "System.Exception",                          "new Exception().GetType()")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "System.Collections.Generic.IEnumerable<T>", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("typeof(Foo).GetField(nameof(Foo.Field)).FieldType",                                       "int",                                       "typeof(Foo).GetField(nameof(Foo.Field)).FieldType")]
         [TestCase("typeof(Foo).GetProperty(nameof(Foo.Property)).PropertyType",                              "int",                                       "typeof(Foo).GetProperty(nameof(Foo.Property)).PropertyType")]
@@ -29,6 +29,7 @@ namespace ReflectionAnalyzers.Tests.Helpers
             var code = @"
 namespace RoslynSandbox
 {
+    using System;
     using System.Collections.Generic;
     using System.Reflection;
 
@@ -49,7 +50,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Foo)", expression);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] {syntaxTree}, MetadataReferences.FromAttributes());
+            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindExpression(expression);
             var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
