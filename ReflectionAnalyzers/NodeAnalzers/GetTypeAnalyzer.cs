@@ -51,12 +51,17 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
-            return target.Parameters.Length == 2 &&
-                   target.Parameters.TryFirst(out parameter) &&
-                   parameter.Type == KnownSymbol.String &&
-                   target.TryFindParameter("throwOnError", out parameter) &&
-                   invocation.TryFindArgument(parameter, out var arg) &&
-                   arg.Expression.IsKind(SyntaxKind.FalseLiteralExpression);
+            if (target.ReturnType == KnownSymbol.Type &&
+                target.Parameters.TryFirst(out parameter) &&
+                parameter.Type == KnownSymbol.String &&
+                target.TryFindParameter("throwOnError", out parameter) &&
+                invocation.TryFindArgument(parameter, out var arg) &&
+                arg.Expression.IsKind(SyntaxKind.FalseLiteralExpression))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static bool? TypeExists(InvocationExpressionSyntax invocation, IMethodSymbol target, SyntaxNodeAnalysisContext context, out ArgumentSyntax nameArgument)
@@ -80,11 +85,11 @@ namespace ReflectionAnalyzers
                     return nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out result);
                 }
 
-                if (target.Parameters.Length == 2 &&
-                   target.Parameters.TryFirst(out parameter) &&
-                   parameter.Type == KnownSymbol.String &&
-                   invocation.TryFindArgument(parameter, out nameArg) &&
-                   target.TryFindParameter("throwOnError", out parameter))
+                if (target.ReturnType == KnownSymbol.Type &&
+                    target.Parameters.TryFirst(out parameter) &&
+                    parameter.Type == KnownSymbol.String &&
+                    invocation.TryFindArgument(parameter, out nameArg) &&
+                    target.TryFindParameter("throwOnError", out parameter))
                 {
                     return nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out result);
                 }

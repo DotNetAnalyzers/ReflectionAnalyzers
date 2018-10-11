@@ -2,15 +2,12 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
-    using ReflectionAnalyzers.Codefixes;
 
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseFullyQualifiedFix();
         private static readonly DiagnosticDescriptor Descriptor = REFL037TypeDoesNotExits.Descriptor;
 
         [TestCase("System.Int32")]
