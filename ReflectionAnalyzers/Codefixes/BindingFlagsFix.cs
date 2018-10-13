@@ -33,9 +33,9 @@ namespace ReflectionAnalyzers.Codefixes
             var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
-                    argumentList.Parent is InvocationExpressionSyntax invocation &&
-                    diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
+                if (TryFindArgumentList(syntaxRoot, diagnostic, out ArgumentListSyntax argumentList) &&
+         argumentList.Parent is InvocationExpressionSyntax invocation &&
+         diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {
                     if (argumentList.Arguments.Count == 1)
                     {
@@ -110,7 +110,7 @@ namespace ReflectionAnalyzers.Codefixes
                     }
                 }
                 else if (diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var expressionString) &&
-                         syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax argument))
+                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax argument))
                 {
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",
@@ -121,6 +121,25 @@ namespace ReflectionAnalyzers.Codefixes
                         diagnostic);
                 }
             }
+        }
+
+        private static bool TryFindArgumentList(SyntaxNode syntaxRoot, Diagnostic diagnostic, out ArgumentListSyntax argumentList)
+        {
+            if (syntaxRoot.TryFindNode(diagnostic, out argumentList))
+            {
+                return true;
+            }
+
+            if (diagnostic.Location.SourceSpan.Length == 1 &&
+                syntaxRoot.FindToken(diagnostic.Location.SourceSpan.Start) is SyntaxToken token &&
+                token.IsEither(SyntaxKind.OpenParenToken, SyntaxKind.CloseParenToken) &&
+                token.Parent is ArgumentListSyntax list)
+            {
+                argumentList = list;
+                return true;
+            }
+
+            return false;
         }
 
         private static ArgumentSyntax ParseArgument(string expressionString)
