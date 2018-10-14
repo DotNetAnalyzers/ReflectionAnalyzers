@@ -1,10 +1,10 @@
 STORAGE: NONE
 NUGET
   remote: http://www.nuget.org/api/v2
-    Gu.Roslyn.AnalyzerExtensions (0.4.0-dev)
+    Gu.Roslyn.AnalyzerExtensions (0.4.1-dev)
       Microsoft.CodeAnalysis.CSharp (>= 2.0)
-    Gu.Roslyn.CodeFixExtensions (0.4.0-dev)
-      Gu.Roslyn.AnalyzerExtensions (>= 0.4.0-dev)
+    Gu.Roslyn.CodeFixExtensions (0.4.1-dev)
+      Gu.Roslyn.AnalyzerExtensions (>= 0.4.1-dev)
       Microsoft.CodeAnalysis.CSharp.Workspaces (>= 2.0)
     ManagedEsent (1.9.4) - restriction: >= net46
     Microsoft.CodeAnalysis.Analyzers (2.6.2) - restriction: >= netstandard1.3
@@ -744,7 +744,7 @@ GROUP Test
 STORAGE: NONE
 NUGET
   remote: http://www.nuget.org/api/v2
-    Gu.Roslyn.Asserts (2.6)
+    Gu.Roslyn.Asserts (2.6.1.1)
       Microsoft.CodeAnalysis.CSharp.Workspaces (>= 2.0)
     Microsoft.CodeAnalysis.Analyzers (2.6.2) - restriction: >= netstandard1.3
     Microsoft.CodeAnalysis.Common (2.9)
