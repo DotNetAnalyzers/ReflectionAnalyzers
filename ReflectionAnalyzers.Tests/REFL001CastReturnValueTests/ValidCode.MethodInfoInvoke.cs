@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal partial class ValidCode
+    public partial class ValidCode
     {
         public class MethodInfoInvoke
         {

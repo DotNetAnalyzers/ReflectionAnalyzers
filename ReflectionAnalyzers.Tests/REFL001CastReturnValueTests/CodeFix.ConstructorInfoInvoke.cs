@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal partial class CodeFix
+    public partial class CodeFix
     {
         public class ConstructorInfoInvoke
         {

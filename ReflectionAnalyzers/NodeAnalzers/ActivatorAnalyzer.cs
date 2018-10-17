@@ -33,6 +33,19 @@ namespace ReflectionAnalyzers
                 invocation.TryGetTarget(KnownSymbol.Activator.CreateInstance, context.SemanticModel, context.CancellationToken, out var createInstance) &&
                 TryGetCreatedType(createInstance, invocation, context, out var createdType, out var typeSource))
             {
+                if (!createInstance.IsGenericMethod && 
+                    ReturnValue.ShouldCast(invocation, createdType, context))
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL001CastReturnValue.Descriptor,
+                            invocation.GetLocation(),
+                            ImmutableDictionary<string, string>.Empty.Add(
+                                nameof(TypeSyntax),
+                                createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                            createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                }
+
                 if (createdType is INamedTypeSymbol namedType)
                 {
                     if (IsMissingDefaultConstructor(createInstance, invocation, namedType))
@@ -52,18 +65,6 @@ namespace ReflectionAnalyzers
                         Diagnostic.Create(
                             REFL028CastReturnValueToCorrectType.Descriptor,
                             typeSyntax.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(
-                                nameof(TypeSyntax),
-                                createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                            createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
-                }
-
-                if (ReturnValue.ShouldCast(invocation, createdType, context))
-                {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            REFL001CastReturnValue.Descriptor,
-                            invocation.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(TypeSyntax),
                                 createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
