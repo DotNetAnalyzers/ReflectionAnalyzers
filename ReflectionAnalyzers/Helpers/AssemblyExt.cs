@@ -6,6 +6,16 @@ namespace ReflectionAnalyzers
 
     internal static class AssemblyExt
     {
+        internal static INamedTypeSymbol GetTypeByMetadataName(this IAssemblySymbol assembly, TypeNameArgument typeName, bool ignoreCase)
+        {
+            if (typeName.TryGetGeneric(out var metadataName, out var arity, out var typeArguments))
+            {
+
+            }
+
+            return GetTypeByMetadataName(assembly, typeName.Value, ignoreCase);
+        }
+
         internal static INamedTypeSymbol GetTypeByMetadataName(this IAssemblySymbol assembly, string fullyQualifiedMetadataName, bool ignoreCase)
         {
             if (!ignoreCase)

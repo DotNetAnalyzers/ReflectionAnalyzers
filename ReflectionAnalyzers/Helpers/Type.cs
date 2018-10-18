@@ -67,6 +67,66 @@ namespace ReflectionAnalyzers
             return false;
         }
 
+        internal static bool TryMatchTypeGetType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeNameArgument typeName, out ArgumentAndValue<bool> ignoreCase)
+        {
+            if (invocation.TryGetTarget(KnownSymbol.Type.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
+                target.TryFindParameter("typeName", out var nameParameter) &&
+                invocation.TryFindArgument(nameParameter, out var nameArg) &&
+                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out string name))
+            {
+                typeName = new TypeNameArgument(nameArg, name);
+                switch (target.Parameters.Length)
+                {
+                    case 1:
+                        ignoreCase = default(ArgumentAndValue<bool>);
+                        return true;
+                    case 2 when target.TryFindParameter("throwOnError", out _):
+                        ignoreCase = default(ArgumentAndValue<bool>);
+                        return true;
+                    case 3 when target.TryFindParameter("throwOnError", out _) &&
+                                target.TryFindParameter("ignoreCase", out var ignoreCaseParameter) &&
+                                invocation.TryFindArgument(ignoreCaseParameter, out var ignoreCaseArg) &&
+                                context.SemanticModel.TryGetConstantValue(ignoreCaseArg.Expression, context.CancellationToken, out bool ignoreNameCase):
+                        ignoreCase = new ArgumentAndValue<bool>(ignoreCaseArg, ignoreNameCase);
+                        return true;
+                }
+            }
+
+            typeName = default(TypeNameArgument);
+            ignoreCase = default(ArgumentAndValue<bool>);
+            return false;
+        }
+
+        internal static bool TryMatchAssemblyGetType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeNameArgument typeName, out ArgumentAndValue<bool> ignoreCase)
+        {
+            if (invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
+                target.TryFindParameter("name", out var nameParameter) &&
+                invocation.TryFindArgument(nameParameter, out var nameArg) &&
+                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name))
+            {
+                typeName = new TypeNameArgument(nameArg, name);
+                switch (target.Parameters.Length)
+                {
+                    case 1:
+                        ignoreCase = default(ArgumentAndValue<bool>);
+                        return true;
+                    case 2 when target.TryFindParameter("throwOnError", out _):
+                        ignoreCase = default(ArgumentAndValue<bool>);
+                        return true;
+                    case 3 when target.TryFindParameter("throwOnError", out _) &&
+                                target.TryFindParameter("ignoreCase", out var ignoreCaseParameter) &&
+                                invocation.TryFindArgument(ignoreCaseParameter, out var ignoreCaseArg) &&
+                                context.SemanticModel.TryGetConstantValue(ignoreCaseArg.Expression, context.CancellationToken, out bool ignoreNameCase):
+                        ignoreCase = new ArgumentAndValue<bool>(ignoreCaseArg, ignoreNameCase);
+                        return true;
+                }
+            }
+
+            typeName = default(TypeNameArgument);
+            ignoreCase = default(ArgumentAndValue<bool>);
+            return false;
+        }
+
         private static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out ExpressionSyntax source)
         {
             switch (expression)
@@ -125,84 +185,26 @@ namespace ReflectionAnalyzers
                     }
 
                     break;
-                case InvocationExpressionSyntax candidate when IsTypeGetType(candidate, out var typeName, out var ignoreCase):
+                case InvocationExpressionSyntax candidate when TryMatchTypeGetType(candidate, context, out var typeName, out var ignoreCase):
                     source = candidate;
-                    result = context.Compilation.GetTypeByMetadataName(typeName, ignoreCase);
+                    result = context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
                     return result != null;
-
-                    bool IsTypeGetType(InvocationExpressionSyntax invocation, out string metadataName, out bool ignoreNameCase)
-                    {
-                        if (invocation.TryGetTarget(KnownSymbol.Type.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
-                            target.TryFindParameter("typeName", out var nameParameter) &&
-                            invocation.TryFindArgument(nameParameter, out var nameArg) &&
-                            nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out metadataName))
-                        {
-                            switch (target.Parameters.Length)
-                            {
-                                case 1:
-                                    ignoreNameCase = false;
-                                    return true;
-                                case 2 when target.TryFindParameter("throwOnError", out _):
-                                    ignoreNameCase = false;
-                                    return true;
-                                case 3 when target.TryFindParameter("throwOnError", out _) &&
-                                            target.TryFindParameter("ignoreCase", out var ignoreCaseParameter) &&
-                                            invocation.TryFindArgument(ignoreCaseParameter, out var ignoreCaseArg) &&
-                                            context.SemanticModel.TryGetConstantValue(ignoreCaseArg.Expression, context.CancellationToken, out ignoreNameCase):
-                                    return true;
-                            }
-                        }
-
-                        metadataName = null;
-                        ignoreNameCase = false;
-                        return false;
-                    }
-
-                case InvocationExpressionSyntax candidate when IsAssemblyGetType(candidate, out var typeName, out var ignoreCase):
+                case InvocationExpressionSyntax candidate when TryMatchAssemblyGetType(candidate, context, out var typeName, out var ignoreCase):
 
                     switch (candidate.Expression)
                     {
                         case MemberAccessExpressionSyntax typeAccess when context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out var typeInAssembly):
                             source = candidate;
-                            result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName, ignoreCase);
+                            result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName, ignoreCase.Value);
                             return result != null;
                         case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType) &&
                                                          context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out var typeInAssembly):
                             source = candidate;
-                            result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName, ignoreCase);
+                            result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName, ignoreCase.Value);
                             return result != null;
                     }
 
                     break;
-
-                    bool IsAssemblyGetType(InvocationExpressionSyntax invocation, out string metadataName, out bool ignoreNameCase)
-                    {
-                        if (invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
-                            target.TryFindParameter("name", out var nameParameter) &&
-                            invocation.TryFindArgument(nameParameter, out var nameArg) &&
-                            nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out metadataName))
-                        {
-                            switch (target.Parameters.Length)
-                            {
-                                case 1:
-                                    ignoreNameCase = false;
-                                    return true;
-                                case 2 when target.TryFindParameter("throwOnError", out _):
-                                    ignoreNameCase = false;
-                                    return true;
-                                case 3 when target.TryFindParameter("throwOnError", out _) &&
-                                            target.TryFindParameter("ignoreCase",   out var ignoreCaseParameter) &&
-                                            invocation.TryFindArgument(ignoreCaseParameter, out var ignoreCaseArg) &&
-                                            context.SemanticModel.TryGetConstantValue(ignoreCaseArg.Expression, context.CancellationToken, out ignoreNameCase):
-                                    return true;
-                            }
-                        }
-
-                        metadataName = null;
-                        ignoreNameCase = false;
-                        return false;
-                    }
-
                 case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.GetGenericTypeDefinition, context.SemanticModel, context.CancellationToken, out _) &&
                                                                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                                                                 TryGet(memberAccess.Expression, context, visited, out var definingType, out _) &&
