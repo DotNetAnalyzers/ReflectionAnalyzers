@@ -33,7 +33,7 @@ namespace ReflectionAnalyzers
                 invocation.TryGetTarget(KnownSymbol.Activator.CreateInstance, context.SemanticModel, context.CancellationToken, out var createInstance) &&
                 TryGetCreatedType(createInstance, invocation, context, out var createdType, out var typeSource))
             {
-                if (!createInstance.IsGenericMethod && 
+                if (!createInstance.IsGenericMethod &&
                     ReturnValue.ShouldCast(invocation, createdType, context))
                 {
                     context.ReportDiagnostic(
