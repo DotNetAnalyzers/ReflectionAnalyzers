@@ -12,12 +12,14 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         private static readonly CodeFixProvider Fix = new SuggestTypeFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL037TypeDoesNotExits.Descriptor);
 
-        [TestCase("Int32", "System.Int32")]
-        [TestCase("Wrong.Int32", "System.Int32")]
-        [TestCase("Nullable`1", "System.Nullable`1")]
-        [TestCase("IComparable", "System.IComparable")]
-        [TestCase("IEnumerable`1", "System.Collections.Generic.IEnumerable`1")]
-        [TestCase("AppContextSwitches", "System.AppContextSwitches")]
+        [TestCase("Type.GetType(↓\"Int32\")",              "Type.GetType(\"System.Int32\")")]
+        [TestCase("Type.GetType(↓\"Int32\", true)",        "Type.GetType(\"System.Int32\", true)")]
+        [TestCase("Type.GetType(↓\"Int32\", true, true)",  "Type.GetType(\"System.Int32\", true, true)")]
+        [TestCase("Type.GetType(↓\"Wrong.Int32\")",        "Type.GetType(\"System.Int32\")")]
+        [TestCase("Type.GetType(↓\"Nullable`1\")",         "Type.GetType(\"System.Nullable`1\")")]
+        [TestCase("Type.GetType(↓\"IComparable\")",        "Type.GetType(\"System.IComparable\")")]
+        [TestCase("Type.GetType(↓\"IEnumerable`1\")",      "Type.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
+        [TestCase("Type.GetType(↓\"AppContextSwitches\")", "Type.GetType(\"System.AppContextSwitches\")")]
         public void TypeGetTypeWithFix(string type, string fixedType)
         {
             var code = @"
@@ -29,7 +31,7 @@ namespace RoslynSandbox
     {
         public static object Get => Type.GetType(↓""Int32"");
     }
-}".AssertReplace("Int32", type);
+}".AssertReplace("Type.GetType(↓\"Int32\")", type);
 
             var fixedCode = @"
 namespace RoslynSandbox
@@ -40,7 +42,7 @@ namespace RoslynSandbox
     {
         public static object Get => Type.GetType(""System.Int32"");
     }
-}".AssertReplace("System.Int32", fixedType);
+}".AssertReplace("Type.GetType(\"System.Int32\")", fixedType);
 
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
