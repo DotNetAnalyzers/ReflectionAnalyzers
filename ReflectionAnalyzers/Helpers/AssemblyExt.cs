@@ -10,7 +10,13 @@ namespace ReflectionAnalyzers
         {
             if (typeName.TryGetGeneric(out var metadataName, out var arity, out var typeArguments))
             {
+                throw new NotImplementedException();
+                //if (GetTypeByMetadataName(assembly, metadataName, ignoreCase) is INamedTypeSymbol typeDef)
+                //{
+                //    return typeDef.Construct(typeArguments);
+                //}
 
+                //return null;
             }
 
             return GetTypeByMetadataName(assembly, typeName.Value, ignoreCase);

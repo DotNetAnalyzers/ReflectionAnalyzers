@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System;
     using Microsoft.CodeAnalysis;
 
     internal static class CompilationExt
@@ -8,7 +9,13 @@ namespace ReflectionAnalyzers
         {
             if (typeName.TryGetGeneric(out var metadataName, out var arity, out var typeArguments))
             {
+                throw new NotImplementedException();
+                //if (GetTypeByMetadataName(compilation, metadataName, ignoreCase) is INamedTypeSymbol typeDef)
+                //{
+                //    return typeDef.Construct(typeArguments);
+                //}
 
+                //return null;
             }
 
             return GetTypeByMetadataName(compilation, typeName.Value, ignoreCase);
