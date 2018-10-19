@@ -13,8 +13,17 @@ namespace ReflectionAnalyzers.Tests.Helpers
             Assert.AreEqual(false, typeName.TryGetGeneric(out _, out _, out _));
         }
 
-        [TestCase("System.Nullable`1[System.Int32]", "System.Int32")]
-        [TestCase("System.Nullable`1[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]", "System.Int32")]
+        [TestCase("System.Nullable`1[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]")]
+        [TestCase("System.Nullable`1 [System.Int32]")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2 [System.Int32,System.String]")]
+        public void TryGetGenericWhenFalse(string name)
+        {
+            var typeName = new TypeNameArgument(null, name);
+            Assert.AreEqual(false, typeName.TryGetGeneric(out _, out _, out _));
+        }
+
+        [TestCase("System.Nullable`1[System.Int32]",                                                                                "System.Int32")]
+        [TestCase("System.Nullable`1[[System.Int32]]",                                                                              "System.Int32")]
         [TestCase("System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", "System.Int32")]
         public void TryGetGenericWhenNullable(string name, string arg)
         {
@@ -22,22 +31,38 @@ namespace ReflectionAnalyzers.Tests.Helpers
             Assert.AreEqual(true, typeName.TryGetGeneric(out var metadataName, out var arity, out var typeArgs));
             Assert.AreEqual("System.Nullable`1", metadataName);
             Assert.AreEqual(1, arity);
-            Assert.AreEqual(arg, typeArgs.Single().MetadataName);
-            Assert.AreEqual(null, typeArgs.Single().TypeArguments);
+            var typeArgument = typeArgs.Single();
+            Assert.AreEqual(arg, typeArgument.MetadataName);
+            Assert.AreEqual(null, typeArgument.TypeArguments);
         }
 
         [TestCase("System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]", "System.Int32", "System.String")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2[System.Int32, System.String]", "System.Int32", "System.String")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2[System.Int32,  System.String]", "System.Int32", "System.String")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2[ System.Int32,System.String]", "System.Int32", "System.String")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2[ System.Int32, System.String]", "System.Int32", "System.String")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2[System.Int32,System.String ]", "System.Int32", "System.String ")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2[System.Int32 ,System.String]", "System.Int32 ", "System.String")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2[ System.Int32, System.String ]", "System.Int32", "System.String ")]
+        [TestCase("System.Collections.Generic.KeyValuePair`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", "System.Int32", "System.String")]
         public void TryGetGenericWhenKeyValuePair(string name, string arg0, string arg1)
         {
             var typeName = new TypeNameArgument(null, name);
-            Assert.AreEqual(true, typeName.TryGetGeneric(out var metadataName, out var arity, out var typeArgs));
-            Assert.AreEqual("System.Collections.Generic.KeyValuePair`2", metadataName);
-            Assert.AreEqual(2, arity);
-            Assert.AreEqual(2, typeArgs.Length);
-            Assert.AreEqual(arg0, typeArgs[0].MetadataName);
-            Assert.AreEqual(null, typeArgs[0].TypeArguments);
-            Assert.AreEqual(arg1, typeArgs[1].MetadataName);
-            Assert.AreEqual(null, typeArgs[1].TypeArguments);
+            if (arg0 != null)
+            {
+                Assert.AreEqual(true, typeName.TryGetGeneric(out var metadataName, out var arity, out var typeArgs));
+                Assert.AreEqual("System.Collections.Generic.KeyValuePair`2", metadataName);
+                Assert.AreEqual(2, arity);
+                Assert.AreEqual(2, typeArgs.Length);
+                Assert.AreEqual(arg0, typeArgs[0].MetadataName);
+                Assert.AreEqual(null, typeArgs[0].TypeArguments);
+                Assert.AreEqual(arg1, typeArgs[1].MetadataName);
+                Assert.AreEqual(null, typeArgs[1].TypeArguments);
+            }
+            else
+            {
+                Assert.AreEqual(false, typeName.TryGetGeneric(out _, out _, out _));
+            }
         }
 
         [TestCase("System.Nullable`1[System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]]", "System.Int32", "System.String")]
@@ -48,8 +73,9 @@ namespace ReflectionAnalyzers.Tests.Helpers
             Assert.AreEqual(true, typeName.TryGetGeneric(out var metadataName, out var arity, out var typeArgs));
             Assert.AreEqual("System.Nullable`1", metadataName);
             Assert.AreEqual(1, arity);
-            Assert.AreEqual("System.Collections.Generic.KeyValuePair`2", typeArgs.Single().MetadataName);
-            var genericArguments = typeArgs.Single().TypeArguments;
+            var typeArgument = typeArgs.Single();
+            Assert.AreEqual("System.Collections.Generic.KeyValuePair`2", typeArgument.MetadataName);
+            var genericArguments = typeArgument.TypeArguments;
             Assert.AreEqual(2, genericArguments.Count);
             Assert.AreEqual(arg0, typeArgs[0].MetadataName);
             Assert.AreEqual(null, typeArgs[0].TypeArguments);

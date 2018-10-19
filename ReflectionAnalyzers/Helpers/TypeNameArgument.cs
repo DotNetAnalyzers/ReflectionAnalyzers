@@ -1,10 +1,10 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
-    using System.Globalization;
-    using System.Text.RegularExpressions;
+    using System.Diagnostics;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+    [DebuggerDisplay("{this.Value}")]
     internal struct TypeNameArgument
     {
         internal readonly ArgumentSyntax Argument;
@@ -17,14 +17,14 @@ namespace ReflectionAnalyzers
             this.Value = value;
         }
 
-        internal bool TryGetGeneric(out string metadataName, out int arity, out ImmutableArray<GenericArgument> typeArguments)
+        internal bool TryGetGeneric(out string metadataName, out int arity, out ImmutableArray<TypeArgument> typeArguments)
         {
             if (this.Value.IndexOf('[') is var index &&
                 index > 0)
             {
                 metadataName = this.Value.Substring(0, index);
-                return TryGetArity(metadataName, out arity) &&
-                       TryGetArguments(this.Value.Substring(index - 1), arity, out typeArguments) &&
+                return TryParseArity(metadataName, out arity) &&
+                       TypeArgument.TryParse(this.Value, index, arity, out typeArguments) &&
                        arity == typeArguments.Length;
             }
 
@@ -32,41 +32,13 @@ namespace ReflectionAnalyzers
             arity = 0;
             return false;
 
-            bool TryGetArity(string text, out int result)
+            bool TryParseArity(string text, out int result)
             {
-                var match = Regex.Match(text, "`(?<arity>\\d+)$");
-                if (!match.Success)
-                {
-                    text = null;
-                    result = 0;
-                    return false;
-                }
-
-                result = int.Parse(match.Groups["arity"].Value, CultureInfo.InvariantCulture);
-                return true;
-            }
-
-            bool TryGetArguments(string text, int n, out ImmutableArray<GenericArgument> result)
-            {
-                var matches = Regex.Matches(text, @"\[(?<name>\w+)\]");
-                if (matches.Count != n)
-                {
-                    return false;
-                }
-
-                var builder = ImmutableArray.CreateBuilder<GenericArgument>(n);
-                foreach (Match match in matches)
-                {
-                    if (!match.Success)
-                    {
-                        return false;
-                    }
-
-                    builder.Add(new GenericArgument(match.Groups["name"].Value, null));
-                }
-
-                result = builder.MoveToImmutable();
-                return true;
+                result = -1;
+                return text.IndexOf('`') is var i &&
+                       i > 0 &&
+                       i < text.Length - 1 &&
+                       int.TryParse(text.Substring(i + 1), out result);
             }
         }
     }
