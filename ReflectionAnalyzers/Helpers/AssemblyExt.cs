@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers
     {
         internal static INamedTypeSymbol GetTypeByMetadataName(this IAssemblySymbol assembly, TypeNameArgument typeName, bool ignoreCase)
         {
-            if (typeName.TryGetGeneric(out var metadataName, out var arity, out var typeArguments))
+            if (typeName.TryGetGeneric(out var generic))
             {
                 throw new NotImplementedException();
                 //if (GetTypeByMetadataName(assembly, metadataName, ignoreCase) is INamedTypeSymbol typeDef)
