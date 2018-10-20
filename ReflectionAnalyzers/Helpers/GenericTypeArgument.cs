@@ -51,7 +51,7 @@ namespace ReflectionAnalyzers
             {
                 if (int.TryParse(match.Groups["arity"].Value, out var arity) &&
                     match.Groups["typeName"].Value is string typeName &&
-                    TryFindBracketed(text, pos, out var argsString) &&
+                    TryFindBracketedList(text, pos, out var argsString) &&
                     TryParseBracketedList(argsString, 0, arity, out var args))
                 {
                     pos += typeName.Length + argsString.Length;
@@ -79,7 +79,7 @@ namespace ReflectionAnalyzers
             }
 
             if (text[pos] == '[' &&
-                TryFindBracketed(text, pos, out var bracketed))
+                TryFindBracketedList(text, pos, out var bracketed))
             {
                 var temp = 1;
                 if (TryParse(bracketed, ref temp, out genericTypeArgument))
@@ -94,7 +94,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryFindBracketed(string text, int start, out string result)
+        private static bool TryFindBracketedList(string text, int start, out string result)
         {
             // Span opportunity here.
             var level = 0;
