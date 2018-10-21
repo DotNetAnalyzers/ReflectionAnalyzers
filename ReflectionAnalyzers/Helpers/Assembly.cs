@@ -48,20 +48,23 @@ namespace ReflectionAnalyzers
 
             INamedTypeSymbol GetTypeByMetadataNameIgnoreCase(INamespaceSymbol ns)
             {
-                foreach (var member in ns.GetTypeMembers())
+                if (fullyQualifiedMetadataName.StartsWith(ns.MetadataName, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (fullyQualifiedMetadataName.EndsWith(member.MetadataName, StringComparison.OrdinalIgnoreCase) &&
-                        string.Equals(member.QualifiedMetadataName(), fullyQualifiedMetadataName, StringComparison.OrdinalIgnoreCase))
+                    foreach (var candidate in ns.GetTypeMembers())
                     {
-                        return member;
+                        if (fullyQualifiedMetadataName.EndsWith(candidate.MetadataName, StringComparison.OrdinalIgnoreCase) &&
+                            string.Equals(candidate.QualifiedMetadataName(), fullyQualifiedMetadataName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return candidate;
+                        }
                     }
-                }
 
-                foreach (var nested in ns.GetNamespaceMembers())
-                {
-                    if (GetTypeByMetadataNameIgnoreCase(nested) is INamedTypeSymbol match)
+                    foreach (var nested in ns.GetNamespaceMembers())
                     {
-                        return match;
+                        if (GetTypeByMetadataNameIgnoreCase(nested) is INamedTypeSymbol match)
+                        {
+                            return match;
+                        }
                     }
                 }
 
