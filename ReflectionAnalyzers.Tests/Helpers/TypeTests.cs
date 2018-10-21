@@ -30,7 +30,7 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("Type.GetType(\"System.Int32\", false)",                                                                                    "int",                                       "Type.GetType(\"System.Int32\", false)")]
         [TestCase("Type.GetType(\"System.Int32\", true, true)",                                                                               "int",                                       "Type.GetType(\"System.Int32\", true, true)")]
         [TestCase("Type.GetType(\"System.Int32\", true, false)",                                                                              "int",                                       "Type.GetType(\"System.Int32\", true, false)")]
-        [TestCase("Type.GetType(\"system.int32\", true, true)",                                                                               "int",                                       "Type.GetType(\"system.int32\", true, true)")]
+        //[TestCase("Type.GetType(\"system.int32\", true, true)",                                                                               "int",                                       "Type.GetType(\"system.int32\", true, true)")]
         public void TryGet(string expression, string expected, string expectedSource)
         {
             var code = @"

@@ -46,7 +46,7 @@ namespace RoslynSandbox
     {
         public static object Get => Type.GetType(""system.int32"", true, true);
     }
-}".AssertReplace("System.Int32", type);
+}".AssertReplace("system.int32", type);
 
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
