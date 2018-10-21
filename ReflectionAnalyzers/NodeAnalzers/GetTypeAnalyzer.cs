@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers
                     context.ReportDiagnostic(Diagnostic.Create(REFL036CheckNull.Descriptor, invocation.GetLocation()));
                 }
 
-                if (TypeExists(invocation, target, context, out var nameArgument) == false)
+                if (TypeExists(invocation, context, out var nameArgument) == false)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL037TypeDoesNotExits.Descriptor, nameArgument.GetLocation()));
                 }
@@ -64,40 +64,16 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool? TypeExists(InvocationExpressionSyntax invocation, IMethodSymbol target, SyntaxNodeAnalysisContext context, out ArgumentSyntax nameArgument)
+        private static bool? TypeExists(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ArgumentSyntax nameArgument)
         {
-            if (TryGetName(out nameArgument, out var name))
+            if (Type.TryMatchTypeGetType(invocation, context, out var typeName, out var ignoreCase))
             {
-                if (target == KnownSymbol.Type.GetType)
-                {
-                    return context.Compilation.GetTypeByMetadataName(name) != null;
-                }
+                nameArgument = typeName.Argument;
+                return context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value) != null;
             }
 
+            nameArgument = null;
             return null;
-
-            bool TryGetName(out ArgumentSyntax nameArg, out string result)
-            {
-                if (target.Parameters.TrySingle(out var parameter) &&
-                    parameter.Type == KnownSymbol.String &&
-                    invocation.TryFindArgument(parameter, out nameArg))
-                {
-                    return nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out result);
-                }
-
-                if (target.ReturnType == KnownSymbol.Type &&
-                    target.Parameters.TryFirst(out parameter) &&
-                    parameter.Type == KnownSymbol.String &&
-                    invocation.TryFindArgument(parameter, out nameArg) &&
-                    target.TryFindParameter("throwOnError", out parameter))
-                {
-                    return nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out result);
-                }
-
-                result = null;
-                nameArg = null;
-                return false;
-            }
         }
 
         private static bool TryGetTarget(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out IMethodSymbol target)
