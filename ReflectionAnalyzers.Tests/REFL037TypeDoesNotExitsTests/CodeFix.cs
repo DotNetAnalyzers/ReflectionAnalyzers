@@ -63,5 +63,50 @@ namespace RoslynSandbox
 
             AnalyzerAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
         }
+
+        [TestCase("typeof(int).Assembly.GetType(↓\"Int32\")", "typeof(int).Assembly.GetType(\"System.Int32\")")]
+        public void AssemblyGetTypeWithFix(string type, string fixedType)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C
+    {
+        public static object Get => typeof(int).Assembly.GetType(↓""Int32"");
+    }
+}".AssertReplace("typeof(int).Assembly.GetType(↓\"Int32\")", type);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C
+    {
+        public static object Get => typeof(int).Assembly.GetType(""System.Int32"");
+    }
+}".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", fixedType);
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [TestCase("typeof(int).Assembly.GetType(↓\"MISSING\")")]
+        public void AssemblyGetTypeNoFix(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C
+    {
+        public static object Get => typeof(int).Assembly.GetType(↓""MISSING"");
+    }
+}".AssertReplace("typeof(int).Assembly.GetType(↓\"MISSING\")", call);
+
+            AnalyzerAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
+        }
     }
 }

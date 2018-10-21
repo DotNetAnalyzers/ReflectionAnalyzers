@@ -190,21 +190,11 @@ namespace ReflectionAnalyzers
                     result = context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
                     return result != null;
                 case InvocationExpressionSyntax candidate when TryMatchAssemblyGetType(candidate, context, out var typeName, out var ignoreCase):
-
-                    switch (candidate.Expression)
-                    {
-                        case MemberAccessExpressionSyntax typeAccess when context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out var typeInAssembly):
-                            source = candidate;
-                            result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName, ignoreCase.Value);
-                            return result != null;
-                        case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType) &&
-                                                         context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out var typeInAssembly):
-                            source = candidate;
-                            result = typeInAssembly.ContainingAssembly.GetTypeByMetadataName(typeName, ignoreCase.Value);
-                            return result != null;
-                    }
-
-                    break;
+                    source = candidate;
+                    result = Assembly.TryGet(candidate.Expression, context, out var assembly)
+                        ? assembly.GetTypeByMetadataName(typeName, ignoreCase.Value)
+                        : null;
+                    return result != null;
                 case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.GetGenericTypeDefinition, context.SemanticModel, context.CancellationToken, out _) &&
                                                                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                                                                 TryGet(memberAccess.Expression, context, visited, out var definingType, out _) &&

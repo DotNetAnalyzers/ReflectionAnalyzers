@@ -72,6 +72,13 @@ namespace ReflectionAnalyzers
                 return context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value) != null;
             }
 
+            if (Type.TryMatchAssemblyGetType(invocation, context, out typeName, out ignoreCase) &&
+                Assembly.TryGet(invocation.Expression, context, out var assembly))
+            {
+                nameArgument = typeName.Argument;
+                return assembly.GetTypeByMetadataName(typeName, ignoreCase.Value) != null;
+            }
+
             nameArgument = null;
             return null;
         }

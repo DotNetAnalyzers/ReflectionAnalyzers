@@ -2,10 +2,30 @@ namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
+    using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Microsoft.CodeAnalysis.Diagnostics;
 
-    internal static class AssemblyExt
+    internal static class Assembly
     {
+        internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out IAssemblySymbol assembly)
+        {
+            switch (expression)
+            {
+                case MemberAccessExpressionSyntax typeAccess when context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out var typeInAssembly):
+                    assembly = typeInAssembly.ContainingAssembly;
+                    return true;
+                case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType) &&
+                                                 context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out var typeInAssembly):
+                    assembly = typeInAssembly.ContainingAssembly;
+                    return true;
+            }
+
+            assembly = null;
+            return false;
+        }
+
         internal static INamedTypeSymbol GetTypeByMetadataName(this IAssemblySymbol assembly, TypeNameArgument typeName, bool ignoreCase)
         {
             if (typeName.TryGetGeneric(out var generic))
