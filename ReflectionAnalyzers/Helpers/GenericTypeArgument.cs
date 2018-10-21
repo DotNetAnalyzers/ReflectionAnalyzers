@@ -46,6 +46,12 @@ namespace ReflectionAnalyzers
 
         private static bool TryParse(string text, ref int pos, out GenericTypeArgument genericTypeArgument)
         {
+            while (pos < text.Length &&
+                   (text[pos] == ' ' || text[pos] == ','))
+            {
+                pos++;
+            }
+
             var match = GenericTypeNameRegex.Match(text, pos);
             if (match.Success)
             {
@@ -72,12 +78,6 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
-            while (pos < text.Length &&
-                   text[pos] == ' ')
-            {
-                pos++;
-            }
-
             if (text[pos] == '[' &&
                 TryFindBracketedList(text, pos, out var bracketed))
             {
@@ -85,6 +85,12 @@ namespace ReflectionAnalyzers
                 if (TryParse(bracketed, ref temp, out genericTypeArgument))
                 {
                     pos += bracketed.Length;
+                    while (pos < text.Length &&
+                           text[pos] == ' ')
+                    {
+                        pos++;
+                    }
+
                     return true;
                 }
             }
