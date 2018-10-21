@@ -4,8 +4,9 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  Fix for REFL004
-  BUGFIX REFL004 with indexers.
+  REFL038 prefer RuntimeHelpers.RunClassConstructor.
+  REFL004 handle static ctor.
+  REFL037 handle assembly.GetType
 
 excludedgroups
   Main

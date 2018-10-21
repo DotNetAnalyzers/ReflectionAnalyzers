@@ -1,3 +1,8 @@
+#### 0.14.0
+* REFL038 prefer RuntimeHelpers.RunClassConstructor.
+* REFL004 handle static ctor.
+* REFL037 handle assembly.GetType
+
 #### 0.13.0
 * Fix for REFL004
 * BUGFIX REFL004 with indexers.
