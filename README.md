@@ -152,5 +152,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL037.md">REFL037</a></td>
     <td>The type does not exist.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL038.md">REFL038</a></td>
+    <td>Prefer RuntimeHelpers.RunClassConstructor.</td>
+  </tr>
 <table>
 <!-- end generated table -->

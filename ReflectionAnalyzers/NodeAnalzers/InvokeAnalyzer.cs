@@ -19,7 +19,8 @@ namespace ReflectionAnalyzers
             REFL025ArgumentsDontMatchParameters.Descriptor,
             REFL028CastReturnValueToCorrectType.Descriptor,
             REFL030UseCorrectObj.Descriptor,
-            REFL035DontInvokeGenericDefinition.Descriptor);
+            REFL035DontInvokeGenericDefinition.Descriptor,
+            REFL038PreferRunClassConstructor.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -33,7 +34,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                invocation.ArgumentList != null &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 invocation.TryGetMethodName(out var name) &&
                 name == "Invoke" &&
@@ -189,6 +190,17 @@ namespace ReflectionAnalyzers
                                         ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
                                     ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
                         }
+                    }
+
+                    if (ctor.IsStatic)
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL038PreferRunClassConstructor.Descriptor,
+                                invocation.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(TypeSyntax),
+                                    ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart))));
                     }
                 }
             }
