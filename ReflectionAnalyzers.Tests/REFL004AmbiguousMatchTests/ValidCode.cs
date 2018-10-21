@@ -131,5 +131,27 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty(\"Bar\", typeof(int), new[] { typeof(int) })", call);
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
+
+        [TestCase("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null)")]
+        [TestCase("GetConstructor(BindingFlags.NonPublic | BindingFlags.Static, null, Type.EmptyTypes, null)")]
+        public void StaticAndInstanceConstructor(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class C
+    {
+        static C()
+        {
+        }
+
+        public static object Get => typeof(C).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
+    }
+}".AssertReplace("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null)", call);
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+        }
     }
 }

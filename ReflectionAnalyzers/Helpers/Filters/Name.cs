@@ -7,8 +7,8 @@ namespace ReflectionAnalyzers
 
     internal struct Name
     {
+        internal static Name Ctor = new Name(null, ".ctor");
         internal readonly ArgumentSyntax Argument;
-
         internal readonly string MetadataName;
 
         public Name(ArgumentSyntax argument, string metadataName)

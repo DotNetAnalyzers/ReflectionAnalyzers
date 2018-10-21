@@ -79,5 +79,26 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [Test]
+        public void StaticAndInstanceConstructor()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class C
+    {
+        static C()
+        {
+        }
+
+        public static object Get => typeof(C).GetConstructor↓(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, Type.EmptyTypes, null);
+    }
+}";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

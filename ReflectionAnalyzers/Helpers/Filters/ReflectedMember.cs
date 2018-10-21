@@ -337,7 +337,11 @@ namespace ReflectionAnalyzers
         {
             if (candidate.MetadataName != name.MetadataName)
             {
-                return false;
+                if (candidate.MetadataName != ".cctor" ||
+                    name.MetadataName != Name.Ctor.MetadataName)
+                {
+                    return false;
+                }
             }
 
             if (candidate.DeclaredAccessibility == Accessibility.Public &&

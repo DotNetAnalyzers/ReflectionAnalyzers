@@ -69,7 +69,7 @@ namespace ReflectionAnalyzers
                 Flags.TryCreate(invocation, getX, context, out flags) &&
                 Types.TryCreate(invocation, getX, context, out types))
             {
-                return ReflectedMember.TryCreate(getX, invocation, type, typeSource, new Name(null, ".ctor"), flags.Effective, types, context, out member);
+                return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, context, out member);
             }
 
             member = default(ReflectedMember);

@@ -105,6 +105,12 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
+            if (this.Expressions.Length == 0)
+            {
+                unique = null;
+                return false;
+            }
+
             return this.TryMostSpecific(x as IMethodSymbol, y as IMethodSymbol, out unique);
 
             bool ByNull(ISymbol first, ISymbol other, out ISymbol result)
