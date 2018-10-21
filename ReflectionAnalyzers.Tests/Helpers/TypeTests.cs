@@ -25,6 +25,8 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")",                                  "System.Collections.Generic.IEnumerable<T>", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("typeof(Foo).GetField(nameof(Foo.Field)).FieldType",                                                                        "int",                                       "typeof(Foo).GetField(nameof(Foo.Field)).FieldType")]
         [TestCase("typeof(Foo).GetProperty(nameof(Foo.Property)).PropertyType",                                                               "int",                                       "typeof(Foo).GetProperty(nameof(Foo.Property)).PropertyType")]
+        [TestCase("Type.GetType(\"RoslynSandbox.Foo\")",                                                                                      "RoslynSandbox.Foo",                         "Type.GetType(\"RoslynSandbox.Foo\")")]
+        [TestCase("Type.GetType(\"RoslynSandbox.Foo+Nested\")",                                                                               "RoslynSandbox.Foo.Nested",                  "Type.GetType(\"RoslynSandbox.Foo+Nested\")")]
         [TestCase("Type.GetType(\"System.Int32\")",                                                                                           "int",                                       "Type.GetType(\"System.Int32\")")]
         [TestCase("Type.GetType(\"System.Int32\", true)",                                                                                     "int",                                       "Type.GetType(\"System.Int32\", true)")]
         [TestCase("Type.GetType(\"System.Int32\", false)",                                                                                    "int",                                       "Type.GetType(\"System.Int32\", false)")]
@@ -54,6 +56,8 @@ namespace RoslynSandbox
         public class Baz<T>
         {
         }
+
+        public class Nested { }
     }
 }".AssertReplace("typeof(Foo)", expression);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);

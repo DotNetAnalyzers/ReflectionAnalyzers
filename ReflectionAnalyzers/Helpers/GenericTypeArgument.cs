@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
         internal readonly string MetadataName;
         internal readonly IReadOnlyList<GenericTypeArgument> TypeArguments;
 
-        internal GenericTypeArgument(string metadataName, IReadOnlyList<GenericTypeArgument> typeArguments)
+        private GenericTypeArgument(string metadataName, IReadOnlyList<GenericTypeArgument> typeArguments)
         {
             this.MetadataName = metadataName;
             this.TypeArguments = typeArguments;
