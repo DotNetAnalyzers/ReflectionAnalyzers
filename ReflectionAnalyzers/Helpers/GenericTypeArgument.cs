@@ -3,14 +3,11 @@ namespace ReflectionAnalyzers
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Diagnostics;
-    using System.Text.RegularExpressions;
+    using System.Globalization;
 
     [DebuggerDisplay("{this.MetadataName}")]
     internal struct GenericTypeArgument
     {
-        private static readonly Regex SimpleTypeNameRegex = new Regex(@"\G,? *(?<typeName>[^ ,\]\[]+ *)", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-        private static readonly Regex GenericTypeNameRegex = new Regex(@"\G,? *(?<typeName>[^ `,\]\[]+`(?<arity>\d+))", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
-
         internal readonly string MetadataName;
         internal readonly IReadOnlyList<GenericTypeArgument> TypeArguments;
 
@@ -52,32 +49,6 @@ namespace ReflectionAnalyzers
                 pos++;
             }
 
-            var match = GenericTypeNameRegex.Match(text, pos);
-            if (match.Success)
-            {
-                if (int.TryParse(match.Groups["arity"].Value, out var arity) &&
-                    match.Groups["typeName"].Value is string typeName &&
-                    TryFindBracketedList(text, pos, out var argsString) &&
-                    TryParseBracketedList(argsString, 0, arity, out var args))
-                {
-                    pos += typeName.Length + argsString.Length;
-                    genericTypeArgument = new GenericTypeArgument(typeName, args);
-                    return true;
-                }
-
-                genericTypeArgument = default(GenericTypeArgument);
-                pos = int.MaxValue;
-                return false;
-            }
-
-            match = SimpleTypeNameRegex.Match(text, pos);
-            if (match.Success)
-            {
-                pos += match.Length;
-                genericTypeArgument = new GenericTypeArgument(match.Groups["typeName"].Value, null);
-                return true;
-            }
-
             if (text[pos] == '[' &&
                 TryFindBracketedList(text, pos, out var bracketed))
             {
@@ -94,10 +65,64 @@ namespace ReflectionAnalyzers
                     return true;
                 }
             }
+            else if (TryFindMetadataName(text, ref pos, out var metadataName, out var arity))
+            {
+                if (arity > 0 &&
+                    TryFindBracketedList(text, pos, out var argsString) &&
+                    TryParseBracketedList(argsString, 0, arity, out var args))
+                {
+                    genericTypeArgument = new GenericTypeArgument(metadataName, args);
+                    pos += argsString.Length;
+                    return true;
+                }
+
+                genericTypeArgument = new GenericTypeArgument(metadataName, null);
+                return true;
+            }
 
             pos = int.MaxValue;
             genericTypeArgument = default(GenericTypeArgument);
             return false;
+        }
+
+        private static bool TryFindMetadataName(string text, ref int pos, out string metadataName, out int arity)
+        {
+            if (text.IndexOfAny(new[] { ',', '[', ']' }, pos) is var index &&
+                text.TrySlice(pos, index - 1, out metadataName))
+            {
+                pos += metadataName.Length;
+                if (text[index] == '[')
+                {
+                    return TryParseArity(metadataName, out arity);
+                }
+
+                arity = 0;
+                return true;
+            }
+
+            metadataName = null;
+            arity = 0;
+            pos = int.MaxValue;
+            return false;
+        }
+
+        private static bool TryParseArity(string text, out int arity)
+        {
+            var start = text.Length - 1;
+            while (start > 2 &&
+                   char.IsDigit(text[start]))
+            {
+                start--;
+            }
+
+            if (text[start] != '`')
+            {
+                arity = 0;
+                return false;
+            }
+
+            arity = int.Parse(text.Substring(start + 1), CultureInfo.InvariantCulture);
+            return true;
         }
 
         private static bool TryFindBracketedList(string text, int start, out string result)
