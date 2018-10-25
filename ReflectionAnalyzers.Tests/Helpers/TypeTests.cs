@@ -11,6 +11,7 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("typeof(Foo)",                                                                             "RoslynSandbox.Foo",                                    "typeof(Foo)")]
         [TestCase("new Foo().GetType()",                                                                     "RoslynSandbox.Foo",                                    "new Foo().GetType()")]
         [TestCase("foo.GetType()",                                                                           "RoslynSandbox.Foo",                                    "foo.GetType()")]
+        [TestCase("nullableInt.GetType()",                                                                   "int",                                                  "nullableInt.GetType()")]
         [TestCase("this.GetType()",                                                                          "RoslynSandbox.Foo",                                    "this.GetType()")]
         [TestCase("GetType()",                                                                               "RoslynSandbox.Foo",                                    "GetType()")]
         [TestCase("typeof(Foo).GetNestedType(\"Baz`1\")",                                                    "RoslynSandbox.Foo.Baz<T>",                             "typeof(Foo).GetNestedType(\"Baz`1\")")]
@@ -44,7 +45,7 @@ namespace RoslynSandbox
     {
         public readonly int Field;
 
-        public Foo(Foo foo)
+        public Foo(Foo foo, int? nullableInt)
         {
             var type = typeof(Foo);
         }

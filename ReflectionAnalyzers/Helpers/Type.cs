@@ -178,7 +178,18 @@ namespace ReflectionAnalyzers
                     {
                         case MemberAccessExpressionSyntax typeAccess:
                             source = invocation;
-                            return context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out result);
+                            if (context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out result))
+                            {
+                                if (result is INamedTypeSymbol namedType &&
+                                    namedType.ConstructedFrom?.SpecialType == SpecialType.System_Nullable_T)
+                                {
+                                    result = namedType.TypeArguments[0];
+                                }
+
+                                return true;
+                            }
+
+                            return false;
                         case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
                             source = invocation;
                             return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);

@@ -31,6 +31,10 @@ namespace ValidCode
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null));
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(ProtectedStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy, null, Type.EmptyTypes, null));
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(this.ProtectedInstance), BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null));
+
+            int? nullableInt = 1;
+            Assert.NotNull(nullableInt.GetType().GetMethod(nameof(int.Parse), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null));
+            Assert.NotNull(nullableInt.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly));
         }
 
         public static int PublicStaticMethod() => 0;
