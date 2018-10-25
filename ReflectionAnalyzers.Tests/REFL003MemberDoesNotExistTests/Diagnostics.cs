@@ -109,7 +109,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetTupleField()
+        public void GetTupleFieldItem1ByName()
         {
             var code = @"
 namespace RoslynSandbox
@@ -122,6 +122,26 @@ namespace RoslynSandbox
         static (int a, int b) Create() => default;
     }
 }";
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("a1")]
+        [TestCase("a7")]
+        [TestCase("a8")]
+        public void GetTupleFieldItem7ByName(string field)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class C
+    {
+        public object Get => Create().GetType().GetField(↓""a7"");
+
+
+        static (int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) Create() => default;
+    }
+}".AssertReplace("a7", field);
 
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
