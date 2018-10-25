@@ -169,5 +169,21 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Valid(Analyzer, testCode);
         }
+
+        [Test]
+        public void TupleGetFieldItem1()
+        {
+            var testCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class C
+    {
+        public static object Get((int, int) value) => value.GetType().GetField(""Item1"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+        }
     }
 }
