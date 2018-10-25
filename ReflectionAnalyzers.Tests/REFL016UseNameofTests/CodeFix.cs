@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
 {
+    using System;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -381,6 +382,62 @@ namespace RoslynSandbox
     class Foo
     {
         public object Get => typeof(int?).GetProperty(nameof(Nullable<int>.Value));
+    }
+}";
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
+        public void ValueTupleGetFieldItem1()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public object Get => typeof((int, double)).GetField(""Item1"");
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public object Get => typeof((int, double)).GetField(nameof(ValueTuple<int, double>.Item1));
+    }
+}";
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
+        public void ValueTupleGetFieldRest()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(""Rest"");
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    class Foo
+    {
+        public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(nameof(ValueTuple<int, int, int, int, int, int, int, ValueTuple<int>>.Rest));
     }
 }";
 

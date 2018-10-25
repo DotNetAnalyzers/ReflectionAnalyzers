@@ -81,6 +81,15 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
+            if (member.Symbol.ContainingType.TupleUnderlyingType is INamedTypeSymbol tupleType)
+            {
+                targetName = member.Symbol is IFieldSymbol field &&
+                             field.CorrespondingTupleField is IFieldSymbol tupleField
+                    ? $"{tupleType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format)}.{tupleField.Name}"
+                    : $"{tupleType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format)}.{member.Symbol.Name}";
+                return true;
+            }
+
             targetName = context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol)
                 ? $"{member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format)}.{member.Symbol.Name}"
                 : $"\"{member.Symbol.Name}\"";
