@@ -107,5 +107,23 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [Test]
+        public void GetTupleField()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class C
+    {
+        public object Get => Create().GetType().GetField(↓""a"");
+
+
+        static (int a, int b) Create() => default;
+    }
+}";
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }

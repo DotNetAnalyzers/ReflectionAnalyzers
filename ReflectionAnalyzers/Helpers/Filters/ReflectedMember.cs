@@ -344,6 +344,13 @@ namespace ReflectionAnalyzers
                 }
             }
 
+            if (candidate is IFieldSymbol field &&
+                field.CorrespondingTupleField is IFieldSymbol tupleField &&
+                tupleField.Name != field.Name)
+            {
+                return false;
+            }
+
             if (candidate.DeclaredAccessibility == Accessibility.Public &&
                 !flags.HasFlagFast(BindingFlags.Public))
             {
