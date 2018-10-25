@@ -50,5 +50,25 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
+
+        [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.BinaryExpression\")")]
+        [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.BinaryExpression\", throwOnError: true)")]
+        [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.AssignBinaryExpression\", throwOnError: true)")]
+        [TestCase("typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"MS.Internal.Controls.TemplatedAdorner\", throwOnError: true)")]
+        public void AssemblyGetType(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C
+    {
+        public static object Get => typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(""System.Linq.Expressions.AssignBinaryExpression"", throwOnError: true);
+    }
+}".AssertReplace("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.AssignBinaryExpression\", throwOnError: true)", call);
+
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+        }
     }
 }

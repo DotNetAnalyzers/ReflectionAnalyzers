@@ -73,7 +73,8 @@ namespace ReflectionAnalyzers
             }
 
             if (Type.TryMatchAssemblyGetType(invocation, context, out typeName, out ignoreCase) &&
-                Assembly.TryGet(invocation.Expression, context, out var assembly))
+                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                Assembly.TryGet(memberAccess.Expression, context, out var assembly))
             {
                 nameArgument = typeName.Argument;
                 return assembly.GetTypeByMetadataName(typeName, ignoreCase.Value) != null;

@@ -5,6 +5,7 @@ using Gu.Roslyn.Asserts;
 [assembly: TransitiveMetadataReferences(typeof(Microsoft.CodeAnalysis.CSharp.CSharpCompilation))]
 [assembly: TransitiveMetadataReferences(typeof(Gu.Roslyn.CodeFixExtensions.DocumentEditorCodeFixProvider))]
 [assembly: TransitiveMetadataReferences(typeof(System.Windows.Forms.Control))]
+[assembly: TransitiveMetadataReferences(typeof(System.Windows.Controls.Control))]
 [assembly: MetadataReferences(
     typeof(System.Linq.Enumerable),
     typeof(System.Reflection.Assembly),

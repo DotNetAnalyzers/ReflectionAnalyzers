@@ -2,7 +2,6 @@ namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
-    using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -13,13 +12,14 @@ namespace ReflectionAnalyzers
         {
             switch (expression)
             {
-                case MemberAccessExpressionSyntax typeAccess when context.SemanticModel.TryGetType(typeAccess.Expression, context.CancellationToken, out var typeInAssembly):
+                case MemberAccessExpressionSyntax candidate when candidate.Name is IdentifierNameSyntax identifierName &&
+                                                                 identifierName.Identifier.ValueText == "GetType":
+                    return TryGet(candidate.Expression, context, out assembly);
+                case MemberAccessExpressionSyntax candidate when candidate.Name is IdentifierNameSyntax identifierName &&
+                                                                 identifierName.Identifier.ValueText == "Assembly" &&
+                                                                 Type.TryGet(candidate.Expression, context, out var typeInAssembly, out _):
                     assembly = typeInAssembly.ContainingAssembly;
-                    return true;
-                case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType) &&
-                                                 context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out var typeInAssembly):
-                    assembly = typeInAssembly.ContainingAssembly;
-                    return true;
+                    return assembly != null;
             }
 
             assembly = null;
