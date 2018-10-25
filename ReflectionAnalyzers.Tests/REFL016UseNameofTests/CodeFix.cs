@@ -356,5 +356,35 @@ namespace RoslynSandbox
 
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
+
+        [Test]
+        public void NullableGetProperty()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public object Get => typeof(int?).GetProperty(""Value"");
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public object Get => typeof(int?).GetProperty(nameof(Nullable<int>.Value));
+    }
+}";
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
     }
 }

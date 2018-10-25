@@ -8,6 +8,8 @@ namespace ReflectionAnalyzers
 
     internal static class NameOf
     {
+        private static readonly SymbolDisplayFormat Format = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.ExpandNullable);
+
         internal static bool IsNameOf(ArgumentSyntax argument, out ExpressionSyntax expression)
         {
             if (argument.Expression is InvocationExpressionSyntax candidate &&
@@ -79,7 +81,7 @@ namespace ReflectionAnalyzers
             }
 
             targetName = context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol)
-                ? $"{member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{member.Symbol.Name}"
+                ? $"{member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format)}.{member.Symbol.Name}"
                 : $"\"{member.Symbol.Name}\"";
             return true;
         }
