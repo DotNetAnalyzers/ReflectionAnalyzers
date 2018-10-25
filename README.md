@@ -146,7 +146,7 @@ Analyzers checking System.Reflection
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL036.md">REFL036</a></td>
-    <td>Check if null before using.</td>
+    <td>Pass 'throwOnError: true' or check if null.</td>
   </tr>
   <tr>
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL037.md">REFL037</a></td>
