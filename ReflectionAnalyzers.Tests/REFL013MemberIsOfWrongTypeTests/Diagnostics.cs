@@ -34,7 +34,7 @@ namespace RoslynSandbox
         public int Bar { get; }
     }
 }".AssertReplace("GetMethod(nameof(this.Bar))", call);
-            var message = "The type RoslynSandbox.Foo has a member named Bar of type SourcePropertySymbol.";
+            var message = "The type RoslynSandbox.Foo has a property named Bar.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -63,7 +63,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("GetProperty(nameof(this.Bar))", call);
-            var message = "The type RoslynSandbox.Foo has a member named Bar of type SourceOrdinaryMethodSymbol.";
+            var message = "The type RoslynSandbox.Foo has a method named Bar.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }

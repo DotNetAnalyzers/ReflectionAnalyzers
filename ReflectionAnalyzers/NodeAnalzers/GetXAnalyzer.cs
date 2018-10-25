@@ -112,8 +112,8 @@ namespace ReflectionAnalyzers
                                 REFL013MemberIsOfWrongType.Descriptor,
                                 invocation.GetNameLocation(),
                                 member.ReflectedType,
-                                name.MetadataName,
-                                member.Symbol.GetType().Name));
+                                member.Symbol.Kind.ToString().ToLower(),
+                                name.MetadataName));
                     }
 
                     if (IsPreferGetMemberThenAccessor(member, name, flags, types, context, out var callText))
