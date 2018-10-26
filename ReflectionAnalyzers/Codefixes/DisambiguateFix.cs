@@ -80,7 +80,7 @@ namespace ReflectionAnalyzers.Codefixes
                                                                    {
                                                                        ParseArgument(flagsText),
                                                                        NullArgument,
-                                                                       ParseArgument($"typeof({property.Type.ToMinimalDisplayString(semanticModel, invocation.SpanStart)})"),
+                                                                       ParseArgument($"typeof({property.Type.ToString(semanticModel, invocation.SpanStart)})"),
                                                                        ParseArgument(typesArrayText),
                                                                        NullArgument,
                                                                    }))

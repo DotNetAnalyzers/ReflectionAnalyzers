@@ -134,7 +134,7 @@ namespace ReflectionAnalyzers
                                 TargetTypeLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
-                                    member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                    member.Symbol.ContainingType.ToString(context)),
                                 member.Symbol.ContainingType.Name));
                     }
 
@@ -165,7 +165,7 @@ namespace ReflectionAnalyzers
                                 TargetTypeLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
-                                    member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
+                                    member.Symbol.ContainingType.ToString(context)),
                                 member.Symbol.Name));
                     }
 
@@ -527,7 +527,7 @@ namespace ReflectionAnalyzers
                 }
 
                 return context.SemanticModel.IsAccessible(context.Node.SpanStart, associatedSymbol)
-                    ? $"nameof({associatedSymbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart)}.{associatedSymbol.Name})"
+                    ? $"nameof({associatedSymbol.ContainingType.ToString(context)}.{associatedSymbol.Name})"
                     : $"\"{associatedSymbol.Name}\"";
             }
         }
@@ -570,7 +570,7 @@ namespace ReflectionAnalyzers
                     if (!types.Symbols[i].Equals(method.Parameters[i].Type) &&
                         context.SemanticModel.IsAccessible(context.Node.SpanStart, method.Parameters[i].Type))
                     {
-                        typeText = method.Parameters[i].Type.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart);
+                        typeText = method.Parameters[i].Type.ToString(context);
                         var expression = types.Expressions[i];
                         location = argument.Contains(expression)
                             ? expression is TypeOfExpressionSyntax typeOf

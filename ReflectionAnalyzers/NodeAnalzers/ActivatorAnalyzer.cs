@@ -42,8 +42,8 @@ namespace ReflectionAnalyzers
                             invocation.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(TypeSyntax),
-                                createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                            createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                                createdType.ToString(context)),
+                            createdType.ToString(context)));
                 }
 
                 if (createdType is INamedTypeSymbol namedType)
@@ -67,8 +67,8 @@ namespace ReflectionAnalyzers
                             typeSyntax.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(TypeSyntax),
-                                createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                            createdType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                                createdType.ToString(context)),
+                            createdType.ToString(context)));
                 }
             }
         }

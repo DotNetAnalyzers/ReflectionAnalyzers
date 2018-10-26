@@ -11,39 +11,6 @@ namespace ReflectionAnalyzers
         private static readonly SymbolDisplayFormat Format = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
             SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
-        internal static bool IsNameOf(ArgumentSyntax argument, out ExpressionSyntax expression)
-        {
-            if (argument.Expression is InvocationExpressionSyntax candidate &&
-                candidate.ArgumentList is ArgumentListSyntax argumentList &&
-                argumentList.Arguments.TrySingle(out var arg) &&
-                candidate.Expression is IdentifierNameSyntax identifierName &&
-                identifierName.Identifier.ValueText == "nameof")
-            {
-                expression = arg.Expression;
-                return true;
-            }
-
-            expression = null;
-            return false;
-        }
-
-        internal static bool CanUseFor(ISymbol symbol)
-        {
-            if (symbol == null ||
-                !symbol.CanBeReferencedByName)
-            {
-                return false;
-            }
-
-            switch (symbol)
-            {
-                case IMethodSymbol method:
-                    return method.MethodKind == MethodKind.Ordinary;
-                default:
-                    return true;
-            }
-        }
-
         internal static bool TryGetExpressionText(ReflectedMember member, SyntaxNodeAnalysisContext context, out string targetName)
         {
             targetName = null;
@@ -85,15 +52,60 @@ namespace ReflectionAnalyzers
             {
                 targetName = member.Symbol is IFieldSymbol field &&
                              field.CorrespondingTupleField is IFieldSymbol tupleField
-                    ? $"{tupleType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format)}.{tupleField.Name}"
-                    : $"{tupleType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format)}.{member.Symbol.Name}";
+                    ? $"{TypeOfString(tupleType)}.{tupleField.Name}"
+                    : $"{TypeOfString(tupleType)}.{member.Symbol.Name}";
                 return true;
             }
 
             targetName = context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol)
-                ? $"{member.Symbol.ContainingType.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format)}.{member.Symbol.Name}"
+                ? $"{TypeOfString(member.Symbol.ContainingType)}.{member.Symbol.Name}"
                 : $"\"{member.Symbol.Name}\"";
             return true;
+
+            string TypeOfString(ITypeSymbol t)
+            {
+                if (t is INamedTypeSymbol namedType &&
+                    namedType.TupleUnderlyingType is INamedTypeSymbol utt &&
+                    utt != namedType)
+                {
+                    return TypeOfString(utt);
+                }
+
+                return t.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format);
+            }
+        }
+
+        internal static bool IsNameOf(ArgumentSyntax argument, out ExpressionSyntax expression)
+        {
+            if (argument.Expression is InvocationExpressionSyntax candidate &&
+                candidate.ArgumentList is ArgumentListSyntax argumentList &&
+                argumentList.Arguments.TrySingle(out var arg) &&
+                candidate.Expression is IdentifierNameSyntax identifierName &&
+                identifierName.Identifier.ValueText == "nameof")
+            {
+                expression = arg.Expression;
+                return true;
+            }
+
+            expression = null;
+            return false;
+        }
+
+        internal static bool CanUseFor(ISymbol symbol)
+        {
+            if (symbol == null ||
+                !symbol.CanBeReferencedByName)
+            {
+                return false;
+            }
+
+            switch (symbol)
+            {
+                case IMethodSymbol method:
+                    return method.MethodKind == MethodKind.Ordinary;
+                default:
+                    return true;
+            }
         }
 
         internal static bool IsStaticContext(SyntaxNodeAnalysisContext context)

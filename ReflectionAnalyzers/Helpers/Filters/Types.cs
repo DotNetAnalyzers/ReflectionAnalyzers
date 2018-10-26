@@ -64,7 +64,7 @@ namespace ReflectionAnalyzers
                 }
 
                 _ = builder.Append("typeof(")
-                           .Append(parameter.Type.ToMinimalDisplayString(semanticModel, position))
+                           .Append(parameter.Type.ToString(semanticModel, position))
                            .Append(")");
             }
 

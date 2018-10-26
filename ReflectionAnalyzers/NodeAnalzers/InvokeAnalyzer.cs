@@ -62,8 +62,8 @@ namespace ReflectionAnalyzers
                                 invocation.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),
-                                    method.ReturnType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                method.ReturnType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                                    method.ReturnType.ToString(context)),
+                                method.ReturnType.ToString(context)));
                     }
 
                     if (method.ReturnsVoid &&
@@ -86,8 +86,8 @@ namespace ReflectionAnalyzers
                                 castType.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),
-                                    method.ReturnType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                method.ReturnType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                                    method.ReturnType.ToString(context)),
+                                method.ReturnType.ToString(context)));
                     }
 
                     if (invoke.TryFindParameter("obj", out var objParameter) &&
@@ -127,7 +127,7 @@ namespace ReflectionAnalyzers
                                     invocation.GetNameLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(
                                         nameof(TypeSyntax),
-                                        string.Join(", ", types.Select(x => $"typeof({x.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)})")))));
+                                        string.Join(", ", types.Select(x => $"typeof({x.ToString(context)})")))));
                         }
                         else
                         {
@@ -145,8 +145,8 @@ namespace ReflectionAnalyzers
                                 invocation.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),
-                                    ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                                    ctor.ContainingType.ToString(context)),
+                                ctor.ContainingType.ToString(context)));
                     }
 
                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
@@ -187,8 +187,8 @@ namespace ReflectionAnalyzers
                                     castType.GetLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(
                                         nameof(TypeSyntax),
-                                        ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)),
-                                    ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart)));
+                                        ctor.ContainingType.ToString(context)),
+                                    ctor.ContainingType.ToString(context)));
                         }
                     }
 

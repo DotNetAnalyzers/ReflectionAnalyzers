@@ -7,6 +7,18 @@ namespace ReflectionAnalyzers
 
     internal static class Type
     {
+        internal static string ToString(this ITypeSymbol type, SyntaxNodeAnalysisContext context) => ToString(type, context.SemanticModel, context.Node.SpanStart);
+
+        internal static string ToString(this ITypeSymbol type, SemanticModel semanticModel, int position)
+        {
+            if (semanticModel.IsAccessible(position, type))
+            {
+                return type.ToMinimalDisplayString(semanticModel, position);
+            }
+
+            return ToString(type.BaseType, semanticModel, position);
+        }
+
         internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out ExpressionSyntax source)
         {
             return TryGet(expression, context, null, out result, out source);

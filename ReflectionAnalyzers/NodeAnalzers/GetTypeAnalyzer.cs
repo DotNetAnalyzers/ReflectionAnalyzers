@@ -13,7 +13,8 @@ namespace ReflectionAnalyzers
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL036CheckNull.Descriptor,
-            REFL037TypeDoesNotExits.Descriptor);
+            REFL037TypeDoesNotExits.Descriptor,
+            REFL039PreferTypeof.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -27,8 +28,8 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                TryGetTarget(invocation, context, out var target) &&
-                invocation.ArgumentList != null)
+                invocation.ArgumentList != null &&
+                TryGetTarget(invocation, context, out var target))
             {
                 if (ShouldCheckNull(invocation, target) &&
                     invocation.Parent is MemberAccessExpressionSyntax)
@@ -36,9 +37,25 @@ namespace ReflectionAnalyzers
                     context.ReportDiagnostic(Diagnostic.Create(REFL036CheckNull.Descriptor, invocation.GetLocation()));
                 }
 
-                if (TypeExists(invocation, context, out var nameArgument) == false)
+                switch (TypeExists(invocation, context, out var type, out var nameArgument))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL037TypeDoesNotExits.Descriptor, nameArgument.GetLocation()));
+                    case true when type.IsSealed &&
+                                   !type.IsAnonymousType &&
+                                   target.Parameters.Length == 0 &&
+                                   target == KnownSymbol.Object.GetType &&
+                                   context.SemanticModel.IsAccessible(invocation.SpanStart, type):
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL039PreferTypeof.Descriptor,
+                                invocation.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(TypeSyntax),
+                                    type.ToString(context)),
+                                type.ToString(context)));
+                        break;
+                    case false:
+                        context.ReportDiagnostic(Diagnostic.Create(REFL037TypeDoesNotExits.Descriptor, nameArgument.GetLocation()));
+                        break;
                 }
             }
         }
@@ -64,12 +81,19 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool? TypeExists(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ArgumentSyntax nameArgument)
+        private static bool? TypeExists(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol type, out ArgumentSyntax nameArgument)
         {
+            if (invocation.ArgumentList.Arguments.Count == 0)
+            {
+                nameArgument = null;
+                return Type.TryGet(invocation, context, out type, out _);
+            }
+
             if (Type.TryMatchTypeGetType(invocation, context, out var typeName, out var ignoreCase))
             {
                 nameArgument = typeName.Argument;
-                return context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value) != null;
+                type = context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
+                return type != null;
             }
 
             if (Type.TryMatchAssemblyGetType(invocation, context, out typeName, out ignoreCase) &&
@@ -77,16 +101,19 @@ namespace ReflectionAnalyzers
                 Assembly.TryGet(memberAccess.Expression, context, out var assembly))
             {
                 nameArgument = typeName.Argument;
-                return assembly.GetTypeByMetadataName(typeName, ignoreCase.Value) != null;
+                type = assembly.GetTypeByMetadataName(typeName, ignoreCase.Value);
+                return type != null;
             }
 
             nameArgument = null;
+            type = null;
             return null;
         }
 
         private static bool TryGetTarget(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out IMethodSymbol target)
         {
-            return invocation.TryGetTarget(KnownSymbol.Type.GetType, context.SemanticModel, context.CancellationToken, out target) ||
+            return invocation.TryGetTarget(KnownSymbol.Object.GetType, context.SemanticModel, context.CancellationToken, out target) ||
+                   invocation.TryGetTarget(KnownSymbol.Type.GetType, context.SemanticModel, context.CancellationToken, out target) ||
                    invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out target) ||
                    invocation.TryGetTarget(KnownSymbol.AssemblyBuilder.GetType, context.SemanticModel, context.CancellationToken, out target);
         }
