@@ -122,7 +122,9 @@ namespace ReflectionAnalyzers
                             Diagnostic.Create(
                                 REFL014PreferGetMemberThenAccessor.Descriptor,
                                 invocation.GetNameLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), callText),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(ExpressionSyntax),
+                                    callText),
                                 callText));
                     }
 
@@ -417,59 +419,63 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, Name name, Flags flags, Types types, SyntaxNodeAnalysisContext context, out string call)
+        private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, Name name, Flags flags, Types types, SyntaxNodeAnalysisContext context, out string callText)
         {
-            // Not handling when explicit types are passed for now. No reason for this other than that I think it will be rare.
-            if (types.Argument is null &&
-                member.Invocation?.Expression is MemberAccessExpressionSyntax memberAccess)
+            if (member.Invocation?.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 if (member.Symbol is IMethodSymbol method)
                 {
                     if (method.AssociatedSymbol is IPropertySymbol property &&
                         Flags.TryGetExpectedBindingFlags(property.ContainingType, property, out var bindingFlags))
                     {
-                        return TryGetPropertyAccessor(MemberName(property), bindingFlags, out call);
+                        return TryGetPropertyAccessor(MemberName(property), bindingFlags, property.Type, out callText);
                     }
 
                     if (method.AssociatedSymbol is IEventSymbol eventSymbol &&
                         Flags.TryGetExpectedBindingFlags(eventSymbol.ContainingType, eventSymbol, out bindingFlags))
                     {
-                        return TryGetEventAccessor(MemberName(eventSymbol), bindingFlags, out call);
+                        return TryGetEventAccessor(MemberName(eventSymbol), bindingFlags, out callText);
                     }
                 }
                 //// For symbols not in source and not visible in metadata.
                 else if (member.Symbol is null &&
+                         types.Argument == null &&
                          flags.Explicit.HasFlagFast(BindingFlags.NonPublic))
                 {
                     if (TryGetInvisibleMemberName("get_", out var memberName) ||
                         TryGetInvisibleMemberName("set_", out memberName))
                     {
-                        return TryGetPropertyAccessor(memberName, flags.Explicit, out call);
+                        return TryGetPropertyAccessor(memberName, flags.Explicit, null, out callText);
                     }
 
                     if (TryGetInvisibleMemberName("add_", out memberName) ||
                         TryGetInvisibleMemberName("remove_", out memberName) ||
                         TryGetInvisibleMemberName("raise_", out memberName))
                     {
-                        return TryGetEventAccessor(memberName, flags.Explicit, out call);
+                        return TryGetEventAccessor(memberName, flags.Explicit, out callText);
                     }
                 }
             }
 
-            call = null;
+            callText = null;
             return false;
 
-            bool TryGetPropertyAccessor(string propertyName, BindingFlags bindingFlags, out string result)
+            bool TryGetPropertyAccessor(string propertyName, BindingFlags bindingFlags, ITypeSymbol type, out string result)
             {
                 if (name.MetadataName.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
                 {
-                    result = $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}).GetMethod";
+                    result = types.Argument == null
+                        ? $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}).GetMethod"
+                        : $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {types.Argument}, null).GetMethod";
                     return true;
                 }
 
                 if (name.MetadataName.StartsWith("set_", StringComparison.OrdinalIgnoreCase))
                 {
-                    result = $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}).SetMethod";
+                    result = types.Argument == null
+                        ? $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}).SetMethod"
+                        : $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {types.Argument}, null).SetMethod";
+
                     return true;
                 }
 
