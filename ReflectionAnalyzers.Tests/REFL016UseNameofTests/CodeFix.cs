@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
 {
-    using System;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
