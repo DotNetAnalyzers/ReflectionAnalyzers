@@ -1,3 +1,9 @@
+#### 0.15.0
+* REFL014 report when filtered by types.
+* REFL039 prefer typeof().
+* REFL003 warn on getting named tuple field.
+* REFL016 handle ValueTuple.
+
 #### 0.14.0
 * REFL038 prefer RuntimeHelpers.RunClassConstructor.
 * REFL004 handle static ctor.

@@ -20,14 +20,16 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.14.0-dev</Version>
+    <Version>0.1.15.0-dev</Version>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
-    <PackageReleaseNotes>REFL038 prefer RuntimeHelpers.RunClassConstructor.
-REFL004 handle static ctor.
-REFL037 handle assembly.GetType</PackageReleaseNotes>
+    <PackageReleaseNotes>REFL014 report when filtered by types.
+REFL039 prefer typeof().
+REFL003 warn on getting named tuple field.
+REFL016 handle ValueTuple.
+</PackageReleaseNotes>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
