@@ -160,5 +160,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL039.md">REFL039</a></td>
     <td>Prefer typeof(...) over instance.GetType when the type is sealed.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL040.md">REFL040</a></td>
+    <td>Prefer type.IsInstanceOfType(...).</td>
+  </tr>
 <table>
 <!-- end generated table -->
