@@ -40,7 +40,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.TryGetTarget(KnownSymbol.Type.IsAssignableFrom, QualifiedParameter.Create(KnownSymbol.Type), context.SemanticModel, context.CancellationToken, out var target, out var arg) &&
+                invocation.TryGetTarget(KnownSymbol.Type.IsAssignableFrom, QualifiedParameter.Create(KnownSymbol.Type), context.SemanticModel, context.CancellationToken, out _, out var arg) &&
                 Type.TryGet(arg.Expression, context, out _, out var source) &&
                 IsInstanceGetType(source, context.SemanticModel, context.CancellationToken, out var instance))
             {
