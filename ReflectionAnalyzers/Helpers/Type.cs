@@ -205,6 +205,9 @@ namespace ReflectionAnalyzers
                         case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
                             source = invocation;
                             return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);
+                        case MemberBindingExpressionSyntax memberBinding when memberBinding.Parent?.Parent is ConditionalAccessExpressionSyntax conditionalAccess:
+                            source = invocation;
+                            return context.SemanticModel.TryGetType(conditionalAccess.Expression, context.CancellationToken, out result);
                     }
 
                     break;
@@ -249,6 +252,9 @@ namespace ReflectionAnalyzers
                     }
 
                     break;
+                case ConditionalAccessExpressionSyntax conditionalAccess:
+                    source = conditionalAccess;
+                    return TryGet(conditionalAccess.WhenNotNull, context, out result, out _);
             }
 
             source = null;

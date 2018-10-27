@@ -11,6 +11,7 @@ namespace ReflectionAnalyzers.Tests.Helpers
         [TestCase("typeof(Foo)",                                                                             "RoslynSandbox.Foo",                                    "typeof(Foo)")]
         [TestCase("new Foo().GetType()",                                                                     "RoslynSandbox.Foo",                                    "new Foo().GetType()")]
         [TestCase("foo.GetType()",                                                                           "RoslynSandbox.Foo",                                    "foo.GetType()")]
+        [TestCase("foo?.GetType()",                                                                          "RoslynSandbox.Foo",                                    "foo?.GetType()")]
         [TestCase("nullableInt.GetType()",                                                                   "int",                                                  "nullableInt.GetType()")]
         [TestCase("this.GetType()",                                                                          "RoslynSandbox.Foo",                                    "this.GetType()")]
         [TestCase("GetType()",                                                                               "RoslynSandbox.Foo",                                    "GetType()")]
