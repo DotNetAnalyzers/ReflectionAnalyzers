@@ -21,6 +21,7 @@ namespace ValidCode
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(PublicStaticMethod), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null));
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(PublicStaticMethod), BindingFlags.Public | System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null));
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null));
+            Assert.NotNull(typeof(GetMethod).GetMethod(nameof(PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, Type.DefaultBinder, Type.EmptyTypes, null));
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(PublicPrivateStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null));
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(this.PublicInstanceMethod), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null));
             Assert.NotNull(typeof(GetMethod).GetMethod(nameof(PrivateStaticMethod), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null));

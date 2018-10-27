@@ -4,6 +4,7 @@ namespace ReflectionAnalyzers
 
     internal class TypeType : QualifiedType
     {
+        internal readonly QualifiedProperty DefaultBinder;
         internal readonly QualifiedField EmptyTypes;
         internal readonly QualifiedMethod GetConstructor;
         internal readonly QualifiedMethod GetEvent;
@@ -20,6 +21,7 @@ namespace ReflectionAnalyzers
         internal TypeType()
             : base("System.Type")
         {
+            this.DefaultBinder = new QualifiedProperty(this, nameof(this.DefaultBinder));
             this.EmptyTypes = new QualifiedField(this, nameof(this.EmptyTypes));
             this.GetConstructor = new QualifiedMethod(this, nameof(this.GetConstructor));
             this.GetEvent = new QualifiedMethod(this, nameof(this.GetEvent));

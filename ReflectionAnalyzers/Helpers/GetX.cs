@@ -190,6 +190,14 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
+                if (parameter.Type == KnownSymbol.Binder &&
+                    invocation.TryFindArgument(parameter, out var binderArg))
+                {
+                    return binderArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true ||
+                           (binderArg.Expression is MemberAccessExpressionSyntax memberAccess &&
+                            memberAccess.Name.Identifier.ValueText == "DefaultBinder");
+                }
+
                 return invocation.TryFindArgument(parameter, out var argument) &&
                        argument.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true;
             }

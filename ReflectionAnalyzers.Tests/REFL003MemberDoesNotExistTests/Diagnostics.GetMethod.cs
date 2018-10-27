@@ -108,19 +108,19 @@ namespace RoslynSandbox
         [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static)")]
         [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, Type.DefaultBinder, Type.EmptyTypes, null)")]
         public void MissingMethodNotInSource(string type)
         {
             var code = @"
 namespace RoslynSandbox
 {
+    using System;
     using System.Reflection;
 
     class Foo
     {
-        public Foo()
-        {
-            var methodInfo = typeof(string).GetMethod(↓""MISSING"");
-        }
+        public object Get => typeof(string).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(string).GetMethod(↓\"MISSING\")", type);
             var message = "The type string does not have a member named MISSING.";
