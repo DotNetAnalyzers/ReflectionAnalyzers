@@ -54,7 +54,6 @@ namespace ValidCode
         public void Delegate()
         {
             var code = @"
-// ReSharper disable All
 namespace ValidCode
 {
     using System;
@@ -64,6 +63,25 @@ namespace ValidCode
         object M(Delegate m) => m.GetType();
     }
 }";
+
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
+
+        [TestCase("pi.GetValue(null).GetType()")]
+        [TestCase("pi.GetValue(null)?.GetType()")]
+        public void UnknownType(string call)
+        {
+            var code = @"
+namespace ValidCode
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        object M(PropertyInfo pi) => pi.GetValue(null).GetType();
+    }
+}".AssertReplace("pi.GetValue(null).GetType()", call);
 
             AnalyzerAssert.Valid(Analyzer, code);
         }

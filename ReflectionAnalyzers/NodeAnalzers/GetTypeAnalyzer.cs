@@ -53,7 +53,7 @@ namespace ReflectionAnalyzers
                                     type.ToString(context)),
                                 type.ToString(context)));
                         break;
-                    case false:
+                    case false when nameArgument != null:
                         context.ReportDiagnostic(Diagnostic.Create(REFL037TypeDoesNotExits.Descriptor, nameArgument.GetLocation()));
                         break;
                 }
