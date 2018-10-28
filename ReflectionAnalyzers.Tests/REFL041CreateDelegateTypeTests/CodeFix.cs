@@ -12,37 +12,40 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
         private static readonly CodeFixProvider Fix = new UseTypeFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL041CreateDelegateType.Descriptor);
 
-        [TestCase("typeof(Func<ParameterExpression>)")]
-        [TestCase("typeof(Action<Type, string, bool, ParameterExpression>)")]
+        [TestCase("typeof(Func<string>)")]
+        [TestCase("typeof(Func<string, string>)")]
+        [TestCase("typeof(Action<string, string>)")]
         public void WhenFunc(string type)
         {
             var code = @"
 namespace RoslynSandbox
 {
     using System;
-    using System.Linq.Expressions;
     using System.Reflection;
 
     class C
     {
+        public static int M(string arg) => arg.Length;
+
         public static object Get => Delegate.CreateDelegate(
-            typeof(Func<ParameterExpression>),
-            typeof(ParameterExpression).GetMethod(""Make"", BindingFlags.Static | BindingFlags.NonPublic));
+            typeof(Func<string>),
+            typeof(C).GetMethod(nameof(M)));
     }
-}".AssertReplace("typeof(Func<ParameterExpression>)", type);
+}".AssertReplace("typeof(Func<string>)", type);
 
             var fixedCode = @"
 namespace RoslynSandbox
 {
     using System;
-    using System.Linq.Expressions;
     using System.Reflection;
 
     class C
     {
+        public static int M(string arg) => arg.Length;
+
         public static object Get => Delegate.CreateDelegate(
-            typeof(Func<Type, string, bool, ParameterExpression>),
-            typeof(ParameterExpression).GetMethod(""Make"", BindingFlags.Static | BindingFlags.NonPublic));
+            typeof(Func<string, int>),
+            typeof(C).GetMethod(nameof(M)));
     }
 }";
 
