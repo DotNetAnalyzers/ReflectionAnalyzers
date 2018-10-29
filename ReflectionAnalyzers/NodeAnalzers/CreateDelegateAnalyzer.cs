@@ -38,7 +38,7 @@ namespace ReflectionAnalyzers
                     context.ReportDiagnostic(
                         Diagnostic.Create(
                             REFL041CreateDelegateType.Descriptor,
-                            invocation.GetLocation(),
+                            typeOf.Type.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), delegateText)));
                 }
             }
@@ -56,7 +56,7 @@ namespace ReflectionAnalyzers
                         return false;
                     }
 
-                    if (delegateType.MetadataName.StartsWith("Action`", StringComparison.Ordinal))
+                    if (delegateType.MetadataName.StartsWith("Action", StringComparison.Ordinal))
                     {
                         if (method.Parameters.Length == 0)
                         {

@@ -23,13 +23,14 @@ namespace ReflectionAnalyzers.Codefixes
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText) &&
-                    syntaxRoot.TryFindNode(diagnostic, out TypeOfExpressionSyntax typeOf))
+                    syntaxRoot.TryFindNode(diagnostic, out TypeSyntax type))
                 {
                     context.RegisterCodeFix(
                         $"Change to: {typeText}.",
                         (editor, _) => editor.ReplaceNode(
-                            typeOf.Type,
+                            type,
                             x => SyntaxFactory.ParseTypeName(typeText)
+                                              .WithSimplifiedNames()
                                               .WithTriviaFrom(x)),
                         nameof(UseTypeFix),
                         diagnostic);
