@@ -39,7 +39,8 @@ namespace ReflectionAnalyzers
                         Diagnostic.Create(
                             REFL041CreateDelegateType.Descriptor,
                             typeOf.Type.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), delegateText)));
+                            ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), delegateText),
+                            delegateText));
                 }
             }
         }
@@ -92,7 +93,7 @@ namespace ReflectionAnalyzers
 
                 if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
                 {
-                    if (delegateType.TypeArguments.Length == method.Parameters.Length - 1)
+                    if (delegateType.TypeArguments.Length == method.Parameters.Length + 1)
                     {
                         for (var i = 0; i < method.Parameters.Length; i++)
                         {

@@ -29,6 +29,28 @@ namespace ValidCode
     }
 }";
 
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+        }
+
+        [Test]
+        public void AnonymousTypePropertyWithFlags()
+        {
+            var code = @"
+// ReSharper disable All
+namespace ValidCode
+{
+    using System.Reflection;
+
+    class C
+    {
+        object M()
+        {
+            var anon = new { Foo = 1 };
+            return anon.GetType().GetProperty(nameof(anon.Foo), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+    }
+}";
+
             AnalyzerAssert.Valid(Analyzer, code);
         }
 
