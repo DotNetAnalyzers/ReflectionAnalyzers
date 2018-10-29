@@ -164,5 +164,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL040.md">REFL040</a></td>
     <td>Prefer type.IsInstanceOfType(...).</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL041.md">REFL041</a></td>
+    <td>Delegate type is not matching.</td>
+  </tr>
 <table>
 <!-- end generated table -->
