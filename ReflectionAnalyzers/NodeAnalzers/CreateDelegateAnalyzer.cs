@@ -33,7 +33,7 @@ namespace ReflectionAnalyzers
                 if (typeArg.Expression is TypeOfExpressionSyntax typeOf &&
                     context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType) &&
                     MethodInfo.TryGet(memberArg.Expression, context, out var methodInfo) &&
-                    !IsCorrectDelegateType(methodInfo.Method, delegateType, context, out var delegateText))
+                    !IsCorrectDelegateType(methodInfo.Method, (INamedTypeSymbol)delegateType, context, out var delegateText))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -44,57 +44,66 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool IsCorrectDelegateType(IMethodSymbol method, ITypeSymbol delegateType, SyntaxNodeAnalysisContext context, out string delegateText)
+        private static bool IsCorrectDelegateType(IMethodSymbol method, INamedTypeSymbol delegateType, SyntaxNodeAnalysisContext context, out string delegateText)
         {
-            if (delegateType is INamedTypeSymbol namedType)
+            if (method.ReturnsVoid)
             {
-                if (method.ReturnsVoid)
+                if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
                 {
-                    if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
-                    {
-                        delegateText = ActionText();
-                        return false;
-                    }
+                    delegateText = ActionText();
+                    return false;
+                }
 
-                    if (delegateType.MetadataName.StartsWith("Action", StringComparison.Ordinal))
+                if (delegateType.MetadataName.StartsWith("Action", StringComparison.Ordinal))
+                {
+                    if (method.Parameters.Length == 0)
                     {
-                        if (method.Parameters.Length == 0)
-                        {
-                            if (namedType.TypeArguments.Length != 0)
-                            {
-                                delegateText = ActionText();
-                                return false;
-                            }
-                        }
-                        else if (method.Parameters.Length == namedType.TypeArguments.Length)
-                        {
-                            for (var i = 0; i < method.Parameters.Length; i++)
-                            {
-                                if (!method.Parameters[i].Type.Equals(namedType.TypeArguments[i]))
-                                {
-                                    delegateText = ActionText();
-                                    return false;
-                                }
-                            }
-                        }
-                        else if (method.Parameters.Length != namedType.TypeArguments.Length)
+                        if (delegateType.TypeArguments.Length != 0)
                         {
                             delegateText = ActionText();
                             return false;
                         }
                     }
-                }
-                else
-                {
-                    if (delegateType.MetadataName.StartsWith("Action`", StringComparison.Ordinal))
+                    else if (method.Parameters.Length == delegateType.TypeArguments.Length)
                     {
-                        delegateText = FuncText();
+                        for (var i = 0; i < method.Parameters.Length; i++)
+                        {
+                            if (!method.Parameters[i].Type.Equals(delegateType.TypeArguments[i]))
+                            {
+                                delegateText = ActionText();
+                                return false;
+                            }
+                        }
+                    }
+                    else if (method.Parameters.Length != delegateType.TypeArguments.Length)
+                    {
+                        delegateText = ActionText();
                         return false;
                     }
+                }
+            }
+            else
+            {
+                if (delegateType.MetadataName.StartsWith("Action`", StringComparison.Ordinal))
+                {
+                    delegateText = FuncText();
+                    return false;
+                }
 
-                    if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
+                if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
+                {
+                    if (delegateType.TypeArguments.Length == method.Parameters.Length - 1)
                     {
-                        if (namedType.TypeArguments.TryLast(out var last))
+                        for (var i = 0; i < method.Parameters.Length; i++)
+                        {
+                            if (!method.Parameters[i].Type.Equals(delegateType.TypeArguments[i]))
+                            {
+                                delegateText = ActionText();
+                                return false;
+                            }
+                        }
+
+                        if (delegateType.TypeArguments.TryLast(out var last))
                         {
                             if (!method.ReturnType.Equals(last))
                             {
@@ -102,12 +111,13 @@ namespace ReflectionAnalyzers
                                 return false;
                             }
                         }
-                        else
-                        {
-                            delegateText = FuncText();
-                            return false;
-                        }
+
+                        delegateText = null;
+                        return true;
                     }
+
+                    delegateText = FuncText();
+                    return false;
                 }
             }
 
@@ -116,16 +126,12 @@ namespace ReflectionAnalyzers
 
             string ActionText()
             {
-                return method.Parameters.Length == 0 ?
-                    "System.Action" :
-                    $"System.Action<{string.Join(", ", method.Parameters.Select(x => x.Type.ToString(context)))}>";
+                return method.Parameters.Length == 0 ? "System.Action" : $"System.Action<{string.Join(", ", method.Parameters.Select(x => x.Type.ToString(context)))}>";
             }
 
             string FuncText()
             {
-                return method.Parameters.Length == 0 ?
-                    $"System.Func<{method.ReturnType.ToString(context)}>" :
-                    $"System.Func<{string.Join(", ", method.Parameters.Select(x => x.Type).Concat(new[] { method.ReturnType }).Select(x => x.ToString(context)))}>";
+                return method.Parameters.Length == 0 ? $"System.Func<{method.ReturnType.ToString(context)}>" : $"System.Func<{string.Join(", ", method.Parameters.Select(x => x.Type).Concat(new[] { method.ReturnType }).Select(x => x.ToString(context)))}>";
             }
         }
     }
