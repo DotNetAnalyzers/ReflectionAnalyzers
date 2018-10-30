@@ -30,12 +30,12 @@ namespace ReflectionAnalyzers
                 invocation.TryGetTarget(KnownSymbol.Delegate.CreateDelegate, context.SemanticModel, context.CancellationToken, out var createDelegate) &&
                 TryFindArgument("type", out var typeArg) &&
                 TryFindArgument("method", out var methodArg) &&
-                typeArg.Expression is TypeOfExpressionSyntax typeOf &&
-                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType) &&
                 MethodInfo.TryGet(methodArg.Expression, context, out var methodInfo))
             {
-                var types = new DelegateTypes(methodInfo.Method, createDelegate.TryFindParameter("firstArgument", out _) ? 1 : 0);
-                if (!IsCorrectDelegateType(types, (INamedTypeSymbol)delegateType, context, out var delegateText))
+                if (typeArg.Expression is TypeOfExpressionSyntax typeOf &&
+                    TryFindDelegateMethod(typeOf, out var delegateMethod) &&
+                    new MethodTypes(methodInfo, createDelegate.TryFindParameter("firstArgument", out _)) is var argumentTypes &&
+                    !IsCorrectDelegateType(argumentTypes, delegateMethod, context, out var delegateText))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -52,94 +52,81 @@ namespace ReflectionAnalyzers
                 return createDelegate.TryFindParameter(name, out var parameter) &&
                        invocation.TryFindArgument(parameter, out argument);
             }
+
+            bool TryFindDelegateMethod(TypeOfExpressionSyntax typeOf, out IMethodSymbol delegateMethod)
+            {
+                if (context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType) &&
+                    delegateType is INamedTypeSymbol namedType &&
+                    namedType.DelegateInvokeMethod is IMethodSymbol temp)
+                {
+                    delegateMethod = temp;
+                    return true;
+                }
+
+                delegateMethod = null;
+                return false;
+            }
         }
 
-        private static bool IsCorrectDelegateType(DelegateTypes types, INamedTypeSymbol delegateType, SyntaxNodeAnalysisContext context, out string delegateText)
+        private static bool IsCorrectDelegateType(MethodTypes methodTypes, IMethodSymbol delegateMethod, SyntaxNodeAnalysisContext context, out string delegateText)
         {
-            if (types.ReturnType.SpecialType == SpecialType.System_Void)
+            if (!methodTypes.ReturnType.Equals(delegateMethod.ReturnType))
             {
-                if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
+                delegateText = DelegateText();
+                return false;
+            }
+
+            if (methodTypes.Count == delegateMethod.Parameters.Length)
+            {
+                for (var i = 0; i < delegateMethod.Parameters.Length; i++)
                 {
-                    delegateText = ActionText();
-                    return false;
+                    if (!methodTypes[i].Equals(delegateMethod.Parameters[i].Type))
+                    {
+                        delegateText = DelegateText();
+                        return false;
+                    }
                 }
 
-                if (delegateType.MetadataName.StartsWith("Action", StringComparison.Ordinal))
-                {
-                    if (types.Count == delegateType.TypeArguments.Length)
-                    {
-                        for (var i = 0; i < types.Count; i++)
-                        {
-                            if (!types[i].Equals(delegateType.TypeArguments[i]))
-                            {
-                                delegateText = ActionText();
-                                return false;
-                            }
-                        }
+                delegateText = null;
+                return true;
+            }
 
-                        delegateText = null;
-                        return true;
+            delegateText = DelegateText();
+            return false;
+
+            string DelegateText()
+            {
+                if (methodTypes.ReturnType.SpecialType == SpecialType.System_Void)
+                {
+                    if (methodTypes.Count == 0)
+                    {
+                        return "System.Action";
                     }
 
-                    delegateText = ActionText();
-                    return false;
-                }
-            }
-            else
-            {
-                if (delegateType.MetadataName.StartsWith("Action`", StringComparison.Ordinal))
-                {
-                    delegateText = FuncText();
-                    return false;
+                    return StringBuilderPool.Borrow()
+                                             .Append("System.Action<")
+                                             .Append(methodTypes.TypeArgsText(context))
+                                             .Append(">")
+                                             .Return();
                 }
 
-                if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
-                {
-                    if (types.Count == delegateType.TypeArguments.Length)
-                    {
-                        for (var i = 0; i < types.Count; i++)
-                        {
-                            if (!types[i].Equals(delegateType.TypeArguments[i]))
-                            {
-                                delegateText = FuncText();
-                                return false;
-                            }
-                        }
-
-                        delegateText = null;
-                        return true;
-                    }
-
-                    delegateText = FuncText();
-                    return false;
-                }
-            }
-
-            delegateText = null;
-            return true;
-
-            string ActionText()
-            {
-                return types.Count == 0 ?
-                    "System.Action" :
-                    $"System.Action<{types.TypeArgsText(context)}>";
-            }
-
-            string FuncText()
-            {
-                return $"System.Func<{types.TypeArgsText(context)}>";
+                return StringBuilderPool.Borrow()
+                                        .Append("System.Func<")
+                                        .Append(methodTypes.TypeArgsText(context))
+                                        .Append(">")
+                                        .Return();
             }
         }
 
-        private struct DelegateTypes
+        private struct MethodTypes
         {
             private readonly IMethodSymbol method;
             private readonly int startIndex;
 
-            public DelegateTypes(IMethodSymbol method, int startIndex)
+            public MethodTypes(MethodInfo methodInfo, bool isCurried)
             {
-                this.method = method;
-                this.startIndex = startIndex;
+                this.method = methodInfo.Method;
+                this.startIndex = isCurried ? 1 : 0;
             }
 
             public int Count
@@ -184,7 +171,7 @@ namespace ReflectionAnalyzers
                     }
 
                     if (index == this.method.Parameters.Length &&
-                       !this.method.ReturnsVoid)
+                        !this.method.ReturnsVoid)
                     {
                         return this.method.ReturnType;
                     }

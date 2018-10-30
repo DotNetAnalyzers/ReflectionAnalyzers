@@ -351,5 +351,47 @@ namespace RoslynSandbox
             var message = "Delegate type is not matching expected System.Action.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
+
+        [Test]
+        public void StaticStringIntCustomDelegate()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        delegate int StringInt(string text);
+
+        public static void M(string arg) => arg.Length;
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(StringInt),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        delegate int StringInt(string text);
+
+        public static void M(string arg) => arg.Length;
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action<string>),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            var message = "Delegate type is not matching expected System.Action<string>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }
