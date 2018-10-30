@@ -205,5 +205,28 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Valid(Analyzer, code);
         }
+
+        [Test]
+        public void StaticStringIntCustomDelegate()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        delegate int StringInt(string text);
+
+        public static int M(string arg) => arg.Length;
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(StringInt),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
     }
 }
