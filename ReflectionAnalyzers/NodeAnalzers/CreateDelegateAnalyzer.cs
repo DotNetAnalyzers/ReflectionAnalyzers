@@ -28,12 +28,15 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.TryGetTarget(KnownSymbol.Delegate.CreateDelegate, QualifiedParameter.Create(KnownSymbol.Type), QualifiedParameter.Create(KnownSymbol.MethodInfo), context.SemanticModel, context.CancellationToken, out _, out var typeArg, out var memberArg))
+                invocation.TryGetTarget(KnownSymbol.Delegate.CreateDelegate, context.SemanticModel, context.CancellationToken, out var createDelegate) &&
+                TryFindArgument("type", out var typeArg) &&
+                TryFindArgument("method", out var methodArg) &&
+                typeArg.Expression is TypeOfExpressionSyntax typeOf &&
+                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType) &&
+                MethodInfo.TryGet(methodArg.Expression, context, out var methodInfo))
             {
-                if (typeArg.Expression is TypeOfExpressionSyntax typeOf &&
-                    context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType) &&
-                    MethodInfo.TryGet(memberArg.Expression, context, out var methodInfo) &&
-                    !IsCorrectDelegateType(methodInfo.Method, (INamedTypeSymbol)delegateType, context, out var delegateText))
+                var types = new DelegateTypes(methodInfo.Method, createDelegate.TryFindParameter("firstArgument", out _) ? 1 : 0);
+                if (!IsCorrectDelegateType(types, (INamedTypeSymbol)delegateType, context, out var delegateText))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -43,11 +46,18 @@ namespace ReflectionAnalyzers
                             delegateText));
                 }
             }
+
+            bool TryFindArgument(string name, out ArgumentSyntax argument)
+            {
+                argument = null;
+                return createDelegate.TryFindParameter(name, out var parameter) &&
+                       invocation.TryFindArgument(parameter, out argument);
+            }
         }
 
-        private static bool IsCorrectDelegateType(IMethodSymbol method, INamedTypeSymbol delegateType, SyntaxNodeAnalysisContext context, out string delegateText)
+        private static bool IsCorrectDelegateType(DelegateTypes types, INamedTypeSymbol delegateType, SyntaxNodeAnalysisContext context, out string delegateText)
         {
-            if (method.ReturnsVoid)
+            if (types.ReturnType.SpecialType == SpecialType.System_Void)
             {
                 if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
                 {
@@ -57,30 +67,23 @@ namespace ReflectionAnalyzers
 
                 if (delegateType.MetadataName.StartsWith("Action", StringComparison.Ordinal))
                 {
-                    if (method.Parameters.Length == 0)
+                    if (types.Count == delegateType.TypeArguments.Length)
                     {
-                        if (delegateType.TypeArguments.Length != 0)
+                        for (var i = 0; i < types.Count; i++)
                         {
-                            delegateText = ActionText();
-                            return false;
-                        }
-                    }
-                    else if (method.Parameters.Length == delegateType.TypeArguments.Length)
-                    {
-                        for (var i = 0; i < method.Parameters.Length; i++)
-                        {
-                            if (!method.Parameters[i].Type.Equals(delegateType.TypeArguments[i]))
+                            if (!types[i].Equals(delegateType.TypeArguments[i]))
                             {
                                 delegateText = ActionText();
                                 return false;
                             }
                         }
+
+                        delegateText = null;
+                        return true;
                     }
-                    else if (method.Parameters.Length != delegateType.TypeArguments.Length)
-                    {
-                        delegateText = ActionText();
-                        return false;
-                    }
+
+                    delegateText = ActionText();
+                    return false;
                 }
             }
             else
@@ -93,20 +96,11 @@ namespace ReflectionAnalyzers
 
                 if (delegateType.MetadataName.StartsWith("Func`", StringComparison.Ordinal))
                 {
-                    if (delegateType.TypeArguments.Length == method.Parameters.Length + 1)
+                    if (types.Count == delegateType.TypeArguments.Length)
                     {
-                        for (var i = 0; i < method.Parameters.Length; i++)
+                        for (var i = 0; i < types.Count; i++)
                         {
-                            if (!method.Parameters[i].Type.Equals(delegateType.TypeArguments[i]))
-                            {
-                                delegateText = ActionText();
-                                return false;
-                            }
-                        }
-
-                        if (delegateType.TypeArguments.TryLast(out var last))
-                        {
-                            if (!method.ReturnType.Equals(last))
+                            if (!types[i].Equals(delegateType.TypeArguments[i]))
                             {
                                 delegateText = FuncText();
                                 return false;
@@ -127,12 +121,68 @@ namespace ReflectionAnalyzers
 
             string ActionText()
             {
-                return method.Parameters.Length == 0 ? "System.Action" : $"System.Action<{string.Join(", ", method.Parameters.Select(x => x.Type.ToString(context)))}>";
+                return types.Count == 0 ?
+                    "System.Action" :
+                    $"System.Action<{types.TypeArgsText(context)}>";
             }
 
             string FuncText()
             {
-                return method.Parameters.Length == 0 ? $"System.Func<{method.ReturnType.ToString(context)}>" : $"System.Func<{string.Join(", ", method.Parameters.Select(x => x.Type).Concat(new[] { method.ReturnType }).Select(x => x.ToString(context)))}>";
+                return $"System.Func<{types.TypeArgsText(context)}>";
+            }
+        }
+
+        private struct DelegateTypes
+        {
+            private readonly IMethodSymbol method;
+            private readonly int startIndex;
+
+            public DelegateTypes(IMethodSymbol method, int startIndex)
+            {
+                this.method = method;
+                this.startIndex = startIndex;
+            }
+
+            public int Count => this.method.ReturnsVoid
+                ? this.method.Parameters.Length - this.startIndex
+                : this.method.Parameters.Length - this.startIndex + 1;
+
+            public ITypeSymbol ReturnType => this.method.ReturnType;
+
+            public ITypeSymbol this[int index]
+            {
+                get
+                {
+                    index += this.startIndex;
+                    if (index < this.method.Parameters.Length)
+                    {
+                        return this.method.Parameters[index].Type;
+                    }
+
+                    if (index == this.method.Parameters.Length &&
+                       !this.method.ReturnsVoid)
+                    {
+                        return this.method.ReturnType;
+                    }
+
+                    throw new ArgumentOutOfRangeException(nameof(index), index, "DelegateTypes[] should never get here, bug in the analyzer.");
+                }
+            }
+
+            public string TypeArgsText(SyntaxNodeAnalysisContext context)
+            {
+                var builder = StringBuilderPool.Borrow();
+                for (var i = 0; i < this.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        _ = builder.Append(", ");
+                    }
+
+                    _ = builder.Append(this[i].ToString(context));
+                }
+
+                return builder.Return();
             }
         }
     }

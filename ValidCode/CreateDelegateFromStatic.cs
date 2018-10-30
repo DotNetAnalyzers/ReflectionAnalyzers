@@ -14,10 +14,23 @@ namespace ValidCode
                                 typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
                             .Invoke("abc"));
 
+            Assert.AreEqual(3, ((Func<string, int>)Delegate.CreateDelegate(
+                                typeof(Func<string, int>),
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null),
+                                throwOnBindFailure: true))
+                            .Invoke("abc"));
+
             Assert.AreEqual(3, ((Func<int>)Delegate.CreateDelegate(
                                 typeof(Func<int>),
                                 "abc",
                                 typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                            .Invoke());
+
+            Assert.AreEqual(3, ((Func<int>)Delegate.CreateDelegate(
+                                typeof(Func<int>),
+                                "abc",
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null),
+                                throwOnBindFailure: true))
                             .Invoke());
 
             ((Action)Delegate.CreateDelegate(

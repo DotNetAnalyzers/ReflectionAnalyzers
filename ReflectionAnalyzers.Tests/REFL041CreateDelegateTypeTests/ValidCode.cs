@@ -66,7 +66,7 @@ namespace RoslynSandbox
         public static int M(string arg) => arg.Length;
 
         public static object Get => Delegate.CreateDelegate(
-            typeof(Func<string, int>),
+            typeof(Func<int>),
             string.Empty,
             typeof(C).GetMethod(nameof(M)));
     }

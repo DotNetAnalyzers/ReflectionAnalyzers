@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
         [TestCase("typeof(Func<string, string>)")]
         [TestCase("typeof(Func<string, string, int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void WhenFunc(string type)
+        public void StaticStringInt(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -58,7 +58,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Func<string, string, int>)")]
         [TestCase("typeof(Action<int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void WhenAction(string type)
+        public void StaticVoid(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -101,7 +101,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action)")]
         [TestCase("typeof(Action<int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void WhenActionOfString(string type)
+        public void StaticStringVoid(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -135,6 +135,93 @@ namespace RoslynSandbox
     }
 }";
 
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [TestCase("typeof(Func<string>)")]
+        [TestCase("typeof(Func<string, string>)")]
+        [TestCase("typeof(Func<string, string, int>)")]
+        [TestCase("typeof(Action<int>)")]
+        [TestCase("typeof(Action<string, string>)")]
+        public void StaticStringVoidFirstArg(string type)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static void M(string arg) { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action<int>),
+            string.Empty,
+            typeof(C).GetMethod(nameof(M)));
+    }
+}".AssertReplace("typeof(Action<int>)", type);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static void M(string arg) { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action),
+            string.Empty,
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [TestCase("typeof(Func<string>)")]
+        [TestCase("typeof(Func<string, string>)")]
+        [TestCase("typeof(Func<string, string, int>)")]
+        [TestCase("typeof(Action)")]
+        [TestCase("typeof(Action<int>)")]
+        [TestCase("typeof(Action<string, string>)")]
+        public void StaticStringStringVoidFirstArg(string type)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static void M(string arg1, string arg2) { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action<int>),
+            string.Empty,
+            typeof(C).GetMethod(nameof(M)));
+    }
+}".AssertReplace("typeof(Action<int>)", type);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static void M(string arg1, string arg2) { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action<string>),
+            string.Empty,
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
