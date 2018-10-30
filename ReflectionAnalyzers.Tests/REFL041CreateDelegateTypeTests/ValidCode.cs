@@ -162,5 +162,48 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Valid(Analyzer, code);
         }
+
+        [Test]
+        public void InstanceStringInt()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public int M(string arg) => arg.Length;
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Func<C, string, int>),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
+
+        [Test]
+        public void InstanceStringIntWithTarget()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public int M(string arg) => arg.Length;
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Func<string, int>),
+            new C(),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
     }
 }

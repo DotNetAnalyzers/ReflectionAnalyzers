@@ -2,7 +2,6 @@ namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
-    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -143,9 +142,24 @@ namespace ReflectionAnalyzers
                 this.startIndex = startIndex;
             }
 
-            public int Count => this.method.ReturnsVoid
-                ? this.method.Parameters.Length - this.startIndex
-                : this.method.Parameters.Length - this.startIndex + 1;
+            public int Count
+            {
+                get
+                {
+                    var count = this.method.Parameters.Length - this.startIndex;
+                    if (!this.method.ReturnsVoid)
+                    {
+                        count++;
+                    }
+
+                    if (!this.method.IsStatic)
+                    {
+                        count++;
+                    }
+
+                    return count;
+                }
+            }
 
             public ITypeSymbol ReturnType => this.method.ReturnType;
 
@@ -153,7 +167,17 @@ namespace ReflectionAnalyzers
             {
                 get
                 {
+                    if (!this.method.IsStatic)
+                    {
+                        index--;
+                    }
+
                     index += this.startIndex;
+                    if (index == -1)
+                    {
+                        return this.method.ContainingType;
+                    }
+
                     if (index < this.method.Parameters.Length)
                     {
                         return this.method.Parameters[index].Type;

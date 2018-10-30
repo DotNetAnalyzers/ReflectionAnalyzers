@@ -224,5 +224,133 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
+
+
+        [TestCase("typeof(Func<string>)")]
+        [TestCase("typeof(Func<string, string>)")]
+        [TestCase("typeof(Func<string, string, int>)")]
+        [TestCase("typeof(Action<string, string>)")]
+        public void InstanceStringInt(string type)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public int M(string arg) => arg.Length;
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Func<string>),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}".AssertReplace("typeof(Func<string>)", type);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public int M(string arg) => arg.Length;
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Func<C, string, int>),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            var message = "Delegate type is not matching expected System.Func<C, string, int>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [TestCase("typeof(Func<string>)")]
+        [TestCase("typeof(Func<string, string>)")]
+        [TestCase("typeof(Func<string, string, int>)")]
+        [TestCase("typeof(Action<int>)")]
+        [TestCase("typeof(Action<string, string>)")]
+        public void InstanceVoid(string type)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public void M() { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Func<string>),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}".AssertReplace("typeof(Func<string>)", type);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public void M() { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action<C>),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            var message = "Delegate type is not matching expected System.Action<C>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [TestCase("typeof(Func<string>)")]
+        [TestCase("typeof(Func<string, string>)")]
+        [TestCase("typeof(Func<string, string, int>)")]
+        [TestCase("typeof(Action<int>)")]
+        [TestCase("typeof(Action<string, string>)")]
+        public void InstanceVoidWithTarget(string type)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public void M() { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Func<string>),
+            new C(),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}".AssertReplace("typeof(Func<string>)", type);
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public void M() { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action),
+            new C(),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            var message = "Delegate type is not matching expected System.Action.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }
