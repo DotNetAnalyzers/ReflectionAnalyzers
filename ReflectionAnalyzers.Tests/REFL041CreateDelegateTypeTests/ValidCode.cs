@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
         private static readonly DiagnosticDescriptor Descriptor = REFL041CreateDelegateType.Descriptor;
 
         [Test]
-        public void CreateDelegate()
+        public void CreateDelegateParameterExpressionMake()
         {
             var code = @"
 namespace RoslynSandbox
@@ -32,7 +32,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenFunc()
+        public void StaticStringInt()
         {
             var code = @"
 namespace RoslynSandbox
@@ -53,7 +53,29 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenAction()
+        public void StaticStringIntWithFirstArg()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static int M(string arg) => arg.Length;
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Func<string, int>),
+            string.Empty,
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
+
+        [Test]
+        public void StaticVoid()
         {
             var code = @"
 namespace RoslynSandbox
@@ -74,7 +96,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenActionOfString()
+        public void StaticStringVoid()
         {
             var code = @"
 namespace RoslynSandbox
@@ -88,6 +110,52 @@ namespace RoslynSandbox
 
         public static object Get => Delegate.CreateDelegate(
             typeof(Action<string>),
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
+
+        [Test]
+        public void StaticStringVoidFirstArg()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static void M(string arg) { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action),
+            string.Empty,
+            typeof(C).GetMethod(nameof(M)));
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
+
+        [Test]
+        public void StaticStringStringVoidFirstArg()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static void M(string arg1, string arg2) { }
+
+        public static object Get => Delegate.CreateDelegate(
+            typeof(Action<string>),
+            string.Empty,
             typeof(C).GetMethod(nameof(M)));
     }
 }";

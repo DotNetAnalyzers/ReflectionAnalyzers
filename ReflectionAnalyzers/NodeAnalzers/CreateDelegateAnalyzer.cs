@@ -28,7 +28,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                invocation.TryGetTarget(KnownSymbol.Delegate.CreateDelegate, QualifiedParameter.Create(KnownSymbol.Type), QualifiedParameter.Create(KnownSymbol.MethodInfo), context.SemanticModel, context.CancellationToken, out var createDelegate, out var typeArg, out var memberArg))
+                invocation.TryGetTarget(KnownSymbol.Delegate.CreateDelegate, QualifiedParameter.Create(KnownSymbol.Type), QualifiedParameter.Create(KnownSymbol.MethodInfo), context.SemanticModel, context.CancellationToken, out _, out var typeArg, out var memberArg))
             {
                 if (typeArg.Expression is TypeOfExpressionSyntax typeOf &&
                     context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType) &&
