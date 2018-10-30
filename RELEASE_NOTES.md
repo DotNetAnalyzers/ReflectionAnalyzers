@@ -1,3 +1,8 @@
+#### 0.16.0
+* REFL041 check delegate type when calling Delegate.CreateDelegate.
+* REFL040 Prefer type.IsInstanceOfType.
+* BUGFIX: NRE in GetTypeAnalyzer when elvis operator.
+
 #### 0.15.0
 * REFL014 report when filtered by types.
 * REFL039 prefer typeof().

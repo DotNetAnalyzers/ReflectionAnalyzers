@@ -4,10 +4,9 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  REFL014 report when filtered by types.
-  REFL039 prefer typeof().
-  REFL003 warn on getting named tuple field.
-  REFL016 handle ValueTuple.
+  REFL041 check delegate type when calling Delegate.CreateDelegate.
+  REFL040 Prefer type.IsInstanceOfType.
+  BUGFIX: NRE in GetTypeAnalyzer when elvis operator.
 
 excludedgroups
   Main
