@@ -365,7 +365,7 @@ namespace RoslynSandbox
     {
         delegate int StringInt(string text);
 
-        public static void M(string arg) => arg.Length;
+        public static void M(string arg) { }
 
         public static object Get => Delegate.CreateDelegate(
             typeof(StringInt),
@@ -383,7 +383,7 @@ namespace RoslynSandbox
     {
         delegate int StringInt(string text);
 
-        public static void M(string arg) => arg.Length;
+        public static void M(string arg) { }
 
         public static object Get => Delegate.CreateDelegate(
             typeof(Action<string>),

@@ -134,11 +134,6 @@ namespace ReflectionAnalyzers
                 get
                 {
                     var count = this.method.Parameters.Length - this.startIndex;
-                    if (!this.method.ReturnsVoid)
-                    {
-                        count++;
-                    }
-
                     if (!this.method.IsStatic)
                     {
                         count++;
@@ -170,12 +165,6 @@ namespace ReflectionAnalyzers
                         return this.method.Parameters[index].Type;
                     }
 
-                    if (index == this.method.Parameters.Length &&
-                        !this.method.ReturnsVoid)
-                    {
-                        return this.method.ReturnType;
-                    }
-
                     throw new ArgumentOutOfRangeException(nameof(index), index, "DelegateTypes[] should never get here, bug in the analyzer.");
                 }
             }
@@ -191,6 +180,16 @@ namespace ReflectionAnalyzers
                     }
 
                     _ = builder.Append(this[i].ToString(context));
+                }
+
+                if (!this.method.ReturnsVoid)
+                {
+                    if (builder.Length > 0)
+                    {
+                        _ = builder.Append(", ");
+                    }
+
+                    _ = builder.Append(this.method.ReturnType.ToString(context));
                 }
 
                 return builder.Return();
