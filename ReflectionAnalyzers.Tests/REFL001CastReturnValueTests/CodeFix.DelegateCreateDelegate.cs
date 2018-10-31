@@ -54,6 +54,49 @@ namespace RoslynSandbox
 }";
                 AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
             }
+
+            [Test]
+            public void Walk()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C
+    {
+        public C()
+        {
+            var info = typeof(C).GetMethod(nameof(M));
+            var value = ↓Delegate.CreateDelegate(
+                typeof(Func<int>),
+                info);
+        }
+
+        public static int M() => 0;
+    }
+}";
+
+                var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C
+    {
+        public C()
+        {
+            var info = typeof(C).GetMethod(nameof(M));
+            var value = (Func<int>)Delegate.CreateDelegate(
+                typeof(Func<int>),
+                info);
+        }
+
+        public static int M() => 0;
+    }
+}";
+                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            }
         }
     }
 }

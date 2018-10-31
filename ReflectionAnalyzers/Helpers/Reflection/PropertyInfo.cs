@@ -1,6 +1,8 @@
 namespace ReflectionAnalyzers
 {
+    using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -23,10 +25,18 @@ namespace ReflectionAnalyzers
                                                                 member.Symbol is IPropertySymbol property:
                     propertyInfo = new PropertyInfo(member.ReflectedType, property);
                     return true;
-                default:
-                    propertyInfo = default(PropertyInfo);
-                    return false;
             }
+
+            if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
+                context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out ISymbol local))
+            {
+                propertyInfo = default(PropertyInfo);
+                return AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
+                       TryGet(assignedValue, context, out propertyInfo);
+            }
+
+            propertyInfo = default(PropertyInfo);
+            return false;
         }
     }
 }

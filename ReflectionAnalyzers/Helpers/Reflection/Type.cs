@@ -2,6 +2,7 @@ namespace ReflectionAnalyzers
 {
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -143,18 +144,6 @@ namespace ReflectionAnalyzers
         {
             switch (expression)
             {
-                case IdentifierNameSyntax identifierName when context.SemanticModel.TryGetSymbol(identifierName, context.CancellationToken, out ILocalSymbol local):
-#pragma warning disable IDISP003 // Dispose previous before re-assigning.
-                    using (visited = visited.IncrementUsage())
-#pragma warning restore IDISP003 // Dispose previous before re-assigning.
-                    {
-                        source = null;
-                        result = null;
-                        return AssignedValueWalker.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
-                               visited.Add(assignedValue) &&
-                               TryGet(assignedValue, context, visited, out result, out source);
-                    }
-
                 case MemberAccessExpressionSyntax memberAccess when memberAccess.Name.Identifier.ValueText == "ReturnType" &&
                                                                     memberAccess.Expression is InvocationExpressionSyntax invocation &&
                                                                     GetX.TryMatchGetMethod(invocation, context, out var reflectedMember, out _, out _, out _) &&
@@ -255,6 +244,21 @@ namespace ReflectionAnalyzers
                 case ConditionalAccessExpressionSyntax conditionalAccess:
                     source = conditionalAccess;
                     return TryGet(conditionalAccess.WhenNotNull, context, out result, out _);
+            }
+
+            if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
+                context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out ISymbol local))
+            {
+#pragma warning disable IDISP003 // Dispose previous before re-assigning.
+                using (visited = visited.IncrementUsage())
+#pragma warning restore IDISP003 // Dispose previous before re-assigning.
+                {
+                    source = null;
+                    result = null;
+                    return AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
+                           visited.Add(assignedValue) &&
+                           TryGet(assignedValue, context, visited, out result, out source);
+                }
             }
 
             source = null;

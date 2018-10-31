@@ -11,6 +11,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("typeof(Foo).GetMethod(nameof(this.M))",                              "RoslynSandbox.Foo.M()")]
         [TestCase("foo.GetType().GetMethod(nameof(this.M))",                            "RoslynSandbox.Foo.M()")]
         [TestCase("fooType.GetMethod(nameof(this.M))",                                  "RoslynSandbox.Foo.M()")]
+        [TestCase("Cached",                                                             "RoslynSandbox.Foo.M()")]
         [TestCase("typeof(Foo).GetProperty(nameof(this.Property)).GetMethod",           "RoslynSandbox.Foo.Property.get")]
         [TestCase("typeof(Foo).GetProperty(nameof(this.Property)).GetGetMethod(false)", "RoslynSandbox.Foo.Property.get")]
         [TestCase("typeof(Foo).GetProperty(nameof(this.Property)).SetMethod",           "RoslynSandbox.Foo.Property.set")]
