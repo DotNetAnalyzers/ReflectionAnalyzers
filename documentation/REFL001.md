@@ -25,6 +25,10 @@
   </tr>
   <tr>
     <td></td>
+     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/CreateDelegateAnalyzer.cs">CreateDelegateAnalyzer</a></td>
+  </tr>
+  <tr>
+    <td></td>
      <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/InvokeAnalyzer.cs">InvokeAnalyzer</a></td>
   </tr>
 </table>

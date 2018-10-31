@@ -13,6 +13,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
+            REFL001CastReturnValue.Descriptor,
             REFL041CreateDelegateType.Descriptor);
 
         /// <inheritdoc/>
@@ -30,10 +31,23 @@ namespace ReflectionAnalyzers
                 invocation.TryGetTarget(KnownSymbol.Delegate.CreateDelegate, context.SemanticModel, context.CancellationToken, out var createDelegate) &&
                 TryFindArgument("type", out var typeArg) &&
                 TryFindArgument("method", out var methodArg) &&
-                MethodInfo.TryGet(methodArg.Expression, context, out var methodInfo))
+                MethodInfo.TryGet(methodArg.Expression, context, out var methodInfo) &&
+                typeArg.Expression is TypeOfExpressionSyntax typeOf &&
+                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType))
             {
-                if (typeArg.Expression is TypeOfExpressionSyntax typeOf &&
-                    TryFindDelegateMethod(typeOf, out var delegateMethod) &&
+                if (ReturnValue.ShouldCast(invocation, delegateType, context))
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL001CastReturnValue.Descriptor,
+                            invocation.GetLocation(),
+                            ImmutableDictionary<string, string>.Empty.Add(
+                                nameof(TypeSyntax),
+                                delegateType.ToString(context)),
+                            delegateType.ToString(context)));
+                }
+
+                if (TryFindDelegateMethod(out var delegateMethod) &&
                     new MethodTypes(methodInfo, createDelegate.TryFindParameter("firstArgument", out _)) is var argumentTypes &&
                     !IsCorrectDelegateType(argumentTypes, delegateMethod, context, out var delegateText))
                 {
@@ -53,10 +67,9 @@ namespace ReflectionAnalyzers
                        invocation.TryFindArgument(parameter, out argument);
             }
 
-            bool TryFindDelegateMethod(TypeOfExpressionSyntax typeOf, out IMethodSymbol delegateMethod)
+            bool TryFindDelegateMethod(out IMethodSymbol delegateMethod)
             {
-                if (context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType) &&
-                    delegateType is INamedTypeSymbol namedType &&
+                if (delegateType is INamedTypeSymbol namedType &&
                     namedType.DelegateInvokeMethod is IMethodSymbol temp)
                 {
                     delegateMethod = temp;
