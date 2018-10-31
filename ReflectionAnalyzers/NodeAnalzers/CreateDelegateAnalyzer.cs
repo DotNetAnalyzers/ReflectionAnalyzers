@@ -14,6 +14,7 @@ namespace ReflectionAnalyzers
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL001CastReturnValue.Descriptor,
+            REFL028CastReturnValueToCorrectType.Descriptor,
             REFL041CreateDelegateType.Descriptor);
 
         /// <inheritdoc/>
@@ -48,15 +49,28 @@ namespace ReflectionAnalyzers
                 }
 
                 if (TryFindDelegateMethod(out var delegateMethod) &&
-                    new MethodTypes(methodInfo, createDelegate.TryFindParameter("firstArgument", out _)) is var argumentTypes &&
-                    !IsCorrectDelegateType(argumentTypes, delegateMethod, context, out var delegateText))
+                    new MethodTypes(methodInfo, createDelegate.TryFindParameter("firstArgument", out _)) is var argumentTypes)
                 {
-                    context.ReportDiagnostic(
-                        Diagnostic.Create(
-                            REFL041CreateDelegateType.Descriptor,
-                            typeOf.Type.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), delegateText),
-                            delegateText));
+                    if (!IsCorrectDelegateType(argumentTypes, delegateMethod, context, out var delegateText))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL041CreateDelegateType.Descriptor,
+                                typeOf.Type.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), delegateText),
+                                delegateText));
+                    }
+                    else if (Type.IsCastToWrongType(invocation, delegateType, context, out var typeSyntax))
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL028CastReturnValueToCorrectType.Descriptor,
+                                typeSyntax.GetLocation(),
+                                ImmutableDictionary<string, string>.Empty.Add(
+                                    nameof(TypeSyntax),
+                                    delegateType.ToString(context)),
+                                delegateType.ToString(context)));
+                    }
                 }
             }
 
