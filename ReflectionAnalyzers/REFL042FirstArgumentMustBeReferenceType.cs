@@ -2,18 +2,18 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL041CreateDelegateType
+    internal static class REFL042FirstArgumentMustBeReferenceType
     {
-        internal const string DiagnosticId = "REFL041";
+        internal const string DiagnosticId = "REFL042";
 
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
-            title: "Delegate type is not matching.",
-            messageFormat: "Delegate type is not matching expected {0}.",
+            title: "First argument must be reference type.",
+            messageFormat: "First argument must be reference type.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Delegate type is not matching.",
+            description: "First argument must be reference type.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }

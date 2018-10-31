@@ -15,7 +15,8 @@ namespace ReflectionAnalyzers
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL001CastReturnValue.Descriptor,
             REFL028CastReturnValueToCorrectType.Descriptor,
-            REFL041CreateDelegateType.Descriptor);
+            REFL041CreateDelegateType.Descriptor,
+            REFL042FirstArgumentMustBeReferenceType.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -71,6 +72,16 @@ namespace ReflectionAnalyzers
                                     delegateType.ToString(context)),
                                 delegateType.ToString(context)));
                     }
+
+                    if (TryFindArgument("firstArgument", out var firstArg) &&
+                        TryGetFirstArgType(methodInfo, out var firstArgType) &&
+                        !firstArgType.IsReferenceType)
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL042FirstArgumentMustBeReferenceType.Descriptor,
+                                firstArg.GetLocation()));
+                    }
                 }
             }
 
@@ -93,6 +104,24 @@ namespace ReflectionAnalyzers
                 delegateMethod = null;
                 return false;
             }
+        }
+
+        private static bool TryGetFirstArgType(MethodInfo methodInfo, out ITypeSymbol type)
+        {
+            if (!methodInfo.Method.IsStatic)
+            {
+                type = methodInfo.Method.ContainingType;
+                return true;
+            }
+
+            if (methodInfo.Method.Parameters.TryFirst(out var parameter))
+            {
+                type = parameter.Type;
+                return true;
+            }
+
+            type = null;
+            return false;
         }
 
         private static bool IsCorrectDelegateType(MethodTypes methodTypes, IMethodSymbol delegateMethod, SyntaxNodeAnalysisContext context, out string delegateText)

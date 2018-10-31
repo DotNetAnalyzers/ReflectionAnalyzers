@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
-    using System;
     using System.Threading;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CSharp;
