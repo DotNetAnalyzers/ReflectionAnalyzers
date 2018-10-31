@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.Helpers
+namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System.Linq;
     using NUnit.Framework;
