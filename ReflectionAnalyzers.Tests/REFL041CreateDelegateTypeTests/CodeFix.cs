@@ -393,5 +393,173 @@ namespace RoslynSandbox
             var message = "Delegate type is not matching expected System.Action<string>.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
+
+        [Test]
+        public void GetGetMethodReturnTypeInstance()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Func<Foo, string>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetGetMethod());
+
+        public int Value { get; set; }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Func<Foo, int>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetGetMethod());
+
+        public int Value { get; set; }
+    }
+}";
+            var message = "Delegate type is not matching expected System.Func<Foo, int>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [Test]
+        public void GetGetMethodReturnTypeStatic()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Func<string>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetGetMethod());
+
+        public static int Value { get; set; }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Func<int>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetGetMethod());
+
+        public static int Value { get; set; }
+    }
+}";
+            var message = "Delegate type is not matching expected System.Func<int>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [Test]
+        public void GetSetMethodReturnTypeInstance()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Action<Foo, string>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetSetMethod());
+
+        public int Value { get; set; }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Action<Foo, int>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetSetMethod());
+
+        public int Value { get; set; }
+    }
+}";
+            var message = "Delegate type is not matching expected System.Action<Foo, int>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [Test]
+        public void GetSetMethodReturnTypeStatic()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Action<string>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetSetMethod());
+
+        public static int Value { get; set; }
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Action<int>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetSetMethod());
+
+        public static int Value { get; set; }
+    }
+}";
+            var message = "Delegate type is not matching expected System.Action<int>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }
