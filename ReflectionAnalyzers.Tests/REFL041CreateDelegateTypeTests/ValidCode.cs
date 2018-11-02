@@ -228,5 +228,55 @@ namespace RoslynSandbox
 }";
             AnalyzerAssert.Valid(Analyzer, code);
         }
+
+        [Test]
+        public void GetGetMethodReturnType()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        // incorrect return type.
+        public static Func<Foo, int> Getter { get; } =
+            (Func<Foo, int>)Delegate.CreateDelegate(
+                typeof(Func<Foo, int>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetGetMethod());
+
+        public int Value { get; set; }
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
+
+        [Test]
+        public void GetMethodReturnType()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class Foo
+    {
+        // incorrect return type.
+        public static Func<Foo, int> Getter { get; } =
+            (Func<Foo, int>)Delegate.CreateDelegate(
+                typeof(Func<Foo, int>),
+                typeof(Foo).GetProperty(
+                    nameof(Foo.Value),
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod);
+
+        public int Value { get; set; }
+    }
+}";
+            AnalyzerAssert.Valid(Analyzer, code);
+        }
     }
 }

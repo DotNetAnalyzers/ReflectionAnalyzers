@@ -43,10 +43,24 @@ namespace ValidCode.DelegateCreateDelegate
                     new C(),
                     typeof(C).GetMethod(nameof(C.StringVoid), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
                 .Invoke("abc");
+
+            Assert.AreEqual(1, ((Func<C, int>)Delegate.CreateDelegate(
+                                typeof(Func<C, int>),
+                                typeof(C).GetProperty(
+                                    nameof(C.Value),
+                                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod)).Invoke(new C()));
+
+            Assert.AreEqual(1, ((Func<C, int>)Delegate.CreateDelegate(
+                                typeof(Func<C, int>),
+                                typeof(C).GetProperty(
+                                    nameof(C.Value),
+                                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetGetMethod())).Invoke(new C()));
         }
 
         private class C
         {
+            public int Value { get; } = 1;
+
             public void Void() { }
 
             public void IntVoid(int _) { }
