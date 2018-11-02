@@ -145,5 +145,41 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        [TestCase("typeof(C).GetMethod(↓\"get_P\")")]
+        public void MissingGetter(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class C
+    {
+        public object Get => typeof(C).GetProperty(nameof(P)).↓GetMethod;
+
+
+        public int P { set; }
+    }
+}".AssertReplace("typeof(C).GetProperty(nameof(P)).↓GetMethod", call);
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [TestCase("typeof(C).GetMethod(↓\"set_P\")")]
+        public void MissingSetter(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    class C
+    {
+        public object Get => typeof(C).GetProperty(nameof(P)).↓SetMethod;
+
+
+        public int P { get; }
+    }
+}".AssertReplace("typeof(C).GetProperty(nameof(P)).↓SetMethod", call);
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
