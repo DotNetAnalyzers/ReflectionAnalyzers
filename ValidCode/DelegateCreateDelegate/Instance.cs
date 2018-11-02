@@ -1,11 +1,11 @@
 // ReSharper disable All
-namespace ValidCode
+namespace ValidCode.DelegateCreateDelegate
 {
     using System;
     using System.Reflection;
     using NUnit.Framework;
 
-    public class CreateDelegateFromInstance
+    public class Instance
     {
         [Test]
         public void Valid()
