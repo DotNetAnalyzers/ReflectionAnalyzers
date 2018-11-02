@@ -48,11 +48,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static int Static() => 0;
@@ -84,11 +84,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public new string ToString() => string.Empty;
@@ -113,11 +113,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo(int i)
+        public C(int i)
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
         }
 
         public static double Static(int value) => value;
@@ -150,9 +150,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo(Type type)
+        public C(Type type)
         {
             var methodInfo = type.GetMethod(""Bar"");
         }
@@ -176,11 +176,11 @@ namespace RoslynSandbox
     using System.Reflection;
     using static System.Reflection.BindingFlags;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly);
         }
 
         public int Bar() => 0;
@@ -212,11 +212,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static int Static => 0;
@@ -258,11 +258,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
         }
 
         public static class PublicStatic
@@ -304,9 +304,9 @@ namespace RoslynSandbox.Dump
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(CustomAggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
         }

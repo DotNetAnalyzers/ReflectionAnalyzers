@@ -20,7 +20,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static object Get => Type.GetType(""Foo"")?.Assembly;
+        public static object Get => Type.GetType(""C"")?.Assembly;
     }
 }";
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
@@ -36,7 +36,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static object Get => Type.GetType(""Foo"", throwOnError: true).Assembly;
+        public static object Get => Type.GetType(""C"", throwOnError: true).Assembly;
     }
 }";
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);

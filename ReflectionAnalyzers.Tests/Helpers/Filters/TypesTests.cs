@@ -9,10 +9,10 @@ namespace ReflectionAnalyzers.Tests.Helpers.Filters
 
     public class TypesTests
     {
-        [TestCase("new[] { typeof(int) }", "Bar(IFormattable _)", "Bar(object _)")]
-        [TestCase("new[] { typeof(object) }", "Bar(object _)", "Bar(IFormattable _)")]
-        [TestCase("new[] { typeof(int) }", "Bar(int _)", "Bar(object _)")]
-        [TestCase("new[] { typeof(int) }", "Bar(int _)", "Bar(IFormattable _)")]
+        [TestCase("new[] { typeof(int) }", "M(IFormattable _)", "M(object _)")]
+        [TestCase("new[] { typeof(object) }", "M(object _)", "M(IFormattable _)")]
+        [TestCase("new[] { typeof(int) }", "M(int _)", "M(object _)")]
+        [TestCase("new[] { typeof(int) }", "M(int _)", "M(IFormattable _)")]
         public void TryMostSpecific(string filterType, string signature1, string signature2)
         {
             var code = @"
@@ -20,17 +20,17 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public object Get() => typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(FilterType) });
+        public object Get() => typeof(C).GetMethod(nameof(this.M), new[] { typeof(FilterType) });
 
-        public void Bar(Type1 _) { }
+        public void M(Type1 _) { }
 
-        public void Bar(Type2 _) { }
+        public void M(Type2 _) { }
     }
 }".AssertReplace("new[] { typeof(FilterType) }", filterType)
-  .AssertReplace("Bar(Type1 _)", signature1)
-  .AssertReplace("Bar(Type2 _)", signature2);
+  .AssertReplace("M(Type1 _)", signature1)
+  .AssertReplace("M(Type2 _)", signature2);
 
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
@@ -46,7 +46,7 @@ namespace RoslynSandbox
             Assert.AreEqual(m1, match);
         }
 
-        [TestCase("new[] { typeof(int), typeof(int) }", "Bar(IFormattable _, object __)", "Bar(object _, IFormattable __)")]
+        [TestCase("new[] { typeof(int), typeof(int) }", "M(IFormattable _, object __)", "M(object _, IFormattable __)")]
         public void TryMostSpecificWhenAmbiguous(string filterTypes, string signature1, string signature2)
         {
             var code = @"
@@ -54,17 +54,17 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public object Get() => typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(FilterType) });
+        public object Get() => typeof(C).GetMethod(nameof(this.M), new[] { typeof(FilterType) });
 
-        public void Bar(Type1 _) { }
+        public void M(Type1 _) { }
 
-        public void Bar(Type2 _) { }
+        public void M(Type2 _) { }
     }
 }".AssertReplace("new[] { typeof(FilterType) }", filterTypes)
-  .AssertReplace("Bar(Type1 _)", signature1)
-  .AssertReplace("Bar(Type2 _)", signature2);
+  .AssertReplace("M(Type1 _)", signature1)
+  .AssertReplace("M(Type2 _)", signature2);
 
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());

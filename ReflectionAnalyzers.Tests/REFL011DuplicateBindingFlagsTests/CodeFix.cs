@@ -24,11 +24,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly);
         }
 
         public int Bar() => 0;
@@ -39,11 +39,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int Bar() => 0;
@@ -64,11 +64,11 @@ namespace RoslynSandbox
     using System.Reflection;
     using static System.Reflection.BindingFlags;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly);
         }
 
         public int Bar() => 0;
@@ -80,11 +80,11 @@ namespace RoslynSandbox
     using System.Reflection;
     using static System.Reflection.BindingFlags;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int Bar() => 0;

@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL009MemberCantBeFound.Descriptor);
 
         [TestCase("foo.GetType().GetMethod(↓\"MISSING\")")]
-        [TestCase("new Foo().GetType().GetMethod(↓\"MISSING\")")]
+        [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("GetType().GetMethod(↓\"MISSING\")")]
         public void MissingMethod(string type)
@@ -18,13 +18,13 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public object Bar(Foo foo) => typeof(Foo).GetMethod(↓""MISSING"");
+        public object Bar(C foo) => typeof(C).GetMethod(↓""MISSING"");
     }
-}".AssertReplace("typeof(Foo).GetMethod(↓\"MISSING\")", type);
+}".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-            var message = "The referenced member MISSING is not known to exist in RoslynSandbox.Foo.";
+            var message = "The referenced member MISSING is not known to exist in RoslynSandbox.C.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -34,11 +34,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
         public int Bar { get; }
 
-        public static object Get(Foo foo) => foo.GetType().GetMethod(↓""set_Bar"");
+        public static object Get(C foo) => foo.GetType().GetMethod(↓""set_Bar"");
     }
 }";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -50,11 +50,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
         public int Bar { set; }
 
-        public static object Get(Foo foo) => foo.GetType().GetMethod(↓""get_Bar"");
+        public static object Get(C foo) => foo.GetType().GetMethod(↓""get_Bar"");
     }
 }";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -79,7 +79,7 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Get(CustomAggregateException foo) => foo.GetType()
                                                                      .GetField(↓""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -99,12 +99,12 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
-    public class Foo
+    public class C
     {
         [IndexerName(""Bar"")]
         public int this[int i] => 0;
 
-        public static object Get(Foo foo) => foo.GetType().GetProperty(""Item"");
+        public static object Get(C foo) => foo.GetType().GetProperty(""Item"");
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 

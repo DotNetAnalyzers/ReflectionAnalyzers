@@ -12,12 +12,12 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
         private static readonly CodeFixProvider Fix = new ThrowOnErrorFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL036CheckNull.Descriptor);
 
-        [TestCase("Get() => Type.GetType(\"Foo\").Assembly",                                                                     "Get() => Type.GetType(\"Foo\", throwOnError: true).Assembly")]
-        [TestCase("Get() => Type.GetType(\"Foo\", throwOnError: false).Assembly",                                                "Get() => Type.GetType(\"Foo\", throwOnError: true).Assembly")]
-        [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"Foo\").Assembly",                                  "Get(System.Reflection.Assembly source) => source.GetType(\"Foo\", throwOnError: true).Assembly")]
-        [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"Foo\", throwOnError: false).Assembly",             "Get(System.Reflection.Assembly source) => source.GetType(\"Foo\", throwOnError: true).Assembly")]
-        [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"Foo\").Assembly",                      "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"Foo\", throwOnError: true).Assembly")]
-        [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"Foo\", throwOnError: false).Assembly", "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"Foo\", throwOnError: true).Assembly")]
+        [TestCase("Get() => Type.GetType(\"C\").Assembly",                                                                     "Get() => Type.GetType(\"C\", throwOnError: true).Assembly")]
+        [TestCase("Get() => Type.GetType(\"C\", throwOnError: false).Assembly",                                                "Get() => Type.GetType(\"C\", throwOnError: true).Assembly")]
+        [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"C\").Assembly",                                  "Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: true).Assembly")]
+        [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: false).Assembly",             "Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: true).Assembly")]
+        [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\").Assembly",                      "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: true).Assembly")]
+        [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: false).Assembly", "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: true).Assembly")]
         public void WhenMemberAccess(string before, string after)
         {
             var code = @"
@@ -27,9 +27,9 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static object Get() => Type.GetType(""Foo"").Assembly;
+        public static object Get() => Type.GetType(""C"").Assembly;
     }
-}".AssertReplace("Get() => Type.GetType(\"Foo\").Assembly", before);
+}".AssertReplace("Get() => Type.GetType(\"C\").Assembly", before);
 
             var fixedCode = @"
 namespace RoslynSandbox
@@ -38,9 +38,9 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static object Get() => Type.GetType(""Foo"", throwOnError: true).Assembly;
+        public static object Get() => Type.GetType(""C"", throwOnError: true).Assembly;
     }
-}".AssertReplace("Get() => Type.GetType(\"Foo\", throwOnError: true).Assembly", after);
+}".AssertReplace("Get() => Type.GetType(\"C\", throwOnError: true).Assembly", after);
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }

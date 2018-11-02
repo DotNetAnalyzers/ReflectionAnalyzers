@@ -20,11 +20,11 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var value = ↓typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            var value = ↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static int Bar() => 0;
@@ -34,11 +34,11 @@ namespace RoslynSandbox
                 var fixedCode = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static int Bar() => 0;
@@ -53,11 +53,11 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var info = typeof(Foo).GetMethod(nameof(Bar));
+            var info = typeof(C).GetMethod(nameof(Bar));
             var value = ↓info.Invoke(null, null);
         }
 

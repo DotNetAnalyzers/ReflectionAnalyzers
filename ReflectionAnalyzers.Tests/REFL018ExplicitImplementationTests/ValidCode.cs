@@ -19,9 +19,9 @@ namespace RoslynSandbox
 {
     using System;
     using System.Reflection;
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var methodInfo = typeof(string).GetMethod(nameof(IConvertible.ToBoolean));
         }
@@ -31,8 +31,8 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("typeof(Foo).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(IFoo).GetEvent(nameof(IFoo.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(IC).GetEvent(nameof(IC.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public void WhenExplicitAndExplicit(string call)
         {
             var interfaceCode = @"
@@ -40,7 +40,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public interface IFoo
+    public interface IC
     {
         event EventHandler Bar;
     }
@@ -52,22 +52,22 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public sealed class Foo : IFoo
+    public sealed class C : IC
     {
-        public Foo()
+        public C()
         {
-            var member = typeof(Foo).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var member = typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         internal event EventHandler Bar;
 
-        event EventHandler IFoo.Bar
+        event EventHandler IC.Bar
         {
             add => this.Bar += value;
             remove => this.Bar -= value;
         }
     }
-}".AssertReplace("typeof(Foo).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
+}".AssertReplace("typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
 
             AnalyzerAssert.Valid(Analyzer, Descriptor, interfaceCode, code);
         }

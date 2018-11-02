@@ -18,11 +18,11 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo(int value)
+        public C(int value)
         {
-            var foo = (int)typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
+            var foo = (int)typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
         }
 
         public static int Bar(int value) => value;

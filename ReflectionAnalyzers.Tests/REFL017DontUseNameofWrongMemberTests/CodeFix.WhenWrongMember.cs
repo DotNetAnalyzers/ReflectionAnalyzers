@@ -22,9 +22,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(Dictionary<string, object>).GetMethod(nameof(↓Add));
         }
@@ -38,9 +38,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
         }
@@ -60,9 +60,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             _ = typeof(Console).GetMethod(nameof(WriteLine), Type.EmptyTypes);
         }
@@ -76,9 +76,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             _ = typeof(Console).GetMethod(nameof(Console.WriteLine), Type.EmptyTypes);
         }
@@ -97,9 +97,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(Dictionary<string, object>).GetMethod(nameof(HashSet<string>.Add));
         }
@@ -113,9 +113,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
         }
@@ -134,9 +134,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetMethod(nameof(HashSet<string>.Add));
         }
@@ -150,9 +150,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetMethod(nameof(Add));
         }
@@ -171,9 +171,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetMethod(nameof(HashSet<string>.Add));
         }
@@ -187,9 +187,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetMethod(nameof(this.Add));
         }
@@ -208,9 +208,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = GetType().GetMethod(nameof(HashSet<string>.Add));
         }
@@ -224,9 +224,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = GetType().GetMethod(nameof(Add));
         }

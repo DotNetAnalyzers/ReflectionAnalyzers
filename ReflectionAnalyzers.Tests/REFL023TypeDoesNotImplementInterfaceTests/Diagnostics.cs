@@ -21,11 +21,11 @@ namespace RoslynSandbox
     using System.Collections;
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var type = typeof(Foo).GetInterface(↓""System.Collections.Generic.IEnumerable`1"");
+            var type = typeof(C).GetInterface(↓""System.Collections.Generic.IEnumerable`1"");
         }
     }
 }".AssertReplace("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")", call);

@@ -22,11 +22,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod↓(nameof(Static));
+            var methodInfo = typeof(C).GetMethod↓(nameof(Static));
         }
 
         public static double Static(int value) => value;
@@ -40,11 +40,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
         }
 
         public static double Static(int value) => value;
@@ -59,11 +59,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null);
         }
 
         public static double Static(int value) => value;
@@ -80,9 +80,9 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public object Get => typeof(Foo).GetProperty↓(""Item"");
+        public object Get => typeof(C).GetProperty↓(""Item"");
 
         public int this[int i] => 0;
 
@@ -95,9 +95,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public object Get => typeof(Foo).GetProperty(""Item"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null);
+        public object Get => typeof(C).GetProperty(""Item"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null);
 
         public int this[int i] => 0;
 
@@ -111,9 +111,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public object Get => typeof(Foo).GetProperty(""Item"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int), typeof(int) }, null);
+        public object Get => typeof(C).GetProperty(""Item"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int), typeof(int) }, null);
 
         public int this[int i] => 0;
 

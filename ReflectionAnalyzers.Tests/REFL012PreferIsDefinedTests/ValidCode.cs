@@ -19,11 +19,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var attribute = typeof(Foo).GetCustomAttribute<ObsoleteAttribute>();
+            var attribute = typeof(C).GetCustomAttribute<ObsoleteAttribute>();
         }
     }
 }";
@@ -38,11 +38,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var attribute = (ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(Foo), typeof(ObsoleteAttribute));
+            var attribute = (ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute));
         }
     }
 }";
@@ -57,11 +57,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var attribute = Attribute.GetCustomAttribute(typeof(Foo), typeof(ObsoleteAttribute)) as ObsoleteAttribute;
+            var attribute = Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) as ObsoleteAttribute;
         }
     }
 }";

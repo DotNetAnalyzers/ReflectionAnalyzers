@@ -24,11 +24,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    sealed class Foo : IDisposable
+    sealed class C : IDisposable
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(IDisposable.Dispose));
+            var methodInfo = typeof(C).GetMethod(nameof(IDisposable.Dispose));
         }
 
         void IDisposable.Dispose()
@@ -43,9 +43,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    sealed class Foo : IDisposable
+    sealed class C : IDisposable
     {
-        public Foo()
+        public C()
         {
             var methodInfo = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
         }
@@ -72,9 +72,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var methodInfo = typeof(string).GetMethod(""ToBoolean"");
         }
@@ -87,9 +87,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var methodInfo = typeof(IConvertible).GetMethod(""ToBoolean"");
         }

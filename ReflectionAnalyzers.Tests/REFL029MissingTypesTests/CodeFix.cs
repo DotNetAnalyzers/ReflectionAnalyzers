@@ -18,11 +18,11 @@ namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
         }
 
         public int Bar() => 0;
@@ -34,11 +34,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), Type.EmptyTypes);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Type.EmptyTypes);
         }
 
         public int Bar() => 0;
@@ -55,11 +55,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int Bar() => 0;
@@ -72,11 +72,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
         }
 
         public int Bar() => 0;
@@ -91,11 +91,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
         }
 
         public int Bar(int value) => value;
@@ -105,11 +105,11 @@ namespace RoslynSandbox
             var fixedCode = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int) });
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int) });
         }
 
         public int Bar(int value) => value;
@@ -126,11 +126,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int Bar(int value) => value;
@@ -142,11 +142,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
         }
 
         public int Bar(int value) => value;
@@ -163,11 +163,11 @@ namespace RoslynSandbox
 {
     using System.Linq;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
         }
 
         public int Bar(params int[] values) => values.Sum();
@@ -179,11 +179,11 @@ namespace RoslynSandbox
 {
     using System.Linq;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int[]) });
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int[]) });
         }
 
         public int Bar(params int[] values) => values.Sum();
@@ -201,11 +201,11 @@ namespace RoslynSandbox
     using System.Linq;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int Bar(params int[] values) => values.Sum();
@@ -218,11 +218,11 @@ namespace RoslynSandbox
     using System.Linq;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int[]) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int[]) }, null);
         }
 
         public int Bar(params int[] values) => values.Sum();
@@ -237,11 +237,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
         }
 
         public double Bar(int i, double d) => i + d;
@@ -251,11 +251,11 @@ namespace RoslynSandbox
             var fixedCode = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int), typeof(double) });
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int), typeof(double) });
         }
 
         public double Bar(int i, double d) => i + d;
@@ -272,11 +272,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public double Bar(int i, double d) => i + d;
@@ -288,11 +288,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(double) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(double) }, null);
         }
 
         public double Bar(int i, double d) => i + d;

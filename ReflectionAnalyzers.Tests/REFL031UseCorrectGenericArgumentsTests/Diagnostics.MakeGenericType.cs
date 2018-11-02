@@ -17,9 +17,9 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo<T>
+    public class C<T>
     {
-        public static object Get() => typeof(Foo<>).MakeGenericType(typeof(int), typeof(double));
+        public static object Get() => typeof(C<>).MakeGenericType(typeof(int), typeof(double));
     }
 }";
                 var message = "The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has 1 parameter but 2 arguments are passed in.";
@@ -34,9 +34,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo<T>
+    public class C<T>
     {
-        public static object Get() => typeof(Foo<int>).GetGenericTypeDefinition().MakeGenericType↓(typeof(int), typeof(double));
+        public static object Get() => typeof(C<int>).GetGenericTypeDefinition().MakeGenericType↓(typeof(int), typeof(double));
     }
 }";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -53,8 +53,8 @@ namespace RoslynSandbox
             [TestCase("where T : unmanaged", "object")]
             [TestCase("where T : unmanaged", "Console")]
             [TestCase("where T : unmanaged", "int?")]
-            [TestCase("where T : IComparable", "Foo<int>")]
-            [TestCase("where T : IComparable<double>", "Foo<int>")]
+            [TestCase("where T : IComparable", "C<int>")]
+            [TestCase("where T : IComparable<double>", "C<int>")]
             [TestCase("where T : IComparable<double>", "int")]
             [TestCase("where T : new()", "Bar")]
             public void ConstrainedParameter(string constraint, string arg)
@@ -75,15 +75,15 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo<T>
+    public class C<T>
         where T : class
     {
-        public static object Get() => typeof(Foo<>).MakeGenericType(↓typeof(int));
+        public static object Get() => typeof(C<>).MakeGenericType(↓typeof(int));
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", $"typeof({arg})");
 
-                var message = $"The argument typeof({arg}), on 'RoslynSandbox.Foo<>' violates the constraint of type 'T'.";
+                var message = $"The argument typeof({arg}), on 'RoslynSandbox.C<>' violates the constraint of type 'T'.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, code);
             }
 
@@ -116,9 +116,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public static object Get() => typeof(Foo).GetNestedType(""Baz`1"").MakeGenericType↓(typeof(int), typeof(double));
+        public static object Get() => typeof(C).GetNestedType(""Baz`1"").MakeGenericType↓(typeof(int), typeof(double));
 
         public class Baz<T>
         {

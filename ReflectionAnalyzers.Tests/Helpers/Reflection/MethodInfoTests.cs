@@ -8,14 +8,14 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 
     public class MethodInfoTests
     {
-        [TestCase("typeof(Foo).GetMethod(nameof(this.M))",                              "RoslynSandbox.Foo.M()")]
-        [TestCase("foo.GetType().GetMethod(nameof(this.M))",                            "RoslynSandbox.Foo.M()")]
-        [TestCase("fooType.GetMethod(nameof(this.M))",                                  "RoslynSandbox.Foo.M()")]
-        [TestCase("Cached",                                                             "RoslynSandbox.Foo.M()")]
-        [TestCase("typeof(Foo).GetProperty(nameof(this.Property)).GetMethod",           "RoslynSandbox.Foo.Property.get")]
-        [TestCase("typeof(Foo).GetProperty(nameof(this.Property)).GetGetMethod(false)", "RoslynSandbox.Foo.Property.get")]
-        [TestCase("typeof(Foo).GetProperty(nameof(this.Property)).SetMethod",           "RoslynSandbox.Foo.Property.set")]
-        [TestCase("typeof(Foo).GetProperty(nameof(this.Property)).GetSetMethod(false)", "RoslynSandbox.Foo.Property.set")]
+        [TestCase("typeof(C).GetMethod(nameof(this.M))",                              "RoslynSandbox.C.M()")]
+        [TestCase("foo.GetType().GetMethod(nameof(this.M))",                            "RoslynSandbox.C.M()")]
+        [TestCase("fooType.GetMethod(nameof(this.M))",                                  "RoslynSandbox.C.M()")]
+        [TestCase("Cached",                                                             "RoslynSandbox.C.M()")]
+        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetMethod",           "RoslynSandbox.C.Property.get")]
+        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetGetMethod(false)", "RoslynSandbox.C.Property.get")]
+        [TestCase("typeof(C).GetProperty(nameof(this.Property)).SetMethod",           "RoslynSandbox.C.Property.set")]
+        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetSetMethod(false)", "RoslynSandbox.C.Property.set")]
         public void TryGet(string call, string expected)
         {
             var code = @"
@@ -25,21 +25,21 @@ namespace RoslynSandbox
     using System.Collections.Generic;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        private static readonly MethodInfo Cached = typeof(Foo).GetMethod(nameof(M));
+        private static readonly MethodInfo Cached = typeof(C).GetMethod(nameof(M));
 
-        public Foo(Foo foo)
+        public C(C foo)
         {
-            var fooType = typeof(Foo);
-            var mi = typeof(Foo).GetMethod(nameof(this.M));
+            var fooType = typeof(C);
+            var mi = typeof(C).GetMethod(nameof(this.M));
         }
 
         public int M() => 1;
 
         public int Property { get; set; }
     }
-}".AssertReplace("typeof(Foo).GetMethod(nameof(this.M))", call);
+}".AssertReplace("typeof(C).GetMethod(nameof(this.M))", call);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);

@@ -22,11 +22,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo(int i)
+        public C(int i)
         {
-            var value = (↓string)typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
+            var value = (↓string)typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
         }
     }
 }";
@@ -36,11 +36,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo(int i)
+        public C(int i)
         {
-            var value = (Foo)typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
+            var value = (C)typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
         }
     }
 }";

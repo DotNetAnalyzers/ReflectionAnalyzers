@@ -24,11 +24,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
         }
 
         public int Bar() => 0;
@@ -52,11 +52,11 @@ namespace RoslynSandbox
     using System.Reflection;
     using static System.Reflection.BindingFlags;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly);
         }
 
         public int Bar() => 0;

@@ -15,11 +15,11 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var value = ↓typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            var value = ↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static void Bar()
@@ -37,13 +37,13 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
         private readonly int value;
 
-        public Foo()
+        public C()
         {
-            this.value = ↓typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            this.value = ↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static void Bar()
@@ -61,11 +61,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var text = ((int)↓typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null)).ToString();
+            var text = ((int)↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null)).ToString();
         }
 
         public static void Bar()
@@ -87,19 +87,19 @@ namespace RoslynSandbox
     using System;
     using System.Runtime.Serialization;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
         }
 
-        public Foo(int value)
+        public C(int value)
         {
         }
 
         public static void Bar()
         {
-            var type = typeof(Foo);
+            var type = typeof(C);
             var instance = FormatterServices.GetUninitializedObject(type);
             var foo = type.GetConstructor(Type.EmptyTypes).Invoke(instance, null);
         }

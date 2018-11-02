@@ -19,11 +19,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar<T>()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod↓(typeof(int), typeof(double));
+            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod↓(typeof(int), typeof(double));
         }
     }
 }";
@@ -39,16 +39,16 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar<T>()
             where T : struct
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(↓typeof(string));
+            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(↓typeof(string));
         }
     }
 }";
-                var message = "The argument typeof(string), on 'RoslynSandbox.Foo.Bar<T>()' violates the constraint of type 'T'.";
+                var message = "The argument typeof(string), on 'RoslynSandbox.C.Bar<T>()' violates the constraint of type 'T'.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -62,12 +62,12 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar<T>()
             where T : struct
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(↓typeof(string));
+            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(↓typeof(string));
         }
     }
 }".AssertReplace("MakeGenericMethod(↓typeof(string))", call);
@@ -77,7 +77,7 @@ namespace RoslynSandbox
 
             [TestCase("where T : class", "typeof(int)")]
             [TestCase("where T : struct", "typeof(string)")]
-            [TestCase("where T : IComparable", "typeof(Foo)")]
+            [TestCase("where T : IComparable", "typeof(C)")]
             [TestCase("where T : new()", "typeof(Bar)")]
             public void Constraints(string constraint, string arg)
             {
@@ -96,12 +96,12 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar<T>()
             where T : class
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(↓typeof(int));
+            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(↓typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint)

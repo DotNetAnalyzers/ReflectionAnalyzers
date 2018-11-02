@@ -9,11 +9,11 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 
     public class ReflectedMemberTests
     {
-        [TestCase("typeof(Foo).GetMethod(nameof(this.ToString))",                                                                             "Foo",           "typeof(Foo)")]
-        [TestCase("new Foo().GetType().GetMethod(nameof(this.ToString))",                                                                     "Foo",           "new Foo().GetType()")]
-        [TestCase("foo.GetType().GetMethod(nameof(this.ToString))",                                                                           "Foo",           "foo.GetType()")]
-        [TestCase("this.GetType().GetMethod(nameof(this.ToString))",                                                                          "Foo",           "this.GetType()")]
-        [TestCase("GetType().GetMethod(nameof(this.ToString))",                                                                               "Foo",           "GetType()")]
+        [TestCase("typeof(C).GetMethod(nameof(this.ToString))",                                                                             "C",           "typeof(C)")]
+        [TestCase("new C().GetType().GetMethod(nameof(this.ToString))",                                                                     "C",           "new C().GetType()")]
+        [TestCase("foo.GetType().GetMethod(nameof(this.ToString))",                                                                           "C",           "foo.GetType()")]
+        [TestCase("this.GetType().GetMethod(nameof(this.ToString))",                                                                          "C",           "this.GetType()")]
+        [TestCase("GetType().GetMethod(nameof(this.ToString))",                                                                               "C",           "GetType()")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\").GetMethod(nameof(this.ToString))",                                       "Int32",         "typeof(string).Assembly.GetType(\"System.Int32\")")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\").GetMethod(nameof(this.ToString))", "IEnumerable`1", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
         public void TryGetTypeFromExpression(string call, string expected, string expectedSource)
@@ -24,14 +24,14 @@ namespace RoslynSandbox
     using System.Collections.Generic;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo(Foo foo)
+        public C(C foo)
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString));
+            var methodInfo = typeof(C).GetMethod(nameof(this.ToString));
         }
     }
-}".AssertReplace("typeof(Foo).GetMethod(nameof(this.ToString))", call);
+}".AssertReplace("typeof(C).GetMethod(nameof(this.ToString))", call);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
@@ -42,11 +42,11 @@ namespace RoslynSandbox
             Assert.AreEqual(expectedSource, source.ToString());
         }
 
-        [TestCase("typeof(Foo)", "Foo")]
-        [TestCase("new Foo().GetType()", "Foo")]
-        [TestCase("foo.GetType()", "Foo")]
-        [TestCase("this.GetType()", "Foo")]
-        [TestCase("GetType()", "Foo")]
+        [TestCase("typeof(C)", "C")]
+        [TestCase("new C().GetType()", "C")]
+        [TestCase("foo.GetType()", "C")]
+        [TestCase("this.GetType()", "C")]
+        [TestCase("GetType()", "C")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "Int32")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "IEnumerable`1")]
         public void TryGetTypeFromLocal(string typeExpression, string expected)
@@ -57,15 +57,15 @@ namespace RoslynSandbox
     using System.Collections.Generic;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo(Foo foo)
+        public C(C foo)
         {
-            var type = typeof(Foo);
+            var type = typeof(C);
             var methodInfo = type.GetMethod(nameof(this.ToString));
         }
     }
-}".AssertReplace("typeof(Foo)", typeExpression);
+}".AssertReplace("typeof(C)", typeExpression);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
@@ -84,9 +84,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             Type type;
             type = type;

@@ -19,11 +19,11 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            _ = typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static void Bar()
@@ -35,9 +35,9 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("Assert.Null(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))")]
-        [TestCase("Assert.IsNull(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))")]
-        [TestCase("Assert.AreEqual(null, typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))")]
+        [TestCase("Assert.Null(typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))")]
+        [TestCase("Assert.IsNull(typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))")]
+        [TestCase("Assert.AreEqual(null, typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))")]
         public void WhenUsedInAssert(string call)
         {
             var code = @"
@@ -45,18 +45,18 @@ namespace RoslynSandbox
 {
     using NUnit.Framework;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            Assert.Null(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null));
+            Assert.Null(typeof(C).GetMethod(nameof(Bar)).Invoke(null, null));
         }
 
         public static void Bar()
         {
         }
     }
-}".AssertReplace("Assert.Null(typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))", call);
+}".AssertReplace("Assert.Null(typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))", call);
 
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
@@ -67,11 +67,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static int Bar() => 0;
@@ -87,13 +87,13 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
         private readonly int value;
 
-        public Foo()
+        public C()
         {
-            this.value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            this.value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static int Bar() => 0;
@@ -109,11 +109,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var text = ((int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null)).ToString();
+            var text = ((int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, null)).ToString();
         }
 
         public static int Bar() => 0;

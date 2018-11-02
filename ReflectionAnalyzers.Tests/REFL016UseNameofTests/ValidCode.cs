@@ -18,9 +18,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
         }
@@ -37,9 +37,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetMethod(nameof(Add));
         }
@@ -58,9 +58,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetMethod(nameof(this.Add));
         }
@@ -71,16 +71,16 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
-        [TestCase("where T : Foo",               "GetMethod(nameof(this.Baz))")]
-        [TestCase("where T : Foo",               "GetMethod(nameof(this.Baz), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : C",               "GetMethod(nameof(this.Baz))")]
+        [TestCase("where T : C",               "GetMethod(nameof(this.Baz), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToString))")]
         [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToBoolean))")]
         [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("where T : Foo, IConvertible", "GetMethod(nameof(IConvertible.ToString))")]
-        [TestCase("where T : Foo, IConvertible", "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("where T : Foo, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean))")]
-        [TestCase("where T : Foo, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToString))")]
+        [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean))")]
+        [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
         public void GetMethodWhenConstrainedTypeParameter(string constraint, string call)
         {
             var code = @"
@@ -89,17 +89,17 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public MethodInfo Bar<T>()
-            where T : Foo
+            where T : C
         {
             return typeof(T).GetMethod(nameof(this.Baz));
         }
 
         public int Baz() => 0;
     }
-}".AssertReplace("where T : Foo", constraint)
+}".AssertReplace("where T : C", constraint)
   .AssertReplace("GetMethod(nameof(this.Baz))", call);
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
@@ -109,7 +109,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"op_Equality\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })")]
         [TestCase("GetMethod(\"op_Inequality\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })")]
         [TestCase("GetMethod(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { 1 })")]
-        [TestCase("GetMethod(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { (Foo)null })")]
+        [TestCase("GetMethod(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { (C)null })")]
         public void Operators(string call)
         {
             var code = @"
@@ -117,22 +117,22 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetMethod(""op_Addition"", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null });
+            _ = typeof(C).GetMethod(""op_Addition"", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null });
         }
 
-        public static Foo operator +(Foo left, Foo right) => null;
+        public static C operator +(C left, C right) => null;
 
-        public static bool operator ==(Foo left, Foo right) => false;
+        public static bool operator ==(C left, C right) => false;
 
-        public static bool operator !=(Foo left, Foo right) => false;
+        public static bool operator !=(C left, C right) => false;
 
-        public static explicit operator int(Foo c) => 0;
+        public static explicit operator int(C c) => 0;
 
-        public static explicit operator Foo(int c) => null;
+        public static explicit operator C(int c) => null;
     }
 }
 ".AssertReplace("GetMethod(\"op_Addition\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })", call);
@@ -165,11 +165,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetNestedType(""Generic`1"", BindingFlags.Public);
+            var methodInfo = typeof(C).GetNestedType(""Generic`1"", BindingFlags.Public);
         }
 
         public class Generic<T>
@@ -199,9 +199,9 @@ namespace RoslynSandbox.Dump
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(CustomAggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
         }
@@ -219,7 +219,7 @@ namespace RoslynSandbox
 {
     using System.Collections;
 
-    public class Foo
+    public class C
     {
         public void Meh(object value)
         {
@@ -240,11 +240,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(""add_Public"");
+            var methodInfo = typeof(C).GetMethod(""add_Public"");
         }
 
         public event EventHandler Public;
@@ -264,11 +264,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(""get_Public"");
+            var methodInfo = typeof(C).GetMethod(""get_Public"");
         }
 
         public int Public { get; set; }
@@ -288,7 +288,7 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Windows.Forms;
 
-    class Foo
+    class C
     {
         public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
@@ -305,7 +305,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public void Meh(object value)
         {
@@ -327,7 +327,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public void Meh(StringComparison value)
         {
@@ -349,7 +349,7 @@ namespace RoslynSandbox
 namespace RoslynSandbox
 {
     [System.Diagnostics.DebuggerDisplay(""{Name}"")]
-    public class Foo
+    public class C
     {
         public string Name { get; }
     }
@@ -365,7 +365,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public void Bar()
         {
@@ -389,9 +389,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var text = ""text"";
         }
@@ -406,9 +406,9 @@ namespace RoslynSandbox
             var testCode = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var text = Id(""text"");
         }
@@ -425,9 +425,9 @@ namespace RoslynSandbox
             var testCode = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             {
                 var text = string.Empty;
@@ -456,7 +456,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public void Bar()
         {
@@ -481,9 +481,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(AggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
@@ -502,29 +502,29 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var member = typeof(Foo).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            var member = typeof(C).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
         }
     }
 }";
             AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
-        [TestCase("typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(Foo).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(Foo).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(Foo).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(FooBase).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetEvent(nameof(FooBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetProperty(nameof(FooBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetMethod(nameof(FooBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(FooBase).GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("typeof(C).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("typeof(C).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("typeof(C).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("typeof(CBase).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(CBase).GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(CBase).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(CBase).GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(CBase).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(CBase).GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(CBase).GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         public void MemberInBase(string call)
         {
             var baseClass = @"
@@ -532,7 +532,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class FooBase
+    public class CBase
     {
         public static int PublicStaticField;
 
@@ -556,14 +556,14 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
-            typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
         }
     }
-}".AssertReplace("typeof(Foo).GetField(nameof(FooBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
+}".AssertReplace("typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
             AnalyzerAssert.Valid(Analyzer, Descriptor, baseClass, code);
         }

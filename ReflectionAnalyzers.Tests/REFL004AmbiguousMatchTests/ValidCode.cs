@@ -27,11 +27,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static int PublicStatic(int value) => value;
@@ -70,11 +70,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo(int i)
+        public C(int i)
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
         }
 
         public static double Static(int value) => value;
@@ -97,9 +97,9 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public object Get => typeof(Foo).GetProperty(""Item"", typeof(int), new[] { typeof(int) });
+        public object Get => typeof(C).GetProperty(""Item"", typeof(int), new[] { typeof(int) });
 
         public int this[int i] => 0;
 
@@ -118,9 +118,9 @@ namespace RoslynSandbox
 {
     using System.Runtime.CompilerServices;
 
-    public class Foo
+    public class C
     {
-        public object Get => typeof(Foo).GetProperty(""Bar"", typeof(int), new[] { typeof(int) });
+        public object Get => typeof(C).GetProperty(""Bar"", typeof(int), new[] { typeof(int) });
 
         [IndexerName(""Bar"")]
         public int this[int i] => 0;

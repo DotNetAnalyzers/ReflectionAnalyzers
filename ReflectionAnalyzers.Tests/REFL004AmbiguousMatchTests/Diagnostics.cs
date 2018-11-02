@@ -27,11 +27,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : Base
+    public class C : Base
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetProperty↓(""Item"");
+            _ = typeof(C).GetProperty↓(""Item"");
         }
 
         public int this[int i] => 0;
@@ -46,9 +46,9 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public object Get => typeof(Foo).GetProperty↓(""Item"");
+        public object Get => typeof(C).GetProperty↓(""Item"");
 
         public int this[int i] => 0;
 
@@ -66,9 +66,9 @@ namespace RoslynSandbox
 {
     using System.Runtime.CompilerServices;
 
-    public class Foo
+    public class C
     {
-        public object Get => typeof(Foo).GetProperty↓(""Bar"");
+        public object Get => typeof(C).GetProperty↓(""Bar"");
 
         [IndexerName(""Bar"")]
         public int this[int i] => 0;

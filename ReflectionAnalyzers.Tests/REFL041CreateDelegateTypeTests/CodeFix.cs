@@ -403,12 +403,12 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Func<Foo, string>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+                typeof(Func<C, string>),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetGetMethod());
 
         public int Value { get; set; }
@@ -421,18 +421,18 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Func<Foo, int>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+                typeof(Func<C, int>),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetGetMethod());
 
         public int Value { get; set; }
     }
 }";
-            var message = "Delegate type is not matching expected System.Func<Foo, int>.";
+            var message = "Delegate type is not matching expected System.Func<C, int>.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
@@ -445,12 +445,12 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
                 typeof(Func<string>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetGetMethod());
 
         public static int Value { get; set; }
@@ -463,12 +463,12 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
                 typeof(Func<int>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetGetMethod());
 
         public static int Value { get; set; }
@@ -487,12 +487,12 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Action<Foo, string>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+                typeof(Action<C, string>),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetSetMethod());
 
         public int Value { get; set; }
@@ -505,18 +505,18 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Action<Foo, int>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+                typeof(Action<C, int>),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetSetMethod());
 
         public int Value { get; set; }
     }
 }";
-            var message = "Delegate type is not matching expected System.Action<Foo, int>.";
+            var message = "Delegate type is not matching expected System.Action<C, int>.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
@@ -529,12 +529,12 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
                 typeof(Action<string>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetSetMethod());
 
         public static int Value { get; set; }
@@ -547,12 +547,12 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
                 typeof(Action<int>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetSetMethod());
 
         public static int Value { get; set; }

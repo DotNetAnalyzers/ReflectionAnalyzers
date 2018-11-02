@@ -16,11 +16,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod↓(nameof(this.ToString));
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.ToString));
         }
 
         public static double Static(int value) => value;
@@ -49,11 +49,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod↓(nameof(this.ToString));
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.ToString));
         }
 
         public static double Static(int value) => value;
@@ -101,9 +101,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public static object Get() => typeof(Foo).GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        public static object Get() => typeof(C).GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static IComparable Static(IComparable i) => i;
 

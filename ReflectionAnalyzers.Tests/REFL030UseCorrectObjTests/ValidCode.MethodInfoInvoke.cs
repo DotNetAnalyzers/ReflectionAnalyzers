@@ -18,11 +18,11 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            _ = typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static void Bar()
@@ -40,11 +40,11 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(new Foo(), null);
+            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(new C(), null);
         }
 
         public int Bar() => 0;
@@ -63,7 +63,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public static class Foo
+    public static class C
     {
         public static object Bar() => typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null);
     }

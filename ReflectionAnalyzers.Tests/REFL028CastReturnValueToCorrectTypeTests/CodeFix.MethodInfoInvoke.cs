@@ -22,9 +22,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public static object Get => (↓string)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, new object[] { 1 });
+        public static object Get => (↓string)typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { 1 });
 
         public static int Bar(int i) => i;
     }
@@ -35,9 +35,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public static object Get => (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, new object[] { 1 });
+        public static object Get => (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { 1 });
 
         public static int Bar(int i) => i;
     }

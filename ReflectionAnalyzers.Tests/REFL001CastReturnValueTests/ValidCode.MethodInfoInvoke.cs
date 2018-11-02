@@ -21,14 +21,14 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            _ = typeof(C).GetMethod(nameof(M)).Invoke(null, null);
         }
 
-        public static void Bar()
+        public static void M()
         {
         }
     }
@@ -43,14 +43,14 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            var value = (int)typeof(C).GetMethod(nameof(M)).Invoke(null, null);
         }
 
-        public static int Bar() => 0;
+        public static int M() => 0;
     }
 }";
 
@@ -63,16 +63,16 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            if (typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null) is string text)
+            if (typeof(C).GetMethod(nameof(M)).Invoke(null, null) is string text)
             {
             }
         }
 
-        public static string Bar() => null;
+        public static string M() => null;
     }
 }";
 
@@ -85,18 +85,18 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            switch (typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null))
+            switch (typeof(C).GetMethod(nameof(M)).Invoke(null, null))
             {
                 case string text:
                     break;
             }
         }
 
-        public static string Bar() => null;
+        public static string M() => null;
     }
 }";
 
@@ -109,16 +109,16 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
         private readonly int value;
 
-        public Foo()
+        public C()
         {
-            this.value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null);
+            this.value = (int)typeof(C).GetMethod(nameof(M)).Invoke(null, null);
         }
 
-        public static int Bar() => 0;
+        public static int M() => 0;
     }
 }";
 
@@ -131,14 +131,14 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var text = ((int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null)).ToString();
+            var text = ((int)typeof(C).GetMethod(nameof(M)).Invoke(null, null)).ToString();
         }
 
-        public static int Bar() => 0;
+        public static int M() => 0;
     }
 }";
 
@@ -151,14 +151,14 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var text = typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null).ToString();
+            var text = typeof(C).GetMethod(nameof(M)).Invoke(null, null).ToString();
         }
 
-        public static int Bar() => 0;
+        public static int M() => 0;
     }
 }";
 
@@ -173,14 +173,14 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, null).ToString();
+            _ = typeof(C).GetMethod(nameof(M)).Invoke(null, null).ToString();
         }
 
-        public static int Bar() => 0;
+        public static int M() => 0;
     }
 }".AssertReplace("_ = ", discard);
 

@@ -18,11 +18,11 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
             var tree = CSharpSyntaxTree.ParseText(@"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
     }
 }");
-            Assert.AreEqual("BindingFlags." + flags, ((BindingFlags)flags).ToDisplayString(tree.FindClassDeclaration("Foo")));
+            Assert.AreEqual("BindingFlags." + flags, ((BindingFlags)flags).ToDisplayString(tree.FindClassDeclaration("C")));
         }
 
         [TestCaseSource(nameof(Flags))]
@@ -33,11 +33,11 @@ namespace RoslynSandbox
 {
     using static System.Reflection.BindingFlags;
 
-    class Foo
+    class C
     {
     }
 }");
-            Assert.AreEqual(flags.ToString(), ((BindingFlags)flags).ToDisplayString(tree.FindClassDeclaration("Foo")));
+            Assert.AreEqual(flags.ToString(), ((BindingFlags)flags).ToDisplayString(tree.FindClassDeclaration("C")));
         }
 
         [TestCaseSource(nameof(Flags))]
@@ -48,11 +48,11 @@ using static System.Reflection.BindingFlags;
 
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
     }
 }");
-            Assert.AreEqual(flags.ToString(), ((BindingFlags)flags).ToDisplayString(tree.FindClassDeclaration("Foo")));
+            Assert.AreEqual(flags.ToString(), ((BindingFlags)flags).ToDisplayString(tree.FindClassDeclaration("C")));
         }
     }
 }

@@ -18,7 +18,7 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Windows.Forms;
 
-    class Foo
+    class C
     {
         public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }

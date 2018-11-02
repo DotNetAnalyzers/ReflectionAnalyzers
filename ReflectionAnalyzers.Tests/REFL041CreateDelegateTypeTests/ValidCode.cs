@@ -238,14 +238,14 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         // incorrect return type.
-        public static Func<Foo, int> Getter { get; } =
-            (Func<Foo, int>)Delegate.CreateDelegate(
-                typeof(Func<Foo, int>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+        public static Func<C, int> Getter { get; } =
+            (Func<C, int>)Delegate.CreateDelegate(
+                typeof(Func<C, int>),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetGetMethod());
 
         public int Value { get; set; }
@@ -263,14 +263,14 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         // incorrect return type.
-        public static Func<Foo, int> Getter { get; } =
-            (Func<Foo, int>)Delegate.CreateDelegate(
-                typeof(Func<Foo, int>),
-                typeof(Foo).GetProperty(
-                    nameof(Foo.Value),
+        public static Func<C, int> Getter { get; } =
+            (Func<C, int>)Delegate.CreateDelegate(
+                typeof(Func<C, int>),
+                typeof(C).GetProperty(
+                    nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod);
 
         public int Value { get; set; }

@@ -25,13 +25,13 @@ namespace RoslynSandbox
     using System.Collections;
     using System.Collections.Generic;
 
-    public class Foo : IEnumerable<int>
+    public class C : IEnumerable<int>
     {
         private readonly List<int> ints = new List<int>();
 
-        public Foo()
+        public C()
         {
-            var type = typeof(Foo).GetInterface(↓typeof(IEnumerable<>).Name);
+            var type = typeof(C).GetInterface(↓typeof(IEnumerable<>).Name);
         }
 
         public IEnumerator<int> GetEnumerator() => this.ints.GetEnumerator();
@@ -47,13 +47,13 @@ namespace RoslynSandbox
     using System.Collections;
     using System.Collections.Generic;
 
-    public class Foo : IEnumerable<int>
+    public class C : IEnumerable<int>
     {
         private readonly List<int> ints = new List<int>();
 
-        public Foo()
+        public C()
         {
-            var type = typeof(Foo).GetInterface(typeof(IEnumerable<>).FullName);
+            var type = typeof(C).GetInterface(typeof(IEnumerable<>).FullName);
         }
 
         public IEnumerator<int> GetEnumerator() => this.ints.GetEnumerator();

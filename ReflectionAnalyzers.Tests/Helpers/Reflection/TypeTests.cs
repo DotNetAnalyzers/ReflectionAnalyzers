@@ -10,25 +10,25 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 
     public class TypeTests
     {
-        [TestCase("typeof(Foo)", "RoslynSandbox.Foo", "typeof(Foo)")]
-        [TestCase("new Foo().GetType()", "RoslynSandbox.Foo", "new Foo().GetType()")]
-        [TestCase("foo.GetType()", "RoslynSandbox.Foo", "foo.GetType()")]
-        [TestCase("foo?.GetType()", "RoslynSandbox.Foo", "foo?.GetType()")]
+        [TestCase("typeof(C)", "RoslynSandbox.C", "typeof(C)")]
+        [TestCase("new C().GetType()", "RoslynSandbox.C", "new C().GetType()")]
+        [TestCase("foo.GetType()", "RoslynSandbox.C", "foo.GetType()")]
+        [TestCase("foo?.GetType()", "RoslynSandbox.C", "foo?.GetType()")]
         [TestCase("nullableInt.GetType()", "int", "nullableInt.GetType()")]
-        [TestCase("this.GetType()", "RoslynSandbox.Foo", "this.GetType()")]
-        [TestCase("GetType()", "RoslynSandbox.Foo", "GetType()")]
-        [TestCase("typeof(Foo).GetNestedType(\"Baz`1\")", "RoslynSandbox.Foo.Baz<T>", "typeof(Foo).GetNestedType(\"Baz`1\")")]
-        [TestCase("typeof(Foo).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))", "RoslynSandbox.Foo.Baz<int>", "typeof(Foo).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))")]
-        [TestCase("typeof(Foo.Baz<int>).GetGenericTypeDefinition()", "RoslynSandbox.Foo.Baz<T>", "typeof(Foo.Baz<int>).GetGenericTypeDefinition()")]
+        [TestCase("this.GetType()", "RoslynSandbox.C", "this.GetType()")]
+        [TestCase("GetType()", "RoslynSandbox.C", "GetType()")]
+        [TestCase("typeof(C).GetNestedType(\"Baz`1\")", "RoslynSandbox.C.Baz<T>", "typeof(C).GetNestedType(\"Baz`1\")")]
+        [TestCase("typeof(C).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))", "RoslynSandbox.C.Baz<int>", "typeof(C).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))")]
+        [TestCase("typeof(C.Baz<int>).GetGenericTypeDefinition()", "RoslynSandbox.C.Baz<T>", "typeof(C.Baz<int>).GetGenericTypeDefinition()")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "int", "typeof(string).Assembly.GetType(\"System.Int32\")")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\", true)", "int", "typeof(string).Assembly.GetType(\"System.Int32\", true)")]
         [TestCase("typeof(string).Assembly.GetType(\"system.int32\", true, true)", "int", "typeof(string).Assembly.GetType(\"system.int32\", true, true)")]
         [TestCase("new Exception().GetType()", "System.Exception", "new Exception().GetType()")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "System.Collections.Generic.IEnumerable<T>", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
-        [TestCase("typeof(Foo).GetField(nameof(Foo.Field)).FieldType", "int", "typeof(Foo).GetField(nameof(Foo.Field)).FieldType")]
-        [TestCase("typeof(Foo).GetProperty(nameof(Foo.Property)).PropertyType", "int", "typeof(Foo).GetProperty(nameof(Foo.Property)).PropertyType")]
-        [TestCase("Type.GetType(\"RoslynSandbox.Foo\")", "RoslynSandbox.Foo", "Type.GetType(\"RoslynSandbox.Foo\")")]
-        [TestCase("Type.GetType(\"RoslynSandbox.Foo+Nested\")", "RoslynSandbox.Foo.Nested", "Type.GetType(\"RoslynSandbox.Foo+Nested\")")]
+        [TestCase("typeof(C).GetField(nameof(C.Field)).FieldType", "int", "typeof(C).GetField(nameof(C.Field)).FieldType")]
+        [TestCase("typeof(C).GetProperty(nameof(C.Property)).PropertyType", "int", "typeof(C).GetProperty(nameof(C.Property)).PropertyType")]
+        [TestCase("Type.GetType(\"RoslynSandbox.C\")", "RoslynSandbox.C", "Type.GetType(\"RoslynSandbox.C\")")]
+        [TestCase("Type.GetType(\"RoslynSandbox.C+Nested\")", "RoslynSandbox.C.Nested", "Type.GetType(\"RoslynSandbox.C+Nested\")")]
         [TestCase("Type.GetType(\"System.Int32\")", "int", "Type.GetType(\"System.Int32\")")]
         [TestCase("Type.GetType(\"System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]\")", "System.Collections.Generic.KeyValuePair<int, string>", "Type.GetType(\"System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]\")")]
         [TestCase("Type.GetType(\"System.Int32\", true)", "int", "Type.GetType(\"System.Int32\", true)")]
@@ -44,13 +44,13 @@ namespace RoslynSandbox
     using System.Collections.Generic;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public readonly int Field;
 
-        public Foo(Foo foo, int? nullableInt)
+        public C(C foo, int? nullableInt)
         {
-            var type = typeof(Foo);
+            var type = typeof(C);
         }
 
         public int Property { get; }
@@ -61,7 +61,7 @@ namespace RoslynSandbox
 
         public class Nested { }
     }
-}".AssertReplace("typeof(Foo)", expression);
+}".AssertReplace("typeof(C)", expression);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
@@ -84,11 +84,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
         public readonly int field = typeof(int);
 
-        public Foo()
+        public C()
         {
             var local = typeof(int);
             _ = local.ToString();
@@ -122,11 +122,11 @@ namespace RoslynSandbox
     using System.Collections.Generic;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public readonly int Field;
 
-        public Foo(Foo foo)
+        public C(C foo)
         {
             var type = Assembly.Load(""mscorlib"").GetType(""System.Int32"");
         }

@@ -15,11 +15,11 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var anon = new { Foo = 1 };
+            var anon = new { C = 1 };
             var member = anon.GetType().GetProperty(↓""MISSING"");
         }
     }
@@ -46,9 +46,9 @@ namespace RoslynSandbox.Dump
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(CustomAggregateException).GetField(↓""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
@@ -68,11 +68,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetNestedType(↓nameof(Generic<int>), BindingFlags.Public);
+            var methodInfo = typeof(C).GetNestedType(↓nameof(Generic<int>), BindingFlags.Public);
         }
 
         public class Generic<T>
@@ -93,11 +93,11 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
-    public sealed class Foo
+    public sealed class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetProperty(""Item"");
+            _ = typeof(C).GetProperty(""Item"");
         }
 
         [IndexerName(""Bar"")]

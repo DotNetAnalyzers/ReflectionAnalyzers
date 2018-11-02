@@ -24,17 +24,17 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).↓GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).↓GetMethod(nameof(this.Bar));
         }
 
         public int Bar { get; }
     }
 }".AssertReplace("GetMethod(nameof(this.Bar))", call);
-            var message = "The type RoslynSandbox.Foo has a property named Bar.";
+            var message = "The type RoslynSandbox.C has a property named Bar.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -53,17 +53,17 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).↓GetProperty(nameof(this.Bar));
+            var methodInfo = typeof(C).↓GetProperty(nameof(this.Bar));
         }
 
         public int Bar() => 0;
     }
 }".AssertReplace("GetProperty(nameof(this.Bar))", call);
-            var message = "The type RoslynSandbox.Foo has a method named Bar.";
+            var message = "The type RoslynSandbox.C has a method named Bar.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }

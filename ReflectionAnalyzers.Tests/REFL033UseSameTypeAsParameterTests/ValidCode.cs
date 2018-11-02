@@ -19,9 +19,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public object Get => typeof(Foo).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
+        public object Get => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
 
         public static IComparable Static(IComparable i) => i;
     }
@@ -40,7 +40,7 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Windows.Forms;
 
-    class Foo
+    class C
     {
         public object Get => typeof(Control).GetMethod(
             nameof(Control.CreateControl),

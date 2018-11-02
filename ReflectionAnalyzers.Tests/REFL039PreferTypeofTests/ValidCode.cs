@@ -23,8 +23,8 @@ namespace ValidCode
     {
         object M()
         {
-            var anon = new { Foo = 1 };
-            return anon.GetType().GetProperty(nameof(anon.Foo), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var anon = new { C = 1 };
+            return anon.GetType().GetProperty(nameof(anon.C), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
     }
 }";
@@ -45,8 +45,8 @@ namespace ValidCode
     {
         object M()
         {
-            var anon = new { Foo = 1 };
-            return anon.GetType().GetProperty(nameof(anon.Foo), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var anon = new { C = 1 };
+            return anon.GetType().GetProperty(nameof(anon.C), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
     }
 }";

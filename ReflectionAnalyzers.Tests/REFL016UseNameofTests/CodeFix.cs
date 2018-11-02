@@ -18,9 +18,9 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
             var testCode = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetProperty(""Bar"");
         }
@@ -32,9 +32,9 @@ namespace RoslynSandbox
             var fixedCode = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetProperty(nameof(this.Bar));
         }
@@ -53,9 +53,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetProperty(
   /* trivia1 */ ""Bar""  ,    // trivia2
@@ -71,9 +71,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetProperty(
   /* trivia1 */ nameof(this.Bar)  ,    // trivia2
@@ -92,9 +92,9 @@ namespace RoslynSandbox
             var testCode = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetProperty(""Bar"");
         }
@@ -106,9 +106,9 @@ namespace RoslynSandbox
             var fixedCode = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetProperty(nameof(Bar));
         }
@@ -125,12 +125,12 @@ namespace RoslynSandbox
             var testCode = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var anon = new { Foo = 1 };
-            var member = anon.GetType().GetProperty(""Foo"");
+            var anon = new { C = 1 };
+            var member = anon.GetType().GetProperty(""C"");
         }
     }
 }";
@@ -138,16 +138,16 @@ namespace RoslynSandbox
             var fixedCode = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var anon = new { Foo = 1 };
-            var member = anon.GetType().GetProperty(nameof(anon.Foo));
+            var anon = new { C = 1 };
+            var member = anon.GetType().GetProperty(nameof(anon.C));
         }
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode, fixTitle: "Use nameof(anon.Foo).");
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode, fixTitle: "Use nameof(anon.C).");
         }
 
         [Test]
@@ -158,9 +158,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(Dictionary<string, object>).GetMethod(↓""Add"");
         }
@@ -172,9 +172,9 @@ namespace RoslynSandbox
 {
     using System.Collections.Generic;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(Dictionary<string, object>).GetMethod(nameof(Dictionary<string, object>.Add));
         }
@@ -194,9 +194,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetNestedType(↓""Class"", BindingFlags.NonPublic);
         }
@@ -216,9 +216,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var member = this.GetType().GetNestedType(nameof(Class), BindingFlags.NonPublic);
         }
@@ -247,7 +247,7 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
         public class Class { }
 
@@ -267,7 +267,7 @@ namespace RoslynSandbox
     {
         public Bar()
         {
-            var member = typeof(Foo).GetNestedType(↓""Class"", BindingFlags.Public);
+            var member = typeof(C).GetNestedType(↓""Class"", BindingFlags.Public);
         }
     }
 }".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.Public)", $"GetNestedType(↓\"{type}\", BindingFlags.Public)");
@@ -281,10 +281,10 @@ namespace RoslynSandbox
     {
         public Bar()
         {
-            var member = typeof(Foo).GetNestedType(nameof(Foo.Class), BindingFlags.Public);
+            var member = typeof(C).GetNestedType(nameof(C.Class), BindingFlags.Public);
         }
     }
-}".AssertReplace("nameof(Foo.Class)", $"nameof(Foo.{type})");
+}".AssertReplace("nameof(C.Class)", $"nameof(C.{type})");
 
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { fooCode, testCode }, fixedCode);
         }
@@ -298,9 +298,9 @@ namespace RoslynSandbox.Dump
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(AggregateException).GetProperty(""Message"", BindingFlags.Public | BindingFlags.Instance);
         }
@@ -313,9 +313,9 @@ namespace RoslynSandbox.Dump
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(AggregateException).GetProperty(nameof(Exception.Message), BindingFlags.Public | BindingFlags.Instance);
         }
@@ -335,7 +335,7 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Windows.Forms;
 
-    class Foo
+    class C
     {
         public object Get => typeof(Control).GetMethod(""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
@@ -348,7 +348,7 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Windows.Forms;
 
-    class Foo
+    class C
     {
         public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
@@ -366,7 +366,7 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public object Get => typeof(int?).GetProperty(""Value"");
     }
@@ -378,7 +378,7 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
         public object Get => typeof(int?).GetProperty(nameof(Nullable<int>.Value));
     }
@@ -395,7 +395,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
         public object Get => typeof((int, double)).GetField(""Item1"");
     }
@@ -406,7 +406,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
         public object Get => typeof((int, double)).GetField(nameof(ValueTuple<int, double>.Item1));
     }
@@ -423,7 +423,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
         public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(""Rest"");
     }
@@ -434,7 +434,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
         public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(nameof(ValueTuple<int, int, int, int, int, int, int, ValueTuple<int>>.Rest));
     }

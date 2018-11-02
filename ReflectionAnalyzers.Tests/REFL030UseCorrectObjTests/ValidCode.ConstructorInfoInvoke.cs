@@ -21,17 +21,17 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
         }
 
-        public Foo(int value)
+        public C(int value)
         {
         }
 
-        public static Foo Create() => (Foo)typeof(Foo).GetConstructor(Type.EmptyTypes).Invoke(null);
+        public static C Create() => (C)typeof(C).GetConstructor(Type.EmptyTypes).Invoke(null);
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(null)", call);
 
@@ -48,19 +48,19 @@ namespace RoslynSandbox
     using System;
     using System.Runtime.Serialization;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
         }
 
-        public Foo(int value)
+        public C(int value)
         {
         }
 
         public static void Bar()
         {
-            var type = typeof(Foo);
+            var type = typeof(C);
             var instance = FormatterServices.GetUninitializedObject(type);
             type.GetConstructor(Type.EmptyTypes).Invoke(instance, null);
         }

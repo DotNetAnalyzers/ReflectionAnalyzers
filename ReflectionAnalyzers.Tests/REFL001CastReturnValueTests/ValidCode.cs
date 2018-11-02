@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             private static readonly DiagnosticDescriptor Descriptor = REFL001CastReturnValue.Descriptor;
 
             [TestCase("CreateInstance<T>()")]
-            [TestCase("CreateInstance<Foo>()")]
+            [TestCase("CreateInstance<C>()")]
             public void Generic(string call)
             {
                 var code = @"
@@ -21,12 +21,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public static void Bar<T>()
-        {
-            var foo = Activator.CreateInstance<T>();
-        }
+        public static object  M<T>() => Activator.CreateInstance<T>();
     }
 }".AssertReplace("CreateInstance<T>()", call);
 

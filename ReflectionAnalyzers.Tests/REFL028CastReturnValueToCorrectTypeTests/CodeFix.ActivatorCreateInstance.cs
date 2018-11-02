@@ -22,11 +22,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public sealed class Foo : IDisposable
+    public sealed class C : IDisposable
     {
-        public Foo()
+        public C()
         {
-            var foo = (↓string)Activator.CreateInstance(typeof(Foo));
+            var foo = (↓string)Activator.CreateInstance(typeof(C));
         }
 
         public void Dispose()
@@ -40,11 +40,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public sealed class Foo : IDisposable
+    public sealed class C : IDisposable
     {
-        public Foo()
+        public C()
         {
-            var foo = (Foo)Activator.CreateInstance(typeof(Foo));
+            var foo = (C)Activator.CreateInstance(typeof(C));
         }
 
         public void Dispose()

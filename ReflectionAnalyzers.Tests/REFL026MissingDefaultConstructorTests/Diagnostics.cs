@@ -9,8 +9,8 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL026NoDefaultConstructor.Descriptor);
 
-        [TestCase("Activator.CreateInstance<↓Foo>()")]
-        [TestCase("Activator.CreateInstance(typeof(↓Foo))")]
+        [TestCase("Activator.CreateInstance<↓C>()")]
+        [TestCase("Activator.CreateInstance(typeof(↓C))")]
         public void OneConstructorSingleIntParameter(string call)
         {
             var code = @"
@@ -18,22 +18,22 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo(int i)
+        public C(int i)
         {
-            var foo = Activator.CreateInstance(typeof(↓Foo));
+            var foo = Activator.CreateInstance(typeof(↓C));
         }
     }
-}".AssertReplace("Activator.CreateInstance(typeof(↓Foo))", call);
+}".AssertReplace("Activator.CreateInstance(typeof(↓C))", call);
 
-            var message = "No parameterless constructor defined for RoslynSandbox.Foo.";
+            var message = "No parameterless constructor defined for RoslynSandbox.C.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
-        [TestCase("Activator.CreateInstance<↓Foo>()")]
-        [TestCase("Activator.CreateInstance(typeof(↓Foo))")]
-        [TestCase("Activator.CreateInstance(typeof(↓Foo), false)")]
+        [TestCase("Activator.CreateInstance<↓C>()")]
+        [TestCase("Activator.CreateInstance(typeof(↓C))")]
+        [TestCase("Activator.CreateInstance(typeof(↓C), false)")]
         public void PrivateConstructor(string call)
         {
             var code = @"
@@ -41,22 +41,22 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        private Foo()
+        private C()
         {
         }
 
-        public Foo Create() => Activator.CreateInstance<↓Foo>();
+        public C Create() => Activator.CreateInstance<↓C>();
     }
-}".AssertReplace("Activator.CreateInstance<↓Foo>()", call);
+}".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
-            var message = "No parameterless constructor defined for RoslynSandbox.Foo.";
+            var message = "No parameterless constructor defined for RoslynSandbox.C.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
-        [TestCase("Activator.CreateInstance<↓Foo>()")]
-        [TestCase("Activator.CreateInstance(typeof(↓Foo))")]
+        [TestCase("Activator.CreateInstance<↓C>()")]
+        [TestCase("Activator.CreateInstance(typeof(↓C))")]
         public void OneConstructorSingleParams(string call)
         {
             var code = @"
@@ -64,17 +64,17 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo(params int[] values)
+        public C(params int[] values)
         {
         }
 
-        public Foo Create() => Activator.CreateInstance<↓Foo>();
+        public C Create() => Activator.CreateInstance<↓C>();
     }
-}".AssertReplace("Activator.CreateInstance<↓Foo>()", call);
+}".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
-            var message = "No parameterless constructor defined for RoslynSandbox.Foo.";
+            var message = "No parameterless constructor defined for RoslynSandbox.C.";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }

@@ -16,11 +16,11 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetProperty(nameof(this.Value)).GetMethod;
+            var methodInfo = typeof(C).GetProperty(nameof(this.Value)).GetMethod;
         }
 
         public int Value { get; set; }
@@ -35,11 +35,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetProperty(nameof(this.Value)).SetMethod;
+            var methodInfo = typeof(C).GetProperty(nameof(this.Value)).SetMethod;
         }
 
         public int Value { get; set; }

@@ -17,11 +17,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetNestedType(nameof(Generic<int>), BindingFlags.Public);
+            var methodInfo = typeof(C).GetNestedType(nameof(Generic<int>), BindingFlags.Public);
         }
 
         public class Generic<T>
@@ -38,11 +38,11 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var anon = new { Foo = 1 };
+            var anon = new { C = 1 };
             var member = anon.GetType().GetProperty(""MISSING"");
         }
     }
@@ -62,9 +62,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var methodInfo = typeof(string).GetMethod(""MISSING"");
         }

@@ -22,11 +22,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public)↓);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Public)↓);
         }
 
         public static int Static() => 0;
@@ -46,11 +46,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static int Static() => 0;
@@ -78,11 +78,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), Type.EmptyTypes);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Type.EmptyTypes);
         }
 
         public int Bar() => 0;
@@ -95,11 +95,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
         }
 
         public int Bar() => 0;
@@ -116,11 +116,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int) });
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int) });
         }
 
         public int Bar(int value) => value;
@@ -132,11 +132,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
         }
 
         public int Bar(int value) => value;
@@ -151,11 +151,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), new[] { typeof(int), typeof(double) });
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int), typeof(double) });
         }
 
         public double Bar(int i, double d) => i + d;
@@ -167,11 +167,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(double) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(double) }, null);
         }
 
         public double Bar(int i, double d) => i + d;
@@ -188,9 +188,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             _ = new[]
             {
@@ -205,9 +205,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             _ = new[]
             {
@@ -232,11 +232,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), ↓BindingFlags.Public);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Public), ↓BindingFlags.Public);
         }
 
         public static int Static() => 0;
@@ -257,11 +257,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public static int Static() => 0;
@@ -290,9 +290,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection.Emit;
 
-    public class Foo
+    public class C
     {
-        public Foo(ILGenerator il)
+        public C(ILGenerator il)
         {
             il.Emit(OpCodes.Call, typeof(Type).GetMethod(nameof(Type.GetTypeFromHandle)↓));
         }
@@ -306,9 +306,9 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Reflection.Emit;
 
-    public class Foo
+    public class C
     {
-        public Foo(ILGenerator il)
+        public C(ILGenerator il)
         {
             il.Emit(OpCodes.Call, typeof(Type).GetMethod(nameof(Type.GetTypeFromHandle), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly));
         }
@@ -331,14 +331,14 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var ctor = typeof(Foo).GetConstructor↓(Type.EmptyTypes);
+            var ctor = typeof(C).GetConstructor↓(Type.EmptyTypes);
         }
 
-        public Foo(int value)
+        public C(int value)
         {
         }
     }
@@ -350,14 +350,14 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var ctor = typeof(Foo).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
+            var ctor = typeof(C).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
         }
 
-        public Foo(int value)
+        public C(int value)
         {
         }
     }
@@ -376,11 +376,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetNestedType(nameof(PublicInstance)↓);
+            var methodInfo = typeof(C).GetNestedType(nameof(PublicInstance)↓);
         }
 
         public static class PublicStatic
@@ -406,11 +406,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetNestedType(nameof(PublicInstance), BindingFlags.Public);
+            var methodInfo = typeof(C).GetNestedType(nameof(PublicInstance), BindingFlags.Public);
         }
 
         public static class PublicStatic

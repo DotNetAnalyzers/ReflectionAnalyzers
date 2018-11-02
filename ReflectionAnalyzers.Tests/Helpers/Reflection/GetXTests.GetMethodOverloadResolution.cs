@@ -24,7 +24,7 @@ namespace RoslynSandbox
     using System.Collections.Generic;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
         public object Get() => typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int) });
     }
@@ -53,7 +53,7 @@ namespace RoslynSandbox
     using System.Collections.Generic;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
         public object Get() => typeof(Array).GetMethod(nameof(Array.CreateInstance), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(Type), typeof(int) }, null);
     }

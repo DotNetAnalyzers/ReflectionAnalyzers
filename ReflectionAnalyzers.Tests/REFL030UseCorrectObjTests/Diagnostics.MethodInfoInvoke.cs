@@ -17,11 +17,11 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo(Foo foo)
+        public C(C foo)
         {
-            _ = typeof(Foo).GetMethod(nameof(Bar)).Invoke(↓foo, null);
+            _ = typeof(C).GetMethod(nameof(Bar)).Invoke(↓foo, null);
         }
 
         public static void Bar()
@@ -30,7 +30,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var message = "The method RoslynSandbox.Foo.Bar() is static and null should be passed as obj.";
+                var message = "The method RoslynSandbox.C.Bar() is static and null should be passed as obj.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -40,17 +40,17 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(↓null, null);
+            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(↓null, null);
         }
 
         public int Bar() => 0;
     }
 }";
-                var message = "The method RoslynSandbox.Foo.Bar() is an instance method and the instance should be passed as obj.";
+                var message = "The method RoslynSandbox.C.Bar() is an instance method and the instance should be passed as obj.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -62,9 +62,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
             var value = typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(↓null, null);
         }
@@ -80,17 +80,17 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo(int i)
+        public C(int i)
         {
-            var value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(↓i, null);
+            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(↓i, null);
         }
 
         public int Bar() => 0;
     }
 }";
-                var message = "Expected an argument of type RoslynSandbox.Foo.";
+                var message = "Expected an argument of type RoslynSandbox.C.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }

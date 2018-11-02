@@ -18,11 +18,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Bar), Type.EmptyTypes);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Type.EmptyTypes);
         }
 
         public int Bar() => 0;
@@ -37,11 +37,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Id), new[] { typeof(int) });
+            var methodInfo = typeof(C).GetMethod(nameof(this.Id), new[] { typeof(int) });
         }
 
         public int Id(int value) => value;
@@ -56,11 +56,11 @@ namespace RoslynSandbox
             var code = @"
 namespace RoslynSandbox
 {
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Id));
+            var methodInfo = typeof(C).GetMethod(nameof(this.Id));
         }
 
         public T Id<T>(T value) => value;

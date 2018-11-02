@@ -17,11 +17,11 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo(int i)
+        public C(int i)
         {
-            var value = ↓typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
+            var value = ↓typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
         }
     }
 }";

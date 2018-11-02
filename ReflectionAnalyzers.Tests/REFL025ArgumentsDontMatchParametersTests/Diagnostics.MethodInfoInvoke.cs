@@ -19,11 +19,11 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            var value = (int)typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 });
+            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 });
         }
 
         public static int Bar(int value) => value;
@@ -41,11 +41,11 @@ namespace RoslynSandbox
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            typeof(Foo).GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 });
+            typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 });
         }
 
         public static void Bar()

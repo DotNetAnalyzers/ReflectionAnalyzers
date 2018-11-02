@@ -23,11 +23,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo<T>
+    public class C<T>
     {
         public static void Bar()
         {
-            var type = typeof(Foo<>).MakeGenericType(typeof(int));
+            var type = typeof(C<>).MakeGenericType(typeof(int));
         }
     }
 }".AssertReplace("int", type);
@@ -40,7 +40,7 @@ namespace RoslynSandbox
             [TestCase("where T : unmanaged", "typeof(int)")]
             [TestCase("where T : IComparable", "typeof(int)")]
             [TestCase("where T : IComparable<T>", "typeof(int)")]
-            [TestCase("where T : new()", "typeof(Foo<int>)")]
+            [TestCase("where T : new()", "typeof(C<int>)")]
             public void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
@@ -48,10 +48,10 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo<T>
+    public class C<T>
         where T : class
     {
-        public static object Get => typeof(Foo<>).MakeGenericType(typeof(int));
+        public static object Get => typeof(C<>).MakeGenericType(typeof(int));
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
@@ -145,13 +145,13 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo<T1, T2>
+    public class C<T1, T2>
         where T1 : T2
         where T2 : T1
     {
         public static void Bar()
         {
-            var type = typeof(Foo<,>).MakeGenericType(typeof(int), typeof(int));
+            var type = typeof(C<,>).MakeGenericType(typeof(int), typeof(int));
         }
     }
 }";
@@ -167,11 +167,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar()
         {
-            var type = typeof(Foo).GetNestedType(""Baz`1"").MakeGenericType(typeof(int));
+            var type = typeof(C).GetNestedType(""Baz`1"").MakeGenericType(typeof(int));
         }
 
         public class Baz<T>

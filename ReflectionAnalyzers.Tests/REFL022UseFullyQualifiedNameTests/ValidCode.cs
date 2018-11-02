@@ -22,13 +22,13 @@ namespace RoslynSandbox
     using System.Collections;
     using System.Collections.Generic;
 
-    public class Foo : IEnumerable<int>
+    public class C : IEnumerable<int>
     {
         private readonly List<int> ints = new List<int>();
 
-        public Foo()
+        public C()
         {
-            var type = typeof(Foo).GetInterface(""System.Collections.Generic.IEnumerable`1"");
+            var type = typeof(C).GetInterface(""System.Collections.Generic.IEnumerable`1"");
         }
 
         public IEnumerator<int> GetEnumerator() => this.ints.GetEnumerator();

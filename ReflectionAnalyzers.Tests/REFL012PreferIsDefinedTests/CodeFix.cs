@@ -20,9 +20,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(Foo), typeof(ObsoleteAttribute)) == null;
+        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) == null;
     }
 }";
             var fixedCode = @"
@@ -30,9 +30,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public static bool Bar() => !Attribute.IsDefined(typeof(Foo), typeof(ObsoleteAttribute));
+        public static bool Bar() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
             var message = "Prefer Attribute.IsDefined().";
@@ -47,9 +47,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(Foo), typeof(ObsoleteAttribute), true) == null;
+        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute), true) == null;
     }
 }";
             var fixedCode = @"
@@ -57,9 +57,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public static bool Bar() => !Attribute.IsDefined(typeof(Foo), typeof(ObsoleteAttribute), true);
+        public static bool Bar() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute), true);
     }
 }";
             var message = "Prefer Attribute.IsDefined().";
@@ -74,9 +74,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(Foo), typeof(ObsoleteAttribute)) != null;
+        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) != null;
     }
 }";
             var fixedCode = @"
@@ -84,9 +84,9 @@ namespace RoslynSandbox
 {
     using System;
 
-    class Foo
+    class C
     {
-        public static bool Bar() => Attribute.IsDefined(typeof(Foo), typeof(ObsoleteAttribute));
+        public static bool Bar() => Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
             var message = "Prefer Attribute.IsDefined().";

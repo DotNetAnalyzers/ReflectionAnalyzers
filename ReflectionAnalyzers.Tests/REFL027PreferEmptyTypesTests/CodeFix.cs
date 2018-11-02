@@ -24,11 +24,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetConstructor(new Type[0]);
+            _ = typeof(C).GetConstructor(new Type[0]);
         }
     }
 }".AssertReplace("new Type[0]", emptyArray);
@@ -39,11 +39,11 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetConstructor(Type.EmptyTypes);
+            _ = typeof(C).GetConstructor(Type.EmptyTypes);
         }
     }
 }";

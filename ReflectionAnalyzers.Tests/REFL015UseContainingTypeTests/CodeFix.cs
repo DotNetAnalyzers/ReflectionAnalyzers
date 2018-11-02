@@ -27,7 +27,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class FooBase
+    public class CBase
     {
         private static int PrivateStaticField;
 
@@ -43,11 +43,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
-            var member = typeof(↓Foo).GetField(""PrivateStaticField"", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            var member = typeof(↓C).GetField(""PrivateStaticField"", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
         }
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
@@ -57,15 +57,15 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
-            var member = typeof(FooBase).GetField(""PrivateStaticField"", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            var member = typeof(CBase).GetField(""PrivateStaticField"", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
         }
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
-            var message = "Use the containing type FooBase.";
+            var message = "Use the containing type CBase.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
 
@@ -84,7 +84,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class FooBase
+    public class CBase
     {
         private static int PrivateStaticField;
 
@@ -100,9 +100,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
             var member = ↓this.GetType().GetField(""PrivateStaticField"", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
         }
@@ -114,15 +114,15 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
-            var member = typeof(FooBase).GetField(""PrivateStaticField"", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            var member = typeof(CBase).GetField(""PrivateStaticField"", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
         }
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
-            var message = "Use the containing type FooBase.";
+            var message = "Use the containing type CBase.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
 
@@ -135,7 +135,7 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class FooBase
+    public class CBase
     {
         public static class PublicStatic
         {
@@ -151,11 +151,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
-            var typeInfo = typeof(↓Foo).GetNestedType(nameof(PublicStatic), BindingFlags.Public);
+            var typeInfo = typeof(↓C).GetNestedType(nameof(PublicStatic), BindingFlags.Public);
         }
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
@@ -165,15 +165,15 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
-            var typeInfo = typeof(FooBase).GetNestedType(nameof(PublicStatic), BindingFlags.Public);
+            var typeInfo = typeof(CBase).GetNestedType(nameof(PublicStatic), BindingFlags.Public);
         }
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
-            var message = "Use the containing type FooBase.";
+            var message = "Use the containing type CBase.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
 
@@ -186,7 +186,7 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class FooBase
+    public class CBase
     {
         private static class PrivateStatic
         {
@@ -202,11 +202,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
-            var typeInfo = typeof(↓Foo).GetNestedType(""PrivateStatic"", BindingFlags.NonPublic);
+            var typeInfo = typeof(↓C).GetNestedType(""PrivateStatic"", BindingFlags.NonPublic);
         }
     }
 }".AssertReplace("PrivateStatic", type);
@@ -216,16 +216,16 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo : FooBase
+    public class C : CBase
     {
-        public Foo()
+        public C()
         {
-            var typeInfo = typeof(FooBase).GetNestedType(""PrivateStatic"", BindingFlags.NonPublic);
+            var typeInfo = typeof(CBase).GetNestedType(""PrivateStatic"", BindingFlags.NonPublic);
         }
     }
 }".AssertReplace("PrivateStatic", type);
 
-            var message = "Use the containing type FooBase.";
+            var message = "Use the containing type CBase.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
 

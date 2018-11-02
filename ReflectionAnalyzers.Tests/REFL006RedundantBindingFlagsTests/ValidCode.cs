@@ -23,11 +23,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetMethod(nameof(this.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
         }
 
         public static int Static() => 0;
@@ -59,9 +59,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo(Type type)
+        public C(Type type)
         {
             var methodInfo = type.GetMethod(""Bar"");
         }
@@ -87,9 +87,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
         }
@@ -111,11 +111,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
         }
 
         public static class PublicStatic

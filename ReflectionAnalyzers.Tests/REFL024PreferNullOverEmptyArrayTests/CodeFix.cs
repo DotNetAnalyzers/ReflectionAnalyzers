@@ -24,9 +24,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo(MethodInfo member)
+        public C(MethodInfo member)
         {
             _ = member.Invoke(null, Array.Empty<object>());
         }
@@ -39,9 +39,9 @@ namespace RoslynSandbox
     using System;
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo(MethodInfo member)
+        public C(MethodInfo member)
         {
             _ = member.Invoke(null, null);
         }

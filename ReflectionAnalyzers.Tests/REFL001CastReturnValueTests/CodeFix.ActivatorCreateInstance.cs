@@ -22,11 +22,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar()
         {
-            var foo = ↓Activator.CreateInstance(typeof(Foo));
+            var foo = ↓Activator.CreateInstance(typeof(C));
         }
     }
 }";
@@ -36,11 +36,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar()
         {
-            var foo = (Foo)Activator.CreateInstance(typeof(Foo));
+            var foo = (C)Activator.CreateInstance(typeof(C));
         }
     }
 }";
@@ -55,11 +55,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar()
         {
-            var type = typeof(Foo);
+            var type = typeof(C);
             var foo = ↓Activator.CreateInstance(type);
         }
     }
@@ -70,12 +70,12 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar()
         {
-            var type = typeof(Foo);
-            var foo = (Foo)Activator.CreateInstance(type);
+            var type = typeof(C);
+            var foo = (C)Activator.CreateInstance(type);
         }
     }
 }";
@@ -93,7 +93,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar<T>()
         {

@@ -11,11 +11,11 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
 
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓new[] { 1 })")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓new object[] { 1, 2 })")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓\"abc\")")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓1.0)")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓1, 2)")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓new[] { 1 })")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { 1, 2 })")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓\"abc\")")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓1.0)")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓1, 2)")]
             public void OneConstructorSingleIntParameter(string call)
             {
                 var code = @"
@@ -23,19 +23,19 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo(int i)
+        public C(int i)
         {
-            var foo = Activator.CreateInstance(typeof(Foo));
+            var foo = Activator.CreateInstance(typeof(C));
         }
     }
-}".AssertReplace("Activator.CreateInstance(typeof(Foo))", call);
+}".AssertReplace("Activator.CreateInstance(typeof(C))", call);
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓null)")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
             public void OneConstructorOneStringParameters(string call)
             {
                 var code = @"
@@ -43,22 +43,22 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo(string text1)
+        public C(string text1)
         {
-            var foo = Activator.CreateInstance(typeof(Foo), ↓null);
+            var foo = Activator.CreateInstance(typeof(C), ↓null);
         }
     }
-}".AssertReplace("Activator.CreateInstance(typeof(Foo), ↓null)", call);
+}".AssertReplace("Activator.CreateInstance(typeof(C), ↓null)", call);
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓null)")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓(string)null)")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓(StringBuilder)null)")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓new object[] { null })")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓(StringBuilder)null)")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { null })")]
             public void OverloadedConstructorsStringAndStringBuilder(string call)
             {
                 var code = @"
@@ -67,25 +67,25 @@ namespace RoslynSandbox
     using System;
     using System.Text;
 
-    public class Foo
+    public class C
     {
-        public Foo(string text)
+        public C(string text)
         {
         }
 
-        public Foo(StringBuilder text)
+        public C(StringBuilder text)
         {
         }
 
-        public static Foo Create() => (Foo)Activator.CreateInstance(typeof(Foo), ↓(string)null);
+        public static C Create() => (C)Activator.CreateInstance(typeof(C), ↓(string)null);
     }
-}".AssertReplace("Activator.CreateInstance(typeof(Foo), ↓(string)null)", call);
+}".AssertReplace("Activator.CreateInstance(typeof(C), ↓(string)null)", call);
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓(string)null)")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), ↓new object[] { null })")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { null })")]
             public void OverloadedConstructorsStringAndInt(string call)
             {
                 var code = @"
@@ -93,27 +93,27 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo(string text)
+        public C(string text)
         {
         }
 
-        public Foo(int value)
+        public C(int value)
         {
         }
 
-        public static Foo Create() => (Foo)Activator.CreateInstance(typeof(Foo), ↓(string)null);
+        public static C Create() => (C)Activator.CreateInstance(typeof(C), ↓(string)null);
     }
-}".AssertReplace("Activator.CreateInstance(typeof(Foo), ↓(string)null)", call);
+}".AssertReplace("Activator.CreateInstance(typeof(C), ↓(string)null)", call);
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("Activator.CreateInstance(typeof(Foo), 1, null)")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), 1, new object[] { 1 })")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), \"abc\", 2)")]
-            [TestCase("Activator.CreateInstance(typeof(Foo), 1, \"abc\")")]
+            [TestCase("Activator.CreateInstance(typeof(C), 1, null)")]
+            [TestCase("Activator.CreateInstance(typeof(C), 1, new object[] { 1 })")]
+            [TestCase("Activator.CreateInstance(typeof(C), \"abc\", 2)")]
+            [TestCase("Activator.CreateInstance(typeof(C), 1, \"abc\")")]
             public void ParamsConstructorSecondParameter(string call)
             {
                 var code = @"
@@ -121,14 +121,14 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo(int i, params int[] ints)
+        public C(int i, params int[] ints)
         {
-            var foo = Activator.CreateInstance(typeof(Foo), 1, null);
+            var foo = Activator.CreateInstance(typeof(C), 1, null);
         }
     }
-}".AssertReplace("Activator.CreateInstance(typeof(Foo), 1, null)", call);
+}".AssertReplace("Activator.CreateInstance(typeof(C), 1, null)", call);
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }

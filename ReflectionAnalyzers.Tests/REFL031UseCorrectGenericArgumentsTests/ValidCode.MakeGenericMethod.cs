@@ -20,11 +20,11 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar<T>()
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(typeof(int));
+            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(typeof(int));
         }
     }
 }";
@@ -36,7 +36,7 @@ namespace RoslynSandbox
             [TestCase("where T : IComparable",      "typeof(int)")]
             [TestCase("where T : IComparable<T>",   "typeof(int)")]
             [TestCase("where T : IComparable<int>", "typeof(int)")]
-            [TestCase("where T : new()",            "typeof(Foo)")]
+            [TestCase("where T : new()",            "typeof(C)")]
             public void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
@@ -44,12 +44,12 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static void Bar<T>()
             where T : class
         {
-            var method = typeof(Foo).GetMethod(nameof(Foo.Bar)).MakeGenericMethod(typeof(int));
+            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint)

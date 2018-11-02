@@ -17,11 +17,11 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
                 var code = @"
 namespace RoslynSandbox
 {
-    public class Foo
+    public class C
     {
-        public Foo(int value)
+        public C(int value)
         {
-            var foo = typeof(Foo).GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 });
+            var foo = typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 });
         }
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })", call);
@@ -39,24 +39,24 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
         }
 
-        public Foo(int value)
+        public C(int value)
         {
         }
 
         public static void Bar(string text)
         {
-            typeof(Foo).GetConstructor(Type.EmptyTypes).Invoke(text, null);
+            typeof(C).GetConstructor(Type.EmptyTypes).Invoke(text, null);
         }
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(text, null)", call);
 
-                var message = "Use an instance of type RoslynSandbox.Foo.";
+                var message = "Use an instance of type RoslynSandbox.C.";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }

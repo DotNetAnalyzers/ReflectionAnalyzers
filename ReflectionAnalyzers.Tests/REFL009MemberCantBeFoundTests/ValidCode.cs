@@ -20,9 +20,9 @@ namespace RoslynSandbox.Dump
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(AggregateException).GetMethod(""get_InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
         }
@@ -51,9 +51,9 @@ namespace RoslynSandbox.Dump
     using System;
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
             var member = typeof(CustomAggregateException).GetMethod(""get_InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
         }
@@ -75,11 +75,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Foo
+    class C
     {
-        public Foo()
+        public C()
         {
-            var methodInfo = typeof(Foo).GetNestedType(nameof(Public), BindingFlags.Public);
+            var methodInfo = typeof(C).GetNestedType(nameof(Public), BindingFlags.Public);
         }
 
         public static class PublicStatic
@@ -115,11 +115,11 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetProperty(""Item"");
+            _ = typeof(C).GetProperty(""Item"");
         }
 
         public int this[int p1] => 0;
@@ -139,11 +139,11 @@ namespace RoslynSandbox
     using System.Reflection;
     using System.Runtime.CompilerServices;
 
-    public class Foo
+    public class C
     {
-        public Foo()
+        public C()
         {
-            _ = typeof(Foo).GetProperty(""Bar"");
+            _ = typeof(C).GetProperty(""Bar"");
         }
 
         [IndexerName(""Bar"")]

@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL028CastReturnValueToCorrectType.Descriptor;
 
-            [TestCase("(Foo)")]
+            [TestCase("(C)")]
             [TestCase("(IDisposable)")]
             public void WhenCasting(string cast)
             {
@@ -21,18 +21,18 @@ namespace RoslynSandbox
 {
     using System;
 
-    public sealed class Foo : IDisposable
+    public sealed class C : IDisposable
     {
-        public Foo()
+        public C()
         {
-            var foo = (Foo)Activator.CreateInstance(typeof(Foo));
+            var foo = (C)Activator.CreateInstance(typeof(C));
         }
 
         public void Dispose()
         {
         }
     }
-}".AssertReplace("(Foo)", cast);
+}".AssertReplace("(C)", cast);
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
@@ -44,7 +44,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static object Bar(Type type) => Activator.CreateInstance(type, ""foo"");
     }
@@ -61,7 +61,7 @@ namespace RoslynSandbox
 {
     using System;
 
-    public class Foo
+    public class C
     {
         public static object Bar<T>() => (T)Activator.CreateInstance(typeof(T), ""foo"");
     }
