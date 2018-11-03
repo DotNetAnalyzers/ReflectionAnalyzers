@@ -5,15 +5,17 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public class ValidCode
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL044ExpectedAttributeType.Descriptor;
-
-        [Test]
-        public void WhenUsingGeneric()
+        public class GetCustomAttribute
         {
-            var code = @"
+            private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
+            private static readonly DiagnosticDescriptor Descriptor = REFL044ExpectedAttributeType.Descriptor;
+
+            [Test]
+            public void WhenUsingGeneric()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -27,13 +29,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            }
 
-        [Test]
-        public void WhenGetCustomAttributeCast()
-        {
-            var code = @"
+            [Test]
+            public void WhenGetCustomAttributeCast()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -46,13 +48,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
-        }
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            }
 
-        [Test]
-        public void WhenGetCustomAttributeAs()
-        {
-            var code = @"
+            [Test]
+            public void WhenGetCustomAttributeAs()
+            {
+                var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -66,7 +68,8 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            }
         }
     }
 }

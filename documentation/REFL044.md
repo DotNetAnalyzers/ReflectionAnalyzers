@@ -21,7 +21,11 @@
   </tr>
   <tr>
     <td>Code</td>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetCustomAttributeAnalyzer.cs">GetCustomAttributeAnalyzer</a></td>
+     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetCustomAttributeAnalyzer.cs">GetCustomAttributeAnalyzer</a></td>
+  </tr>
+  <tr>
+    <td></td>
+     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/IsDefinedAnalyzer.cs">IsDefinedAnalyzer</a></td>
   </tr>
 </table>
 <!-- end generated table -->
