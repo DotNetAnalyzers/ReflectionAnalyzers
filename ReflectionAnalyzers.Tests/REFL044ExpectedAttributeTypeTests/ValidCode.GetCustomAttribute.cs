@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public partial class ValidCode
     {
         public class GetCustomAttribute
         {
