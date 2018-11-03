@@ -7,6 +7,7 @@ namespace ReflectionAnalyzers
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
+    [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class IsDefinedAnalyzer : DiagnosticAnalyzer
     {
         /// <inheritdoc/>

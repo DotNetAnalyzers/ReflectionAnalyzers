@@ -14,8 +14,6 @@ namespace ReflectionAnalyzers.Codefixes
     [Shared]
     internal class UseIsDefinedFix : DocumentEditorCodeFixProvider
     {
-        private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
-
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL012PreferIsDefined.DiagnosticId);
 
