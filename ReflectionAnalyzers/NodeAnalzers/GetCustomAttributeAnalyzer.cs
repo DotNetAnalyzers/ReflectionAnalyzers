@@ -13,7 +13,8 @@ namespace ReflectionAnalyzers
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL010PreferGenericGetCustomAttribute.Descriptor,
-            REFL012PreferIsDefined.Descriptor);
+            REFL012PreferIsDefined.Descriptor,
+            REFL044ExpectedAttributeType.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -50,6 +51,14 @@ namespace ReflectionAnalyzers
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(InvocationExpressionSyntax),
                                 invocationText)));
+                }
+
+                if (!attributeType.Value.IsAssignableTo(context.Compilation.GetTypeByMetadataName("System.Attribute"), context.Compilation))
+                {
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL044ExpectedAttributeType.Descriptor,
+                            attributeType.Argument.GetLocation()));
                 }
             }
         }

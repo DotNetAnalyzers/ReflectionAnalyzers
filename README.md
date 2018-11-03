@@ -176,5 +176,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL043.md">REFL043</a></td>
     <td>First argument must match type.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL044.md">REFL044</a></td>
+    <td>Expected attribute type.</td>
+  </tr>
 <table>
 <!-- end generated table -->
