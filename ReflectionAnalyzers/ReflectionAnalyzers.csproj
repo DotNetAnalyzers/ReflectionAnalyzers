@@ -20,14 +20,14 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.16.0-dev</Version>
+    <Version>0.1.17.0-dev</Version>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
-    <PackageReleaseNotes>REFL041 check delegate type when calling Delegate.CreateDelegate.
-REFL040 Prefer type.IsInstanceOfType.
-BUGFIX: NRE in GetTypeAnalyzer when elvis operator.</PackageReleaseNotes>
+    <PackageReleaseNotes>REFL044 Expected attribute type.
+REFL043 First argument must match type.
+Warn if GetMethod or SetMethod does not exist.</PackageReleaseNotes>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

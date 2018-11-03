@@ -1,30 +1,35 @@
-#### 0.16.0
+#### 0.1.17
+* REFL044 Expected attribute type.
+* REFL043 First argument must match type.
+* Warn if GetMethod or SetMethod does not exist.
+
+#### 0.1.16
 * REFL041 check delegate type when calling Delegate.CreateDelegate.
 * REFL040 Prefer type.IsInstanceOfType.
 * BUGFIX: NRE in GetTypeAnalyzer when elvis operator.
 
-#### 0.15.0
+#### 0.1.15
 * REFL014 report when filtered by types.
 * REFL039 prefer typeof().
 * REFL003 warn on getting named tuple field.
 * REFL016 handle ValueTuple.
 
-#### 0.14.0
+#### 0.1.14
 * REFL038 prefer RuntimeHelpers.RunClassConstructor.
 * REFL004 handle static ctor.
 * REFL037 handle assembly.GetType
 
-#### 0.13.0
+#### 0.1.13
 * Fix for REFL004
 * BUGFIX REFL004 with indexers.
 
-#### 0.12.0
+#### 0.1.12
 * BUGFIX: overload resolution.
 * REFL016 & REFL017 require nameof when potentially overloading invisible.
 * REFL035 Don't call Invoke on a generic definition.
 * REFL015 nag when private member is found in base class.
 
-#### 0.11.0
+#### 0.1.11
 * REFL033 types can be more specific.
 * Understand MethodInfo.ReturnType, FieldInfo.FieldType, PropertyInfo.PropertyType
 * BUGFIX REFL003 handles overload resolution.
