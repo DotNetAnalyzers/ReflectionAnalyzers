@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
     internal class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
-        private static readonly CodeFixProvider Fix = new GetCustomAttributeFix();
+        private static readonly CodeFixProvider Fix = new UseIsDefinedFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL012PreferIsDefined.DiagnosticId);
 
         [Test]
@@ -91,6 +91,83 @@ namespace RoslynSandbox
 }";
             var message = "Prefer Attribute.IsDefined().";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
+
+        [TestCase(" == null")]
+        [TestCase(" is null")]
+        public void IfGetCustomAttributeIsNull(string isNull)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public C()
+        {
+            if (typeof(C).GetCustomAttribute(typeof(ObsoleteAttribute)) == null)
+            {
+            }
+        }
+    }
+}".AssertReplace(" == null", isNull);
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public C()
+        {
+            if (!typeof(C).IsDefined(typeof(ObsoleteAttribute)))
+            {
+            }
+        }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
+        public void IfGetCustomAttributeNotNull()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public C()
+        {
+            if (typeof(C).GetCustomAttribute(typeof(ObsoleteAttribute)) != null)
+            {
+            }
+        }
+    }
+}";
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public C()
+        {
+            if (typeof(C).IsDefined(typeof(ObsoleteAttribute)))
+            {
+            }
+        }
+    }
+}";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
 }

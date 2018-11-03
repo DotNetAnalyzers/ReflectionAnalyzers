@@ -16,7 +16,8 @@ namespace ReflectionAnalyzers
             REFL001CastReturnValue.Descriptor,
             REFL028CastReturnValueToCorrectType.Descriptor,
             REFL041CreateDelegateType.Descriptor,
-            REFL042FirstArgumentMustBeReferenceType.Descriptor);
+            REFL042FirstArgumentIsReferenceType.Descriptor,
+            REFL043FirstArgumentType.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -74,13 +75,25 @@ namespace ReflectionAnalyzers
                     }
 
                     if (TryFindArgument("firstArgument", out var firstArg) &&
-                        TryGetFirstArgType(methodInfo, out var firstArgType) &&
-                        !firstArgType.IsReferenceType)
+                        TryGetFirstArgType(methodInfo, out var firstArgType))
                     {
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL042FirstArgumentMustBeReferenceType.Descriptor,
-                                firstArg.GetLocation()));
+                        if (!firstArgType.IsReferenceType)
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL042FirstArgumentIsReferenceType.Descriptor,
+                                    firstArg.GetLocation()));
+                        }
+
+                        if (context.SemanticModel.TryGetType(firstArg.Expression, context.CancellationToken, out var firstArgActualType) &&
+                            !firstArgActualType.IsAssignableTo(firstArgType, context.Compilation))
+                        {
+                            context.ReportDiagnostic(
+                                Diagnostic.Create(
+                                    REFL043FirstArgumentType.Descriptor,
+                                    firstArg.GetLocation(),
+                                    firstArgType));
+                        }
                     }
                 }
             }

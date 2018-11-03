@@ -27,6 +27,12 @@ namespace ValidCode.DelegateCreateDelegate
                                 typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
                             .Invoke());
 
+            Assert.AreEqual(-1, ((Func<int>)Delegate.CreateDelegate(
+                                typeof(Func<int>),
+                                null,
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                            .Invoke());
+
             Assert.AreEqual(3, ((Func<int>)Delegate.CreateDelegate(
                                 typeof(Func<int>),
                                 "abc",
@@ -59,7 +65,7 @@ namespace ValidCode.DelegateCreateDelegate
 
             public static void StringVoid(string _) { }
 
-            public static int StringInt(string arg) => arg.Length;
+            public static int StringInt(string arg) => arg?.Length ?? -1;
         }
     }
 }

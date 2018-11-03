@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
+namespace ReflectionAnalyzers.Tests.REFL043FirstArgumentTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
     public class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL042FirstArgumentIsReferenceType.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL043FirstArgumentType.Descriptor);
 
         [Test]
         public void StaticStringVoidFirstArg()
@@ -20,11 +20,11 @@ namespace RoslynSandbox
 
     class C
     {
-        public static void M(int arg) { }
+        public static void M(string arg) { }
 
         public static object Get => Delegate.CreateDelegate(
             typeof(Action),
-            ↓1,
+            new C(),
             typeof(C).GetMethod(nameof(M)));
     }
 }";

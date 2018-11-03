@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                TryGetArgs(invocation, context, out var member, out var attributeType, out var inherits))
+                TryGetArgs(invocation, context, out var target, out var member, out var attributeType, out var inherits))
             {
                 if (invocation.Parent?.IsEither(SyntaxKind.CastExpression, SyntaxKind.AsExpression) == true)
                 {
@@ -35,66 +35,100 @@ namespace ReflectionAnalyzers
                         Diagnostic.Create(
                             REFL010PreferGenericGetCustomAttribute.Descriptor,
                             invocation.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(nameof(InvocationExpressionSyntax), $"{member}.GetCustomAttribute<{attributeType}>({inherits})"),
-                            attributeType.ToString()));
+                            ImmutableDictionary<string, string>.Empty.Add(
+                                nameof(InvocationExpressionSyntax),
+                                $"{member}.GetCustomAttribute<{attributeType.Value.ToString(context)}>({inherits})"),
+                            attributeType.Value.ToString(context)));
                 }
 
-                if (invocation.Parent is BinaryExpressionSyntax binary &&
-                    binary.Right.IsKind(SyntaxKind.NullLiteralExpression))
+                if (PreferIsDefined(invocation, target, member, attributeType, inherits, out var location, out var invocationText))
                 {
-                    if (binary.IsKind(SyntaxKind.EqualsExpression))
-                    {
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL012PreferIsDefined.Descriptor,
-                                binary.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
-                                    nameof(InvocationExpressionSyntax),
-                                    $"!Attribute.IsDefined({member}, typeof({attributeType}){(inherits == null ? string.Empty : $", {inherits}")})")));
-                    }
-                    else if (binary.IsKind(SyntaxKind.NotEqualsExpression))
-                    {
-                        context.ReportDiagnostic(
-                            Diagnostic.Create(
-                                REFL012PreferIsDefined.Descriptor,
-                                binary.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
-                                    nameof(InvocationExpressionSyntax),
-                                    $"Attribute.IsDefined({member}, typeof({attributeType}){(inherits == null ? string.Empty : $", {inherits}")})")));
-                    }
+                    context.ReportDiagnostic(
+                        Diagnostic.Create(
+                            REFL012PreferIsDefined.Descriptor,
+                            location,
+                            ImmutableDictionary<string, string>.Empty.Add(
+                                nameof(InvocationExpressionSyntax),
+                                invocationText)));
                 }
             }
         }
 
-        private static bool TryGetArgs(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ExpressionSyntax member, out TypeSyntax attributeType, out ArgumentSyntax inheritsArg)
+        private static bool TryGetArgs(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out IMethodSymbol target, out ExpressionSyntax member, out ArgumentAndValue<ITypeSymbol> attributeType, out ArgumentSyntax inheritsArg)
         {
-            inheritsArg = null;
-            if (invocation.TryGetTarget(KnownSymbol.Attribute.GetCustomAttribute, context.SemanticModel, context.CancellationToken, out var target) &&
-                target.Parameters.Length > 1)
+            if ((invocation.TryGetTarget(KnownSymbol.Attribute.GetCustomAttribute, context.SemanticModel, context.CancellationToken, out target) ||
+                 invocation.TryGetTarget(KnownSymbol.CustomAttributeExtensions.GetCustomAttribute, context.SemanticModel, context.CancellationToken, out target)) &&
+                target.TryFindParameter("attributeType", out var attributeTypeParameter) &&
+                invocation.TryFindArgument(attributeTypeParameter, out var attributeTypeArg) &&
+                attributeTypeArg.Expression is TypeOfExpressionSyntax typeOf &&
+                context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var typeSymbol))
             {
-                if (invocation.TryFindArgument(target.Parameters[0], out var memberArg) &&
-                    target.Parameters[1].Type == KnownSymbol.Type &&
-                    memberArg.Expression is ExpressionSyntax candidateMember &&
-                    invocation.TryFindArgument(target.Parameters[1], out var typeArg) &&
-                    typeArg.Expression is TypeOfExpressionSyntax typeOf &&
-                    typeOf.Type is TypeSyntax type)
+                attributeType = new ArgumentAndValue<ITypeSymbol>(attributeTypeArg, typeSymbol);
+                if (!target.TryFindParameter("inherit", out var inheritParameter) ||
+                    !invocation.TryFindArgument(inheritParameter, out inheritsArg))
                 {
-                    member = candidateMember;
-                    attributeType = type;
-                    if (target.Parameters.Length == 2)
-                    {
-                        return true;
-                    }
+                    inheritsArg = null;
+                }
 
-                    return target.Parameters.TryElementAt(2, out var inheritsParameter) &&
-                           inheritsParameter.Type == KnownSymbol.Boolean &&
-                           invocation.TryFindArgument(inheritsParameter, out inheritsArg);
+                if (target.IsExtensionMethod &&
+                    invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+                {
+                    member = memberAccess.Expression;
+                    return true;
+                }
+
+                if (target.TryFindParameter("element", out var elementParameter) &&
+                    invocation.TryFindArgument(elementParameter, out var elementArg))
+                {
+                    member = elementArg.Expression;
+                    return true;
                 }
             }
 
             member = null;
-            attributeType = null;
+            attributeType = default(ArgumentAndValue<ITypeSymbol>);
+            inheritsArg = null;
             return false;
+        }
+
+        private static bool PreferIsDefined(InvocationExpressionSyntax invocation, IMethodSymbol target, ExpressionSyntax member, ArgumentAndValue<ITypeSymbol> attributeType, ArgumentSyntax inherits, out Location location, out string invocationText)
+        {
+            switch (invocation.Parent)
+            {
+                case BinaryExpressionSyntax binary when binary.Right.IsKind(SyntaxKind.NullLiteralExpression):
+                    if (binary.IsKind(SyntaxKind.EqualsExpression))
+                    {
+                        location = binary.GetLocation();
+                        invocationText = "!" + GetText();
+                        return true;
+                    }
+
+                    if (binary.IsKind(SyntaxKind.NotEqualsExpression))
+                    {
+                        location = binary.GetLocation();
+                        invocationText = GetText();
+                        return true;
+                    }
+
+                    break;
+                case IsPatternExpressionSyntax isPattern when isPattern.Pattern is ConstantPatternSyntax constantPattern &&
+                                                              constantPattern.Expression.IsKind(SyntaxKind.NullLiteralExpression):
+                    location = isPattern.GetLocation();
+                    invocationText = "!" + GetText();
+                    return true;
+            }
+
+            location = null;
+            invocationText = null;
+            return false;
+
+            string GetText()
+            {
+                var inheritsText = inherits == null ? string.Empty : $", {inherits}";
+                return target.IsExtensionMethod
+                    ? $"{member}.IsDefined({attributeType.Argument}{inheritsText})"
+                    : $"Attribute.IsDefined({member}, {attributeType.Argument}{inheritsText})";
+            }
         }
     }
 }

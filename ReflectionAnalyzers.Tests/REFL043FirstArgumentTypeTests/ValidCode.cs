@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
+namespace ReflectionAnalyzers.Tests.REFL043FirstArgumentTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -8,10 +8,11 @@ namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL042FirstArgumentIsReferenceType.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = REFL043FirstArgumentType.Descriptor;
 
-        [Test]
-        public void StaticStringIntWithFirstArg()
+        [TestCase("null")]
+        [TestCase("string.Empty")]
+        public void StaticStringIntWithFirstArg(string text)
         {
             var code = @"
 namespace RoslynSandbox
@@ -28,7 +29,7 @@ namespace RoslynSandbox
             string.Empty,
             typeof(C).GetMethod(nameof(M)));
     }
-}";
+}".AssertReplace("string.Empty", text);
             AnalyzerAssert.Valid(Analyzer, code);
         }
 

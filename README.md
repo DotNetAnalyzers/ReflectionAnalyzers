@@ -172,5 +172,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL042.md">REFL042</a></td>
     <td>First argument must be reference type.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL043.md">REFL043</a></td>
+    <td>First argument must match type.</td>
+  </tr>
 <table>
 <!-- end generated table -->

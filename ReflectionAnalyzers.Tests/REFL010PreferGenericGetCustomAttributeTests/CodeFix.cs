@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL010PreferGenericGetCustomAttributeTests
     internal class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
-        private static readonly CodeFixProvider Fix = new GetCustomAttributeFix();
+        private static readonly CodeFixProvider Fix = new UseGenericGetCustomAttributeFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL010");
 
         [Test]

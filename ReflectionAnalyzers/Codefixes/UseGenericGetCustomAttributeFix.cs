@@ -10,15 +10,14 @@ namespace ReflectionAnalyzers.Codefixes
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(GetCustomAttributeFix))]
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(UseGenericGetCustomAttributeFix))]
     [Shared]
-    internal class GetCustomAttributeFix : DocumentEditorCodeFixProvider
+    internal class UseGenericGetCustomAttributeFix : DocumentEditorCodeFixProvider
     {
         private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL010PreferGenericGetCustomAttribute.DiagnosticId,
-            REFL012PreferIsDefined.DiagnosticId);
+            REFL010PreferGenericGetCustomAttribute.DiagnosticId);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
@@ -38,20 +37,7 @@ namespace ReflectionAnalyzers.Codefixes
                                                  cast,
                                                  SyntaxFactory.ParseExpression(call)
                                                               .WithTriviaFrom(cast)),
-                        nameof(GetCustomAttributeFix),
-                        diagnostic);
-                }
-                else if (syntaxRoot.TryFindNodeOrAncestor(diagnostic, out BinaryExpressionSyntax binary) &&
-                         binary.IsEither(SyntaxKind.NotEqualsExpression, SyntaxKind.EqualsExpression) &&
-                         diagnostic.Properties.TryGetValue(nameof(InvocationExpressionSyntax), out call))
-                {
-                    context.RegisterCodeFix(
-                        "Use Attribute.IsDefined",
-                        (editor, _) => editor.ReplaceNode(
-                            binary,
-                            SyntaxFactory.ParseExpression(call)
-                                         .WithTriviaFrom(binary)),
-                        nameof(GetCustomAttributeFix),
+                        nameof(UseGenericGetCustomAttributeFix),
                         diagnostic);
                 }
             }

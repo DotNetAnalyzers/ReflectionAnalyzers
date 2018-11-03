@@ -17,6 +17,7 @@ namespace ReflectionAnalyzers
         internal static readonly AssemblyType Assembly = new AssemblyType();
         internal static readonly QualifiedType BindingFlags = Create("System.Reflection.BindingFlags");
         internal static readonly QualifiedType Binder = Create("System.Reflection.Binder");
+        internal static readonly CustomAttributeExtensionsType CustomAttributeExtensions = new CustomAttributeExtensionsType();
         internal static readonly QualifiedType ParameterModifier = Create("System.Reflection.ParameterModifier");
         internal static readonly QualifiedType CallingConventions = Create("System.Reflection.CallingConventions");
         internal static readonly QualifiedType DependencyAttribute = Create("System.Runtime.CompilerServices.DependencyAttribute", "Dependency");
