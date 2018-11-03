@@ -561,5 +561,47 @@ namespace RoslynSandbox
             var message = "Delegate type is not matching expected System.Action<int>.";
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
+
+        [Test]
+        public void StaticWithContainingAsArgument()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Func<C, string>),
+                typeof(C).GetMethod(nameof(C.M)));
+
+        public int P { get; set; }
+
+        public static int M(C c) => c.P;
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public static object Getter { get; } = Delegate.CreateDelegate(
+                typeof(Func<C, int>),
+                typeof(C).GetMethod(nameof(C.M)));
+
+        public int P { get; set; }
+
+        public static int M(C c) => c.P;
+    }
+}";
+            var message = "Delegate type is not matching expected System.Func<C, int>.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+        }
     }
 }
