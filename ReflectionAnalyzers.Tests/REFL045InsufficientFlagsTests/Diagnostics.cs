@@ -9,8 +9,15 @@ namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL045InsufficientFlags.Descriptor);
 
+        [TestCase("GetField(\"F\", ↓BindingFlags.Instance)")]
         [TestCase("GetConstructor(↓BindingFlags.Static, null, Type.EmptyTypes, null)")]
-        public void GetMethod(string call)
+        [TestCase("GetEvent(\"F\", ↓BindingFlags.Instance)")]
+        [TestCase("GetProperty(\"P\", ↓BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", ↓BindingFlags.Public)")]
+        [TestCase("GetMethod(\"M\", ↓BindingFlags.Public | BindingFlags.NonPublic)")]
+        [TestCase("GetMethod(\"M\", ↓BindingFlags.Static)")]
+        [TestCase("GetMethod(\"M\", ↓BindingFlags.Instance)")]
+        public void GetX(string call)
         {
             var code = @"
 namespace RoslynSandbox

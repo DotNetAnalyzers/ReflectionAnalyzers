@@ -1,4 +1,4 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
+namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -15,7 +15,8 @@
         [TestCase("GetEvent(\"F\", BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetProperty(\"P\", BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Instance)")]
-        public void GetMethod(string call)
+        [TestCase("GetNestedType(\"M\", BindingFlags.Public)")]
+        public void GetX(string call)
         {
             var code = @"
 namespace RoslynSandbox
