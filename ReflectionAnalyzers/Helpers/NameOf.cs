@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            if (member.Symbol.ContainingType.IsAssignableTo(context.ContainingSymbol.ContainingType, context.Compilation))
+            if (context.ContainingSymbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.Compilation))
             {
                 targetName = member.Symbol.IsStatic ||
                              member.Symbol is ITypeSymbol ||
@@ -120,7 +120,7 @@ namespace ReflectionAnalyzers
                 return context.SemanticModel.GetDeclaredSymbolSafe(methodDeclaration, context.CancellationToken)?.IsStatic != false;
             }
 
-            return !context.Node.TryFirstAncestor<AttributeArgumentListSyntax>(out _);
+            return context.Node.TryFirstAncestor<AttributeArgumentListSyntax>(out _);
         }
     }
 }

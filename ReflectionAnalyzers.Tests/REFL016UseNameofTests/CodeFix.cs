@@ -442,5 +442,38 @@ namespace RoslynSandbox
 
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
+
+        [Test]
+        public void ProtectedMemberInBase()
+        {
+            var baseCode = @"
+namespace RoslynSandbox
+{
+    class BaseClass
+    {
+        protected void ProtectedMember() { }
+    }
+}";
+
+            var code = @"
+namespace RoslynSandbox
+{
+    class C : BaseClass
+    {
+        public object Get => typeof(BaseClass).GetMethod(↓""ProtectedMember"");
+    }
+}";
+
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    class C : BaseClass
+    {
+        public object Get => typeof(BaseClass).GetMethod(nameof(this.ProtectedMember));
+    }
+}";
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, code }, fixedCode);
+        }
     }
 }
