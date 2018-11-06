@@ -62,19 +62,28 @@ namespace ReflectionAnalyzers
         /// </summary>
         internal static bool TryMatchGetConstructor(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Flags flags, out Types types)
         {
+            types = default(Types);
             if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out var getX) &&
-                ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
-                IsKnownSignature(invocation, getX) &&
-                Flags.TryCreate(invocation, getX, context, out flags) &&
-                Types.TryCreate(invocation, getX, context, out types))
+                invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out var getX))
             {
-                return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, context, out member);
+                if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
+                    IsKnownSignature(invocation, getX) &&
+                    Flags.TryCreate(invocation, getX, context, out flags) &&
+                    Types.TryCreate(invocation, getX, context, out types))
+                {
+                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, context, out member);
+                }
+
+                if (Flags.TryCreate(invocation, getX, context, out flags) &&
+                    flags.AreInSufficient)
+                {
+                    member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
+                    return true;
+                }
             }
 
             member = default(ReflectedMember);
             flags = default(Flags);
-            types = default(Types);
             return false;
         }
 

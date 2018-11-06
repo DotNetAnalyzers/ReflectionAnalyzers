@@ -8,6 +8,8 @@ namespace ReflectionAnalyzers
 
     internal static class BindingFlagsExt
     {
+        internal static bool HasEither(this BindingFlags flags, BindingFlags flag1, BindingFlags flag2) => HasFlagFast(flags, flag1) || HasFlagFast(flags, flag2);
+
         internal static bool HasFlagFast(this BindingFlags flags, BindingFlags flag)
         {
             return (flags == BindingFlags.Default && flag == BindingFlags.Default) ||

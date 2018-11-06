@@ -180,5 +180,9 @@ Analyzers checking System.Reflection
     <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL044.md">REFL044</a></td>
     <td>Expected attribute type.</td>
   </tr>
+  <tr>
+    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL045.md">REFL045</a></td>
+    <td>These flags are insufficient to match any members.</td>
+  </tr>
 <table>
 <!-- end generated table -->
