@@ -29,7 +29,8 @@ namespace ReflectionAnalyzers
             REFL018ExplicitImplementation.Descriptor,
             REFL019NoMemberMatchesTheTypes.Descriptor,
             REFL029MissingTypes.Descriptor,
-            REFL033UseSameTypeAsParameter.Descriptor);
+            REFL033UseSameTypeAsParameter.Descriptor,
+            REFL045InsufficientFlags.Descriptor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -196,6 +197,14 @@ namespace ReflectionAnalyzers
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeText),
                                 typeText));
+                    }
+
+                    if (member.Match == FilterMatch.InSufficientFlags)
+                    {
+                        context.ReportDiagnostic(
+                            Diagnostic.Create(
+                                REFL045InsufficientFlags.Descriptor,
+                                flags.Argument?.GetLocation() ?? invocation.GetNameLocation()));
                     }
                 }
             }

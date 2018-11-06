@@ -32,6 +32,20 @@ namespace ReflectionAnalyzers
         /// </summary>
         internal BindingFlags Effective => this.Argument != null ? this.Explicit : this.Default;
 
+        internal bool AreInSufficient
+        {
+            get
+            {
+                if (this.Argument == null)
+                {
+                    return false;
+                }
+
+                return !this.Explicit.HasEither(BindingFlags.Public, BindingFlags.NonPublic) ||
+                       !this.Explicit.HasEither(BindingFlags.Static, BindingFlags.Instance);
+            }
+        }
+
         internal static bool TryCreate(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out Flags flags)
         {
             if (TryGetBindingFlags(invocation, getX, context, out var argument, out var explicitFlags))
