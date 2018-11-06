@@ -51,11 +51,15 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
+        [TestCase("typeof(int).Assembly.GetType(\"System.Int32\")")]
         [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.BinaryExpression\")")]
         [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.BinaryExpression\", throwOnError: true)")]
         [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.AssignBinaryExpression\", throwOnError: true)")]
         [TestCase("typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"MS.Internal.Controls.TemplatedAdorner\", throwOnError: true)")]
-        public void AssemblyGetType(string call)
+        [TestCase("typeof(System.Windows.Forms.FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\", throwOnError: true)")]
+        [TestCase("typeof(System.Windows.Forms.FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog+VistaDialogEvents\", throwOnError: true)")]
+        [TestCase("typeof(System.Windows.Forms.DataObject).Assembly.GetType(\"System.Windows.Forms.DataObject+OleConverter\", throwOnError: true)")]
+        public void AssemblyGetTypeFullyQualified(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -64,9 +68,30 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static object Get => typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(""System.Linq.Expressions.AssignBinaryExpression"", throwOnError: true);
+        public static object Get => typeof(int).Assembly.GetType(""System.Int32"");
     }
-}".AssertReplace("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.AssignBinaryExpression\", throwOnError: true)", call);
+}".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", call);
+
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+        }
+
+        [TestCase("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\")")]
+        [TestCase("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\", throwOnError: true)")]
+        [TestCase("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog+VistaDialogEvents\", throwOnError: true)")]
+        [TestCase("typeof(DataObject).Assembly.GetType(\"System.Windows.Forms.DataObject+OleConverter\", throwOnError: true)")]
+        public void AssemblyGetTypeWhenUsing(string call)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Windows.Forms;
+
+    public class C
+    {
+        public static object Get => typeof(FileDialog).Assembly.GetType(""System.Windows.Forms.FileDialog"");
+    }
+}".AssertReplace("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\")", call);
 
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
