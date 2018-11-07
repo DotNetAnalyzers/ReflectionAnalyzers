@@ -218,6 +218,25 @@ namespace ReflectionAnalyzers
             }
         }
 
+        private static bool TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
+        {
+            name = default(Name);
+            if (context.Node is InvocationExpressionSyntax candidate)
+            {
+                return GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out types) ||
+                       GetX.TryMatchGetEvent(candidate, context, out member, out name, out flags) ||
+                       GetX.TryMatchGetField(candidate, context, out member, out name, out flags) ||
+                       GetX.TryMatchGetMethod(candidate, context, out member, out name, out flags, out types) ||
+                       GetX.TryMatchGetNestedType(candidate, context, out member, out name, out flags) ||
+                       GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags, out types);
+            }
+
+            member = default(ReflectedMember);
+            flags = default(Flags);
+            types = default(Types);
+            return false;
+        }
+
         private static bool HasMissingFlags(ReflectedMember member, Flags flags, out Location location, out string flagsText)
         {
             if (Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags) &&
@@ -407,25 +426,6 @@ namespace ReflectionAnalyzers
                        context.SemanticModel.GetSymbolInfo(e, context.CancellationToken)
                               .CandidateSymbols.TryFirst(out symbol);
             }
-        }
-
-        private static bool TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
-        {
-            name = default(Name);
-            if (context.Node is InvocationExpressionSyntax candidate)
-            {
-                return GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out types) ||
-                       GetX.TryMatchGetEvent(candidate, context, out member, out name, out flags) ||
-                       GetX.TryMatchGetField(candidate, context, out member, out name, out flags) ||
-                       GetX.TryMatchGetMethod(candidate, context, out member, out name, out flags, out types) ||
-                       GetX.TryMatchGetNestedType(candidate, context, out member, out name, out flags) ||
-                       GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags, out types);
-            }
-
-            member = default(ReflectedMember);
-            flags = default(Flags);
-            types = default(Types);
-            return false;
         }
 
         private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, Name name, Flags flags, Types types, SyntaxNodeAnalysisContext context, out string callText)
