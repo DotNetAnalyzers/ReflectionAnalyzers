@@ -531,6 +531,12 @@ namespace ReflectionAnalyzers
 
             string MemberName(ISymbol associatedSymbol)
             {
+                if (associatedSymbol is IPropertySymbol property &&
+                    property.IsIndexer)
+                {
+                    return $"\"{associatedSymbol.MetadataName}\"";
+                }
+
                 if (context.ContainingSymbol.ContainingType == associatedSymbol.ContainingType)
                 {
                     if (member.Symbol.IsStatic)

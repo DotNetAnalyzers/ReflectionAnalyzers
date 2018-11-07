@@ -371,5 +371,96 @@ namespace RoslynSandbox.Dump
 
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
+
+        [TestCase("GetMethod(\"get_Item\")",                                                                                                             "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
+        [TestCase("GetMethod(\"set_Item\")",                                                                                                             "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
+        public void Indexer(string before, string after)
+        {
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    public class C
+    {
+        private readonly int[] ints = System.Array.Empty<int>();
+
+        public object Get => typeof(C).GetMethod(""get_Item"");
+
+        public int this[int i]
+        {
+            get => this.ints[i];
+            set => this.ints[i] = value;
+        }
+    }
+}".AssertReplace("GetMethod(\"get_Item\")", before);
+
+            var fixedCode = @"
+namespace RoslynSandbox.Dump
+{
+    using System.Reflection;
+
+    public class C
+    {
+        private readonly int[] ints = System.Array.Empty<int>();
+
+        public object Get => typeof(C).GetProperty(""Item"").GetMethod;
+
+        public int this[int i]
+        {
+            get => this.ints[i];
+            set => this.ints[i] = value;
+        }
+    }
+}".AssertReplace("GetProperty(\"Item\").GetMethod", after);
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [TestCase("GetMethod(\"get_Foo\")",                                                                                                             "GetProperty(\"Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
+        [TestCase("GetMethod(\"set_Foo\")",                                                                                                             "GetProperty(\"Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
+        public void NamedIndexer(string before, string after)
+        {
+            var code = @"
+namespace RoslynSandbox.Dump
+{
+    using System.Runtime.CompilerServices;
+
+    public class C
+    {
+        private readonly int[] ints = System.Array.Empty<int>();
+
+        public object Get => typeof(C).GetMethod(""get_Foo"");
+
+        [IndexerName(""Foo"")]
+        public int this[int i]
+        {
+            get => this.ints[i];
+            set => this.ints[i] = value;
+        }
+    }
+}".AssertReplace("GetMethod(\"get_Foo\")", before);
+
+            var fixedCode = @"
+namespace RoslynSandbox.Dump
+{
+    using System.Reflection;
+    using System.Runtime.CompilerServices;
+
+    public class C
+    {
+        private readonly int[] ints = System.Array.Empty<int>();
+
+        public object Get => typeof(C).GetProperty(""Item"").GetMethod;
+
+        [IndexerName(""Foo"")]
+        public int this[int i]
+        {
+            get => this.ints[i];
+            set => this.ints[i] = value;
+        }
+    }
+}".AssertReplace("GetProperty(\"Item\").GetMethod", after);
+
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
     }
 }

@@ -12,6 +12,11 @@ namespace ReflectionAnalyzers
 
         internal static bool HasFlagFast(this BindingFlags flags, BindingFlags flag)
         {
+            if ((int)flags == -1)
+            {
+                return false;
+            }
+
             return (flags == BindingFlags.Default && flag == BindingFlags.Default) ||
                    (flags & flag) != 0;
         }
