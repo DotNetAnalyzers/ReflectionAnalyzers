@@ -340,7 +340,7 @@ namespace RoslynSandbox
         public void AggregateException(string before, string after)
         {
             var code = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System;
     using System.Reflection;
@@ -355,7 +355,7 @@ namespace RoslynSandbox.Dump
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", before);
 
             var fixedCode = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System;
     using System.Reflection;
@@ -377,7 +377,7 @@ namespace RoslynSandbox.Dump
         public void Indexer(string before, string after)
         {
             var code = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     public class C
     {
@@ -394,7 +394,7 @@ namespace RoslynSandbox.Dump
 }".AssertReplace("GetMethod(\"get_Item\")", before);
 
             var fixedCode = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System.Reflection;
 
@@ -420,7 +420,7 @@ namespace RoslynSandbox.Dump
         public void NamedIndexer(string before, string after)
         {
             var code = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System.Runtime.CompilerServices;
 
@@ -440,7 +440,7 @@ namespace RoslynSandbox.Dump
 }".AssertReplace("GetMethod(\"get_Foo\")", before);
 
             var fixedCode = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System.Reflection;
     using System.Runtime.CompilerServices;

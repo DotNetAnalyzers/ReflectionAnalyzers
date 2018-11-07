@@ -194,7 +194,7 @@ namespace RoslynSandbox
     }
 }";
             var code = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System;
     using System.Reflection;

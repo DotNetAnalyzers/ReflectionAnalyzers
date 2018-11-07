@@ -166,7 +166,7 @@ namespace RoslynSandbox
         public void AggregateExceptionMessage(string call)
         {
             var code = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System;
     using System.Reflection;

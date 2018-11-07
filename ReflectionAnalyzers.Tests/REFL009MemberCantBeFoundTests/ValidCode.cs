@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
         public void AggregateExceptionGetInnerExceptionCount(string call)
         {
             var code = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System;
     using System.Reflection;
@@ -46,7 +46,7 @@ namespace RoslynSandbox
     }
 }";
             var code = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System;
     using System.Reflection;

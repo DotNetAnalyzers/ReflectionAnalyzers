@@ -293,7 +293,7 @@ namespace RoslynSandbox
         public void AggregateExceptionMessage()
         {
             var code = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System;
     using System.Reflection;
@@ -308,7 +308,7 @@ namespace RoslynSandbox.Dump
 }";
 
             var fixedCode = @"
-namespace RoslynSandbox.Dump
+namespace RoslynSandbox
 {
     using System;
     using System.Reflection;
