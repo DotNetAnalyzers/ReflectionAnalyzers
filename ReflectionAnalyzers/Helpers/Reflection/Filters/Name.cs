@@ -1,10 +1,12 @@
 namespace ReflectionAnalyzers
 {
+    using System.Diagnostics;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
+    [DebuggerDisplay("{this.Argument}")]
     internal struct Name
     {
         internal static Name Ctor = new Name(null, ".ctor");

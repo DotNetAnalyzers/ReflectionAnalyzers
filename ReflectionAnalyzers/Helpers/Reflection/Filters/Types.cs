@@ -1,11 +1,13 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Diagnostics;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
+    [DebuggerDisplay("{this.Argument}")]
     internal struct Types
     {
         internal static readonly Types Any = new Types(null, ImmutableArray<ExpressionSyntax>.Empty, ImmutableArray<ITypeSymbol>.Empty);
