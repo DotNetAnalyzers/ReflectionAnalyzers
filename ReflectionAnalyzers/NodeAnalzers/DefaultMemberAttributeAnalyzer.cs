@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -38,20 +39,23 @@ namespace ReflectionAnalyzers
 
             if (!Attribute.TryFindArgument(attribute, 0, "memberName", out var argument))
             {
-                context.ReportDiagnostic(Diagnostic.Create(REFL046DefaultMemberMustExist.Descriptor, argument.GetLocation(), "argument not found"));
                 return;
             }
 
             if (!context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string memberName))
             {
-                context.ReportDiagnostic(Diagnostic.Create(REFL046DefaultMemberMustExist.Descriptor, argument.GetLocation(), "unable to resolve argument value as constant"));
                 return;
             }
 
-            if (memberName != "Exists")
-            {
-                context.ReportDiagnostic(Diagnostic.Create(REFL046DefaultMemberMustExist.Descriptor, argument.GetLocation(), "not equal to \"Exists\""));
-            }
+            if (!attribute.TryFirstAncestor(out ClassDeclarationSyntax classDeclaration)) { return; }
+
+            // try to find the member
+            if (classDeclaration.TryFindMethod(memberName, out var memberNode)) { return; }
+            if (classDeclaration.TryFindProperty(memberName, out var propertyNode)) { return; }
+            if (classDeclaration.TryFindField(memberName, out var fieldNode)) { return; }
+            if (classDeclaration.TryFindEvent(memberName, out var eventNode)) { return; }
+
+            context.ReportDiagnostic(Diagnostic.Create(REFL046DefaultMemberMustExist.Descriptor, argument.GetLocation(), "not found"));
         }
     }
 }
