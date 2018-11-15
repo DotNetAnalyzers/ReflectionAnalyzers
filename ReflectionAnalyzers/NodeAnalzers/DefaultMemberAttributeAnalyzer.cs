@@ -55,7 +55,7 @@ namespace ReflectionAnalyzers
             if (classDeclaration.TryFindField(memberName, out var fieldNode)) { return; }
             if (classDeclaration.TryFindEvent(memberName, out var eventNode)) { return; }
 
-            context.ReportDiagnostic(Diagnostic.Create(REFL046DefaultMemberMustExist.Descriptor, argument.GetLocation(), "not found"));
+            context.ReportDiagnostic(Diagnostic.Create(REFL046DefaultMemberMustExist.Descriptor, argument.GetLocation()));
         }
     }
 }

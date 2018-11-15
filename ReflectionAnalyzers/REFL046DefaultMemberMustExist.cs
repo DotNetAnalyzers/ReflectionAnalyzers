@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers
         internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "The specified default member does not exist.",
-            messageFormat: "The specified default member does not exist: {0}",
+            messageFormat: "The specified default member does not exist.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
