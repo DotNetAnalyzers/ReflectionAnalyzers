@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL046DefaultMemberMustExist.Descriptor);
 
         [Test]
-        public void GetMethodNoParameter()
+        public void DefaultMemberAbsent()
         {
             var code = @"
 using System.Reflection;
