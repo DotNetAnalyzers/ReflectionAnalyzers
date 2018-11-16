@@ -15,7 +15,6 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         [TestCase("Type.GetType(↓\"Int32\")",              "Type.GetType(\"System.Int32\")")]
         [TestCase("Type.GetType(↓\"Int32\", true)",        "Type.GetType(\"System.Int32\", true)")]
         [TestCase("Type.GetType(↓\"Int32\", true, true)",  "Type.GetType(\"System.Int32\", true, true)")]
-        [TestCase("Type.GetType(↓\"Wrong.Int32\")",        "Type.GetType(\"System.Int32\")")]
         [TestCase("Type.GetType(↓\"Nullable`1\")",         "Type.GetType(\"System.Nullable`1\")")]
         [TestCase("Type.GetType(↓\"IComparable\")",        "Type.GetType(\"System.IComparable\")")]
         [TestCase("Type.GetType(↓\"IEnumerable`1\")",      "Type.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
@@ -48,6 +47,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("MISSING")]
+        //[TestCase("RoslynSandbox.MISSING")]
         public void TypeGetTypeNoFix(string type)
         {
             var code = @"
@@ -94,7 +94,8 @@ namespace RoslynSandbox
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
-        [TestCase("typeof(int).Assembly.GetType(↓\"MISSING\")")]
+        [TestCase("typeof(C).Assembly.GetType(↓\"MISSING\")")]
+        [TestCase("typeof(C).Assembly.GetType(↓\"RoslynSandbox.MISSING\")")]
         public void AssemblyGetTypeNoFix(string call)
         {
             var code = @"
@@ -104,9 +105,9 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static object Get => typeof(int).Assembly.GetType(↓""MISSING"");
+        public static object Get => typeof(C).Assembly.GetType(↓""MISSING"");
     }
-}".AssertReplace("typeof(int).Assembly.GetType(↓\"MISSING\")", call);
+}".AssertReplace("typeof(C).Assembly.GetType(↓\"MISSING\")", call);
 
             AnalyzerAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
         }

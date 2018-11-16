@@ -2,12 +2,23 @@ namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
+    using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
     internal static class Assembly
     {
+        internal static bool HasVisibleTypes(this IAssemblySymbol assembly)
+        {
+            if (assembly.Locations.Any(x => x.IsInSource))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out IAssemblySymbol assembly)
         {
             switch (expression)

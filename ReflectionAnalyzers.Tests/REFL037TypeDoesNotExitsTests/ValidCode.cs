@@ -10,6 +10,8 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL037TypeDoesNotExits.Descriptor;
 
+        [TestCase("Missing.Missing")]
+        [TestCase("Missing.Missing.Missing")]
         [TestCase("System.Int32")]
         [TestCase("System.AppContextSwitches")]
         [TestCase("System.Nullable`1[System.Int32]")]

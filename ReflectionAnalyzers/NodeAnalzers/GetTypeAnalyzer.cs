@@ -92,8 +92,19 @@ namespace ReflectionAnalyzers
             if (Type.TryMatchTypeGetType(invocation, context, out var typeName, out var ignoreCase))
             {
                 nameArgument = typeName.Argument;
+                if (!typeName.Value.Contains("."))
+                {
+                    type = null;
+                    return false;
+                }
+
                 type = context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
-                return type != null;
+                if (type != null)
+                {
+                    return true;
+                }
+
+                return null;
             }
 
             if (Type.TryMatchAssemblyGetType(invocation, context, out typeName, out ignoreCase) &&
@@ -101,8 +112,24 @@ namespace ReflectionAnalyzers
                 Assembly.TryGet(memberAccess.Expression, context, out var assembly))
             {
                 nameArgument = typeName.Argument;
+                if (!typeName.Value.Contains("."))
+                {
+                    type = null;
+                    return false;
+                }
+
                 type = assembly.GetTypeByMetadataName(typeName, ignoreCase.Value);
-                return type != null;
+                if (type != null)
+                {
+                    return true;
+                }
+
+                if (assembly.HasVisibleTypes())
+                {
+                    return false;
+                }
+
+                return null;
             }
 
             nameArgument = null;
