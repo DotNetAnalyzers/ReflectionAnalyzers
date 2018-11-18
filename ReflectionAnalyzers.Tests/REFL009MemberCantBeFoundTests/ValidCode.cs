@@ -195,5 +195,26 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
+        [Test]
+        public void GetMissingPropertyIsPattern()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class C
+    {
+        public C(C c)
+        {
+            if (c.GetType().GetProperty(""P"") is PropertyInfo property)
+            {
+            }
+        }
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+        }
     }
 }

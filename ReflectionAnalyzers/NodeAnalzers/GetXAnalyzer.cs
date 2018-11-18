@@ -59,7 +59,7 @@ namespace ReflectionAnalyzers
                         {
                             context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
                         }
-                        else if (!IsNullCheckedAfter(invocation, context))
+                        else if (!IsNullCheckedAfter(invocation))
                         {
                             context.ReportDiagnostic(Diagnostic.Create(REFL009MemberCantBeFound.Descriptor, name.Argument.GetLocation(), name.MetadataName, member.ReflectedType));
                         }
@@ -218,7 +218,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool IsNullCheckedAfter(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context)
+        private static bool IsNullCheckedAfter(InvocationExpressionSyntax invocation)
         {
             switch (invocation.Parent)
             {
@@ -230,6 +230,9 @@ namespace ReflectionAnalyzers
                                                                     next is IfStatementSyntax ifStatement &&
                                                                     IsNullCheck(ifStatement.Condition, declarator.Identifier.ValueText):
 
+                    return true;
+                case IsPatternExpressionSyntax _:
+                case ConditionalAccessExpressionSyntax _:
                     return true;
             }
 
