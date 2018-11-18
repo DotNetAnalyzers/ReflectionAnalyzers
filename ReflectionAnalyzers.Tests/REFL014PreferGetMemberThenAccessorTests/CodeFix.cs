@@ -1,7 +1,12 @@
 namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
 {
+    using System.IO;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Gu.Roslyn.Asserts;
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
@@ -521,6 +526,74 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty(\"Item\").GetMethod", after);
 
             AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+        }
+
+        [Test]
+        public async Task ReferencesMemberThatAnalyzerCannotSeeAsync()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class C
+    {
+        public void M()
+        {
+            _ = typeof(BinaryReferencedAssembly.Foo).GetMethod(""add_Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+    }
+}";
+            var fixedCode = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class C
+    {
+        public void M()
+        {
+            _ = typeof(BinaryReferencedAssembly.Foo).GetEvent(""Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod;
+        }
+    }
+}";
+
+            var binaryReferencedCode = @"
+namespace RoslynSandbox.BinaryReferencedAssembly
+{
+    using System;
+
+    public interface IFoo
+    {
+        event EventHandler Bar;
+    }
+
+    public class Foo : IFoo
+    {
+        #pragma warning disable CS0067
+        internal event EventHandler Bar;
+
+        event EventHandler IFoo.Bar
+        {
+            add { }
+            remove { }
+        }
+    }
+}";
+            var binaryReference = TestHelper.CompileBinaryReference(binaryReferencedCode);
+
+            var solution = CodeFactory.CreateSolution(
+                code,
+                CodeFactory.DefaultCompilationOptions(new[] { Analyzer }).WithMetadataImportOptions(MetadataImportOptions.Public),
+                AnalyzerAssert.MetadataReferences.Append(binaryReference));
+
+            // To make sure the test is effective, assert that ReflectionAnalyzers *can’t* see Foo.Bar.
+            var compilation = await solution.Projects.Single().GetCompilationAsync().ConfigureAwait(true);
+            var fooType = compilation.GetTypeByMetadataName("RoslynSandbox.BinaryReferencedAssembly.Foo");
+            Assert.That(fooType.GetMembers(), Has.None.With.Property("Name").EqualTo("Bar"));
+
+            var message = @"Prefer typeof(BinaryReferencedAssembly.Foo).GetEvent(""Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
+            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, fixedCode);
         }
     }
 }
