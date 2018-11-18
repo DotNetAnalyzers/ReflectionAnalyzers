@@ -22,6 +22,7 @@ namespace ReflectionAnalyzers
         internal static readonly QualifiedType ParameterModifier = Create("System.Reflection.ParameterModifier");
         internal static readonly QualifiedType CallingConventions = Create("System.Reflection.CallingConventions");
         internal static readonly QualifiedType DependencyAttribute = Create("System.Runtime.CompilerServices.DependencyAttribute", "Dependency");
+        internal static readonly QualifiedType DefaultMemberAttribute = Create("System.Reflection.DefaultMemberAttribute", "DefaultMember");
         internal static readonly QualifiedType IndexerNameAttribute = Create("System.Runtime.CompilerServices.IndexerNameAttribute", "IndexerName");
         internal static readonly ConstructorInfoType ConstructorInfo = new ConstructorInfoType();
         internal static readonly EventInfoType EventInfo = new EventInfoType();
