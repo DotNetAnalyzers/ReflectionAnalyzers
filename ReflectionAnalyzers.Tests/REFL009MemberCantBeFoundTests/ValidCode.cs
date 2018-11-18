@@ -153,5 +153,47 @@ namespace RoslynSandbox
 
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
+
+        [TestCase("property == null")]
+        [TestCase("property != null")]
+        [TestCase("property is null")]
+        public void GetMissingPropertyThenNullCheck(string check)
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public class C
+    {
+        public C(C c)
+        {
+            var property = c.GetType().GetProperty(""P"");
+            if (property != null)
+            {
+            }
+        }
+    }
+}".AssertReplace("property != null", check);
+
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+        }
+
+        [Test]
+        public void GetMissingPropertyElvis()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public class C
+    {
+        public C(C c)
+        {
+            var value = c.GetType().GetProperty(""P"")?.SetMethod.Invoke(c, null);
+        }
+    }
+}";
+
+            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+        }
+
     }
 }

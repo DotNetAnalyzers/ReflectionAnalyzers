@@ -28,6 +28,27 @@ namespace RoslynSandbox
         }
 
         [Test]
+        public void GetMissingPropertyThenNullCheck()
+        {
+            var code = @"
+namespace RoslynSandbox
+{
+    public sealed class C
+    {
+        public C(C c)
+        {
+            var property = c.GetType().GetProperty(""P"");
+            if (property != null)
+            {
+            }
+        }
+    }
+}";
+
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
+
+        [Test]
         public void SubclassAggregateExceptionGetFieldDeclaredOnly()
         {
             var exception = @"

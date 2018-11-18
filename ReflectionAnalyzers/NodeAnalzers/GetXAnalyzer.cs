@@ -59,7 +59,7 @@ namespace ReflectionAnalyzers
                         {
                             context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
                         }
-                        else
+                        else if (!IsNullCheckedAfter(invocation, context))
                         {
                             context.ReportDiagnostic(Diagnostic.Create(REFL009MemberCantBeFound.Descriptor, name.Argument.GetLocation(), name.MetadataName, member.ReflectedType));
                         }
@@ -215,6 +215,43 @@ namespace ReflectionAnalyzers
                         explicitMemberAccess.Expression is TypeOfExpressionSyntax typeOf
                     ? typeOf.Type.GetLocation()
                     : invocation.Expression.GetLocation();
+            }
+        }
+
+        private static bool IsNullCheckedAfter(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context)
+        {
+            switch (invocation.Parent)
+            {
+                case EqualsValueClauseSyntax equalsValueClause when equalsValueClause.Parent is VariableDeclaratorSyntax declarator &&
+                                                                    declarator.Parent is VariableDeclarationSyntax declaration &&
+                                                                    declaration.Parent is LocalDeclarationStatementSyntax statement &&
+                                                                    statement.Parent is BlockSyntax block &&
+                                                                    block.Statements.TryElementAt(block.Statements.IndexOf(statement) + 1, out var next) &&
+                                                                    next is IfStatementSyntax ifStatement &&
+                                                                    IsNullCheck(ifStatement.Condition, declarator.Identifier.ValueText):
+
+                    return true;
+            }
+
+            return false;
+
+            bool IsNullCheck(ExpressionSyntax expression, string name)
+            {
+                switch (expression)
+                {
+                    case BinaryExpressionSyntax binary when binary.IsEither(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression) &&
+                                                            binary.Right.IsKind(SyntaxKind.NullLiteralExpression) &&
+                                                            binary.Left is IdentifierNameSyntax left &&
+                                                            left.Identifier.ValueText == name:
+                        return true;
+                    case IsPatternExpressionSyntax isPattern when isPattern.Expression is IdentifierNameSyntax identifier &&
+                                                                  identifier.Identifier.ValueText == name &&
+                                                                  isPattern.Pattern is ConstantPatternSyntax constant &&
+                                                                  constant.Expression.IsKind(SyntaxKind.NullLiteralExpression):
+                        return true;
+                }
+
+                return false;
             }
         }
 
