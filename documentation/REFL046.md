@@ -38,13 +38,13 @@ defines the default member name used in calls to
 when calling code supplies an empty string for the `name` argument.
 `Type.InvokeMember` only accepts some values for `name`:
 
-	- Names
-		- Constructor (of supplied type only, no base types)
-		- Method (instance or static)
-		- Property
-		- Field
-	- Empty string
-	- Dispatch Id for IDispatch members
+ - Names
+    - Constructor (of supplied type only, no base types)
+	- Method (instance or static)
+	- Property
+	- Field
+ - Empty string
+ - Dispatch Id for IDispatch members
 
 Calling `Type.InvokeMember` with an empty string will throw an exception
 when `DefaultMemberAttribute` does not supply a valid value for `name`.
@@ -53,13 +53,13 @@ REFL046 attempts to detect this issue early by verifying that the value given
 by `DefaultMemberAttribute` matches the name of a valid target. It checks that
 one of the following match the string supplied by `DefaultMemberAttribute`:
 
-	- The type name of the decorated type. This indicates a constructor name
-	  match.
-	- Members in the decorated type or its base classes, of the following
-	  categories:
-		- Fields
-		- Properties
-		- Methods (instance and static)
+ - The type name of the decorated type. This indicates a constructor name
+   match.
+ - Members in the decorated type or its base classes, of the following
+   categories:
+    - Fields
+	- Properties
+	- Methods (instance and static)
 
 It does not check for events, as `InvokeMember` does not accept event names.
 It does not check for matches to names of base classes, as `InvokeMember` does
@@ -75,9 +75,9 @@ Change the name to one of:
  - The name of the decorated type
  - A member of the decorated type or its base classes, of the following
    categories:
-		- Fields
-		- Properties
-		- Methods (instance or static)
+	- Fields
+	- Properties
+	- Methods (instance or static)
 
 <!-- start generated config severity -->
 ## Configure severity
