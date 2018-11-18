@@ -28,7 +28,7 @@
 
 ## Description
 
-The specified default member does not exist, or is not a valid target for InvokeMember.
+The specified default member does not exist, or is not a valid target for Type.InvokeMember.
 
 ## Motivation
 
@@ -101,8 +101,8 @@ Or put this at the top of the file to disable all instances.
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
-[System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection",
-    "REFL046:The specified default member does not exist.",
+[System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
+    "REFL046:The specified default member does not exist.", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->
