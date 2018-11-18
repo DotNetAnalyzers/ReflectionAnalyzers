@@ -42,5 +42,28 @@ public class Foo
 ";
             AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
+
+        /// <summary>
+        /// Verify base class names are not considered valid targets.
+        /// </summary>
+        [Test]
+        public void DefaultMemberIsBaseClass()
+        {
+            var code = @"
+using System.Reflection;
+
+public class Base 
+{
+    Base() 
+    {
+        System.Console.WriteLine(""Base constructor"");
+    }
+}
+
+[DefaultMember(""Base"")]
+public class Foo { }
+";
+            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
     }
 }
