@@ -6,7 +6,6 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    [DefaultMember("Analyzer")]
     public class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DefaultMemberAttributeAnalyzer();
