@@ -77,6 +77,7 @@ namespace RoslynSandbox
             }
 
             [TestCase("new object[0]")]
+            [TestCase("null")]
             public void OptionalParameterMissingValue(string args)
             {
                 var code = @"

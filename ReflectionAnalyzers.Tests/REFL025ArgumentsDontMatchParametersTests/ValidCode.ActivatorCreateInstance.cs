@@ -73,6 +73,28 @@ namespace RoslynSandbox
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
+            [TestCase("Activator.CreateInstance(typeof(C), new object[] { Missing.Value })")]
+            [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
+            public void OneConstructorOptionalIntParameter(string call)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class C
+    {
+        public C(int i = 0)
+        {
+            var foo = Activator.CreateInstance(typeof(C), 1);
+        }
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
+
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            }
+
             [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
             [TestCase("Activator.CreateInstance(typeof(C), new[] { (object)null })")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { null })")]

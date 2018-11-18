@@ -35,6 +35,29 @@ namespace RoslynSandbox
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
+            [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { 1, 2 })")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓\"abc\")")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓1.0)")]
+            [TestCase("Activator.CreateInstance(typeof(C), ↓1, 2)")]
+            public void OneConstructorOptionalIntParameter(string call)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+
+    public class C
+    {
+        public C(int i = 0)
+        {
+            var foo = Activator.CreateInstance(typeof(C));
+        }
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(C))", call);
+
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
+
             [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
             public void OneConstructorOneStringParameters(string call)
             {
