@@ -53,6 +53,13 @@ namespace ReflectionAnalyzers
                     }
                 }
 
+                if (lastParameter.IsOptional &&
+                    context.SemanticModel.TryGetSymbol(values[i], context.CancellationToken, out IFieldSymbol field) &&
+                    field == KnownSymbol.Missing.Value)
+                {
+                    continue;
+                }
+
                 if (IsNull(values[i]))
                 {
                     if (lastParameter.IsParams)
@@ -77,6 +84,14 @@ namespace ReflectionAnalyzers
 
                 if (conversion.IsIdentity || conversion.IsImplicit)
                 {
+                    if (values[i] is MemberAccessExpressionSyntax memberAccess &&
+                        memberAccess.Name.Identifier.ValueText == "Value" &&
+                        context.SemanticModel.TryGetSymbol(values[i], context.CancellationToken, out field) &&
+                        field == KnownSymbol.Missing.Value)
+                    {
+                        return true;
+                    }
+
                     continue;
                 }
 

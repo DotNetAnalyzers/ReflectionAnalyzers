@@ -22,10 +22,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { 1 });
+            var value = (int)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { 1 });
         }
 
-        public static int Bar(int value) => value;
+        public static int M(int value) => value;
     }
 }";
 
@@ -45,16 +45,31 @@ namespace RoslynSandbox
 
     public class C
     {
-        public C()
-        {
-            typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
-        }
+        public static object Get => typeof(C).GetMethod(nameof(M)).Invoke(null, null);
 
-        public static void Bar()
-        {
-        }
+        public static int M() => 1;
     }
 }".AssertReplace("Invoke(null, null)", call);
+
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            }
+
+            [TestCase("1")]
+            [TestCase("Missing.Value")]
+            public void OptionalParameter(string value)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class C
+    {
+        public static int Get => (int)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { Missing.Value });
+
+        public static int M(int value = 1) => value;
+    }
+}".AssertReplace("Missing.Value", value);
 
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }

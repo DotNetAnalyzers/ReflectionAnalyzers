@@ -72,8 +72,8 @@ namespace ReflectionAnalyzers
                         context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
                     }
 
-                    if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
-                        Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
+                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
+                         Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }

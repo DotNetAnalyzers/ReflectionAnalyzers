@@ -56,6 +56,44 @@ namespace RoslynSandbox
 
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
+
+            [Test]
+            public void ObjectParameterMissingValue()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class C
+    {
+        public static object Get => typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { ↓Missing.Value });
+
+        public static int M(object value) => 0;
+    }
+}";
+
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
+
+            [TestCase("new object[0]")]
+            public void OptionalParameterMissingValue(string args)
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class C
+    {
+        public static object Get => typeof(C).GetMethod(nameof(M)).Invoke(null, new object[0]);
+
+        public static int M(int value = 0) => value;
+    }
+}".AssertReplace("new object[0]", args);
+
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }
