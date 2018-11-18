@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "The specified default member does not exist.",
+            description: "The specified default member does not exist, or is not a valid target for Type.InvokeMember.",
             helpLinkUri: HelpLink.ForId(DiagnosticId));
     }
 }
