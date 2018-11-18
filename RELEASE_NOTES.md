@@ -1,3 +1,9 @@
+#### 0.1.18
+* REFL025 Nag when passing null.
+* REFL025 Missing.Value requires a default value even if the type matches.
+* REFL009 don't warn if null checked
+* Erroneous REFL037 'The type does not exist' warnings. 
+
 #### 0.1.17
 * REFL044 Expected attribute type.
 * REFL043 First argument must match type.
