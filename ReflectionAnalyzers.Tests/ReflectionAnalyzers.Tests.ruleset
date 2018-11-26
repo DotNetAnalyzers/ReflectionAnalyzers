@@ -118,4 +118,8 @@
     <Rule Id="CA1052" Action="None" />
     <Rule Id="CA1724" Action="None" />
   </Rules>
+  <Rules AnalyzerId="AsyncUsageAnalyzers" RuleNamespace="AsyncUsageAnalyzers">
+    <Rule Id="UseAsyncSuffix" Action="None" />
+    <Rule Id="AvoidAsyncSuffix" Action="None" />
+  </Rules>
 </RuleSet>
