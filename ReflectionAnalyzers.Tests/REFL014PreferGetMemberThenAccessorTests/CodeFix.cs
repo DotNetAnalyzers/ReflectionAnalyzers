@@ -1,12 +1,10 @@
 namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
 {
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
