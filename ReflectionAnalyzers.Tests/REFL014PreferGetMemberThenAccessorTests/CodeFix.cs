@@ -296,7 +296,7 @@ namespace BinaryReferencedAssembly
                 CodeFactory.DefaultCompilationOptions(new[] { Analyzer }).WithMetadataImportOptions(MetadataImportOptions.Public),
                 AnalyzerAssert.MetadataReferences.Append(binaryReference));
 
-            // To make sure the test is effective, assert that ReflectionAnalyzers *can’t* see Foo.Bar.
+            // To make sure the test is effective, assert that ReflectionAnalyzers *can’t* see C.P.
             var compilation = await solution.Projects.Single().GetCompilationAsync().ConfigureAwait(true);
             var fooType = compilation.GetTypeByMetadataName("BinaryReferencedAssembly.C");
             Assert.That(fooType.GetMembers(), Has.None.With.Property("Name").EqualTo("P"));
