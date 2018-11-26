@@ -472,7 +472,8 @@ namespace ReflectionAnalyzers
         {
             if (member.Invocation?.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                if (member.Symbol is IMethodSymbol method)
+                if (member.Symbol is IMethodSymbol method &&
+                    member.Match == FilterMatch.Single)
                 {
                     if (method.AssociatedSymbol is IPropertySymbol property &&
                         Flags.TryGetExpectedBindingFlags(property.ContainingType, property, out var bindingFlags))
@@ -486,8 +487,7 @@ namespace ReflectionAnalyzers
                         return TryGetEventAccessor(MemberName(eventSymbol), bindingFlags, out callText);
                     }
                 }
-                //// For symbols not in source and not visible in metadata.
-                else if (member.Symbol is null &&
+                else if (member.Match == FilterMatch.PotentiallyInvisible &&
                          types.Argument == null &&
                          flags.Explicit.HasFlagFast(BindingFlags.NonPublic))
                 {
@@ -511,25 +511,57 @@ namespace ReflectionAnalyzers
 
             bool TryGetPropertyAccessor(string propertyName, BindingFlags bindingFlags, ITypeSymbol type, out string result)
             {
-                if (name.MetadataName.StartsWith("get_", StringComparison.OrdinalIgnoreCase))
+                if (name.MetadataName.StartsWith("get_", StringComparison.Ordinal))
                 {
-                    result = types.Argument == null
-                        ? $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}).GetMethod"
-                        : $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {types.Argument}, null).GetMethod";
+                    result = $"{GetProperty()}.GetMethod";
                     return true;
                 }
 
-                if (name.MetadataName.StartsWith("set_", StringComparison.OrdinalIgnoreCase))
+                if (name.MetadataName.StartsWith("set_", StringComparison.Ordinal))
                 {
-                    result = types.Argument == null
-                        ? $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}).SetMethod"
-                        : $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {types.Argument}, null).SetMethod";
-
+                    result = $"{GetProperty()}.SetMethod";
                     return true;
                 }
 
                 result = null;
                 return false;
+
+                string GetProperty()
+                {
+                    if (flags.Argument == null)
+                    {
+                        return $"{memberAccess.Expression}.GetProperty({propertyName})";
+                    }
+
+                    if (types.Argument == null)
+                    {
+                        return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)})";
+                    }
+
+                    if (name.MetadataName.StartsWith("get_", StringComparison.Ordinal))
+                    {
+                        return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {types.Argument}, null)";
+                    }
+
+                    if (member.Symbol is IMethodSymbol method &&
+                        method.AssociatedSymbol is IPropertySymbol property &&
+                        property.IsIndexer)
+                    {
+                        if (property.GetMethod is IMethodSymbol getMethod &&
+                            Types.TryGetTypesArrayText(getMethod.Parameters, context.SemanticModel, context.Node.SpanStart, out var typesArrayText))
+                        {
+                            return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {typesArrayText}, null)";
+                        }
+
+                        if (property.SetMethod is IMethodSymbol setMethod &&
+                            Types.TryGetTypesArrayText(setMethod.Parameters.RemoveAt(setMethod.Parameters.Length - 1), context.SemanticModel, context.Node.SpanStart, out typesArrayText))
+                        {
+                            return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {typesArrayText}, null)";
+                        }
+                    }
+
+                    return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), Type.EmptyTypes, null)";
+                }
             }
 
             bool TryGetEventAccessor(string eventName, BindingFlags bindingFlags, out string result)
