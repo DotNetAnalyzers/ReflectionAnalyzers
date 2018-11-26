@@ -536,24 +536,26 @@ namespace ReflectionAnalyzers
             {
                 if (name.MetadataName.StartsWith("add_", StringComparison.OrdinalIgnoreCase))
                 {
-                    result = $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)}).AddMethod";
+                    result = $"{GetEvent()}.AddMethod";
                     return true;
                 }
 
                 if (name.MetadataName.StartsWith("remove_", StringComparison.OrdinalIgnoreCase))
                 {
-                    result = $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)}).RemoveMethod";
+                    result = $"{GetEvent()}.RemoveMethod";
                     return true;
                 }
 
                 if (name.MetadataName.StartsWith("raise_", StringComparison.OrdinalIgnoreCase))
                 {
-                    result = $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)}).RaiseMethod";
+                    result = $"{GetEvent()}.RaiseMethod";
                     return true;
                 }
 
                 result = null;
                 return false;
+
+                string GetEvent() => $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)})";
             }
 
             bool TryGetInvisibleMemberName(string prefix, out string memberName)
