@@ -555,7 +555,9 @@ namespace ReflectionAnalyzers
                 result = null;
                 return false;
 
-                string GetEvent() => $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)})";
+                string GetEvent() => flags.Argument == null
+                    ? $"{memberAccess.Expression}.GetEvent({eventName})"
+                    : $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)})";
             }
 
             bool TryGetInvisibleMemberName(string prefix, out string memberName)
