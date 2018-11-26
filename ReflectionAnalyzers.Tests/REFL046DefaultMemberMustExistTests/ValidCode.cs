@@ -1,6 +1,5 @@
 namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
 {
-    using System.Reflection;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;

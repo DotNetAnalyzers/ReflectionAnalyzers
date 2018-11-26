@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers
 {
     using System.Diagnostics;
-    using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     [DebuggerDisplay("{this.Value.FullName}")]
