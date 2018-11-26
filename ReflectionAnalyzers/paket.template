@@ -4,10 +4,9 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  REFL025 Nag when passing null.
-  REFL025 Missing.Value requires a default value even if the type matches.
-  REFL009 don't warn if null checked
-  Erroneous REFL037 'The type does not exist' warnings.
+  REFL046 check default member.
+  Codefix REFL014 don't add flags by default.
+  Suggest GetMember().GetAccessor() when not visible.
 
 excludedgroups
   Main

@@ -1,3 +1,8 @@
+#### 0.1.19
+* REFL046 check default member.
+* Codefix REFL014 don't add flags by default.
+* Suggest GetMember().GetAccessor() when not visible.
+
 #### 0.1.18
 * REFL025 Nag when passing null.
 * REFL025 Missing.Value requires a default value even if the type matches.
