@@ -3,7 +3,7 @@ namespace ReflectionAnalyzers
     using System.Diagnostics;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    [DebuggerDisplay("{this.Value.FullName}")]
+    [DebuggerDisplay("{this.Value}")]
     internal struct TypeNameArgument
     {
         internal readonly ArgumentSyntax Argument;
