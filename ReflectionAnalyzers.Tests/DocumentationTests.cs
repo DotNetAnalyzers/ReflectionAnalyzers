@@ -56,7 +56,7 @@ namespace ReflectionAnalyzers.Test
         [TestCaseSource(nameof(DescriptorsWithDocs))]
         public void TitleId(DescriptorInfo descriptorInfo)
         {
-            Assert.AreEqual($"# {descriptorInfo.Descriptor.Id}", descriptorInfo.DocumentationFile.AllLines.First());
+            Assert.AreEqual($"# {descriptorInfo.Descriptor.Id}", descriptorInfo.DocumentationFile.AllLines[0]);
         }
 
         [TestCaseSource(nameof(DescriptorsWithDocs))]
