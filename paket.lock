@@ -716,7 +716,7 @@ NUGET
   remote: http://www.nuget.org/api/v2
     AsyncUsageAnalyzers (1.0.0-alpha003)
     Gu.Analyzers (1.3.1-dev)
-    IDisposableAnalyzers (2.1.1)
+    IDisposableAnalyzers (2.1.2)
     Microsoft.CodeAnalysis.FxCopAnalyzers (2.6.3)
       Microsoft.CodeQuality.Analyzers (2.6.3)
       Microsoft.NetCore.Analyzers (2.6.3)
@@ -736,7 +736,7 @@ NUGET
     Microsoft.VisualStudio.SDK.Analyzers (15.8.36) - restriction: >= net46
       Microsoft.VisualStudio.Threading.Analyzers (>= 15.8.168) - restriction: >= netstandard1.1
     Microsoft.VisualStudio.Threading.Analyzers (15.8.209) - restriction: >= net46
-    Microsoft.VSSDK.BuildTools (15.9.3032)
+    Microsoft.VSSDK.BuildTools (15.9.3039)
       Microsoft.VisualStudio.SDK.Analyzers (>= 15.8.33) - restriction: >= net46
 
 GROUP Test
