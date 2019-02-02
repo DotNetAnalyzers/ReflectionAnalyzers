@@ -1,30 +1,13 @@
 # REFL041
 ## Delegate type is not matching.
 
-<!-- start generated table -->
-<table>
-  <tr>
-    <td>CheckId</td>
-    <td>REFL041</td>
-  </tr>
-  <tr>
-    <td>Severity</td>
-    <td>Warning</td>
-  </tr>
-  <tr>
-    <td>Enabled</td>
-    <td>True</td>
-  </tr>
-  <tr>
-    <td>Category</td>
-    <td>ReflectionAnalyzers.SystemReflection</td>
-  </tr>
-  <tr>
-    <td>Code</td>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/CreateDelegateAnalyzer.cs">CreateDelegateAnalyzer</a></td>
-  </tr>
-</table>
-<!-- end generated table -->
+| Topic    | Value
+| :--      | :--
+| Id       | REFL041
+| Severity | Warning
+| Enabled  | True
+| Category | ReflectionAnalyzers.SystemReflection
+| Code     | [CreateDelegateAnalyzer]([CreateDelegateAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/CreateDelegateAnalyzer.cs))
 
 ## Description
 

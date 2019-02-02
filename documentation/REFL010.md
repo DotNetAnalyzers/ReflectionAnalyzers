@@ -1,30 +1,13 @@
 # REFL010
 ## Prefer the generic extension method `GetCustomAttribute<T>`.
 
-<!-- start generated table -->
-<table>
-  <tr>
-    <td>CheckId</td>
-    <td>REFL010</td>
-  </tr>
-  <tr>
-    <td>Severity</td>
-    <td>Warning</td>
-  </tr>
-  <tr>
-    <td>Enabled</td>
-    <td>True</td>
-  </tr>
-  <tr>
-    <td>Category</td>
-    <td>ReflectionAnalyzers.SystemReflection</td>
-  </tr>
-  <tr>
-    <td>Code</td>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetCustomAttributeAnalyzer.cs">GetCustomAttributeAnalyzer</a></td>
-  </tr>
-</table>
-<!-- end generated table -->
+| Topic    | Value
+| :--      | :--
+| Id       | REFL010
+| Severity | Warning
+| Enabled  | True
+| Category | ReflectionAnalyzers.SystemReflection
+| Code     | [GetCustomAttributeAnalyzer]([GetCustomAttributeAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetCustomAttributeAnalyzer.cs))
 
 ## Description
 

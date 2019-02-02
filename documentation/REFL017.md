@@ -1,30 +1,13 @@
 # REFL017
 ## Don't use name of wrong member.
 
-<!-- start generated table -->
-<table>
-  <tr>
-    <td>CheckId</td>
-    <td>REFL017</td>
-  </tr>
-  <tr>
-    <td>Severity</td>
-    <td>Warning</td>
-  </tr>
-  <tr>
-    <td>Enabled</td>
-    <td>True</td>
-  </tr>
-  <tr>
-    <td>Category</td>
-    <td>ReflectionAnalyzers.SystemReflection</td>
-  </tr>
-  <tr>
-    <td>Code</td>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetXAnalyzer.cs">GetXAnalyzer</a></td>
-  </tr>
-</table>
-<!-- end generated table -->
+| Topic    | Value
+| :--      | :--
+| Id       | REFL017
+| Severity | Warning
+| Enabled  | True
+| Category | ReflectionAnalyzers.SystemReflection
+| Code     | [GetXAnalyzer]([GetXAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetXAnalyzer.cs))
 
 ## Description
 

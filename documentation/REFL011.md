@@ -1,30 +1,13 @@
 # REFL011
 ## Duplicate BindingFlag.
 
-<!-- start generated table -->
-<table>
-  <tr>
-    <td>CheckId</td>
-    <td>REFL011</td>
-  </tr>
-  <tr>
-    <td>Severity</td>
-    <td>Warning</td>
-  </tr>
-  <tr>
-    <td>Enabled</td>
-    <td>True</td>
-  </tr>
-  <tr>
-    <td>Category</td>
-    <td>ReflectionAnalyzers.SystemReflection</td>
-  </tr>
-  <tr>
-    <td>Code</td>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/BindingFlagsAnalyzer.cs">BindingFlagsAnalyzer</a></td>
-  </tr>
-</table>
-<!-- end generated table -->
+| Topic    | Value
+| :--      | :--
+| Id       | REFL011
+| Severity | Warning
+| Enabled  | True
+| Category | ReflectionAnalyzers.SystemReflection
+| Code     | [BindingFlagsAnalyzer]([BindingFlagsAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/BindingFlagsAnalyzer.cs))
 
 ## Description
 

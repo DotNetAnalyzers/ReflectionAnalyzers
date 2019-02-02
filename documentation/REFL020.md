@@ -1,30 +1,13 @@
 # REFL020
 ## More than one interface is matching the name.
 
-<!-- start generated table -->
-<table>
-  <tr>
-    <td>CheckId</td>
-    <td>REFL020</td>
-  </tr>
-  <tr>
-    <td>Severity</td>
-    <td>Warning</td>
-  </tr>
-  <tr>
-    <td>Enabled</td>
-    <td>True</td>
-  </tr>
-  <tr>
-    <td>Category</td>
-    <td>ReflectionAnalyzers.SystemReflection</td>
-  </tr>
-  <tr>
-    <td>Code</td>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetInterfaceAnalyzer.cs">GetInterfaceAnalyzer</a></td>
-  </tr>
-</table>
-<!-- end generated table -->
+| Topic    | Value
+| :--      | :--
+| Id       | REFL020
+| Severity | Warning
+| Enabled  | True
+| Category | ReflectionAnalyzers.SystemReflection
+| Code     | [GetInterfaceAnalyzer]([GetInterfaceAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetInterfaceAnalyzer.cs))
 
 ## Description
 

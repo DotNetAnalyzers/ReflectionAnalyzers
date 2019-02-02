@@ -6,187 +6,77 @@
 
 Analyzers checking System.Reflection
 
-<!-- start generated table -->
-<table>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL001.md">REFL001</a></td>
-    <td>Cast return value to the correct type.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL002.md">REFL002</a></td>
-    <td>Discard the return value.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL003.md">REFL003</a></td>
-    <td>The member does not exist.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL004.md">REFL004</a></td>
-    <td>More than one member is matching the criteria.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL005.md">REFL005</a></td>
-    <td>There is no member matching the filter.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL006.md">REFL006</a></td>
-    <td>The binding flags can be more precise.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL007.md">REFL007</a></td>
-    <td>The binding flags are not in the expected order.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL008.md">REFL008</a></td>
-    <td>Specify binding flags for better performance and less fragile code.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL009.md">REFL009</a></td>
-    <td>The referenced member is not known to exist.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL010.md">REFL010</a></td>
-    <td>Prefer the generic extension method GetCustomAttribute<T>.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL011.md">REFL011</a></td>
-    <td>Duplicate BindingFlag.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL012.md">REFL012</a></td>
-    <td>Prefer Attribute.IsDefined().</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL013.md">REFL013</a></td>
-    <td>The member is of the wrong type.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL014.md">REFL014</a></td>
-    <td>Prefer GetMember().AccessorMethod.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL015.md">REFL015</a></td>
-    <td>Use the containing type.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL016.md">REFL016</a></td>
-    <td>Use nameof.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL017.md">REFL017</a></td>
-    <td>Don't use name of wrong member.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL018.md">REFL018</a></td>
-    <td>The member is explicitly implemented.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL019.md">REFL019</a></td>
-    <td>No member matches the types.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL020.md">REFL020</a></td>
-    <td>More than one interface is matching the name.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL022.md">REFL022</a></td>
-    <td>Use fully qualified name.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL023.md">REFL023</a></td>
-    <td>The type does not implement the interface.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL024.md">REFL024</a></td>
-    <td>Prefer null over empty array.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL025.md">REFL025</a></td>
-    <td>Use correct arguments.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL026.md">REFL026</a></td>
-    <td>No parameterless constructor defined for this object.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL027.md">REFL027</a></td>
-    <td>Prefer Type.EmptyTypes.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL028.md">REFL028</a></td>
-    <td>Cast return value to correct type.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL029.md">REFL029</a></td>
-    <td>Specify types in case an overload is added in the future.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL030.md">REFL030</a></td>
-    <td>Use correct obj parameter.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL031.md">REFL031</a></td>
-    <td>Use generic arguments that satisfies the type parameters.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL032.md">REFL032</a></td>
-    <td>The dependency does not exist.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL033.md">REFL033</a></td>
-    <td>Use the same type as the parameter.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL034.md">REFL034</a></td>
-    <td>Don't call MakeGeneric when not a generic definition.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL035.md">REFL035</a></td>
-    <td>Don't call Invoke on a generic definition.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL036.md">REFL036</a></td>
-    <td>Pass 'throwOnError: true' or check if null.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL037.md">REFL037</a></td>
-    <td>The type does not exist.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL038.md">REFL038</a></td>
-    <td>Prefer RuntimeHelpers.RunClassConstructor.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL039.md">REFL039</a></td>
-    <td>Prefer typeof(...) over instance.GetType when the type is sealed.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL040.md">REFL040</a></td>
-    <td>Prefer type.IsInstanceOfType(...).</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL041.md">REFL041</a></td>
-    <td>Delegate type is not matching.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL042.md">REFL042</a></td>
-    <td>First argument must be reference type.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL043.md">REFL043</a></td>
-    <td>First argument must match type.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL044.md">REFL044</a></td>
-    <td>Expected attribute type.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL045.md">REFL045</a></td>
-    <td>These flags are insufficient to match any members.</td>
-  </tr>
-  <tr>
-    <td><a href="https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL046.md">REFL046</a></td>
-    <td>The specified default member does not exist.</td>
-  </tr>
-<table>
-<!-- end generated table -->
+| Id       | Title
+| :--      | :--
+| [REFL001](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL001.md)| Cast return value to the correct type.
+| [REFL002](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL002.md)| Discard the return value.
+| [REFL003](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL003.md)| The member does not exist.
+| [REFL004](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL004.md)| More than one member is matching the criteria.
+| [REFL005](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL005.md)| There is no member matching the filter.
+| [REFL006](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL006.md)| The binding flags can be more precise.
+| [REFL007](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL007.md)| The binding flags are not in the expected order.
+| [REFL008](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL008.md)| Specify binding flags for better performance and less fragile code.
+| [REFL009](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL009.md)| The referenced member is not known to exist.
+| [REFL010](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL010.md)| Prefer the generic extension method GetCustomAttribute<T>.
+| [REFL011](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL011.md)| Duplicate BindingFlag.
+| [REFL012](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL012.md)| Prefer Attribute.IsDefined().
+| [REFL013](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL013.md)| The member is of the wrong type.
+| [REFL014](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL014.md)| Prefer GetMember().AccessorMethod.
+| [REFL015](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL015.md)| Use the containing type.
+| [REFL016](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL016.md)| Use nameof.
+| [REFL017](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL017.md)| Don't use name of wrong member.
+| [REFL018](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL018.md)| The member is explicitly implemented.
+| [REFL019](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL019.md)| No member matches the types.
+| [REFL020](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL020.md)| More than one interface is matching the name.
+| [REFL022](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL022.md)| Use fully qualified name.
+| [REFL023](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL023.md)| The type does not implement the interface.
+| [REFL024](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL024.md)| Prefer null over empty array.
+| [REFL025](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL025.md)| Use correct arguments.
+| [REFL026](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL026.md)| No parameterless constructor defined for this object.
+| [REFL027](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL027.md)| Prefer Type.EmptyTypes.
+| [REFL028](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL028.md)| Cast return value to correct type.
+| [REFL029](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL029.md)| Specify types in case an overload is added in the future.
+| [REFL030](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL030.md)| Use correct obj parameter.
+| [REFL031](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL031.md)| Use generic arguments that satisfies the type parameters.
+| [REFL032](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL032.md)| The dependency does not exist.
+| [REFL033](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL033.md)| Use the same type as the parameter.
+| [REFL034](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL034.md)| Don't call MakeGeneric when not a generic definition.
+| [REFL035](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL035.md)| Don't call Invoke on a generic definition.
+| [REFL036](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL036.md)| Pass 'throwOnError: true' or check if null.
+| [REFL037](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL037.md)| The type does not exist.
+| [REFL038](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL038.md)| Prefer RuntimeHelpers.RunClassConstructor.
+| [REFL039](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL039.md)| Prefer typeof(...) over instance.GetType when the type is sealed.
+| [REFL040](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL040.md)| Prefer type.IsInstanceOfType(...).
+| [REFL041](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL041.md)| Delegate type is not matching.
+| [REFL042](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL042.md)| First argument must be reference type.
+| [REFL043](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL043.md)| First argument must match type.
+| [REFL044](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL044.md)| Expected attribute type.
+| [REFL045](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL045.md)| These flags are insufficient to match any members.
+| [REFL046](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/tree/master/documentation/REFL046.md)| The specified default member does not exist.
+
+
+## Using ReflectionAnalyzers
+
+The preferable way to use the analyzers is to add the nuget package [ReflectionAnalyzers](https://www.nuget.org/packages/ReflectionAnalyzers)
+to the project(s).
+
+The severity of individual rules may be configured using [rule set files](https://msdn.microsoft.com/en-us/library/dd264996.aspx)
+in Visual Studio 2015.
+
+## Installation
+
+IDisposableAnalyzers can be installed using:
+- [Paket](https://fsprojects.github.io/Paket/) 
+- NuGet command line
+- NuGet Package Manager in Visual Studio.
+
+
+**Install using the command line:**
+```bash
+paket add ReflectionAnalyzers --project <project>
+```
+
+or if you prefer NuGet
+```bash
+Install-Package ReflectionAnalyzers
+```
