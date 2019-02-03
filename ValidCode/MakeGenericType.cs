@@ -9,8 +9,11 @@ namespace ValidCode
         public void Valid()
         {
             Assert.NotNull(typeof(Foo<>).MakeGenericType(typeof(int)));
+            Assert.NotNull(typeof(Foo<>).MakeGenericType(typeof(string)));
             Assert.NotNull(typeof(Foo<>.Bar).MakeGenericType(typeof(int)));
-            Assert.NotNull(typeof(Constrained<>).MakeGenericType(typeof(int)));
+            Assert.NotNull(typeof(ConstrainedToIComparableOfT<>).MakeGenericType(typeof(int)));
+            Assert.NotNull(typeof(ConstrainedToClass<>).MakeGenericType(typeof(string)));
+            Assert.NotNull(typeof(ConstrainedToStruct<>).MakeGenericType(typeof(int)));
         }
 
         public class Foo<T>
@@ -20,8 +23,18 @@ namespace ValidCode
             }
         }
 
-        public class Constrained<T>
+        public class ConstrainedToIComparableOfT<T>
             where T : IComparable<T>
+        {
+        }
+
+        public class ConstrainedToClass<T>
+            where T : class
+        {
+        }
+
+        public class ConstrainedToStruct<T>
+            where T : struct
         {
         }
     }
