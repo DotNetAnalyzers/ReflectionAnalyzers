@@ -228,17 +228,21 @@ namespace ReflectionAnalyzers
                                                                 typeArguments.TryGetArgumentsTypes(context, out var types):
                     using (var incremented = visited.IncrementUsage())
                     {
+                        source = invocation;
                         if (incremented.Add(invocation) &&
                             TryGet(memberAccess.Expression, context, incremented, out var definition, out _) &&
-                            definition is INamedTypeSymbol namedType)
+                            definition is INamedTypeSymbol namedType &&
+                            ReferenceEquals(namedType, namedType.ConstructedFrom) &&
+                            namedType.Arity == types.Length)
                         {
-                            source = invocation;
                             result = namedType.Construct(types);
                             return result != null;
                         }
+
+                        result = null;
+                        return false;
                     }
 
-                    break;
                 case ConditionalAccessExpressionSyntax conditionalAccess:
                     source = conditionalAccess;
                     return TryGet(conditionalAccess.WhenNotNull, context, out result, out _);

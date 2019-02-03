@@ -308,6 +308,39 @@ namespace RoslynSandbox
 
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
+
+            [Test]
+            public void Issue202()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    internal static class C
+    {
+        internal static object Create<T1, T2>()
+        {
+            if (!typeof(T1).IsValueType &&
+                !typeof(T2).IsValueType)
+            {
+                return Activator.CreateInstance(typeof(C<,>).MakeGenericType(typeof(T1), typeof(T2)));
+            }
+
+            return null;
+        }
+    }
+
+    internal class C<T1, T2>
+        where T1 : class
+        where T2 : class
+    {
+    }
+}";
+
+                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            }
         }
     }
 }
