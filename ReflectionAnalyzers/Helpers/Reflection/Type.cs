@@ -226,12 +226,10 @@ namespace ReflectionAnalyzers
                                                                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                                                                 TypeArguments.TryCreate(invocation, context, out var typeArguments) &&
                                                                 typeArguments.TryGetArgumentsTypes(context, out var types):
-#pragma warning disable IDISP003 // Dispose previous before re-assigning.
-                    using (visited = visited.IncrementUsage())
-#pragma warning restore IDISP003 // Dispose previous before re-assigning.
+                    using (var incremented = visited.IncrementUsage())
                     {
                         if (visited.Add(invocation) &&
-                            TryGet(memberAccess.Expression, context, visited, out var definition, out _) &&
+                            TryGet(memberAccess.Expression, context, incremented, out var definition, out _) &&
                             definition is INamedTypeSymbol namedType)
                         {
                             source = invocation;
@@ -249,15 +247,13 @@ namespace ReflectionAnalyzers
             if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
                 context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out ISymbol local))
             {
-#pragma warning disable IDISP003 // Dispose previous before re-assigning.
-                using (visited = visited.IncrementUsage())
-#pragma warning restore IDISP003 // Dispose previous before re-assigning.
+                using (var incremented = visited.IncrementUsage())
                 {
                     source = null;
                     result = null;
                     return AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
                            visited.Add(assignedValue) &&
-                           TryGet(assignedValue, context, visited, out result, out source);
+                           TryGet(assignedValue, context, incremented, out result, out source);
                 }
             }
 
