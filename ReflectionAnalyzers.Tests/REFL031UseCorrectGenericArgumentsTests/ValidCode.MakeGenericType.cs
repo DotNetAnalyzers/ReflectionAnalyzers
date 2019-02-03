@@ -233,8 +233,8 @@ namespace RoslynSandbox
         public Type Get<T>()
         {
             return typeof(T).IsValueType
-                ? typeof(C).GetNestedType(""ConstrainedToStruct`1"", BindingFlags.Public).MakeGenericType(typeof(int))
-                : typeof(C).GetNestedType(""ConstrainedToClass`1"", BindingFlags.Public).MakeGenericType(typeof(string));
+                ? typeof(C).GetNestedType(""ConstrainedToStruct`1"", BindingFlags.Public).MakeGenericType(typeof(T))
+                : typeof(C).GetNestedType(""ConstrainedToClass`1"", BindingFlags.Public).MakeGenericType(typeof(T));
         }
 
         public class ConstrainedToClass<T>
@@ -244,6 +244,38 @@ namespace RoslynSandbox
 
         public class ConstrainedToStruct<T>
             where T : struct
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Valid(Analyzer, code);
+            }
+
+            [Test]
+            public void TernaryTwoArguments()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class C
+    {
+        public Type Get<T>()
+        {
+            return typeof(T).IsValueType
+                ? typeof(C).GetNestedType(""ConstrainedToStruct`2"", BindingFlags.Public).MakeGenericType(typeof(T), typeof(C))
+                : typeof(C).GetNestedType(""ConstrainedToClass`2"", BindingFlags.Public).MakeGenericType(typeof(T), typeof(C));
+        }
+
+        public class ConstrainedToClass<T1, T2>
+            where T1 : class
+        {
+        }
+
+        public class ConstrainedToStruct<T1, T2>
+            where T1 : struct
         {
         }
     }

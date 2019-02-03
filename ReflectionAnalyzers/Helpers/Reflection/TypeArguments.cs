@@ -176,7 +176,7 @@ namespace ReflectionAnalyzers
                 switch (type)
                 {
                     case INamedTypeSymbol namedType when !namedType.IsReferenceType:
-                    case ITypeParameterSymbol parameter when !parameter.HasReferenceTypeConstraint:
+                    case ITypeParameterSymbol parameter when !IsReferenceType(parameter):
                         return false;
                 }
             }
@@ -186,7 +186,7 @@ namespace ReflectionAnalyzers
                 switch (type)
                 {
                     case INamedTypeSymbol namedType when !namedType.IsValueType || namedType == KnownSymbol.NullableOfT:
-                    case ITypeParameterSymbol parameter when !parameter.HasValueTypeConstraint:
+                    case ITypeParameterSymbol parameter when !IsValueType(parameter):
                         return false;
                 }
             }
@@ -223,6 +223,68 @@ namespace ReflectionAnalyzers
             }
 
             return true;
+
+            bool? IsEffectivelyValueType(ExpressionSyntax condition, ITypeParameterSymbol candidate)
+            {
+                switch (condition)
+                {
+                    case MemberAccessExpressionSyntax memberAccess when
+                        memberAccess.Name.Identifier.Text == "IsValueType" &&
+                        memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
+                        typeOf.Type is IdentifierNameSyntax identifierName &&
+                        identifierName.Identifier.Text == candidate.Name:
+                        return true;
+                    case PrefixUnaryExpressionSyntax prefixUnary when
+                         prefixUnary.IsKind(SyntaxKind.LogicalNotExpression):
+                        return !IsEffectivelyValueType(prefixUnary.Operand, candidate);
+                }
+
+                return null;
+            }
+
+            bool IsReferenceType(ITypeParameterSymbol candidate)
+            {
+                if (candidate.HasReferenceTypeConstraint)
+                {
+                    return true;
+                }
+
+                if (context.Node.TryFirstAncestor(out ConditionalExpressionSyntax ternary))
+                {
+                    if (ternary.WhenTrue.Contains(context.Node))
+                    {
+                        return IsEffectivelyValueType(ternary.Condition, candidate) == false;
+                    }
+                    else if (ternary.WhenFalse.Contains(context.Node))
+                    {
+                        return IsEffectivelyValueType(ternary.Condition, candidate) == true;
+                    }
+                }
+
+                return false;
+            }
+
+            bool IsValueType(ITypeParameterSymbol candidate)
+            {
+                if (candidate.HasValueTypeConstraint)
+                {
+                    return true;
+                }
+
+                if (context.Node.TryFirstAncestor(out ConditionalExpressionSyntax ternary))
+                {
+                    if (ternary.WhenTrue.Contains(context.Node))
+                    {
+                        return IsEffectivelyValueType(ternary.Condition, candidate) == true;
+                    }
+                    else if (ternary.WhenFalse.Contains(context.Node))
+                    {
+                        return IsEffectivelyValueType(ternary.Condition, candidate) == false;
+                    }
+                }
+
+                return false;
+            }
 
             bool IsAssignableTo(ITypeSymbol source, ITypeSymbol destination)
             {
