@@ -64,7 +64,7 @@ namespace ReflectionAnalyzers.Test
         [TestCaseSource(nameof(DescriptorsWithDocs))]
         public void TitleId(DescriptorInfo descriptorInfo)
         {
-            Assert.AreEqual($"# {descriptorInfo.Descriptor.Id}", descriptorInfo.DocumentationFile.AllLines.First());
+            Assert.AreEqual($"# {descriptorInfo.Descriptor.Id}", descriptorInfo.DocumentationFile.AllLines[0]);
         }
 
         [TestCaseSource(nameof(DescriptorsWithDocs))]
@@ -151,7 +151,7 @@ namespace ReflectionAnalyzers.Test
 
         private static string GetTable(string doc, string headerRow)
         {
-            var startIndex = doc.IndexOf(headerRow);
+            var startIndex = doc.IndexOf(headerRow, StringComparison.Ordinal);
             if (startIndex < 0)
             {
                 return string.Empty;

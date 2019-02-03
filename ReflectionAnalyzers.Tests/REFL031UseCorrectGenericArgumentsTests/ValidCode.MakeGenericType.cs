@@ -218,6 +218,38 @@ namespace RoslynSandbox
 }";
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
+
+            [Test]
+            public void Ternary()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class C
+    {
+        public Type Get<T>()
+        {
+            return typeof(T).IsValueType
+                ? typeof(C).GetNestedType(""ConstrainedToStruct`1"", BindingFlags.Public).MakeGenericType(typeof(int))
+                : typeof(C).GetNestedType(""ConstrainedToClass`1"", BindingFlags.Public).MakeGenericType(typeof(string));
+        }
+
+        public class ConstrainedToClass<T>
+            where T : class
+        {
+        }
+
+        public class ConstrainedToStruct<T>
+            where T : struct
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Valid(Analyzer, code);
+            }
         }
     }
 }

@@ -145,6 +145,39 @@ namespace RoslynSandbox
 }";
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
+
+            [Test]
+            public void TernaryWrongOrder()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class C
+    {
+        public Type Get<T>()
+        {
+            return typeof(T).IsValueType
+                ? typeof(C).GetNestedType(""ConstrainedToClass`1"", BindingFlags.Public).MakeGenericType(typeof(int))
+                : typeof(C).GetNestedType(""ConstrainedToStruct`1"", BindingFlags.Public).MakeGenericType(typeof(string));
+            }
+
+            public class ConstrainedToClass<T>
+                where T : class
+            {
+            }
+
+            public class ConstrainedToStruct<T>
+                where T : struct
+            {
+            }
+        }
+    }
+}";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }

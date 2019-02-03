@@ -19,6 +19,13 @@ namespace ValidCode
 
         public T M<T>(T t) => t;
 
+        public MethodInfo Get<T>()
+        {
+            return typeof(T).IsValueType
+                ? typeof(MakeGenericMethod).GetMethod(nameof(this.ConstrainedToStruct), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).MakeGenericMethod(typeof(int))
+                : typeof(MakeGenericMethod).GetMethod(nameof(this.ConstrainedToClass), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).MakeGenericMethod(typeof(string));
+        }
+
         public T ConstrainedToIComparableOfT<T>(T t)
             where T : IComparable<T>
         {

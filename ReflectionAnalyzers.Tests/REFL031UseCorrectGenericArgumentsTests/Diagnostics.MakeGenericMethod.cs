@@ -108,6 +108,39 @@ namespace RoslynSandbox
   .AssertReplace("typeof(int)", arg);
                 AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
             }
+
+            [Test]
+            public void TernaryWrongOrder()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System.Reflection;
+
+    public class C
+    {
+        public MethodInfo Get<T>()
+        {
+            return typeof(T).IsValueType
+                ? typeof(C).GetMethod(nameof(this.ConstrainedToClass), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).MakeGenericMethod(typeof(int))
+                : typeof(C).GetMethod(nameof(this.ConstrainedToStruct), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).MakeGenericMethod(typeof(string));
+        }
+
+        public T ConstrainedToClass<T>(T t)
+            where T : class
+        {
+            return t;
+        }
+
+        public T ConstrainedToStruct<T>(T t)
+            where T : struct
+        {
+            return t;
+        }
+    }
+}";
+                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
         }
     }
 }
