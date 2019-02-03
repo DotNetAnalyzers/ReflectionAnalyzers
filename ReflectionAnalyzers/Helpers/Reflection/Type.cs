@@ -230,7 +230,8 @@ namespace ReflectionAnalyzers
                     {
                         if (incremented.Add(invocation) &&
                             TryGet(memberAccess.Expression, context, incremented, out var definition, out _) &&
-                            definition is INamedTypeSymbol namedType)
+                            definition is INamedTypeSymbol namedType &&
+                            ReferenceEquals(namedType, namedType.ConstructedFrom))
                         {
                             source = invocation;
                             result = namedType.Construct(types);
