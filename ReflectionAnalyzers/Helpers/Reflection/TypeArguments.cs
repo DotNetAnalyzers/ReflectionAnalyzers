@@ -226,41 +226,17 @@ namespace ReflectionAnalyzers
 
             return true;
 
-            bool TryGetEffectivelyValueType(ExpressionSyntax condition, ITypeParameterSymbol candidate, out bool result)
-            {
-                switch (condition)
-                {
-                    case MemberAccessExpressionSyntax memberAccess when
-                        memberAccess.Name.Identifier.Text == "IsValueType" &&
-                        memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                        typeOf.Type is IdentifierNameSyntax identifierName &&
-                        identifierName.Identifier.Text == candidate.Name:
-                        result = true;
-                        return true;
-                    case PrefixUnaryExpressionSyntax prefixUnary when
-                         prefixUnary.IsKind(SyntaxKind.LogicalNotExpression):
-                        return !TryGetEffectivelyValueType(prefixUnary.Operand, candidate, out result);
-                    case BinaryExpressionSyntax binary when
-                         binary.IsKind(SyntaxKind.LogicalAndExpression):
-                        return TryGetEffectivelyValueType(binary.Left, candidate, out result) ||
-                               TryGetEffectivelyValueType(binary.Right, candidate, out result);
-                }
-
-                result = false;
-                return false;
-            }
-
             bool IsValueTypeContext(SyntaxNode node, ITypeParameterSymbol candidate)
             {
                 if (node.TryFirstAncestor(out ConditionalExpressionSyntax ternary))
                 {
                     if (ternary.WhenTrue.Contains(node) &&
-                        TryGetEffectivelyValueType(ternary.Condition, candidate, out var result))
+                        TryGetEffectivelyValueType(ternary.Condition, out var result))
                     {
                         return result;
                     }
                     else if (ternary.WhenFalse.Contains(node) &&
-                             TryGetEffectivelyValueType(ternary.Condition, candidate, out result))
+                             TryGetEffectivelyValueType(ternary.Condition, out result))
                     {
                         return !result;
                     }
@@ -268,7 +244,47 @@ namespace ReflectionAnalyzers
                     return IsValueTypeContext(ternary, candidate);
                 }
 
+                if (node.TryFirstAncestor(out IfStatementSyntax ifStatement))
+                {
+                    if (ifStatement.Statement.Contains(node) &&
+                        TryGetEffectivelyValueType(ifStatement.Condition, out var result))
+                    {
+                        return result;
+                    }
+                    else if (ifStatement.Else.Contains(node) &&
+                             TryGetEffectivelyValueType(ifStatement.Condition, out result))
+                    {
+                        return !result;
+                    }
+
+                    return IsValueTypeContext(ifStatement, candidate);
+                }
+
                 return false;
+
+                bool TryGetEffectivelyValueType(ExpressionSyntax condition, out bool result)
+                {
+                    switch (condition)
+                    {
+                        case MemberAccessExpressionSyntax memberAccess when
+                            memberAccess.Name.Identifier.Text == "IsValueType" &&
+                            memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
+                            typeOf.Type is IdentifierNameSyntax identifierName &&
+                            identifierName.Identifier.Text == candidate.Name:
+                            result = true;
+                            return true;
+                        case PrefixUnaryExpressionSyntax prefixUnary when
+                             prefixUnary.IsKind(SyntaxKind.LogicalNotExpression):
+                            return !TryGetEffectivelyValueType(prefixUnary.Operand, out result);
+                        case BinaryExpressionSyntax binary when
+                             binary.IsKind(SyntaxKind.LogicalAndExpression):
+                            return TryGetEffectivelyValueType(binary.Left, out result) ||
+                                   TryGetEffectivelyValueType(binary.Right, out result);
+                    }
+
+                    result = false;
+                    return false;
+                }
             }
 
             bool IsAssignableTo(ITypeSymbol source, ITypeSymbol destination)

@@ -24,6 +24,28 @@ namespace ValidCode
                 : typeof(MakeGenericType).GetNestedType("ConstrainedToClass`1", BindingFlags.Public).MakeGenericType(typeof(T));
         }
 
+        public Type GetIfReturn<T>()
+        {
+            if (typeof(T).IsValueType)
+            {
+                return typeof(MakeGenericType).GetNestedType("ConstrainedToStruct`1", BindingFlags.Public).MakeGenericType(typeof(T));
+            }
+
+            return typeof(MakeGenericType).GetNestedType("ConstrainedToClass`1", BindingFlags.Public).MakeGenericType(typeof(T));
+        }
+
+        public Type GetIfElse<T>()
+        {
+            if (typeof(T).IsValueType)
+            {
+                return typeof(MakeGenericType).GetNestedType("ConstrainedToStruct`1", BindingFlags.Public).MakeGenericType(typeof(T));
+            }
+            else
+            {
+                return typeof(MakeGenericType).GetNestedType("ConstrainedToClass`1", BindingFlags.Public).MakeGenericType(typeof(T));
+            }
+        }
+
         public class Foo<T>
         {
             public class Bar
