@@ -354,6 +354,44 @@ namespace RoslynSandbox
 }";
                 AnalyzerAssert.Valid(Analyzer, code);
             }
+
+            [Test]
+            public void NestedIf()
+            {
+                var code = @"
+namespace RoslynSandbox
+{
+    using System;
+    using System.Reflection;
+
+    public class C
+    {
+        public Type Get<T>()
+        {
+            if (typeof(T).IsValueType)
+            {
+                if (true)
+                {
+                    return typeof(C).GetNestedType(""ConstrainedToStruct`1"", BindingFlags.Public).MakeGenericType(typeof(T));
+                }
+            }
+
+            return null;
+        }
+
+        public class ConstrainedToClass<T>
+            where T : class
+        {
+        }
+
+        public class ConstrainedToStruct<T>
+            where T : struct
+        {
+        }
+    }
+}";
+                AnalyzerAssert.Valid(Analyzer, code);
+            }
         }
     }
 }

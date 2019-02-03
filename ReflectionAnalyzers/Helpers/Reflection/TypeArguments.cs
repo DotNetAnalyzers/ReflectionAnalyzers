@@ -251,7 +251,7 @@ namespace ReflectionAnalyzers
                     {
                         return result;
                     }
-                    else if (ifStatement.Else.Contains(node) &&
+                    else if (ifStatement.Else?.Contains(node) == true &&
                              TryGetEffectivelyValueType(ifStatement.Condition, out result))
                     {
                         return !result;
