@@ -16,6 +16,13 @@ namespace ValidCode
             Assert.NotNull(typeof(ConstrainedToStruct<>).MakeGenericType(typeof(int)));
         }
 
+        public Type GetTernary<T>()
+        {
+            return typeof(T).IsValueType
+                ? typeof(MakeGenericType).GetNestedType("ConstrainedToStruct`1", BindingFlags.Public).MakeGenericType(typeof(T))
+                : typeof(MakeGenericType).GetNestedType("ConstrainedToClass`1", BindingFlags.Public).MakeGenericType(typeof(T));
+        }
+
         public class Foo<T>
         {
             public class Bar

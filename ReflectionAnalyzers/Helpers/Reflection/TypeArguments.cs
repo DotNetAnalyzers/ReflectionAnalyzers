@@ -237,6 +237,10 @@ namespace ReflectionAnalyzers
                     case PrefixUnaryExpressionSyntax prefixUnary when
                          prefixUnary.IsKind(SyntaxKind.LogicalNotExpression):
                         return !IsEffectivelyValueType(prefixUnary.Operand, candidate);
+                    case BinaryExpressionSyntax binary when
+                         binary.IsKind(SyntaxKind.LogicalAndExpression):
+                        return IsEffectivelyValueType(binary.Left, candidate) ??
+                               IsEffectivelyValueType(binary.Right, candidate);
                 }
 
                 return null;

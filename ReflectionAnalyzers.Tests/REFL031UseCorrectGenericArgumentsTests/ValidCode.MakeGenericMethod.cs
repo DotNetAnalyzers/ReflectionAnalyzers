@@ -58,8 +58,11 @@ namespace RoslynSandbox
                 AnalyzerAssert.Valid(Analyzer, Descriptor, code);
             }
 
-            [Test]
-            public void Ternary()
+            [TestCase("typeof(T).IsValueType")]
+            [TestCase("!!typeof(T).IsValueType")]
+            [TestCase("typeof(T).IsValueType && true")]
+            [TestCase("typeof(T).IsValueType && typeof(T).IsValueType")]
+            public void Ternary(string condition)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -87,7 +90,7 @@ namespace RoslynSandbox
             return t;
         }
     }
-}";
+}".AssertReplace("typeof(T).IsValueType", condition);
                 AnalyzerAssert.Valid(Analyzer, code);
             }
         }
