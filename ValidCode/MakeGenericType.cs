@@ -1,6 +1,7 @@
 namespace ValidCode
 {
     using System;
+    using System.Reflection;
     using NUnit.Framework;
 
     public class MakeGenericType
