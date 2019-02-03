@@ -228,7 +228,7 @@ namespace ReflectionAnalyzers
                                                                 typeArguments.TryGetArgumentsTypes(context, out var types):
                     using (var incremented = visited.IncrementUsage())
                     {
-                        if (visited.Add(invocation) &&
+                        if (incremented.Add(invocation) &&
                             TryGet(memberAccess.Expression, context, incremented, out var definition, out _) &&
                             definition is INamedTypeSymbol namedType)
                         {
@@ -252,7 +252,7 @@ namespace ReflectionAnalyzers
                     source = null;
                     result = null;
                     return AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
-                           visited.Add(assignedValue) &&
+                           incremented.Add(assignedValue) &&
                            TryGet(assignedValue, context, incremented, out result, out source);
                 }
             }

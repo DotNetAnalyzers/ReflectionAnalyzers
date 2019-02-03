@@ -87,8 +87,8 @@ namespace ReflectionAnalyzers
             }
 
             if (createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
-               invocation.TryFindArgument(typeParameter, out var typeArg) &&
-               Type.TryGet(typeArg.Expression, context, out createdType, out var source))
+                invocation.TryFindArgument(typeParameter, out var typeArg) &&
+                Type.TryGet(typeArg.Expression, context, out createdType, out var source))
             {
                 switch (source)
                 {
