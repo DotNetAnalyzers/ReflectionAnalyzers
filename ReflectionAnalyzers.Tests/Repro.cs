@@ -20,7 +20,7 @@ namespace ReflectionAnalyzers.Tests
                                .ToArray();
 
         private static readonly Solution Solution = CodeFactory.CreateSolution(
-            new FileInfo("C:\\Git\\Gu.Xml\\Gu.Xml.sln"),
+            new FileInfo(@"C:\Git\_GuOrg\Gu.Xml\Gu.Xml.sln"),
             AllAnalyzers,
             AnalyzerAssert.MetadataReferences);
 
