@@ -4,9 +4,8 @@ projectUrl https://github.com/DotNetAnalyzers/ReflectionAnalyzers
 licenseUrl http://opensource.org/licenses/MIT
 
 releasenotes
-  REFL046 check default member.
-  Codefix REFL014 don't add flags by default.
-  Suggest GetMember().GetAccessor() when not visible.
+  BUGFIX REFL031: conditional expression.
+  BUGFIX REFL031: if statement.
 
 excludedgroups
   Main

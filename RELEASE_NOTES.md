@@ -1,3 +1,7 @@
+#### 0.1.20
+* BUGFIX REFL031: conditional expression.
+* BUGFIX REFL031: if statement.
+
 #### 0.1.19
 * REFL046 check default member.
 * Codefix REFL014 don't add flags by default.
