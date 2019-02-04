@@ -85,7 +85,7 @@ namespace ReflectionAnalyzers
             if (invocation.TryGetTarget(KnownSymbol.Type.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
                 target.TryFindParameter("typeName", out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out var nameArg) &&
-                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out string name))
+                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name))
             {
                 typeName = new TypeNameArgument(nameArg, name);
                 switch (target.Parameters.Length)
@@ -226,11 +226,13 @@ namespace ReflectionAnalyzers
                                                                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                                                                 TypeArguments.TryCreate(invocation, context, out var typeArguments) &&
                                                                 typeArguments.TryGetArgumentsTypes(context, out var types):
-                    using (var incremented = visited.IncrementUsage())
+#pragma warning disable IDISP003 // Dispose previous before re-assigning.
+                    using (visited = visited.IncrementUsage())
+#pragma warning restore IDISP003 // Dispose previous before re-assigning.
                     {
                         source = invocation;
-                        if (incremented.Add(invocation) &&
-                            TryGet(memberAccess.Expression, context, incremented, out var definition, out _) &&
+                        if (visited.Add(invocation) &&
+                            TryGet(memberAccess.Expression, context, visited, out var definition, out _) &&
                             definition is INamedTypeSymbol namedType &&
                             ReferenceEquals(namedType, namedType.ConstructedFrom) &&
                             namedType.Arity == types.Length)
@@ -251,13 +253,15 @@ namespace ReflectionAnalyzers
             if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
                 context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out ISymbol local))
             {
-                using (var incremented = visited.IncrementUsage())
+#pragma warning disable IDISP003 // Dispose previous before re-assigning.
+                using (visited = visited.IncrementUsage())
+#pragma warning restore IDISP003 // Dispose previous before re-assigning.
                 {
                     source = null;
                     result = null;
                     return AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
-                           incremented.Add(assignedValue) &&
-                           TryGet(assignedValue, context, incremented, out result, out source);
+                           visited.Add(assignedValue) &&
+                           TryGet(assignedValue, context, visited, out result, out source);
                 }
             }
 

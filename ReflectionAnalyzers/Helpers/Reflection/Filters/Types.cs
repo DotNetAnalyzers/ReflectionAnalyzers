@@ -83,7 +83,9 @@ namespace ReflectionAnalyzers
 
             for (var i = 0; i < parameters.Length; i++)
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 if (!this.Symbols[i].Is(parameters[i].Type))
+#pragma warning restore CS0618 // Type or member is obsolete
                 {
                     return false;
                 }

@@ -47,7 +47,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("MISSING")]
-        //[TestCase("RoslynSandbox.MISSING")]
+        // [TestCase("RoslynSandbox.MISSING")]
         public void TypeGetTypeNoFix(string type)
         {
             var code = @"
