@@ -7,7 +7,7 @@
 | Severity | Warning
 | Enabled  | True
 | Category | ReflectionAnalyzers.SystemReflection
-| Code     | [IsAssignableFromAnalyzer]([IsAssignableFromAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/IsAssignableFromAnalyzer.cs))
+| Code     | [IsAssignableFromAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/IsAssignableFromAnalyzer.cs)
 
 ## Description
 

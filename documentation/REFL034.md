@@ -7,7 +7,7 @@
 | Severity | Warning
 | Enabled  | True
 | Category | ReflectionAnalyzers.SystemReflection
-| Code     | [MakeGenericAnalyzer]([MakeGenericAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/MakeGenericAnalyzer.cs))
+| Code     | [MakeGenericAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/MakeGenericAnalyzer.cs)
 
 ## Description
 

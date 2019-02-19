@@ -7,7 +7,7 @@
 | Severity | Warning
 | Enabled  | True
 | Category | ReflectionAnalyzers.SystemReflection
-| Code     | [DependencyAttributeAnalyzer]([DependencyAttributeAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/DependencyAttributeAnalyzer.cs))
+| Code     | [DependencyAttributeAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/DependencyAttributeAnalyzer.cs)
 
 ## Description
 

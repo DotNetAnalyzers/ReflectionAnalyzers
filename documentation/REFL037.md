@@ -7,7 +7,7 @@
 | Severity | Warning
 | Enabled  | True
 | Category | ReflectionAnalyzers.SystemReflection
-| Code     | [GetTypeAnalyzer]([GetTypeAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetTypeAnalyzer.cs))
+| Code     | [GetTypeAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/GetTypeAnalyzer.cs)
 
 ## Description
 

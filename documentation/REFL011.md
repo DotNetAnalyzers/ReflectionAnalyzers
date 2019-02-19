@@ -7,7 +7,7 @@
 | Severity | Warning
 | Enabled  | True
 | Category | ReflectionAnalyzers.SystemReflection
-| Code     | [BindingFlagsAnalyzer]([BindingFlagsAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/BindingFlagsAnalyzer.cs))
+| Code     | [BindingFlagsAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/BindingFlagsAnalyzer.cs)
 
 ## Description
 

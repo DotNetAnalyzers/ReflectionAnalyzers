@@ -7,7 +7,7 @@
 | Severity | Warning
 | Enabled  | True
 | Category | ReflectionAnalyzers.SystemReflection
-| Code     | [DefaultMemberAttributeAnalyzer]([DefaultMemberAttributeAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/DefaultMemberAttributeAnalyzer.cs))
+| Code     | [DefaultMemberAttributeAnalyzer](https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master/ReflectionAnalyzers/NodeAnalzers/DefaultMemberAttributeAnalyzer.cs)
 
 ## Description
 
