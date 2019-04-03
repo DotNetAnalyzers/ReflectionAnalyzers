@@ -99,8 +99,9 @@ namespace RoslynSandbox
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("GetConstructor(new[] { typeof(int) })")]
-        [TestCase("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) }, null)")]
+        [TestCase("typeof(C).GetConstructor(new[] { typeof(int) })")]
+        [TestCase("typeof(C).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) }, null)")]
+        [TestCase("typeof(int[]).GetConstructor(new[] { typeof(int) })")]
         public void GetConstructor(string call)
         {
             var code = @"
@@ -116,7 +117,7 @@ namespace RoslynSandbox
             var ctor = typeof(C).GetConstructor(new[] { typeof(int) });
         }
     }
-}".AssertReplace("GetConstructor(new[] { typeof(int) })", call);
+}".AssertReplace("typeof(C).GetConstructor(new[] { typeof(int) })", call);
 
             AnalyzerAssert.Valid(Analyzer, Descriptor, code);
         }
