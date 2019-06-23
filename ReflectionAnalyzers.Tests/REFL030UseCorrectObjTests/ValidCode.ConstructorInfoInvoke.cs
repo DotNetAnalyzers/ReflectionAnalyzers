@@ -35,7 +35,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(null)", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)")]
@@ -67,7 +67,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

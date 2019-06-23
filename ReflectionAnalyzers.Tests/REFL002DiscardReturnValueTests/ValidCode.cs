@@ -32,7 +32,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("_ = ", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("Assert.Null(typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))")]
@@ -58,7 +58,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Assert.Null(typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

@@ -67,7 +67,7 @@ namespace RoslynSandbox
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = $"Specify binding flags for better performance and less fragile code. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -105,7 +105,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace RoslynSandbox
         public int Bar(int value) => value;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -177,7 +177,7 @@ namespace RoslynSandbox
         public double Bar(int i, double d) => i + d;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -217,7 +217,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("Static",        "BindingFlags.Public | BindingFlags.Static",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
@@ -278,7 +278,7 @@ namespace RoslynSandbox
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = $"Specify binding flags for better performance and less fragile code. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -315,7 +315,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("Type.EmptyTypes",             "BindingFlags.Public | BindingFlags.Instance")]
@@ -364,7 +364,7 @@ namespace RoslynSandbox
 }".AssertReplace("Type.EmptyTypes", types)
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance", flags);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("PublicStatic",    "BindingFlags.Public")]
@@ -432,7 +432,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicInstance)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public", expected);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
 }

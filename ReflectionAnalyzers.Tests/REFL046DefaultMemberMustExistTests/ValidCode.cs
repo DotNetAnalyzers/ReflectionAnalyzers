@@ -25,7 +25,7 @@ public class Foo
 }
 ";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ public class Foo
 }
 ";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ public class Foo
 }
 ";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ public class Foo
 }
 ";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ public class Foo
 }
 ";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ public class Derived : Base { }
 
 ";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

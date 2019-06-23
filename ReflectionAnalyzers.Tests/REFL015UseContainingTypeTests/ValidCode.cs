@@ -78,7 +78,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetEvent(nameof(CBase.PublicStaticEvent))", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, baseCode, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, baseCode, code);
         }
     }
 }

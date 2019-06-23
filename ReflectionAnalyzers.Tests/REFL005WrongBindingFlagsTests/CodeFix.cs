@@ -76,7 +76,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace RoslynSandbox
         public int Public() => 0;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("this.ToString", "BindingFlags.Public", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
@@ -157,7 +157,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.ToString)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("ReferenceEquals", "BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy")]
@@ -210,7 +210,7 @@ namespace RoslynSandbox
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("StaticMethod", "Public | Instance", "Public | Static | DeclaredOnly")]
@@ -277,7 +277,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.PublicMethod)", $"nameof({method})")
   .AssertReplace("Public | Instance | DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("Static", "BindingFlags.Public | BindingFlags.Instance", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
@@ -336,7 +336,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("PublicStatic", "BindingFlags.NonPublic", "BindingFlags.Public")]
@@ -410,7 +410,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("PrivateStatic")]
@@ -460,7 +460,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(PrivateStatic)", $"nameof({type})");
             var message = "There is no member matching the filter. Expected: BindingFlags.NonPublic.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("Type.EmptyTypes")]
@@ -508,7 +508,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Type.EmptyTypes", types);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
 }

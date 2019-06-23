@@ -57,7 +57,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
             var message = "Dispose is explicitly implemented.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("GetMethod(\"ToBoolean\")")]
@@ -97,7 +97,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"ToBoolean\")", call);
 
             var message = "ToBoolean is explicitly implemented.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }
 }

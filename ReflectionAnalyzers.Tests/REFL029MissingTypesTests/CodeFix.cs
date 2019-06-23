@@ -44,7 +44,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -115,7 +115,7 @@ namespace RoslynSandbox
         public int Bar(int value) => value;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace RoslynSandbox
         public int Bar(int value) => value;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -189,7 +189,7 @@ namespace RoslynSandbox
         public int Bar(params int[] values) => values.Sum();
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -228,7 +228,7 @@ namespace RoslynSandbox
         public int Bar(params int[] values) => values.Sum();
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -261,7 +261,7 @@ namespace RoslynSandbox
         public double Bar(int i, double d) => i + d;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -298,7 +298,7 @@ namespace RoslynSandbox
         public double Bar(int i, double d) => i + d;
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
 }

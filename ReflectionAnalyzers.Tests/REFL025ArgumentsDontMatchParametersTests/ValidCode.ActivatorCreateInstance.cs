@@ -31,7 +31,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("(C)Activator.CreateInstance(typeof(C))")]
@@ -49,7 +49,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance<C>()", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), 1)")]
@@ -70,7 +70,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { Missing.Value })")]
@@ -92,7 +92,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
@@ -115,7 +115,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), \"abc\")", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), 1)")]
@@ -138,7 +138,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
@@ -164,7 +164,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), \"abc\")", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
@@ -192,7 +192,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), \"abc\")", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
@@ -221,7 +221,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), \"abc\")", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C))")]
@@ -246,7 +246,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), 1)")]
@@ -272,7 +272,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -289,7 +289,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -306,7 +306,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -339,7 +339,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

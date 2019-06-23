@@ -39,7 +39,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")", call);
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

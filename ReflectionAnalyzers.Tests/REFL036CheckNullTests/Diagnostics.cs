@@ -27,7 +27,7 @@ namespace RoslynSandbox
         public static object Get() => Type.GetType(""C"").Assembly;
     }
 }".AssertReplace("Get() => Type.GetType(\"C\").Assembly", body);
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

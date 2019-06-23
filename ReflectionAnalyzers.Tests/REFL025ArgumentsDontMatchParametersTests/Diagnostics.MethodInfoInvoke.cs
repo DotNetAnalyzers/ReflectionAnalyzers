@@ -30,7 +30,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 })", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { 1.2 })")]
@@ -54,7 +54,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 })", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -73,7 +73,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("new object[0]")]
@@ -93,7 +93,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("new object[0]", args);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

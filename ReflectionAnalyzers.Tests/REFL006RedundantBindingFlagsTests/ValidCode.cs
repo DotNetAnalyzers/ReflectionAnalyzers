@@ -39,7 +39,7 @@ namespace RoslynSandbox
         private int Private() => 0;
     }
 }".AssertReplace("GetMethod(nameof(this.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(\"Bar\")")]
@@ -67,7 +67,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetMethod(\"Bar\")", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.Static)")]
@@ -95,7 +95,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetNestedType(nameof(PublicStatic))")]
@@ -135,7 +135,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

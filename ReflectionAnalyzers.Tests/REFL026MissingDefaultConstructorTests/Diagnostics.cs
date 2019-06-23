@@ -28,7 +28,7 @@ namespace RoslynSandbox
 }".AssertReplace("Activator.CreateInstance(typeof(↓C))", call);
 
             var message = "No parameterless constructor defined for RoslynSandbox.C.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [TestCase("Activator.CreateInstance<↓C>()")]
@@ -52,7 +52,7 @@ namespace RoslynSandbox
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
             var message = "No parameterless constructor defined for RoslynSandbox.C.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [TestCase("Activator.CreateInstance<↓C>()")]
@@ -75,7 +75,7 @@ namespace RoslynSandbox
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
             var message = "No parameterless constructor defined for RoslynSandbox.C.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }
 }

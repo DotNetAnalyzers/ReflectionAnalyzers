@@ -29,7 +29,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Invoke(null, null)")]
@@ -51,7 +51,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Invoke(null, null)", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("1")]
@@ -71,7 +71,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Missing.Value", value);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

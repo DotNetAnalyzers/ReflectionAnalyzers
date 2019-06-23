@@ -41,7 +41,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetInterface(\"System.Collections.Generic.IEnumerable`1\")", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

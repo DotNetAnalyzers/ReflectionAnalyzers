@@ -29,7 +29,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
@@ -60,7 +60,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, exception, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, exception, code);
         }
 
         [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public)")]
@@ -103,7 +103,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetProperty(\"Item\")")]
@@ -126,7 +126,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetProperty(\"Bar\")")]
@@ -151,7 +151,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Bar\")", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace RoslynSandbox
         public static object Get(int? value) => value.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -183,7 +183,7 @@ namespace RoslynSandbox
         public static object Get((int, int) value) => value.GetType().GetField(""Item1"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -204,7 +204,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

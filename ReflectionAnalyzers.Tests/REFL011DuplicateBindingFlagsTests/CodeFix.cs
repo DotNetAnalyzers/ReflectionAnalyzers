@@ -51,7 +51,7 @@ namespace RoslynSandbox
 }".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = "Duplicate flag.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("Public | ↓Public",                                "Public")]
@@ -92,7 +92,7 @@ namespace RoslynSandbox
 }".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = "Duplicate flag.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -76,7 +76,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, exception, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, exception, code);
         }
 
         [TestCase("GetNestedType(↓\"Generic\", BindingFlags.Public)")]
@@ -101,7 +101,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetNestedType(↓nameof(Generic<int>), BindingFlags.Public)", call);
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [TestCase("GetProperty(↓\"Item\")")]
@@ -126,7 +126,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -144,7 +144,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [TestCase("a1")]
@@ -164,7 +164,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("a7", field);
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [TestCase("typeof(C).GetMethod(↓\"get_P\")")]
@@ -182,7 +182,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetProperty(nameof(P)).↓GetMethod", call);
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [TestCase("typeof(C).GetMethod(↓\"set_P\")")]
@@ -200,7 +200,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetProperty(nameof(P)).↓SetMethod", call);
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

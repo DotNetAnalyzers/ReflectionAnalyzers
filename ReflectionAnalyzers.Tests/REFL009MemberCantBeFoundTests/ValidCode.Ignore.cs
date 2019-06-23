@@ -29,7 +29,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetNestedType(nameof(Generic<int>), BindingFlags.Public)", call);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -47,7 +47,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("typeof(string).GetMethod(\"MISSING\")")]
@@ -70,7 +70,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("typeof(string).GetMethod(\"MISSING\")", type);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

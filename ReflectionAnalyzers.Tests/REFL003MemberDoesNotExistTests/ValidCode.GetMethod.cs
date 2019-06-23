@@ -42,7 +42,7 @@ namespace RoslynSandbox
         private int PrivateInstance() => 0;
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(this.ToString))", call);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("new C().GetType().GetMethod(\"MISSING\")")]
@@ -61,7 +61,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(C))", type);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Instance)")]
@@ -83,7 +83,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static)", invocation);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -102,7 +102,7 @@ namespace RoslynSandbox
         public override string ToString() => base.ToString();
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -121,7 +121,7 @@ namespace RoslynSandbox
         public new string ToString() => base.ToString();
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -144,7 +144,7 @@ namespace RoslynSandbox
         public int Bar(int i) => i;
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("GetMethod(nameof(IConvertible.ToBoolean))")]
@@ -165,7 +165,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -184,7 +184,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -200,7 +200,7 @@ namespace RoslynSandbox
         public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("where T : C", "GetMethod(nameof(this.Baz))")]
@@ -233,7 +233,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("where T : C", constraint)
       .AssertReplace("GetMethod(nameof(this.Baz))", call);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -254,7 +254,7 @@ namespace RoslynSandbox
         public T Id<T>(T value) => value;
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("get_Bar")]
@@ -274,7 +274,7 @@ namespace RoslynSandbox
         public int Bar { get; set; }
     }
 }".AssertReplace("get_Bar", name);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Delegate")]
@@ -295,7 +295,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("Delegate", type);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("Static",           "BindingFlags.Public | BindingFlags.Instance")]
@@ -340,7 +340,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

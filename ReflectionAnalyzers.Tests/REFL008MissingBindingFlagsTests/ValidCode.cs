@@ -47,7 +47,7 @@ namespace RoslynSandbox
         private int Private() => 0;
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(\"Bar\")")]
@@ -66,7 +66,7 @@ namespace RoslynSandbox
         public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance);
     }
 }".AssertReplace("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -91,7 +91,7 @@ namespace RoslynSandbox
         public int Bar(int i) => i;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(\"Bar\")")]
@@ -120,7 +120,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetMethod(\"Bar\")", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public)")]
@@ -158,7 +158,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetProperty(nameof(AggregateException.Message), BindingFlags.NonPublic | BindingFlags.Instance)")]
@@ -180,7 +180,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(nameof(AggregateException.Message), BindingFlags.NonPublic | BindingFlags.Instance)", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

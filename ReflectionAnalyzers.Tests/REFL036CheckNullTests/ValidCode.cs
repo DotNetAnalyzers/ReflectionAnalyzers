@@ -23,7 +23,7 @@ namespace RoslynSandbox
         public static object Get => Type.GetType(""C"")?.Assembly;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -39,7 +39,7 @@ namespace RoslynSandbox
         public static object Get => Type.GetType(""C"", throwOnError: true).Assembly;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

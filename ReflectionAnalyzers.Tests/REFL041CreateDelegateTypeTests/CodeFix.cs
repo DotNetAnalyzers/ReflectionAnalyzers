@@ -50,7 +50,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<string, int>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -92,7 +92,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -135,7 +135,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -178,7 +178,7 @@ namespace RoslynSandbox
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -222,7 +222,7 @@ namespace RoslynSandbox
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -263,7 +263,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<C, string, int>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -305,7 +305,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action<C>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -349,7 +349,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -391,7 +391,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action<string>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -433,7 +433,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<C, int>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -475,7 +475,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<int>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -517,7 +517,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action<C, int>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -559,7 +559,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action<int>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -601,7 +601,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<C, int>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }
 }

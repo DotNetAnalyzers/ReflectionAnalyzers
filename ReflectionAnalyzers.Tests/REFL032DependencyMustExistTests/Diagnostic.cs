@@ -15,7 +15,7 @@
             var code = @"
 using System.Runtime.CompilerServices;
 [assembly: Dependency(↓""MISSING_DEPENDENCY"", LoadHint.Always)] ";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

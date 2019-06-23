@@ -28,7 +28,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("where T : class",            "typeof(string)")]
@@ -55,7 +55,7 @@ namespace RoslynSandbox
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("typeof(T).IsValueType")]
@@ -91,7 +91,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("typeof(T).IsValueType", condition);
-                AnalyzerAssert.Valid(Analyzer, code);
+                RoslynAssert.Valid(Analyzer, code);
             }
         }
     }

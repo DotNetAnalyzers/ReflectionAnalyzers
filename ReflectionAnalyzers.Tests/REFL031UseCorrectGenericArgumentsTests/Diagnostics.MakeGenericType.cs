@@ -23,7 +23,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has 1 parameter but 2 arguments are passed in.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -39,7 +39,7 @@ namespace RoslynSandbox
         public static object Get() => typeof(C<int>).GetGenericTypeDefinition().MakeGenericType↓(typeof(int), typeof(double));
     }
 }";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("where T : class", "int")]
@@ -84,7 +84,7 @@ namespace RoslynSandbox
   .AssertReplace("typeof(int)", $"typeof({arg})");
 
                 var message = $"The argument typeof({arg}), on 'RoslynSandbox.C<>' violates the constraint of type 'T'.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, code);
             }
 
             [TestCase("where T1 : class", "where T2 : T1", "typeof(IEnumerable), typeof(object)")]
@@ -105,7 +105,7 @@ namespace RoslynSandbox
   .AssertReplace("where T2 : T1", where2)
   .AssertReplace("typeof(IEnumerable), typeof(object)", types);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -125,7 +125,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -143,7 +143,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -176,7 +176,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -208,7 +208,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

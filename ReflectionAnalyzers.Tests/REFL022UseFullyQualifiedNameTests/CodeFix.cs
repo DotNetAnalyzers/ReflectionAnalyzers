@@ -62,7 +62,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetInterface(typeof(IEnumerable<>).FullName)", expected);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
 }

@@ -31,7 +31,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(\"M\", ↓BindingFlags.Public)", call);
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

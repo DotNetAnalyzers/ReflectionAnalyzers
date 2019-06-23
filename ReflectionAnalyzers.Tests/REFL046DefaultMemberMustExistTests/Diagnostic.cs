@@ -23,7 +23,7 @@ public class Foo
     public int Value { get; set; }
 }
 ";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ public class Foo
     public event EventhHandler Event;
 }
 ";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ public class Base
 [DefaultMember(""Base"")]
 public class Foo { }
 ";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

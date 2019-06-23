@@ -42,7 +42,7 @@ namespace RoslynSandbox
          public int Bar { get; }
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace RoslynSandbox
          public int Bar { get; }
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
         }
 
         [Test]
@@ -116,7 +116,7 @@ namespace RoslynSandbox
          public static int Bar { get; }
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
         }
 
         [Test]
@@ -147,7 +147,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode, fixTitle: "Use nameof(anon.C).");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode, fixTitle: "Use nameof(anon.C).");
         }
 
         [Test]
@@ -180,7 +180,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode, fixTitle: "Use nameof(Dictionary<string, object>.Add).");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode, fixTitle: "Use nameof(Dictionary<string, object>.Add).");
         }
 
         [TestCase("Class")]
@@ -233,7 +233,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(Class)", $"nameof({type})");
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
         }
 
         [TestCase("Class")]
@@ -286,7 +286,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(C.Class)", $"nameof(C.{type})");
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { fooCode, testCode }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { fooCode, testCode }, fixedCode);
         }
 
         [Test]
@@ -322,7 +322,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -354,7 +354,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -384,7 +384,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -412,7 +412,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -440,7 +440,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -473,7 +473,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, code }, fixedCode);
         }
     }
 }

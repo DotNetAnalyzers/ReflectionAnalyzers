@@ -27,7 +27,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("CreateInstance<T>()", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

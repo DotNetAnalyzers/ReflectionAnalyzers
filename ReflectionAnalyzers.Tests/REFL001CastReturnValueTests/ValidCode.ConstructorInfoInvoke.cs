@@ -26,7 +26,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

@@ -44,7 +44,7 @@ namespace RoslynSandbox
 }".AssertReplace("int?", parameterType)
   .AssertReplace("typeof(int)", $"typeof({type})");
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
 }

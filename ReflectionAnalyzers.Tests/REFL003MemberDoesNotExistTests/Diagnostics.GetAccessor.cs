@@ -32,7 +32,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetProperty(nameof(this.P)).↓GetMethod", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("typeof(C).GetProperty(nameof(P)).↓SetMethod")]
@@ -51,7 +51,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetProperty(nameof(P)).↓SetMethod", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

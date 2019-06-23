@@ -31,7 +31,7 @@ namespace RoslynSandbox
 }";
 
                 var message = "The method RoslynSandbox.C.Bar() is static and null should be passed as obj.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -51,7 +51,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "The method RoslynSandbox.C.Bar() is an instance method and the instance should be passed as obj.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -71,7 +71,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "The method int?.GetValueOrDefault() is an instance method and the instance should be passed as obj.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -91,7 +91,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "Expected an argument of type RoslynSandbox.C.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }
     }

@@ -81,7 +81,7 @@ namespace RoslynSandbox
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = $"The binding flags can be more precise. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("PublicStatic",  "BindingFlags.Public | BindingFlags.NonPublic",                                                    "BindingFlags.Public")]
@@ -171,7 +171,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.DeclaredOnly", expected);
             var message = $"The binding flags can be more precise. Expected: {expected}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
@@ -207,7 +207,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "The binding flags can be more precise. Expected: BindingFlags.Public | BindingFlags.Instance.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
     }
 }

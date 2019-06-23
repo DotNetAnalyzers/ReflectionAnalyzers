@@ -44,7 +44,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetNestedType(\"Class\", BindingFlags.NonPublic)", $"GetNestedType(\"{type}\", BindingFlags.NonPublic)");
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, fooCode, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, fooCode, testCode);
         }
 
         [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
@@ -71,7 +71,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace TestApp.Infrastructure
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
@@ -114,7 +114,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
@@ -148,7 +148,7 @@ namespace ValidCode
          private double PublicPrivateInstance(double value) => value;
     }
 }".AssertReplace("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -167,7 +167,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -185,7 +185,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -201,7 +201,7 @@ namespace RoslynSandbox
         public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -223,7 +223,7 @@ namespace RoslynSandbox
         public int Baz() => 0;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -242,7 +242,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -263,7 +263,7 @@ namespace RoslynSandbox
         private static int Add(int x, int y) => x + y;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -284,7 +284,7 @@ namespace RoslynSandbox
         private int Add(int x, int y) => x + y;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
         [Test]
@@ -306,7 +306,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -329,7 +329,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -344,7 +344,7 @@ namespace RoslynSandbox
         public string Name { get; }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -368,7 +368,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -387,7 +387,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -406,7 +406,7 @@ namespace RoslynSandbox
         private static string Id(string value) => value;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -435,7 +435,7 @@ namespace RoslynSandbox
         private static string Id(string value) => value;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -459,7 +459,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -481,7 +481,7 @@ namespace RoslynSandbox
         public int InnerExceptionCount => 0;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
 
         [Test]
@@ -497,7 +497,7 @@ namespace RoslynSandbox
         public static object Get(int? value) => value.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, testCode);
         }
     }
 }

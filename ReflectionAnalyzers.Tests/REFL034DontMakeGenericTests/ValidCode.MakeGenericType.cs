@@ -23,7 +23,7 @@ namespace RoslynSandbox
         public object Get => typeof(C<>).MakeGenericType(typeof(int));
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -40,7 +40,7 @@ namespace RoslynSandbox
         public object Get => typeof(C<>).MakeGenericType(typeof(int));
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -60,7 +60,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -80,7 +80,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

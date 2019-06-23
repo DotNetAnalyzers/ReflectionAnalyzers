@@ -28,7 +28,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { ↓1.2 })", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

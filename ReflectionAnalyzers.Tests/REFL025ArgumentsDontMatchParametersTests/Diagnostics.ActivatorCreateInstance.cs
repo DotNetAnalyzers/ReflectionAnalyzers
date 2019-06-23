@@ -32,7 +32,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { 1, 2 })")]
@@ -55,7 +55,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
@@ -75,7 +75,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), ↓null)", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
@@ -104,7 +104,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), ↓(string)null)", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
@@ -130,7 +130,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), ↓(string)null)", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), 1, null)")]
@@ -153,7 +153,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1, null)", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

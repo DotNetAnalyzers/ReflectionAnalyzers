@@ -51,7 +51,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "Don't use name of wrong member. Expected: \"InnerExceptionCount\"";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use \"InnerExceptionCount\".");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use \"InnerExceptionCount\".");
             }
 
             [Test]
@@ -95,7 +95,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { exception, code }, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { exception, code }, fixedCode);
             }
         }
     }

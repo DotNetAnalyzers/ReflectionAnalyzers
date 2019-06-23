@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL032DependencyMustExistTests
             var code = @"
 using System.Runtime.CompilerServices;
 [assembly: Dependency(""System.Collections"", LoadHint.Always)] ";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

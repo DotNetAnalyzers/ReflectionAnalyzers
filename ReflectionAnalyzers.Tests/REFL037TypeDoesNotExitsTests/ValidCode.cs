@@ -33,7 +33,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("System.Int32", type);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("system.int32")]
@@ -50,7 +50,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("system.int32", type);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("typeof(int).Assembly.GetType(\"System.Int32\")")]
@@ -74,7 +74,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\")")]
@@ -95,7 +95,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\")", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

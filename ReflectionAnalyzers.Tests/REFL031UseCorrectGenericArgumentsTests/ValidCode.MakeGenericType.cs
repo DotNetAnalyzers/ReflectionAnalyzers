@@ -31,7 +31,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("int", type);
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("where T : class", "typeof(string)")]
@@ -56,7 +56,7 @@ namespace RoslynSandbox
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("where T1 : class", "where T2 : T1", "typeof(object), typeof(int)")]
@@ -77,7 +77,7 @@ namespace RoslynSandbox
   .AssertReplace("where T2 : T1", where2)
   .AssertReplace("typeof(object), typeof(int)", types);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -98,7 +98,7 @@ namespace RoslynSandbox
     }
 }";
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [TestCase("where T : Enum", "AttributeTargets")]
@@ -134,7 +134,7 @@ namespace RoslynSandbox
 }".AssertReplace("where T : Enum", constraint)
   .AssertReplace("AttributeTargets", arg);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, safeCode, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, safeCode, code);
             }
 
             [Test]
@@ -155,8 +155,8 @@ namespace RoslynSandbox
         }
     }
 }";
-                var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), AnalyzerAssert.MetadataReferences);
-                AnalyzerAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
+                var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), RoslynAssert.MetadataReferences);
+                RoslynAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
             }
 
             [Test]
@@ -179,7 +179,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -197,7 +197,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -216,7 +216,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
             [Test]
@@ -248,7 +248,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, code);
+                RoslynAssert.Valid(Analyzer, code);
             }
 
             [Test]
@@ -280,7 +280,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, code);
+                RoslynAssert.Valid(Analyzer, code);
             }
 
             [Test]
@@ -317,7 +317,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, code);
+                RoslynAssert.Valid(Analyzer, code);
             }
 
             [Test]
@@ -352,7 +352,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, code);
+                RoslynAssert.Valid(Analyzer, code);
             }
 
             [Test]
@@ -390,7 +390,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Valid(Analyzer, code);
+                RoslynAssert.Valid(Analyzer, code);
             }
         }
     }

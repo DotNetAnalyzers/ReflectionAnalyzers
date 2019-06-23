@@ -23,7 +23,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "RoslynSandbox.C is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -38,7 +38,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "RoslynSandbox.C<int> is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -59,7 +59,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "RoslynSandbox.C.D is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -80,7 +80,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "RoslynSandbox.C<int>.D is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }
     }

@@ -34,7 +34,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)")]
@@ -62,7 +62,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)", call);
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

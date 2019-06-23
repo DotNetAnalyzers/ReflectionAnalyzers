@@ -53,7 +53,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null)", call.AssertReplace("↓int", "IComparable"));
 
             var message = "Use the same type as the parameter. Expected: IComparable.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace Project2
     }
 }";
             var message = "Use the same type as the parameter. Expected: IComparable.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { fooCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { fooCode, code }, fixedCode);
         }
 
         [Test]
@@ -137,7 +137,7 @@ namespace RoslynSandbox
 }";
 
             var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode, fixTitle: "Change to: IReadOnlyDictionary<string, object>.");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode, fixTitle: "Change to: IReadOnlyDictionary<string, object>.");
         }
 
         [Test]
@@ -190,7 +190,7 @@ namespace RoslynSandbox
 }";
 
             var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode, fixTitle: "Change to: typeof(IReadOnlyDictionary<string, object>).");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode, fixTitle: "Change to: typeof(IReadOnlyDictionary<string, object>).");
         }
     }
 }

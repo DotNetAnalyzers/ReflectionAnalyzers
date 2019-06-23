@@ -35,7 +35,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(this.Bar))", call);
             var message = "The type RoslynSandbox.C has a property named Bar.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [TestCase("GetEvent(nameof(this.Bar))")]
@@ -64,7 +64,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(nameof(this.Bar))", call);
             var message = "The type RoslynSandbox.C has a method named Bar.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }
 }

@@ -44,7 +44,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
             }
 
             [Test]
@@ -79,7 +79,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
             }
 
             [TestCase("Activator.CreateInstance(typeof(T))")]
@@ -102,7 +102,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(T))", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

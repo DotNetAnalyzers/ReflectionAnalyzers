@@ -66,7 +66,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
             var message = "Use the containing type CBase.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
 
         [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
@@ -123,7 +123,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
             var message = "Use the containing type CBase.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
 
         [TestCase("PublicStatic")]
@@ -174,7 +174,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
             var message = "Use the containing type CBase.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
 
         [TestCase("PrivateStatic")]
@@ -226,7 +226,7 @@ namespace RoslynSandbox
 }".AssertReplace("PrivateStatic", type);
 
             var message = "Use the containing type CBase.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
 
         [Test]
@@ -263,7 +263,7 @@ namespace RoslynSandbox
 }";
 
             var message = "Use the containing type B.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
         }
     }
 }

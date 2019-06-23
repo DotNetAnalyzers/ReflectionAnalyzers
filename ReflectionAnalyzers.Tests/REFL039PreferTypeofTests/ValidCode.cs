@@ -29,7 +29,7 @@ namespace ValidCode
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace ValidCode
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, code);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace ValidCode
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, code);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace ValidCode
     }
 }";
 
-            AnalyzerAssert.Valid(Analyzer, code);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [TestCase("pi.GetValue(null).GetType()")]
@@ -105,7 +105,7 @@ namespace ValidCode
     }
 }".AssertReplace("pi.GetValue(null).GetType()", call);
 
-            AnalyzerAssert.Valid(Analyzer, code);
+            RoslynAssert.Valid(Analyzer, code);
         }
     }
 }

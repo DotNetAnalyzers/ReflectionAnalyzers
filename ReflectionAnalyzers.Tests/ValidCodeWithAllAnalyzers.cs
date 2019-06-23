@@ -20,12 +20,12 @@ namespace ReflectionAnalyzers.Tests
         private static readonly Solution AnalyzersProjectSolution = CodeFactory.CreateSolution(
             ProjectFile.Find("ReflectionAnalyzers.csproj"),
             AllAnalyzers,
-            AnalyzerAssert.MetadataReferences);
+            RoslynAssert.MetadataReferences);
 
         private static readonly Solution ValidCodeProjectSln = CodeFactory.CreateSolution(
             ProjectFile.Find("ValidCode.csproj"),
             AllAnalyzers,
-            AnalyzerAssert.MetadataReferences);
+            RoslynAssert.MetadataReferences);
 
         [SetUp]
         public void Setup()
@@ -51,13 +51,13 @@ namespace ReflectionAnalyzers.Tests
         [TestCaseSource(nameof(AllAnalyzers))]
         public void ValidCodeProject(DiagnosticAnalyzer analyzer)
         {
-            AnalyzerAssert.Valid(analyzer, ValidCodeProjectSln);
+            RoslynAssert.Valid(analyzer, ValidCodeProjectSln);
         }
 
         [TestCaseSource(nameof(AllAnalyzers))]
         public void AnalyzersSolution(DiagnosticAnalyzer analyzer)
         {
-            AnalyzerAssert.Valid(analyzer, AnalyzersProjectSolution);
+            RoslynAssert.Valid(analyzer, AnalyzersProjectSolution);
         }
     }
 }

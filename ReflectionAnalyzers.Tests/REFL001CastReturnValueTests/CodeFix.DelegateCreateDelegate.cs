@@ -52,7 +52,7 @@ namespace RoslynSandbox
         public static int M() => 0;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
             }
 
             [Test]
@@ -95,7 +95,7 @@ namespace RoslynSandbox
         public static int M() => 0;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
             }
         }
     }

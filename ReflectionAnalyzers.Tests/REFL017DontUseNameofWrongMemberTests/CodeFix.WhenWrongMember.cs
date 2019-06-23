@@ -49,7 +49,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "Don't use name of wrong member. Expected: Dictionary<string, object>.Add";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use Dictionary<string, object>.Add.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use Dictionary<string, object>.Add.");
             }
 
             [Test]
@@ -86,7 +86,7 @@ namespace RoslynSandbox
         public bool WriteLine { get; set; }
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
             }
 
             [Test]
@@ -123,7 +123,7 @@ namespace RoslynSandbox
         private static int Add(int x, int y) => x + y;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
             }
 
             [Test]
@@ -160,7 +160,7 @@ namespace RoslynSandbox
         private static int Add(int x, int y) => x + y;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
             }
 
             [Test]
@@ -197,7 +197,7 @@ namespace RoslynSandbox
         private int Add(int x, int y) => x + y;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
             }
 
             [Test]
@@ -234,7 +234,7 @@ namespace RoslynSandbox
         private int Add(int x, int y) => x + y;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
             }
         }
     }

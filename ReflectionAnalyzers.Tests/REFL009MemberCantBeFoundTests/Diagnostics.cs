@@ -25,7 +25,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
             var message = "The referenced member MISSING is not known to exist in RoslynSandbox.C.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace RoslynSandbox
         public static object Get(C foo) => foo.GetType().GetMethod(↓""set_Bar"");
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace RoslynSandbox
         public static object Get(C foo) => foo.GetType().GetMethod(↓""get_Bar"");
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, exception, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, exception, code);
         }
 
         [TestCase("GetProperty(↓\"Item\")")]
@@ -108,7 +108,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

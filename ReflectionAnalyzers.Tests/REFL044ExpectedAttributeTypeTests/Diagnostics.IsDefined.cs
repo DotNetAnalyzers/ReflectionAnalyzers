@@ -26,7 +26,7 @@ namespace RoslynSandbox
 }";
 
                 var message = "Expected attribute type.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -44,7 +44,7 @@ namespace RoslynSandbox
 }";
 
                 var message = "Expected attribute type.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }
     }

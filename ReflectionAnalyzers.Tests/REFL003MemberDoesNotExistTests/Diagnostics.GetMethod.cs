@@ -18,7 +18,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
             var message = "The type RoslynSandbox.C does not have a member named MISSING.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [TestCase("typeof(C).GetMethod(↓\"MISSING\")")]
@@ -38,7 +38,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\"", type);
 
             var message = "The type RoslynSandbox.C does not have a member named MISSING.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [Test]
@@ -56,7 +56,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "The type RoslynSandbox.C does not have a member named MISSING.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "The type RoslynSandbox.C does not have a member named MISSING.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "The type RoslynSandbox.IC does not have a member named MISSING.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), interfaceCode, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), interfaceCode, code);
         }
 
         [TestCase("typeof(string).GetMethod(↓\"MISSING\")")]
@@ -124,7 +124,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(string).GetMethod(↓\"MISSING\")", type);
             var message = "The type string does not have a member named MISSING.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace RoslynSandbox
         public int Bar { get; }
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -162,7 +162,7 @@ namespace RoslynSandbox
         public int Bar { set; }
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

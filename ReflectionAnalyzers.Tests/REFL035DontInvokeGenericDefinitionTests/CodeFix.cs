@@ -25,8 +25,8 @@ namespace RoslynSandbox
 }";
 
             var message = "Late bound operations cannot be performed on types or methods for which ContainsGenericParameters is true.";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            AnalyzerAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code);
         }
 
         [Test]
@@ -54,7 +54,7 @@ namespace RoslynSandbox
     }
 }";
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
     }
 }

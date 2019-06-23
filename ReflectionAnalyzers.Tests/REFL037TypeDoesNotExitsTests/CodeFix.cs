@@ -43,7 +43,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Type.GetType(\"System.Int32\")", fixedType);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("MISSING")]
@@ -61,7 +61,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("MISSING", type);
 
-            AnalyzerAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
+            RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
         }
 
         [TestCase("typeof(int).Assembly.GetType(↓\"Int32\")",                                                                             "typeof(int).Assembly.GetType(\"System.Int32\")")]
@@ -91,7 +91,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", fixedType);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("typeof(C).Assembly.GetType(↓\"MISSING\")")]
@@ -109,7 +109,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).Assembly.GetType(↓\"MISSING\")", call);
 
-            AnalyzerAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
+            RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
         }
     }
 }

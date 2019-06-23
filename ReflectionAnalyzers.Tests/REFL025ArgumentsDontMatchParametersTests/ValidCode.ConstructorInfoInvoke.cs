@@ -29,7 +29,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })", call);
 
-                AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

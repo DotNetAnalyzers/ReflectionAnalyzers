@@ -37,7 +37,7 @@ namespace RoslynSandbox
         public int this[int i] => 0;
     }
 }".AssertReplace("GetProperty↓(\"Item\")", call);
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseCode, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseCode, code);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace RoslynSandbox
         public int this[int i1, int i2] => 0;
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -77,7 +77,7 @@ namespace RoslynSandbox
         public int this[int i1, int i2] => 0;
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
         [Test]
@@ -98,7 +98,7 @@ namespace RoslynSandbox
         public static object Get => typeof(C).GetConstructor↓(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, Type.EmptyTypes, null);
     }
 }";
-            AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

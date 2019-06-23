@@ -30,7 +30,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(\"M\", ↓BindingFlags.Public)", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

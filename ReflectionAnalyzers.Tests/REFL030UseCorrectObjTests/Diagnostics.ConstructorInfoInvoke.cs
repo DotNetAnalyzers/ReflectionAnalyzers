@@ -27,7 +27,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })", call);
 
                 var message = "Use overload of Invoke without obj parameter.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [TestCase("GetConstructor(Type.EmptyTypes).Invoke(text, null)")]
@@ -57,7 +57,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(text, null)", call);
 
                 var message = "Use an instance of type RoslynSandbox.C.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }
     }

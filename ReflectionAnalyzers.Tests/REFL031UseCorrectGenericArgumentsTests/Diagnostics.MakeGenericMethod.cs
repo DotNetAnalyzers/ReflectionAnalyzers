@@ -28,7 +28,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has 1 parameter but 2 arguments are passed in.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [Test]
@@ -49,7 +49,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "The argument typeof(string), on 'RoslynSandbox.C.Bar<T>()' violates the constraint of type 'T'.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [TestCase("MakeGenericMethod↓(new[] { typeof(int), typeof(double) })")]
@@ -72,7 +72,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("MakeGenericMethod(↓typeof(string))", call);
 
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("where T : class", "typeof(int)")]
@@ -106,7 +106,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
             }
 
             [Test]
@@ -139,7 +139,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

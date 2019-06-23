@@ -52,7 +52,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
             }
         }
     }

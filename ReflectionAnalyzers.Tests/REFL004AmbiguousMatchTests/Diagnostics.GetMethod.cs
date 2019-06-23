@@ -33,7 +33,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod↓(nameof(this.ToString))", call);
                 var message = "More than one member is matching the criteria.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [TestCase("GetMethod↓(nameof(Static))")]
@@ -66,7 +66,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod↓(nameof(this.ToString))", call);
                 var message = "More than one member is matching the criteria.";
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
             [TestCase("GetMethod↓(\"op_Explicit\")")]
@@ -89,7 +89,7 @@ namespace RoslynSandbox
         public static explicit operator C(int c) => default;
     }
 }".AssertReplace("GetMethod↓(\"op_Explicit\")", call);
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
@@ -110,7 +110,7 @@ namespace RoslynSandbox
         public static IFormattable Static(IFormattable i) => i;
     }
 }".AssertReplace("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
-                AnalyzerAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

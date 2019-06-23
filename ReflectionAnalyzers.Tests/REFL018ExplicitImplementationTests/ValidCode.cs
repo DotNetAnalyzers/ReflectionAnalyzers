@@ -28,7 +28,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
@@ -69,7 +69,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
 
-            AnalyzerAssert.Valid(Analyzer, Descriptor, interfaceCode, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, interfaceCode, code);
         }
     }
 }

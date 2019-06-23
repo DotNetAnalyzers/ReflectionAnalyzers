@@ -74,7 +74,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(nameof(this.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", after);
             var message = $"Prefer typeof(C).{after}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_PublicGetSet\")",                                                                                   "GetProperty(nameof(PublicGetSet)).GetMethod")]
@@ -134,7 +134,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty(nameof(PublicGetSet), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetMethod", after);
 
             var message = $"Prefer typeof(C).{after}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_PublicGetSet\")",                                                                                     "GetProperty(nameof(C.PublicGetSet)).GetMethod")]
@@ -193,7 +193,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", after);
 
             var message = $"Prefer typeof(C).{after}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_PublicGetSet\")",                                                                                   "GetProperty(nameof(C.PublicGetSet)).GetMethod")]
@@ -252,7 +252,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", after);
 
             var message = $"Prefer typeof(C).{after}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
@@ -295,7 +295,7 @@ namespace BinaryReferencedAssembly
                 code,
                 CodeFactory.DefaultCompilationOptions(new[] { Analyzer })
                            .WithMetadataImportOptions(MetadataImportOptions.Public),
-                AnalyzerAssert.MetadataReferences.Append(binaryReference));
+                RoslynAssert.MetadataReferences.Append(binaryReference));
 
             // To make sure the test is effective, assert that ReflectionAnalyzers *can’t* see C.P.
             var compilation = await solution.Projects.Single()
@@ -305,7 +305,7 @@ namespace BinaryReferencedAssembly
             Assert.That(fooType.GetMembers(), Has.None.With.Property("Name")
                                                  .EqualTo("P"));
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, solution, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, solution, fixedCode);
         }
 
         [TestCase("GetMethod(\"add_Public\")",                                                                                                                         "GetEvent(nameof(this.Public)).AddMethod")]
@@ -350,7 +350,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod", after);
 
             var message = $"Prefer typeof(C).{after}.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_Current\")",                                                                          "GetProperty(nameof(IEnumerator.Current)).GetMethod")]
@@ -387,7 +387,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(nameof(IEnumerator.Current)).GetMethod", after);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)",                             "GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod")]
@@ -426,7 +426,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod", after);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_Item\")",                                                                                                                          "GetProperty(\"Item\").GetMethod")]
@@ -475,7 +475,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Item\").GetMethod", after);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_Item\")",                                                                                                                             "GetProperty(\"Item\").GetMethod")]
@@ -523,7 +523,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Item\").GetMethod", after);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [TestCase("GetMethod(\"get_Foo\")",                                                                                                                          "GetProperty(\"Foo\").GetMethod")]
@@ -576,7 +576,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetProperty(\"Item\").GetMethod", after);
 
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
         }
 
         [Test]
@@ -631,7 +631,7 @@ namespace RoslynSandbox.BinaryReferencedAssembly
                 code,
                 CodeFactory.DefaultCompilationOptions(new[] { Analyzer })
                            .WithMetadataImportOptions(MetadataImportOptions.Public),
-                AnalyzerAssert.MetadataReferences.Append(binaryReference));
+                RoslynAssert.MetadataReferences.Append(binaryReference));
 
             // To make sure the test is effective, assert that ReflectionAnalyzers *can’t* see Foo.Bar.
             var compilation = await solution.Projects.Single()
@@ -642,7 +642,7 @@ namespace RoslynSandbox.BinaryReferencedAssembly
                                                  .EqualTo("Bar"));
 
             var message = @"Prefer typeof(BinaryReferencedAssembly.Foo).GetEvent(""Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
-            AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, fixedCode);
         }
     }
 }

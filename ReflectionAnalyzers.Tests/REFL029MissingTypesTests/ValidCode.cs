@@ -28,7 +28,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace RoslynSandbox
         public int Id(int value) => value;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace RoslynSandbox
         public T Id<T>(T value) => value;
     }
 }";
-            AnalyzerAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

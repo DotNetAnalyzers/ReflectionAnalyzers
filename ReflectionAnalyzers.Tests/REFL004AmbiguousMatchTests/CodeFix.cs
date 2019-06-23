@@ -52,7 +52,7 @@ namespace RoslynSandbox
         public static double Static(double value) => value;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int) }.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int) }.");
 
                 fixedCode = @"
 namespace RoslynSandbox
@@ -71,7 +71,7 @@ namespace RoslynSandbox
         public static double Static(double value) => value;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(double) }.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(double) }.");
             }
 
             [Test]
@@ -104,7 +104,7 @@ namespace RoslynSandbox
         public int this[int i1, int i2] => 0;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int) }.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int) }.");
 
                 fixedCode = @"
 namespace RoslynSandbox
@@ -120,7 +120,7 @@ namespace RoslynSandbox
         public int this[int i1, int i2] => 0;
     }
 }";
-                AnalyzerAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int), typeof(int) }.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int), typeof(int) }.");
             }
         }
     }
