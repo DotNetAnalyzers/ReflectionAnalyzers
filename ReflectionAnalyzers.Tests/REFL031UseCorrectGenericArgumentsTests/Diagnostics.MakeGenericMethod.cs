@@ -4,15 +4,15 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
-        public class MakeGenericMethod
+        public static class MakeGenericMethod
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
-            public void CountError()
+            public static void CountError()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -32,7 +32,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ConstraintError()
+            public static void ConstraintError()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -55,7 +55,7 @@ namespace RoslynSandbox
             [TestCase("MakeGenericMethod↓(new[] { typeof(int), typeof(double) })")]
             [TestCase("MakeGenericMethod(↓typeof(string))")]
             [TestCase("MakeGenericMethod(new[] { ↓typeof(string) })")]
-            public void ConstrainedParameterWrongArguments(string call)
+            public static void ConstrainedParameterWrongArguments(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -79,7 +79,7 @@ namespace RoslynSandbox
             [TestCase("where T : struct", "typeof(string)")]
             [TestCase("where T : IComparable", "typeof(C)")]
             [TestCase("where T : new()", "typeof(Bar)")]
-            public void Constraints(string constraint, string arg)
+            public static void Constraints(string constraint, string arg)
             {
                 var barCode = @"
 namespace RoslynSandbox
@@ -110,7 +110,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void TernaryWrongOrder()
+            public static void TernaryWrongOrder()
             {
                 var code = @"
 namespace RoslynSandbox

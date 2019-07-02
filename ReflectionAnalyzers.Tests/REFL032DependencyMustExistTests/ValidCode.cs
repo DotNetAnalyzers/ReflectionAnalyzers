@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL032DependencyMustExistTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DependencyAttributeAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL032DependencyMustExist.Descriptor;
 
         [Test]
-        public void GetMethodNoParameter()
+        public static void GetMethodNoParameter()
         {
             var code = @"
 using System.Runtime.CompilerServices;

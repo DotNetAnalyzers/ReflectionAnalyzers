@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
@@ -29,7 +29,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
         [TestCase("this.GetHashCode", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance")]
         [TestCase("this.Private", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        public void GetMethod(string method, string flags, string expected)
+        public static void GetMethod(string method, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -80,7 +80,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodWithTrivia()
+        public static void GetMethodWithTrivia()
         {
             var code = @"
 namespace RoslynSandbox
@@ -122,7 +122,7 @@ namespace RoslynSandbox
         [TestCase("this.ToString", "BindingFlags.Public", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("this.ToString", "BindingFlags.NonPublic | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("this.ToString", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        public void GetMethodWhenShadowed(string method, string flags, string expected)
+        public static void GetMethodWhenShadowed(string method, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -162,7 +162,7 @@ namespace RoslynSandbox
 
         [TestCase("ReferenceEquals", "BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy")]
         [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        public void GetMethodWhenMissingFlags(string method, string expected)
+        public static void GetMethodWhenMissingFlags(string method, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -230,7 +230,7 @@ namespace RoslynSandbox
         [TestCase("this.GetHashCode", "Public | Static", "Public | Instance")]
         [TestCase("this.PrivateMethod", "Public | Instance | DeclaredOnly", "NonPublic | Instance | DeclaredOnly")]
         [TestCase("this.PrivateMethod", "NonPublic | Static | DeclaredOnly", "NonPublic | Instance | DeclaredOnly")]
-        public void GetMethodUsingStatic(string method, string flags, string expected)
+        public static void GetMethodUsingStatic(string method, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -289,7 +289,7 @@ namespace RoslynSandbox
         [TestCase("this.Public", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("this.Private", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        public void GetProperty(string method, string flags, string expected)
+        public static void GetProperty(string method, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -347,7 +347,7 @@ namespace RoslynSandbox
         [TestCase("Public", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.Public")]
         [TestCase("PrivateStatic", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic")]
         [TestCase("Private", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic")]
-        public void GetNestedType(string type, string flags, string expected)
+        public static void GetNestedType(string type, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -415,7 +415,7 @@ namespace RoslynSandbox
 
         [TestCase("PrivateStatic")]
         [TestCase("Private")]
-        public void GetNestedTypeWhenMissingFlags(string type)
+        public static void GetNestedTypeWhenMissingFlags(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -469,7 +469,7 @@ namespace RoslynSandbox
         [TestCase("new Type[1] { typeof(double) }")]
         [TestCase("new Type[] { typeof(double) }")]
         [TestCase("new[] { typeof(double) }")]
-        public void GetConstructorWhenMissingFlags(string types)
+        public static void GetConstructorWhenMissingFlags(string types)
         {
             var code = @"
 namespace RoslynSandbox

@@ -6,16 +6,16 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public partial class CodeFix
+    public static partial class CodeFix
     {
-        public class ActivatorCreateInstance
+        public static class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
             private static readonly CodeFixProvider Fix = new CastReturnValueFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL001CastReturnValue.Descriptor);
 
             [Test]
-            public void Typeof()
+            public static void Typeof()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -48,7 +48,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void WalkType()
+            public static void WalkType()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -86,7 +86,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(T), true)")]
             [TestCase("Activator.CreateInstance(typeof(T), false)")]
             [TestCase("Activator.CreateInstance(typeof(T), \"foo\")")]
-            public void WhenUnconstrainedGeneric(string call)
+            public static void WhenUnconstrainedGeneric(string call)
             {
                 var code = @"
 namespace RoslynSandbox

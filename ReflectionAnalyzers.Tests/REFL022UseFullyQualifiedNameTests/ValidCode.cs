@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL022UseFullyQualifiedName.Descriptor;
@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
         [TestCase("GetInterface(typeof(IEnumerable).FullName)")]
         [TestCase("GetInterface(typeof(IEnumerable<>).FullName)")]
         [TestCase("GetInterface(\"System.Collections.IEnumerable\")")]
-        public void GetInterface(string call)
+        public static void GetInterface(string call)
         {
             var code = @"
 namespace RoslynSandbox

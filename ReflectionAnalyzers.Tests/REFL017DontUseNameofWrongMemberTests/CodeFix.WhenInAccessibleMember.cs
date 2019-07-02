@@ -6,16 +6,16 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public partial class CodeFix
+    public static partial class CodeFix
     {
-        public class WhenInAccessibleMember
+        public static class WhenInAccessibleMember
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
             private static readonly CodeFixProvider Fix = new NameofFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.Descriptor);
 
             [Test]
-            public void WrongContainingTypeWhenNotAccessible()
+            public static void WrongContainingTypeWhenNotAccessible()
             {
                 var testCode = @"
 namespace RoslynSandbox
@@ -55,7 +55,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void NonPublicNotVisible()
+            public static void NonPublicNotVisible()
             {
                 var exception = @"
 namespace RoslynSandbox

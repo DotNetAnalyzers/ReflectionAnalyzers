@@ -6,16 +6,16 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public partial class CodeFix
+    public static partial class CodeFix
     {
-        public class WhenWrongMember
+        public static class WhenWrongMember
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
             private static readonly CodeFixProvider Fix = new NameofFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.Descriptor);
 
             [Test]
-            public void TypeOfDictionaryGetMethodNameOfStaticAdd()
+            public static void TypeOfDictionaryGetMethodNameOfStaticAdd()
             {
                 var testCode = @"
 namespace RoslynSandbox
@@ -53,7 +53,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void TypeOfConsoleGetMethodNameOfStaticWriteLine()
+            public static void TypeOfConsoleGetMethodNameOfStaticWriteLine()
             {
                 var testCode = @"
 namespace RoslynSandbox
@@ -90,7 +90,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void TypeOfDictionaryGetMethodNameOfHashSetAdd()
+            public static void TypeOfDictionaryGetMethodNameOfHashSetAdd()
             {
                 var testCode = @"
 namespace RoslynSandbox
@@ -127,7 +127,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ThisGetTypeGetMethodNameOfHashSetAddStatic()
+            public static void ThisGetTypeGetMethodNameOfHashSetAddStatic()
             {
                 var testCode = @"
 namespace RoslynSandbox
@@ -164,7 +164,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ThisGetTypeGetMethodNameOfHashSetAddInstance()
+            public static void ThisGetTypeGetMethodNameOfHashSetAddInstance()
             {
                 var testCode = @"
 namespace RoslynSandbox
@@ -201,7 +201,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ThisGetTypeGetMethodNameOfHashSetAddUnderscore()
+            public static void ThisGetTypeGetMethodNameOfHashSetAddUnderscore()
             {
                 var testCode = @"
 namespace RoslynSandbox

@@ -6,16 +6,16 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public partial class CodeFix
+    public static partial class CodeFix
     {
-        public class ActivatorCreateInstance
+        public static class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
             private static readonly CodeFixProvider Fix = new CastReturnValueFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL028CastReturnValueToCorrectType.Descriptor);
 
             [Test]
-            public void WhenCastingToWrongType()
+            public static void WhenCastingToWrongType()
             {
                 var code = @"
 namespace RoslynSandbox

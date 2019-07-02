@@ -4,9 +4,9 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal partial class Diagnostics
+    public static partial class Diagnostics
     {
-        internal class GetAccessor
+        public static class GetAccessor
         {
             // ReSharper disable once MemberHidesStaticFromOuterClass
             private static readonly DiagnosticAnalyzer Analyzer = new GetAccessorAnalyzer();
@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
             [TestCase("typeof(C).GetProperty(nameof(P)).↓GetMethod")]
             [TestCase("typeof(C).GetProperty(nameof(this.P)).↓GetMethod")]
             [TestCase("typeof(C).GetProperty(nameof(P)).↓GetGetMethod(true)")]
-            public void MissingGetter(string call)
+            public static void MissingGetter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -37,7 +37,7 @@ namespace RoslynSandbox
 
             [TestCase("typeof(C).GetProperty(nameof(P)).↓SetMethod")]
             [TestCase("typeof(C).GetProperty(nameof(P)).↓GetSetMethod(true)")]
-            public void MissingSetter(string call)
+            public static void MissingSetter(string call)
             {
                 var code = @"
 namespace RoslynSandbox

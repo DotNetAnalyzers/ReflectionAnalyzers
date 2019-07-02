@@ -5,15 +5,15 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class MethodInfoInvoke
+        public static class MethodInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL030UseCorrectObj.Descriptor;
 
             [Test]
-            public void Static()
+            public static void Static()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -35,7 +35,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void Instance()
+            public static void Instance()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -56,7 +56,7 @@ namespace RoslynSandbox
 
             [TestCase("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null)")]
             [TestCase("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke((int?)42, null)")]
-            public void Invoke(string call)
+            public static void Invoke(string call)
             {
                 var code = @"
 namespace RoslynSandbox

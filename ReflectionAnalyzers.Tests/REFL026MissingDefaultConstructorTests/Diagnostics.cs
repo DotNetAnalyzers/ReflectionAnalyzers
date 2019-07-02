@@ -4,14 +4,14 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL026NoDefaultConstructor.Descriptor);
 
         [TestCase("Activator.CreateInstance<↓C>()")]
         [TestCase("Activator.CreateInstance(typeof(↓C))")]
-        public void OneConstructorSingleIntParameter(string call)
+        public static void OneConstructorSingleIntParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -34,7 +34,7 @@ namespace RoslynSandbox
         [TestCase("Activator.CreateInstance<↓C>()")]
         [TestCase("Activator.CreateInstance(typeof(↓C))")]
         [TestCase("Activator.CreateInstance(typeof(↓C), false)")]
-        public void PrivateConstructor(string call)
+        public static void PrivateConstructor(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -57,7 +57,7 @@ namespace RoslynSandbox
 
         [TestCase("Activator.CreateInstance<↓C>()")]
         [TestCase("Activator.CreateInstance(typeof(↓C))")]
-        public void OneConstructorSingleParams(string call)
+        public static void OneConstructorSingleParams(string call)
         {
             var code = @"
 namespace RoslynSandbox

@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
         public class MakeGenericMethod
         {

@@ -6,14 +6,14 @@ namespace ReflectionAnalyzers.Tests.REFL040PreferIsInstanceOfTypeTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new IsAssignableFromAnalyzer();
         private static readonly CodeFixProvider Fix = new UseIsInstanceOfTypeFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL040PreferIsInstanceOfType.Descriptor);
 
         [Test]
-        public void IsAssignableFromInstanceGetType()
+        public static void IsAssignableFromInstanceGetType()
         {
             var code = @"
 namespace RoslynSandbox

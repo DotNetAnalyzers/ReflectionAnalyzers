@@ -6,14 +6,14 @@ namespace ReflectionAnalyzers.Tests.REFL035DontInvokeGenericDefinitionTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
         private static readonly CodeFixProvider Fix = new CallMakeGenericMethodFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL035DontInvokeGenericDefinition.Descriptor);
 
         [Test]
-        public void ParameterlessGeneric()
+        public static void ParameterlessGeneric()
         {
             var code = @"
 namespace RoslynSandbox
@@ -30,7 +30,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WithAccessibleParameterSingleLine()
+        public static void WithAccessibleParameterSingleLine()
         {
             var code = @"
 namespace RoslynSandbox

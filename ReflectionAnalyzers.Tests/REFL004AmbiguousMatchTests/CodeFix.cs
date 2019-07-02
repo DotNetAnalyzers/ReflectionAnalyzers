@@ -6,16 +6,16 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
-        public class GetMethod
+        public static class GetMethod
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
             private static readonly CodeFixProvider Fix = new DisambiguateFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL004AmbiguousMatch.Descriptor);
 
             [Test]
-            public void PublicOverloads()
+            public static void PublicOverloads()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -75,7 +75,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void TwoIndexers()
+            public static void TwoIndexers()
             {
                 var code = @"
 namespace RoslynSandbox

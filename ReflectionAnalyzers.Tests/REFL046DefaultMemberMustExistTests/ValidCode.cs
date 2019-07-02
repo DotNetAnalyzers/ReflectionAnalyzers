@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DefaultMemberAttributeAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL046DefaultMemberMustExist.Descriptor;
@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
         /// Verify properties are considered valid targets.
         /// </summary>
         [Test]
-        public void DefaultMemberPresentAsProperty()
+        public static void DefaultMemberPresentAsProperty()
         {
             var code = @"
 using System.Reflection;
@@ -32,7 +32,7 @@ public class Foo
         /// Verify fields are considered valid targets.
         /// </summary>
         [Test]
-        public void DefaultMemberPresentAsField()
+        public static void DefaultMemberPresentAsField()
         {
             var code = @"
 using System.Reflection;
@@ -50,7 +50,7 @@ public class Foo
         /// Verify instance methods are condidered valid targets.
         /// </summary>
         [Test]
-        public void DefaultMemberPresentAsInstanceMethod()
+        public static void DefaultMemberPresentAsInstanceMethod()
         {
             var code = @"
 using System.Reflection;
@@ -68,7 +68,7 @@ public class Foo
         /// Verify static methods are condidered valid targets.
         /// </summary>
         [Test]
-        public void DefaultMemberPresentAsStaticMethod()
+        public static void DefaultMemberPresentAsStaticMethod()
         {
             var code = @"
 using System.Reflection;
@@ -86,7 +86,7 @@ public class Foo
         /// Verify constructors are considered valid targets.
         /// </summary>
         [Test]
-        public void DefaultMemberPresentAsConstructor()
+        public static void DefaultMemberPresentAsConstructor()
         {
             var code = @"
 using System.Reflection;
@@ -109,7 +109,7 @@ public class Foo
         /// Verify base classes are checked for targets.
         /// </summary>
         [Test]
-        public void DefaultMemberPresentInParent()
+        public static void DefaultMemberPresentInParent()
         {
             var code = @"
 using System.Reflection;

@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL024PreferNullOverEmptyArrayTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
         private static readonly CodeFixProvider Fix = new PreferNullFix();
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL024PreferNullOverEmptyArrayTests
         [TestCase("new object[0]")]
         [TestCase("new object[0] { }")]
         [TestCase("new object[] { }")]
-        public void MemberInfoInvoke(string emptyArray)
+        public static void MemberInfoInvoke(string emptyArray)
         {
             var code = @"
 namespace RoslynSandbox

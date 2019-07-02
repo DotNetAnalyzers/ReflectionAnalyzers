@@ -4,15 +4,15 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
-        public class MakeGenericMethod
+        public static class MakeGenericMethod
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL034DontMakeGeneric.Descriptor);
 
             [Test]
-            public void WhenNotGeneric()
+            public static void WhenNotGeneric()
             {
                 var code = @"
 namespace RoslynSandbox

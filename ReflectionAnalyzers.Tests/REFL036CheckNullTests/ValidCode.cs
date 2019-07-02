@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL036CheckNull.Descriptor;
 
         [Test]
-        public void TypeGetTypeElvisAssembly()
+        public static void TypeGetTypeElvisAssembly()
         {
             var code = @"
 namespace RoslynSandbox
@@ -27,7 +27,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void TypeGetTypeThrowOnErrorAssembly()
+        public static void TypeGetTypeThrowOnErrorAssembly()
         {
             var code = @"
 namespace RoslynSandbox

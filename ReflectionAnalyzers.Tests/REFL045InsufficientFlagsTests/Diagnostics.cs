@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL045InsufficientFlags.Descriptor);
@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
         [TestCase("GetMethod(\"M\", ↓BindingFlags.Public | BindingFlags.NonPublic)")]
         [TestCase("GetMethod(\"M\", ↓BindingFlags.Static)")]
         [TestCase("GetMethod(\"M\", ↓BindingFlags.Instance)")]
-        public void GetX(string call)
+        public static void GetX(string call)
         {
             var code = @"
 namespace RoslynSandbox

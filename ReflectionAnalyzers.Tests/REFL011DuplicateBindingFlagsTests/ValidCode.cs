@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL011DuplicateBindingFlags.Descriptor;
@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
         [TestCase("GetMethod(nameof(this.Bar), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethod(string call)
+        public static void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -44,7 +44,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(nameof(this.Bar), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethodUsingStatic(string call)
+        public static void GetMethodUsingStatic(string call)
         {
             var code = @"
 namespace RoslynSandbox

@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
@@ -33,7 +33,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
         [TestCase("this.Private",     "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly |  BindingFlags.Static",           "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("this.Private",     "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly |  BindingFlags.FlattenHierarchy", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("this.Private",     "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly |  BindingFlags.IgnoreCase",       "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        public void GetMethod(string method, string flags, string expected)
+        public static void GetMethod(string method, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -108,7 +108,7 @@ namespace RoslynSandbox
         [TestCase("Private",       "BindingFlags.NonPublic |BindingFlags.FlattenHierarchy",                                           "BindingFlags.NonPublic")]
         [TestCase("Private",       "BindingFlags.NonPublic |BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic")]
         [TestCase("Private",       "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly",                      "BindingFlags.NonPublic")]
-        public void GetNestedType(string type, string flags, string expected)
+        public static void GetNestedType(string type, string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -176,7 +176,7 @@ namespace RoslynSandbox
 
         [TestCase("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
         [TestCase("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy, null, Type.EmptyTypes, null)")]
-        public void GetConstructor(string call)
+        public static void GetConstructor(string call)
         {
             var code = @"
 namespace RoslynSandbox

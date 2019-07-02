@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL033UseSameTypeAsParameter.Descriptor;
 
         [Test]
-        public void ExactInterfaceParameter()
+        public static void ExactInterfaceParameter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -31,7 +31,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void SystemWindowsFormsControlCreateControl()
+        public static void SystemWindowsFormsControlCreateControl()
         {
             var code = @"
 namespace RoslynSandbox

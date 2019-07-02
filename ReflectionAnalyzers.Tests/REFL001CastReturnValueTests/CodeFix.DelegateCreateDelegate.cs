@@ -6,16 +6,16 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public partial class CodeFix
+    public static partial class CodeFix
     {
-        public class DelegateCreateDelegate
+        public static class DelegateCreateDelegate
         {
             private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
             private static readonly CodeFixProvider Fix = new CastReturnValueFix();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL001CastReturnValue.Descriptor);
 
             [Test]
-            public void AssigningLocal()
+            public static void AssigningLocal()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -56,7 +56,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void Walk()
+            public static void Walk()
             {
                 var code = @"
 namespace RoslynSandbox

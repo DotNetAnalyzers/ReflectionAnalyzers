@@ -5,15 +5,15 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class MethodInfoInvoke
+        public static class MethodInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL025ArgumentsDontMatchParameters.Descriptor;
 
             [Test]
-            public void SingleIntParameter()
+            public static void SingleIntParameter()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -36,7 +36,7 @@ namespace RoslynSandbox
             [TestCase("Invoke(null, new object[0])")]
             [TestCase("Invoke(null, new object[0] { })")]
             [TestCase("Invoke(null, Array.Empty<object>())")]
-            public void NoParameter(string call)
+            public static void NoParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -56,7 +56,7 @@ namespace RoslynSandbox
 
             [TestCase("1")]
             [TestCase("Missing.Value")]
-            public void OptionalParameter(string value)
+            public static void OptionalParameter(string value)
             {
                 var code = @"
 namespace RoslynSandbox

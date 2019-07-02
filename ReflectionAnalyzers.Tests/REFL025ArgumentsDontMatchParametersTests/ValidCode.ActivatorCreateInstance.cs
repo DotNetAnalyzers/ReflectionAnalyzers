@@ -5,9 +5,9 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class ActivatorCreateInstance
+        public static class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL025ArgumentsDontMatchParameters.Descriptor;
@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             [TestCase("Activator.CreateInstance(typeof(C))")]
             [TestCase("Activator.CreateInstance(this.GetType())")]
             [TestCase("Activator.CreateInstance<C>()")]
-            public void ExplicitDefaultConstructor(string call)
+            public static void ExplicitDefaultConstructor(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -36,7 +36,7 @@ namespace RoslynSandbox
 
             [TestCase("(C)Activator.CreateInstance(typeof(C))")]
             [TestCase("Activator.CreateInstance<C>()")]
-            public void ImplicitDefaultConstructor(string call)
+            public static void ImplicitDefaultConstructor(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -54,7 +54,7 @@ namespace RoslynSandbox
 
             [TestCase("Activator.CreateInstance(typeof(C), 1)")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
-            public void OneConstructorOneIntParameter(string call)
+            public static void OneConstructorOneIntParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -75,7 +75,7 @@ namespace RoslynSandbox
 
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { Missing.Value })")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
-            public void OneConstructorOptionalIntParameter(string call)
+            public static void OneConstructorOptionalIntParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -99,7 +99,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), new[] { (object)null })")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { null })")]
             [TestCase("Activator.CreateInstance(typeof(C), (string)null)")]
-            public void OneConstructorSingleStringParameter(string call)
+            public static void OneConstructorSingleStringParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -122,7 +122,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), 1.2)")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1.2 })")]
-            public void OneConstructorOneDoubleParameter(string call)
+            public static void OneConstructorOneDoubleParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -142,7 +142,7 @@ namespace RoslynSandbox
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
-            public void OverloadedConstructorsStringAndStringBuilder(string call)
+            public static void OverloadedConstructorsStringAndStringBuilder(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -171,7 +171,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { \"abc\" })")]
             [TestCase("Activator.CreateInstance(typeof(C), 1)")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
-            public void OverloadedConstructorsStringAndInt(string call)
+            public static void OverloadedConstructorsStringAndInt(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -199,7 +199,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), (string)null)")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { null })")]
             [TestCase("Activator.CreateInstance(typeof(C), \"abc\", \"cde\")")]
-            public void OverloadedConstructorsDifferentLength(string call)
+            public static void OverloadedConstructorsDifferentLength(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -230,7 +230,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), 1, 2)")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1, 2 })")]
-            public void ParamsConstructor(string call)
+            public static void ParamsConstructor(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -256,7 +256,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), 1, new[] { 2, 3 })")]
             [TestCase("Activator.CreateInstance(typeof(C), 1, new int[0])")]
             [TestCase("Activator.CreateInstance(typeof(C), 1, Array.Empty<int>())")]
-            public void ParamsConstructorSecondParameter(string call)
+            public static void ParamsConstructorSecondParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -276,7 +276,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void WhenUnknown()
+            public static void WhenUnknown()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -293,7 +293,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void WhenUnconstrainedGeneric()
+            public static void WhenUnconstrainedGeneric()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -310,7 +310,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void Issue202()
+            public static void Issue202()
             {
                 var code = @"
 namespace RoslynSandbox

@@ -4,15 +4,15 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
-        public class IsDefined
+        public static class IsDefined
         {
             private static readonly DiagnosticAnalyzer Analyzer = new IsDefinedAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL044ExpectedAttributeType.DiagnosticId);
 
             [Test]
-            public void AttributeIsDefined()
+            public static void AttributeIsDefined()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -30,7 +30,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void IsDefinedExtensionMethod()
+            public static void IsDefinedExtensionMethod()
             {
                 var code = @"
 namespace RoslynSandbox

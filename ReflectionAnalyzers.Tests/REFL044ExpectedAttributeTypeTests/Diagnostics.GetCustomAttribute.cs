@@ -4,15 +4,15 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
-        public class GetCustomAttribute
+        public static class GetCustomAttribute
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL044ExpectedAttributeType.DiagnosticId);
 
             [Test]
-            public void AttributeGetCustomAttribute()
+            public static void AttributeGetCustomAttribute()
             {
                 var code = @"
 namespace RoslynSandbox

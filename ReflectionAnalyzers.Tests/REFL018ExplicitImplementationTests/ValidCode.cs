@@ -5,14 +5,14 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL018ExplicitImplementation.Descriptor;
 
         [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void WhenExplicitImplementation(string call)
+        public static void WhenExplicitImplementation(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -33,7 +33,7 @@ namespace RoslynSandbox
 
         [TestCase("typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(IC).GetEvent(nameof(IC.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void WhenExplicitAndExplicit(string call)
+        public static void WhenExplicitAndExplicit(string call)
         {
             var interfaceCode = @"
 namespace RoslynSandbox

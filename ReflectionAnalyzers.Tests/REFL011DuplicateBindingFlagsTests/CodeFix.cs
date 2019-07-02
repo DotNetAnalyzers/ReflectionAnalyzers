@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
         [TestCase("System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.↓Public",               "System.Reflection.BindingFlags.Public")]
         [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.↓Public | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
         [TestCase("BindingFlags.Public | BindingFlags.↓Public | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        public void GetMethod(string flags, string expected)
+        public static void GetMethod(string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -56,7 +56,7 @@ namespace RoslynSandbox
 
         [TestCase("Public | ↓Public",                                "Public")]
         [TestCase("System.Reflection.BindingFlags.Public | ↓Public", "System.Reflection.BindingFlags.Public")]
-        public void GetMethodUsingStatic(string flags, string expected)
+        public static void GetMethodUsingStatic(string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox

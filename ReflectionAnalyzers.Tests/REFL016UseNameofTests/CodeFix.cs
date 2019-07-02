@@ -6,14 +6,14 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new NameofFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL016UseNameof.DiagnosticId);
 
         [Test]
-        public void GetPropertyInstance()
+        public static void GetPropertyInstance()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -46,7 +46,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetPropertyInstanceWithTrivia()
+        public static void GetPropertyInstanceWithTrivia()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -87,7 +87,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetPropertyStatic()
+        public static void GetPropertyStatic()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -120,7 +120,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void AnonymousType()
+        public static void AnonymousType()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -151,7 +151,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void TypeofDictionaryGetMethodStringLiteral()
+        public static void TypeofDictionaryGetMethodStringLiteral()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -187,7 +187,7 @@ namespace RoslynSandbox
         [TestCase("Enum")]
         [TestCase("Interface")]
         [TestCase("Struct")]
-        public void GetNestedTypePrivateInSameType(string type)
+        public static void GetNestedTypePrivateInSameType(string type)
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -240,7 +240,7 @@ namespace RoslynSandbox
         [TestCase("Enum")]
         [TestCase("Interface")]
         [TestCase("Struct")]
-        public void GetNestedTypePublicInOtherType(string type)
+        public static void GetNestedTypePublicInOtherType(string type)
         {
             var fooCode = @"
 namespace RoslynSandbox
@@ -290,7 +290,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void AggregateExceptionMessage()
+        public static void AggregateExceptionMessage()
         {
             var code = @"
 namespace RoslynSandbox
@@ -326,7 +326,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void SystemWindowsFormsControlCreateControl()
+        public static void SystemWindowsFormsControlCreateControl()
         {
             var code = @"
 namespace RoslynSandbox
@@ -358,7 +358,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void NullableGetProperty()
+        public static void NullableGetProperty()
         {
             var code = @"
 namespace RoslynSandbox
@@ -388,7 +388,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void ValueTupleGetFieldItem1()
+        public static void ValueTupleGetFieldItem1()
         {
             var code = @"
 namespace RoslynSandbox
@@ -416,7 +416,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void ValueTupleGetFieldRest()
+        public static void ValueTupleGetFieldRest()
         {
             var code = @"
 namespace RoslynSandbox
@@ -444,7 +444,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void ProtectedMemberInBase()
+        public static void ProtectedMemberInBase()
         {
             var baseCode = @"
 namespace RoslynSandbox

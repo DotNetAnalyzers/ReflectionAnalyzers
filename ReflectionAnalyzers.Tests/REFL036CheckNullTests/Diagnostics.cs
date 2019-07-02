@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL036CheckNull.Descriptor);
@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
         [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: false).Assembly")]
         [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\").Assembly")]
         [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: false).Assembly")]
-        public void WhenMemberAccess(string body)
+        public static void WhenMemberAccess(string body)
         {
             var code = @"
 namespace RoslynSandbox

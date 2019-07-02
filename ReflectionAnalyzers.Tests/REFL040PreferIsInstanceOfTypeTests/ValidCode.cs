@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL040PreferIsInstanceOfTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new IsAssignableFromAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL040PreferIsInstanceOfType.Descriptor;
 
         [Test]
-        public void UnknownTypesIsAssignableFrom()
+        public static void UnknownTypesIsAssignableFrom()
         {
             var code = @"
 namespace RoslynSandbox
@@ -28,7 +28,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void UnknownTypesIsInstanceOfType()
+        public static void UnknownTypesIsInstanceOfType()
         {
             var code = @"
 namespace RoslynSandbox

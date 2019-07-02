@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new UseGetMemberThenAccessorFix();
@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
         [TestCase("GetMethod(\"set_PublicGetInternalSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                          "GetProperty(nameof(this.PublicGetInternalSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_InternalGetSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                                "GetProperty(nameof(this.InternalGetSet), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                                 "GetProperty(nameof(this.PrivateGetSet), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
-        public void InstancePropertyInSameType(string before, string after)
+        public static void InstancePropertyInSameType(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -87,7 +87,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_PublicGetInternalSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)", "GetProperty(nameof(PublicGetInternalSet), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_InternalGetSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)",       "GetProperty(nameof(InternalGetSet), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)",        "GetProperty(nameof(PrivateGetSet), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
-        public void StaticPropertyInSameType(string before, string after)
+        public static void StaticPropertyInSameType(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -147,7 +147,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_PublicGetInternalSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(nameof(C.PublicGetInternalSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_InternalGetSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",       "GetProperty(nameof(C.InternalGetSet), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",        "GetProperty(\"PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
-        public void InstancePropertyInOtherType(string before, string after)
+        public static void InstancePropertyInOtherType(string before, string after)
         {
             var foo = @"
 namespace RoslynSandbox
@@ -206,7 +206,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_PublicGetInternalSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)", "GetProperty(nameof(C.PublicGetInternalSet), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_InternalGetSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)",       "GetProperty(nameof(C.InternalGetSet), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)",        "GetProperty(\"PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
-        public void StaticPropertyInOtherType(string before, string after)
+        public static void StaticPropertyInOtherType(string before, string after)
         {
             var foo = @"
 namespace RoslynSandbox
@@ -257,7 +257,7 @@ namespace RoslynSandbox
 
         [TestCase("GetMethod(\"get_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
         [TestCase("GetMethod(\"set_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
-        public async Task InvisibleProperty(string before, string after)
+        public async static Task InvisibleProperty(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -313,7 +313,7 @@ namespace BinaryReferencedAssembly
         [TestCase("GetMethod(\"add_Public\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(EventHandler) }, null)",    "GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod")]
         [TestCase("GetMethod(\"remove_Public\")",                                                                                                                      "GetEvent(nameof(this.Public)).RemoveMethod")]
         [TestCase("GetMethod(\"remove_Public\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(EventHandler) }, null)", "GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).RemoveMethod")]
-        public void InstanceEventInSameType(string before, string after)
+        public static void InstanceEventInSameType(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -356,7 +356,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"get_Current\")",                                                                          "GetProperty(nameof(IEnumerator.Current)).GetMethod")]
         [TestCase("GetMethod(\"get_Current\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(nameof(IEnumerator.Current), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
         //// ReSharper disable once InconsistentNaming
-        public void IEnumeratorGetCurrent(string before, string after)
+        public static void IEnumeratorGetCurrent(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -394,7 +394,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
         [TestCase("GetMethod(\"set_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)",                             "GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance).SetMethod")]
         [TestCase("GetMethod(\"set_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
-        public void AggregateException(string before, string after)
+        public static void AggregateException(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -435,7 +435,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_Item\")",                                                                                                                          "GetProperty(\"Item\").SetMethod")]
         [TestCase("GetMethod(\"set_Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                                                 "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(int) }, null)", "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null).SetMethod")]
-        public void Indexer(string before, string after)
+        public static void Indexer(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -483,7 +483,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"get_Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)",                 "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null).GetMethod")]
         [TestCase("GetMethod(\"set_Item\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                                                 "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_Item\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(int) }, null)", "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null).SetMethod")]
-        public void IndexerPrivateSet(string before, string after)
+        public static void IndexerPrivateSet(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -532,7 +532,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_Foo\")",                                                                                                                          "GetProperty(\"Foo\").SetMethod")]
         [TestCase("GetMethod(\"set_Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                                                 "GetProperty(\"Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(int) }, null)", "GetProperty(\"Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null).SetMethod")]
-        public void NamedIndexer(string before, string after)
+        public static void NamedIndexer(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -580,7 +580,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public async Task ReferencesMemberThatAnalyzerCannotSee()
+        public async static Task ReferencesMemberThatAnalyzerCannotSee()
         {
             var code = @"
 namespace RoslynSandbox

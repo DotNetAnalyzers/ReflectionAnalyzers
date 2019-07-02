@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL019NoMemberMatchesTheTypes.Descriptor);
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
         [TestCase("GetConstructor(↓new Type[] { typeof(double) })")]
         [TestCase("GetConstructor(↓new[] { typeof(double) })")]
         [TestCase("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, ↓Type.EmptyTypes, null)")]
-        public void GetConstructor(string call)
+        public static void GetConstructor(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -39,7 +39,7 @@ namespace RoslynSandbox
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(int) }, null)")]
         [TestCase("typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(int) }, null)")]
         [TestCase("typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(int) }, null)")]
-        public void GetMethodNoParameters(string call)
+        public static void GetMethodNoParameters(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -66,7 +66,7 @@ namespace RoslynSandbox
 
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(double) }, null)")]
         [TestCase("typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(double) }, null)")]
-        public void GetMethodOneParameter(string call)
+        public static void GetMethodOneParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -91,7 +91,7 @@ namespace RoslynSandbox
 
         [TestCase("typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(IEnumerable<int>) })")]
         [TestCase("typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) })")]
-        public void OverloadResolution(string call)
+        public static void OverloadResolution(string call)
         {
             var code = @"
 namespace RoslynSandbox

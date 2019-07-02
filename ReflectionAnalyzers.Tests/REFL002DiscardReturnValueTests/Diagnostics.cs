@@ -4,13 +4,13 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL002DiscardReturnValue.Descriptor);
 
         [Test]
-        public void AssigningLocal()
+        public static void AssigningLocal()
         {
             var code = @"
 namespace RoslynSandbox
@@ -32,7 +32,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void AssigningField()
+        public static void AssigningField()
         {
             var code = @"
 namespace RoslynSandbox
@@ -56,7 +56,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void UsingInExpression()
+        public static void UsingInExpression()
         {
             var code = @"
 namespace RoslynSandbox
@@ -79,7 +79,7 @@ namespace RoslynSandbox
 
         [TestCase("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)")]
         [TestCase("type.GetConstructor(new[] { typeof(int) }).Invoke(instance, new object[] { 1 })")]
-        public void InvokeWithGetUninitializedObjectAndArgument(string call)
+        public static void InvokeWithGetUninitializedObjectAndArgument(string call)
         {
             var code = @"
 namespace RoslynSandbox

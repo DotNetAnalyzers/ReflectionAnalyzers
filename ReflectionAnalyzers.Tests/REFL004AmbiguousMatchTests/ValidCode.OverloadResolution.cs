@@ -3,12 +3,12 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
 
-    internal partial class ValidCode
+    public static partial class ValidCode
     {
-        public class OverloadResolution
+        public static class OverloadResolution
         {
             [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-            public void InterfaceAndSame(string call)
+            public static void InterfaceAndSame(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -29,7 +29,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ObjectAndInterface()
+            public static void ObjectAndInterface()
             {
                 var code = @"
 namespace RoslynSandbox

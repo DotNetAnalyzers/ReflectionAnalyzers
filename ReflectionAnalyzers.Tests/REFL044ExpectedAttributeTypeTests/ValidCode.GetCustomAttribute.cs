@@ -5,15 +5,15 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class GetCustomAttribute
+        public static class GetCustomAttribute
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL044ExpectedAttributeType.Descriptor;
 
             [Test]
-            public void WhenUsingGeneric()
+            public static void WhenUsingGeneric()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -33,7 +33,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void WhenGetCustomAttributeCast()
+            public static void WhenGetCustomAttributeCast()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -52,7 +52,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void WhenGetCustomAttributeAs()
+            public static void WhenGetCustomAttributeAs()
             {
                 var code = @"
 namespace RoslynSandbox

@@ -6,14 +6,14 @@ namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
         private static readonly CodeFixProvider Fix = new UseIsDefinedFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL012PreferIsDefined.DiagnosticId);
 
         [Test]
-        public void AttributeGetCustomAttributeEqualsNull()
+        public static void AttributeGetCustomAttributeEqualsNull()
         {
             var code = @"
 namespace RoslynSandbox
@@ -40,7 +40,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void AttributeGetCustomAttributeEqualsNullExplicitInherit()
+        public static void AttributeGetCustomAttributeEqualsNullExplicitInherit()
         {
             var code = @"
 namespace RoslynSandbox
@@ -67,7 +67,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void AttributeGetCustomAttributeNotEqualsNull()
+        public static void AttributeGetCustomAttributeNotEqualsNull()
         {
             var code = @"
 namespace RoslynSandbox
@@ -95,7 +95,7 @@ namespace RoslynSandbox
 
         [TestCase(" == null")]
         [TestCase(" is null")]
-        public void IfGetCustomAttributeIsNull(string isNull)
+        public static void IfGetCustomAttributeIsNull(string isNull)
         {
             var code = @"
 namespace RoslynSandbox
@@ -133,7 +133,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void IfGetCustomAttributeNotNull()
+        public static void IfGetCustomAttributeNotNull()
         {
             var code = @"
 namespace RoslynSandbox

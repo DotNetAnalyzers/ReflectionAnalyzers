@@ -5,15 +5,15 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
-        public class MakeGenericType
+        public static class MakeGenericType
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL034DontMakeGeneric.Descriptor;
 
             [Test]
-            public void Vanilla()
+            public static void Vanilla()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -27,7 +27,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void Constrained()
+            public static void Constrained()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -44,7 +44,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void Nested()
+            public static void Nested()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -64,7 +64,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void NestedInGeneric()
+            public static void NestedInGeneric()
             {
                 var code = @"
 namespace RoslynSandbox

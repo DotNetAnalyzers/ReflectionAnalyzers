@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL006RedundantBindingFlags.Descriptor;
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethod(string call)
+        public static void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -51,7 +51,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethodUnknownType(string call)
+        public static void GetMethodUnknownType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -79,7 +79,7 @@ namespace RoslynSandbox
         [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)")]
         [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)")]
-        public void DontWarnWhenTypeIsNotInSln(string call)
+        public static void DontWarnWhenTypeIsNotInSln(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -104,7 +104,7 @@ namespace RoslynSandbox
         [TestCase("GetNestedType(nameof(Public), BindingFlags.Public)")]
         [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic)")]
         [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic)")]
-        public void GetNestedType(string call)
+        public static void GetNestedType(string call)
         {
             var code = @"
 namespace RoslynSandbox

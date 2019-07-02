@@ -4,9 +4,9 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
-        public class MethodInfoInvoke
+        public static class MethodInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, new object[] { ↓1.2 })")]
             [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { 1, 2 })")]
             [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, new object[] { ↓\"abc\" })")]
-            public void SingleIntParameter(string call)
+            public static void SingleIntParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -36,7 +36,7 @@ namespace RoslynSandbox
             [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { 1.2 })")]
             [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { 1, 2 })")]
             [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { \"abc\" })")]
-            public void NoParameter(string call)
+            public static void NoParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -58,7 +58,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ObjectParameterMissingValue()
+            public static void ObjectParameterMissingValue()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -78,7 +78,7 @@ namespace RoslynSandbox
 
             [TestCase("new object[0]")]
             [TestCase("null")]
-            public void OptionalParameterMissingValue(string args)
+            public static void OptionalParameterMissingValue(string args)
             {
                 var code = @"
 namespace RoslynSandbox

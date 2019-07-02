@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new UseContainingTypeFix();
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
         [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void WhenExplicitImplementation(string call)
+        public static void WhenExplicitImplementation(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -64,7 +64,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(nameof(IConvertible.ToBoolean))")]
         [TestCase("GetMethod(\"ToBoolean\", BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"ToBoolean\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void WhenExplicitImplementationPublicNotInSource(string call)
+        public static void WhenExplicitImplementationPublicNotInSource(string call)
         {
             var code = @"
 namespace RoslynSandbox

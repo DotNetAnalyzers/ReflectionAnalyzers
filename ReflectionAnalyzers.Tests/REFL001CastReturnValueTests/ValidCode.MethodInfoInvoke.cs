@@ -5,9 +5,9 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class MethodInfoInvoke
+        public static class MethodInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL001CastReturnValue.Descriptor;
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             [TestCase("var _ = ")]
             [TestCase("var __ = ")]
             [TestCase("")]
-            public void Discarding(string call)
+            public static void Discarding(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -38,7 +38,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void AssigningLocal()
+            public static void AssigningLocal()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -58,7 +58,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void IsPattern()
+            public static void IsPattern()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -80,7 +80,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void SwitchPattern()
+            public static void SwitchPattern()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -104,7 +104,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void AssigningField()
+            public static void AssigningField()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -126,7 +126,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void UsingInExpression()
+            public static void UsingInExpression()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -146,7 +146,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void CallingToString()
+            public static void CallingToString()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -168,7 +168,7 @@ namespace RoslynSandbox
             [TestCase("_ = ")]
             [TestCase("var _ = ")]
             [TestCase("var __ = ")]
-            public void Discarded(string discard)
+            public static void Discarded(string discard)
             {
                 var code = @"
 namespace RoslynSandbox

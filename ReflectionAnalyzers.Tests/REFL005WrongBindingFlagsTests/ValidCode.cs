@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL005WrongBindingFlags.Descriptor;
@@ -41,7 +41,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
         [TestCase("GetMethod(nameof(this.Private), BindingFlags.Instance | BindingFlags.NonPublic)")]
         [TestCase("GetMethod(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase)")]
-        public void GetMethod(string call)
+        public static void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -77,7 +77,7 @@ namespace RoslynSandbox
 
         [TestCase("GetMethod(nameof(this.ToString))")]
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethodWhenShadowed(string call)
+        public static void GetMethodWhenShadowed(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -105,7 +105,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(nameof(this.Instance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { i.GetType() }, null)")]
         [TestCase("GetMethod(nameof(this.Instance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new Type[] { typeof(int) }, null)")]
         [TestCase("GetMethod(nameof(this.Instance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new Type[1] { typeof(int) }, null)")]
-        public void OverloadsFilteredByType(string call)
+        public static void OverloadsFilteredByType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -142,7 +142,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethodUnknownType(string call)
+        public static void GetMethodUnknownType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -168,7 +168,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Bar), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
-        public void GetMethodUsingStatic(string call)
+        public static void GetMethodUsingStatic(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -205,7 +205,7 @@ namespace RoslynSandbox
         [TestCase("GetProperty(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.NonPublic)")]
         [TestCase("GetProperty(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetProperty(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.FlattenHierarchy | BindingFlags.IgnoreCase)")]
-        public void GetProperty(string call)
+        public static void GetProperty(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -251,7 +251,7 @@ namespace RoslynSandbox
         [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic | BindingFlags.DeclaredOnly)")]
         [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic | BindingFlags.Static)")]
-        public void GetNestedType(string call)
+        public static void GetNestedType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -286,7 +286,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void NonPublicNotVisible()
+        public static void NonPublicNotVisible()
         {
             var exception = @"
 namespace RoslynSandbox

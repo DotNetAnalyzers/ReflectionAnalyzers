@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new ArgumentAnalyzer();
         private static readonly CodeFixProvider Fix = new PreferEmptyTypesFix();
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
         [TestCase("Array.Empty<Type>()")]
         [TestCase("new Type[0] { }")]
         [TestCase("new Type[] { }")]
-        public void GetConstructor(string emptyArray)
+        public static void GetConstructor(string emptyArray)
         {
             var code = @"
 namespace RoslynSandbox

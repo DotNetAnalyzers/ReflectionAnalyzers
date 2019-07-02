@@ -5,16 +5,16 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class ActivatorCreateInstance
+        public static class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL001CastReturnValue.Descriptor;
 
             [TestCase("CreateInstance<T>()")]
             [TestCase("CreateInstance<C>()")]
-            public void Generic(string call)
+            public static void Generic(string call)
             {
                 var code = @"
 namespace RoslynSandbox

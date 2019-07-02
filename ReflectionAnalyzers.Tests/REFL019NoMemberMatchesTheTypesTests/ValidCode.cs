@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL019NoMemberMatchesTheTypes.Descriptor;
@@ -22,7 +22,7 @@ namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
         [TestCase("typeof(C).GetMethod(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(IConvertible).GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(IConvertible).GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(IFormatProvider) }, null)")]
-        public void GetMethod(string call)
+        public static void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -51,7 +51,7 @@ namespace RoslynSandbox
 
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
         [TestCase("typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-        public void GetMethodOneParameter(string call)
+        public static void GetMethodOneParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -76,7 +76,7 @@ namespace RoslynSandbox
 
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
         [TestCase("typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-        public void GetMethodOneParameterOverloadResolution(string call)
+        public static void GetMethodOneParameterOverloadResolution(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -102,7 +102,7 @@ namespace RoslynSandbox
         [TestCase("typeof(C).GetConstructor(new[] { typeof(int) })")]
         [TestCase("typeof(C).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) }, null)")]
         [TestCase("typeof(int[]).GetConstructor(new[] { typeof(int) })")]
-        public void GetConstructor(string call)
+        public static void GetConstructor(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -128,7 +128,7 @@ namespace RoslynSandbox
         [TestCase("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) }, null)")]
         [TestCase("GetConstructor(new[] { typeof(double) })")]
         [TestCase("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(double) }, null)")]
-        public void GetConstructorWhenOverloaded(string call)
+        public static void GetConstructorWhenOverloaded(string call)
         {
             var code = @"
 namespace RoslynSandbox

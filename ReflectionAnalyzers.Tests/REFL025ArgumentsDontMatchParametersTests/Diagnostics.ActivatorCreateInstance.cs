@@ -4,9 +4,9 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
-        public class ActivatorCreateInstance
+        public static class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             [TestCase("Activator.CreateInstance(typeof(C), ↓\"abc\")")]
             [TestCase("Activator.CreateInstance(typeof(C), ↓1.0)")]
             [TestCase("Activator.CreateInstance(typeof(C), ↓1, 2)")]
-            public void OneConstructorSingleIntParameter(string call)
+            public static void OneConstructorSingleIntParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -39,7 +39,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), ↓\"abc\")")]
             [TestCase("Activator.CreateInstance(typeof(C), ↓1.0)")]
             [TestCase("Activator.CreateInstance(typeof(C), ↓1, 2)")]
-            public void OneConstructorOptionalIntParameter(string call)
+            public static void OneConstructorOptionalIntParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -59,7 +59,7 @@ namespace RoslynSandbox
             }
 
             [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
-            public void OneConstructorOneStringParameters(string call)
+            public static void OneConstructorOneStringParameters(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -82,7 +82,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
             [TestCase("Activator.CreateInstance(typeof(C), ↓(StringBuilder)null)")]
             [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { null })")]
-            public void OverloadedConstructorsStringAndStringBuilder(string call)
+            public static void OverloadedConstructorsStringAndStringBuilder(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -109,7 +109,7 @@ namespace RoslynSandbox
 
             [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
             [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { null })")]
-            public void OverloadedConstructorsStringAndInt(string call)
+            public static void OverloadedConstructorsStringAndInt(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -137,7 +137,7 @@ namespace RoslynSandbox
             [TestCase("Activator.CreateInstance(typeof(C), 1, new object[] { 1 })")]
             [TestCase("Activator.CreateInstance(typeof(C), \"abc\", 2)")]
             [TestCase("Activator.CreateInstance(typeof(C), 1, \"abc\")")]
-            public void ParamsConstructorSecondParameter(string call)
+            public static void ParamsConstructorSecondParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox

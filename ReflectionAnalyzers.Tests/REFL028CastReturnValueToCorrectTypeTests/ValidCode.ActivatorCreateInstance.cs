@@ -5,16 +5,16 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
-        public class ActivatorCreateInstance
+        public static class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL028CastReturnValueToCorrectType.Descriptor;
 
             [TestCase("(C)")]
             [TestCase("(IDisposable)")]
-            public void WhenCasting(string cast)
+            public static void WhenCasting(string cast)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -37,7 +37,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void WhenUnknown()
+            public static void WhenUnknown()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -54,7 +54,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void WhenUnconstrainedGeneric()
+            public static void WhenUnconstrainedGeneric()
             {
                 var code = @"
 namespace RoslynSandbox

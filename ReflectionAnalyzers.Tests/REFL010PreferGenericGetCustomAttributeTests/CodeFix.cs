@@ -6,14 +6,14 @@ namespace ReflectionAnalyzers.Tests.REFL010PreferGenericGetCustomAttributeTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
         private static readonly CodeFixProvider Fix = new UseGenericGetCustomAttributeFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL010");
 
         [Test]
-        public void WhenCast()
+        public static void WhenCast()
         {
             var code = @"
 namespace RoslynSandbox
@@ -47,7 +47,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenAs()
+        public static void WhenAs()
         {
             var code = @"
 namespace RoslynSandbox

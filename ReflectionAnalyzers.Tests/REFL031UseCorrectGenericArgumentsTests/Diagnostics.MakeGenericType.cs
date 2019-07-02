@@ -4,15 +4,15 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
-        public class MakeGenericType
+        public static class MakeGenericType
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
 
             [Test]
-            public void SingleUnconstrained()
+            public static void SingleUnconstrained()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -27,7 +27,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void GetGenericTypeDefinition()
+            public static void GetGenericTypeDefinition()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -57,7 +57,7 @@ namespace RoslynSandbox
             [TestCase("where T : IComparable<double>", "C<int>")]
             [TestCase("where T : IComparable<double>", "int")]
             [TestCase("where T : new()", "Bar")]
-            public void ConstrainedParameter(string constraint, string arg)
+            public static void ConstrainedParameter(string constraint, string arg)
             {
                 var bar = @"
 namespace RoslynSandbox
@@ -88,7 +88,7 @@ namespace RoslynSandbox
             }
 
             [TestCase("where T1 : class", "where T2 : T1", "typeof(IEnumerable), typeof(object)")]
-            public void TransitiveConstraints(string where1, string where2, string types)
+            public static void TransitiveConstraints(string where1, string where2, string types)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -109,7 +109,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void NestedType()
+            public static void NestedType()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -129,7 +129,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void NestedGenericInGeneric()
+            public static void NestedGenericInGeneric()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -147,7 +147,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void TernaryWrongOrder()
+            public static void TernaryWrongOrder()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -180,7 +180,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void TernaryTwoArgumentsWrongOrder()
+            public static void TernaryTwoArgumentsWrongOrder()
             {
                 var code = @"
 namespace RoslynSandbox

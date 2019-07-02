@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL045InsufficientFlags.Descriptor;
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
         [TestCase("GetProperty(\"P\", BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetNestedType(\"M\", BindingFlags.Public)")]
-        public void GetX(string call)
+        public static void GetX(string call)
         {
             var code = @"
 namespace RoslynSandbox

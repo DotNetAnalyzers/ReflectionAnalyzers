@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL002DiscardReturnValue.Descriptor;
@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
         [TestCase("var _ = ")]
         [TestCase("var __ = ")]
         [TestCase("")]
-        public void Discarding(string call)
+        public static void Discarding(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -38,7 +38,7 @@ namespace RoslynSandbox
         [TestCase("Assert.Null(typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))")]
         [TestCase("Assert.IsNull(typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))")]
         [TestCase("Assert.AreEqual(null, typeof(C).GetMethod(nameof(Bar)).Invoke(null, null))")]
-        public void WhenUsedInAssert(string call)
+        public static void WhenUsedInAssert(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -62,7 +62,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void AssigningLocal()
+        public static void AssigningLocal()
         {
             var code = @"
 namespace RoslynSandbox
@@ -82,7 +82,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void AssigningField()
+        public static void AssigningField()
         {
             var code = @"
 namespace RoslynSandbox
@@ -104,7 +104,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void UsingInExpression()
+        public static void UsingInExpression()
         {
             var code = @"
 namespace RoslynSandbox

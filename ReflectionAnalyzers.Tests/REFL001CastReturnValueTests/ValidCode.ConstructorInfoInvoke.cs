@@ -4,15 +4,15 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class ConstructorInfoInvoke
+        public static class ConstructorInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL001CastReturnValue.Descriptor);
 
             [Test]
-            public void AssigningLocal()
+            public static void AssigningLocal()
             {
                 var code = @"
 namespace RoslynSandbox

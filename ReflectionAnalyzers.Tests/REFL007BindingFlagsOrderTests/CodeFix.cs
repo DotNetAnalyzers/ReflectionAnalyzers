@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
         [TestCase("BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly",    "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         [TestCase("BindingFlags.Instance | BindingFlags.Public",                                "BindingFlags.Public | BindingFlags.Instance")]
         [TestCase("BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
-        public void GetMethod(string flags, string expected)
+        public static void GetMethod(string flags, string expected)
         {
             var code = @"
 namespace RoslynSandbox

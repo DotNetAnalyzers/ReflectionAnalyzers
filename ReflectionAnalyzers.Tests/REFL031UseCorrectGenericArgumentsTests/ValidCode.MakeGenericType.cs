@@ -5,9 +5,9 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class MakeGenericType
+        public static class MakeGenericType
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL031UseCorrectGenericArguments.Descriptor;
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             [TestCase("int")]
             [TestCase("int?")]
             [TestCase("Console")]
-            public void SingleUnconstrained(string type)
+            public static void SingleUnconstrained(string type)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -41,7 +41,7 @@ namespace RoslynSandbox
             [TestCase("where T : IComparable", "typeof(int)")]
             [TestCase("where T : IComparable<T>", "typeof(int)")]
             [TestCase("where T : new()", "typeof(C<int>)")]
-            public void ConstrainedParameter(string constraint, string arg)
+            public static void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -60,7 +60,7 @@ namespace RoslynSandbox
             }
 
             [TestCase("where T1 : class", "where T2 : T1", "typeof(object), typeof(int)")]
-            public void TransitiveConstraints(string where1, string where2, string types)
+            public static void TransitiveConstraints(string where1, string where2, string types)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -81,7 +81,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ImplicitDefaultConstructor()
+            public static void ImplicitDefaultConstructor()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -107,7 +107,7 @@ namespace RoslynSandbox
             [TestCase("where T : unmanaged", "int")]
             [TestCase("where T : unmanaged", "Safe")]
             [TestCase("where T : unmanaged", "AttributeTargets")]
-            public void ConstrainedToEnum(string constraint, string arg)
+            public static void ConstrainedToEnum(string constraint, string arg)
             {
                 var safeCode = @"
 namespace RoslynSandbox
@@ -138,7 +138,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void Recursion()
+            public static void Recursion()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -160,7 +160,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void NestedType()
+            public static void NestedType()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -183,7 +183,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void NestedGenericInGeneric()
+            public static void NestedGenericInGeneric()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -201,7 +201,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void PassingArrayOfUnknownToMakeGenericType()
+            public static void PassingArrayOfUnknownToMakeGenericType()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -220,7 +220,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void Ternary()
+            public static void Ternary()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -252,7 +252,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void TernaryTwoArguments()
+            public static void TernaryTwoArguments()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -284,7 +284,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void IfElse()
+            public static void IfElse()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -321,7 +321,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void IfReturn()
+            public static void IfReturn()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -356,7 +356,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void NestedIf()
+            public static void NestedIf()
             {
                 var code = @"
 namespace RoslynSandbox

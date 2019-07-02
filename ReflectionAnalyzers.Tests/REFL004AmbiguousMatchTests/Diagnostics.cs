@@ -4,14 +4,14 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL004AmbiguousMatch.Descriptor);
 
         [TestCase("GetProperty↓(\"Item\")")]
         [TestCase("GetProperty↓(\"Item\", BindingFlags.Public | BindingFlags.Instance)")]
-        public void IndexerAndPropertyNamedItem(string call)
+        public static void IndexerAndPropertyNamedItem(string call)
         {
             var baseCode = @"
 namespace RoslynSandbox
@@ -41,7 +41,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void TwoIndexers()
+        public static void TwoIndexers()
         {
             var code = @"
 namespace RoslynSandbox
@@ -59,7 +59,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void TwoNamedIndexers()
+        public static void TwoNamedIndexers()
         {
             var code = @"
 namespace RoslynSandbox
@@ -81,7 +81,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticAndInstanceConstructor()
+        public static void StaticAndInstanceConstructor()
         {
             var code = @"
 namespace RoslynSandbox

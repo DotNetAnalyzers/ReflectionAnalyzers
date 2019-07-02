@@ -3,14 +3,14 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class Ignore
+        public static class Ignore
         {
             [TestCase("GetNestedType(\"Generic\", BindingFlags.Public)")]
             [TestCase("GetNestedType(nameof(Generic<int>), BindingFlags.Public)")]
             [TestCase("GetNestedType(\"Generic`2\", BindingFlags.Public)")]
-            public void GetNestedType(string call)
+            public static void GetNestedType(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -33,7 +33,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void GetPropertyAnonymousType()
+            public static void GetPropertyAnonymousType()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -55,7 +55,7 @@ namespace RoslynSandbox
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Static)")]
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-            public void MissingMethodNotInSource(string type)
+            public static void MissingMethodNotInSource(string type)
             {
                 var code = @"
 namespace RoslynSandbox

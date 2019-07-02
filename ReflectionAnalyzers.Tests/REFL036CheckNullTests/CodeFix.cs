@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly CodeFixProvider Fix = new ThrowOnErrorFix();
@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
         [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: false).Assembly",             "Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: true).Assembly")]
         [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\").Assembly",                      "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: true).Assembly")]
         [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: false).Assembly", "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: true).Assembly")]
-        public void WhenMemberAccess(string before, string after)
+        public static void WhenMemberAccess(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox

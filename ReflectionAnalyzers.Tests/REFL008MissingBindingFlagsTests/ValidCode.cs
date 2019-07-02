@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL008MissingBindingFlags.Descriptor;
@@ -23,7 +23,7 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
         [TestCase("typeof(IConvertible).GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(IConvertible).GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
         [TestCase("typeof(IConvertible).GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(IFormatProvider) }, null)")]
-        public void GetMethod(string call)
+        public static void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -53,7 +53,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"Bar\")")]
         [TestCase("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null)")]
-        public void GetMethodFromTypeParameter(string call)
+        public static void GetMethodFromTypeParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -70,7 +70,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetBarOverloaded()
+        public static void GetBarOverloaded()
         {
             var code = @"
 namespace RoslynSandbox
@@ -104,7 +104,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethodUnknownType(string call)
+        public static void GetMethodUnknownType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -127,7 +127,7 @@ namespace RoslynSandbox
         [TestCase("GetNestedType(nameof(Public), BindingFlags.Public)")]
         [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic)")]
         [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic)")]
-        public void GetNestedType(string call)
+        public static void GetNestedType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -163,7 +163,7 @@ namespace RoslynSandbox
 
         [TestCase("GetProperty(nameof(AggregateException.Message), BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetProperty(nameof(AggregateException.Message), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void AggregateExceptionMessage(string call)
+        public static void AggregateExceptionMessage(string call)
         {
             var code = @"
 namespace RoslynSandbox

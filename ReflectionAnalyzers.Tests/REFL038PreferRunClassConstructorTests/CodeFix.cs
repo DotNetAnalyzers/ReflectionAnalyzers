@@ -6,14 +6,14 @@ namespace ReflectionAnalyzers.Tests.REFL038PreferRunClassConstructorTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
         private static readonly CodeFixProvider Fix = new UseRunClassConstructorFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL038PreferRunClassConstructor.Descriptor);
 
         [Test]
-        public void WhenInvokingStatic()
+        public static void WhenInvokingStatic()
         {
             var code = @"
 namespace RoslynSandbox

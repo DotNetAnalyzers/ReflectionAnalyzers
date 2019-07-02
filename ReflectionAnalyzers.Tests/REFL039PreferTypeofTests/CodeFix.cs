@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly CodeFixProvider Fix = new UseTypeOfFix();
@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
         [TestCase("(int, int)?", "(int, int)")]
         [TestCase("StringComparison", "StringComparison")]
         [TestCase("StringComparison?", "StringComparison")]
-        public void WhenCallingGetType(string parameterType, string type)
+        public static void WhenCallingGetType(string parameterType, string type)
         {
             var code = @"
 namespace RoslynSandbox

@@ -4,13 +4,13 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal partial class Diagnostics
+    public static partial class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL003MemberDoesNotExist.Descriptor);
 
         [Test]
-        public void GetPropertyAnonymousType()
+        public static void GetPropertyAnonymousType()
         {
             var code = @"
 namespace RoslynSandbox
@@ -28,7 +28,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMissingPropertyThenNullCheck()
+        public static void GetMissingPropertyThenNullCheck()
         {
             var code = @"
 namespace RoslynSandbox
@@ -49,7 +49,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void SubclassAggregateExceptionGetFieldDeclaredOnly()
+        public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
         {
             var exception = @"
 namespace RoslynSandbox
@@ -82,7 +82,7 @@ namespace RoslynSandbox
         [TestCase("GetNestedType(↓\"Generic\", BindingFlags.Public)")]
         [TestCase("GetNestedType(↓nameof(Generic<int>), BindingFlags.Public)")]
         [TestCase("GetNestedType(↓\"Generic`2\", BindingFlags.Public)")]
-        public void GetNestedType(string call)
+        public static void GetNestedType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -106,7 +106,7 @@ namespace RoslynSandbox
 
         [TestCase("GetProperty(↓\"Item\")")]
         [TestCase("GetProperty(↓\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void NamedIndexer(string call)
+        public static void NamedIndexer(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -130,7 +130,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetTupleFieldItem1ByName()
+        public static void GetTupleFieldItem1ByName()
         {
             var code = @"
 namespace RoslynSandbox
@@ -150,7 +150,7 @@ namespace RoslynSandbox
         [TestCase("a1")]
         [TestCase("a7")]
         [TestCase("a8")]
-        public void GetTupleFieldItem7ByName(string field)
+        public static void GetTupleFieldItem7ByName(string field)
         {
             var code = @"
 namespace RoslynSandbox
@@ -168,7 +168,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("typeof(C).GetMethod(↓\"get_P\")")]
-        public void MissingGetter(string call)
+        public static void MissingGetter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -186,7 +186,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("typeof(C).GetMethod(↓\"set_P\")")]
-        public void MissingSetter(string call)
+        public static void MissingSetter(string call)
         {
             var code = @"
 namespace RoslynSandbox

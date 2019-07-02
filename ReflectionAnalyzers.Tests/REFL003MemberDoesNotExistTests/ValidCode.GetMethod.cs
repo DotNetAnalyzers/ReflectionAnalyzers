@@ -3,9 +3,9 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
 
-    internal partial class ValidCode
+    public static partial class ValidCode
     {
-        internal class GetMethod
+        public static class GetMethod
         {
             [TestCase("typeof(C).GetMethod(nameof(PublicStatic))")]
             [TestCase("typeof(C).GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
             [TestCase("typeof(C).GetMethod(nameof(PrivateInstance))")]
             [TestCase("typeof(string).GetMethod(nameof(string.Clone))")]
             [TestCase("typeof(string).GetMethod(\"op_Equality\")")]
-            public void Vanilla(string call)
+            public static void Vanilla(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -48,7 +48,7 @@ namespace RoslynSandbox
             [TestCase("new C().GetType().GetMethod(\"MISSING\")")]
             [TestCase("this.GetType().GetMethod(\"MISSING\")")]
             [TestCase("GetType().GetMethod(\"MISSING\")")]
-            public void MissingMethod(string type)
+            public static void MissingMethod(string type)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -68,7 +68,7 @@ namespace RoslynSandbox
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static)")]
             [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-            public void ExcludeNonPublicNotInSource(string invocation)
+            public static void ExcludeNonPublicNotInSource(string invocation)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -87,7 +87,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ToStringOverridden()
+            public static void ToStringOverridden()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -106,7 +106,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void ToStringShadowing()
+            public static void ToStringShadowing()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -125,7 +125,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void OverloadedMethodInSameType()
+            public static void OverloadedMethodInSameType()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -149,7 +149,7 @@ namespace RoslynSandbox
 
             [TestCase("GetMethod(nameof(IConvertible.ToBoolean))")]
             [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-            public void ExplicitImplementation(string call)
+            public static void ExplicitImplementation(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -169,7 +169,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void UnknownType()
+            public static void UnknownType()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -188,7 +188,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void TypeParameter()
+            public static void TypeParameter()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -213,7 +213,7 @@ namespace RoslynSandbox
             [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
             [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean))")]
             [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
-            public void ConstrainedTypeParameter(string constraint, string call)
+            public static void ConstrainedTypeParameter(string constraint, string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -237,7 +237,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void Generic()
+            public static void Generic()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -259,7 +259,7 @@ namespace RoslynSandbox
 
             [TestCase("get_Bar")]
             [TestCase("set_Bar")]
-            public void PropertyAccessors(string name)
+            public static void PropertyAccessors(string name)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -280,7 +280,7 @@ namespace RoslynSandbox
             [TestCase("Delegate")]
             [TestCase("Action")]
             [TestCase("Action<int>")]
-            public void DelegateInvoke(string type)
+            public static void DelegateInvoke(string type)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -315,7 +315,7 @@ namespace RoslynSandbox
             [TestCase("this.GetHashCode", "BindingFlags.Public | BindingFlags.Static")]
             [TestCase("this.Private",     "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
             [TestCase("this.Private",     "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-            public void WrongFlags(string method, string flags)
+            public static void WrongFlags(string method, string flags)
             {
                 var code = @"
 namespace RoslynSandbox

@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL009MemberCantBeFound.Descriptor);
@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
         [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("GetType().GetMethod(↓\"MISSING\")")]
-        public void MissingMethod(string type)
+        public static void MissingMethod(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -29,7 +29,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void MissingPropertySetAccessor()
+        public static void MissingPropertySetAccessor()
         {
             var code = @"
 namespace RoslynSandbox
@@ -45,7 +45,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void MissingPropertyGetAccessor()
+        public static void MissingPropertyGetAccessor()
         {
             var code = @"
 namespace RoslynSandbox
@@ -61,7 +61,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void SubclassAggregateExceptionGetFieldDeclaredOnly()
+        public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
         {
             var exception = @"
 namespace RoslynSandbox
@@ -91,7 +91,7 @@ namespace RoslynSandbox
 
         [TestCase("GetProperty(↓\"Item\")")]
         [TestCase("GetProperty(↓\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void NamedIndexer(string call)
+        public static void NamedIndexer(string call)
         {
             var code = @"
 namespace RoslynSandbox

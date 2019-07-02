@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new UseParameterTypeFix();
@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
 
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)")]
         [TestCase("typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)")]
-        public void GetMethodOneParameterOverloadResolution(string call)
+        public static void GetMethodOneParameterOverloadResolution(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -57,7 +57,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void TwoProjects()
+        public static void TwoProjects()
         {
             var fooCode = @"
 namespace Project1
@@ -102,7 +102,7 @@ namespace Project2
         }
 
         [Test]
-        public void Issue121Inline()
+        public static void Issue121Inline()
         {
             var code = @"
 namespace RoslynSandbox
@@ -141,7 +141,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void Issue121()
+        public static void Issue121()
         {
             var code = @"
 namespace RoslynSandbox

@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly CodeFixProvider Fix = new SuggestTypeFix();
@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         [TestCase("Type.GetType(↓\"IComparable\")",        "Type.GetType(\"System.IComparable\")")]
         [TestCase("Type.GetType(↓\"IEnumerable`1\")",      "Type.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("Type.GetType(↓\"AppContextSwitches\")", "Type.GetType(\"System.AppContextSwitches\")")]
-        public void TypeGetTypeWithFix(string type, string fixedType)
+        public static void TypeGetTypeWithFix(string type, string fixedType)
         {
             var code = @"
 namespace RoslynSandbox
@@ -48,7 +48,7 @@ namespace RoslynSandbox
 
         [TestCase("MISSING")]
         // [TestCase("RoslynSandbox.MISSING")]
-        public void TypeGetTypeNoFix(string type)
+        public static void TypeGetTypeNoFix(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -67,7 +67,7 @@ namespace RoslynSandbox
         [TestCase("typeof(int).Assembly.GetType(↓\"Int32\")",                                                                             "typeof(int).Assembly.GetType(\"System.Int32\")")]
         [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"BinaryExpression\")",                              "typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.BinaryExpression\")")]
         [TestCase("typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"TemplatedAdorner\", throwOnError: true)", "typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"MS.Internal.Controls.TemplatedAdorner\", throwOnError: true)")]
-        public void AssemblyGetTypeWithFix(string type, string fixedType)
+        public static void AssemblyGetTypeWithFix(string type, string fixedType)
         {
             var code = @"
 namespace RoslynSandbox
@@ -96,7 +96,7 @@ namespace RoslynSandbox
 
         [TestCase("typeof(C).Assembly.GetType(↓\"MISSING\")")]
         [TestCase("typeof(C).Assembly.GetType(↓\"RoslynSandbox.MISSING\")")]
-        public void AssemblyGetTypeNoFix(string call)
+        public static void AssemblyGetTypeNoFix(string call)
         {
             var code = @"
 namespace RoslynSandbox

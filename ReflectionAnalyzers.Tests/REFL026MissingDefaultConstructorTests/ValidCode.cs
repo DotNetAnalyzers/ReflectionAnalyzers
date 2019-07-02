@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL026NoDefaultConstructor.Descriptor;
@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
         [TestCase("Activator.CreateInstance(typeof(C), false)")]
         [TestCase("Activator.CreateInstance(this.GetType())")]
         [TestCase("Activator.CreateInstance<C>()")]
-        public void ExplicitDefaultConstructor(string call)
+        public static void ExplicitDefaultConstructor(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -36,7 +36,7 @@ namespace RoslynSandbox
 
         [TestCase("(C)Activator.CreateInstance(typeof(C))")]
         [TestCase("Activator.CreateInstance<C>()")]
-        public void ImplicitDefaultConstructor(string call)
+        public static void ImplicitDefaultConstructor(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -54,7 +54,7 @@ namespace RoslynSandbox
 
         [TestCase("Activator.CreateInstance(typeof(C), 1)")]
         [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
-        public void OneConstructorSingleIntParameter(string call)
+        public static void OneConstructorSingleIntParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -76,7 +76,7 @@ namespace RoslynSandbox
         [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
         [TestCase("Activator.CreateInstance(typeof(C), new object[] { null })")]
         [TestCase("Activator.CreateInstance(typeof(C), (string)null)")]
-        public void OneConstructorSingleStringParameter(string call)
+        public static void OneConstructorSingleStringParameter(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -96,7 +96,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void PrivateConstructor()
+        public static void PrivateConstructor()
         {
             var code = @"
 namespace RoslynSandbox
@@ -116,7 +116,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenUnknown()
+        public static void WhenUnknown()
         {
             var code = @"
 namespace RoslynSandbox
@@ -133,7 +133,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenUnconstrainedGeneric()
+        public static void WhenUnconstrainedGeneric()
         {
             var code = @"
 namespace RoslynSandbox

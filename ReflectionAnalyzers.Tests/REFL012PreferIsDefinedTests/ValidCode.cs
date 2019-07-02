@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL012PreferIsDefined.Descriptor;
 
         [Test]
-        public void WhenUsingGeneric()
+        public static void WhenUsingGeneric()
         {
             var code = @"
 namespace RoslynSandbox
@@ -31,7 +31,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenGetCustomAttributeCast()
+        public static void WhenGetCustomAttributeCast()
         {
             var code = @"
 namespace RoslynSandbox
@@ -50,7 +50,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenGetCustomAttributeAs()
+        public static void WhenGetCustomAttributeAs()
         {
             var code = @"
 namespace RoslynSandbox

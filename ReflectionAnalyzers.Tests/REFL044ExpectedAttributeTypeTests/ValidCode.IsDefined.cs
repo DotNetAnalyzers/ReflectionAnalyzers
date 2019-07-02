@@ -5,16 +5,16 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class IsDefined
+        public static class IsDefined
         {
             private static readonly DiagnosticAnalyzer Analyzer = new IsDefinedAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL044ExpectedAttributeType.Descriptor;
 
             [TestCase("Attribute")]
             [TestCase("ObsoleteAttribute")]
-            public void AttributeIsDefined(string type)
+            public static void AttributeIsDefined(string type)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -31,7 +31,7 @@ namespace RoslynSandbox
             }
 
             [Test]
-            public void AttributeIsDefinedGeneric()
+            public static void AttributeIsDefinedGeneric()
             {
                 var code = @"
 namespace RoslynSandbox

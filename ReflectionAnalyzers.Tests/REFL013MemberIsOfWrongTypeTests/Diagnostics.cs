@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL013MemberIsOfWrongType.Descriptor);
@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
         [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetNestedType(nameof(this.Bar))")]
         [TestCase("GetNestedType(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void WhenMatchIsProperty(string call)
+        public static void WhenMatchIsProperty(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -46,7 +46,7 @@ namespace RoslynSandbox
         [TestCase("GetProperty(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetNestedType(nameof(this.Bar))")]
         [TestCase("GetNestedType(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetPropertyMatchingMethod(string call)
+        public static void GetPropertyMatchingMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox

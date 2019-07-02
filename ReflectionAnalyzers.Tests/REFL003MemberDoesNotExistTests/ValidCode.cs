@@ -5,14 +5,14 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal partial class ValidCode
+    public static partial class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL003MemberDoesNotExist.Descriptor;
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void AggregateExceptionGetInnerExceptionCount(string call)
+        public static void AggregateExceptionGetInnerExceptionCount(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -33,7 +33,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
-        public void SubclassAggregateExceptionGetInnerExceptionCount(string call)
+        public static void SubclassAggregateExceptionGetInnerExceptionCount(string call)
         {
             var exception = @"
 namespace RoslynSandbox
@@ -68,7 +68,7 @@ namespace RoslynSandbox
         [TestCase("GetNestedType(nameof(Public), BindingFlags.Public)")]
         [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic)")]
         [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic)")]
-        public void GetNestedType(string call)
+        public static void GetNestedType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -108,7 +108,7 @@ namespace RoslynSandbox
 
         [TestCase("GetProperty(\"Item\")")]
         [TestCase("GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void Indexer(string call)
+        public static void Indexer(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -131,7 +131,7 @@ namespace RoslynSandbox
 
         [TestCase("GetProperty(\"Bar\")")]
         [TestCase("GetProperty(\"Bar\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void NamedIndexer(string call)
+        public static void NamedIndexer(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -155,7 +155,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void NullableIntGetTypeGetFieldMaxValue()
+        public static void NullableIntGetTypeGetFieldMaxValue()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -171,7 +171,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void TupleGetFieldItem1()
+        public static void TupleGetFieldItem1()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -187,7 +187,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMissingPropertyThenNullCheck()
+        public static void GetMissingPropertyThenNullCheck()
         {
             var code = @"
 namespace RoslynSandbox

@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL042FirstArgumentIsReferenceType.Descriptor;
 
         [Test]
-        public void StaticStringIntWithFirstArg()
+        public static void StaticStringIntWithFirstArg()
         {
             var code = @"
 namespace RoslynSandbox
@@ -33,7 +33,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticStringVoidFirstArg()
+        public static void StaticStringVoidFirstArg()
         {
             var code = @"
 namespace RoslynSandbox
@@ -58,7 +58,7 @@ namespace RoslynSandbox
         [TestCase("1")]
         [TestCase("null")]
         [TestCase("\"abc\"")]
-        public void StaticObjectVoidFirstArg(string arg)
+        public static void StaticObjectVoidFirstArg(string arg)
         {
             var code = @"
 namespace RoslynSandbox
@@ -81,7 +81,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticStringStringVoidFirstArg()
+        public static void StaticStringStringVoidFirstArg()
         {
             var code = @"
 namespace RoslynSandbox
@@ -104,7 +104,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void CreateDelegateParameterExpressionMake()
+        public static void CreateDelegateParameterExpressionMake()
         {
             var code = @"
 namespace RoslynSandbox
@@ -125,7 +125,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticStringInt()
+        public static void StaticStringInt()
         {
             var code = @"
 namespace RoslynSandbox
@@ -146,7 +146,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticVoid()
+        public static void StaticVoid()
         {
             var code = @"
 namespace RoslynSandbox
@@ -167,7 +167,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticStringVoid()
+        public static void StaticStringVoid()
         {
             var code = @"
 namespace RoslynSandbox
@@ -189,7 +189,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void InstanceStringInt()
+        public static void InstanceStringInt()
         {
             var code = @"
 namespace RoslynSandbox
@@ -210,7 +210,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void InstanceStringIntWithTarget()
+        public static void InstanceStringIntWithTarget()
         {
             var code = @"
 namespace RoslynSandbox
@@ -232,7 +232,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticStringIntCustomDelegate()
+        public static void StaticStringIntCustomDelegate()
         {
             var code = @"
 namespace RoslynSandbox

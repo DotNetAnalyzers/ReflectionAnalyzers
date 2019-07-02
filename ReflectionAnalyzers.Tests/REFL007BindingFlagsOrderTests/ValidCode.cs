@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL007BindingFlagsOrder.Descriptor;
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
         [TestCase("GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.Private), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethod(string call)
+        public static void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox

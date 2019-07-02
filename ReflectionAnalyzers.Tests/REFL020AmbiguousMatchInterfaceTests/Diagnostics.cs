@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL020AmbiguousMatchInterface.Descriptor);
@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
         [TestCase("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("GetInterface(↓\"IEnumerable`1\")")]
         [TestCase("GetInterface(typeof(IEnumerable<>).FullName)")]
-        public void GetInterface(string call)
+        public static void GetInterface(string call)
         {
             var code = @"
 namespace RoslynSandbox

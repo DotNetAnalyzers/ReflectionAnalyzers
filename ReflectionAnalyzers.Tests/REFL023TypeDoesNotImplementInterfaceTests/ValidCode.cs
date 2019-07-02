@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL023TypeDoesNotImplementInterfaceTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL023TypeDoesNotImplementInterface.Descriptor;
@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL023TypeDoesNotImplementInterfaceTests
         [TestCase("GetInterface(typeof(IEnumerable<>).Name)")]
         [TestCase("GetInterface(\"IEnumerable\")")]
         [TestCase("GetInterface(\"System.Collections.IEnumerable\")")]
-        public void GetInterface(string call)
+        public static void GetInterface(string call)
         {
             var code = @"
 namespace RoslynSandbox

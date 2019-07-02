@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL014PreferGetMemberThenAccessor.Descriptor;
 
         [Test]
-        public void GetPropertyGetMethod()
+        public static void GetPropertyGetMethod()
         {
             var code = @"
 namespace RoslynSandbox
@@ -30,7 +30,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetPropertySetMethod()
+        public static void GetPropertySetMethod()
         {
             var code = @"
 namespace RoslynSandbox

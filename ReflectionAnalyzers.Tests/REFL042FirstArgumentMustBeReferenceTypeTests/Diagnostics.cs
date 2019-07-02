@@ -4,13 +4,13 @@ namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class Diagnostics
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL042FirstArgumentIsReferenceType.Descriptor);
 
         [Test]
-        public void StaticStringVoidFirstArg()
+        public static void StaticStringVoidFirstArg()
         {
             var code = @"
 namespace RoslynSandbox

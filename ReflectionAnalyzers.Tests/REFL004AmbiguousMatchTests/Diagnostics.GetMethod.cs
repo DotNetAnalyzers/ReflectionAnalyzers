@@ -3,13 +3,13 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
 
-    public partial class Diagnostics
+    public static partial class Diagnostics
     {
-        public class GetMethod
+        public static class GetMethod
         {
             [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
             [TestCase("GetMethod↓(nameof(this.Instance), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-            public void PublicPrivateOverloads(string call)
+            public static void PublicPrivateOverloads(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -42,7 +42,7 @@ namespace RoslynSandbox
             [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
             [TestCase("GetMethod↓(nameof(this.Instance))")]
             [TestCase("GetMethod↓(nameof(this.Instance), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-            public void PublicOverloads(string call)
+            public static void PublicOverloads(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -71,7 +71,7 @@ namespace RoslynSandbox
 
             [TestCase("GetMethod↓(\"op_Explicit\")")]
             [TestCase("GetMethod↓(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static)")]
-            public void OverloadedOperatorExplicit(string call)
+            public static void OverloadedOperatorExplicit(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -93,7 +93,7 @@ namespace RoslynSandbox
             }
 
             [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-            public void OverloadResolution(string call)
+            public static void OverloadResolution(string call)
             {
                 var code = @"
 namespace RoslynSandbox

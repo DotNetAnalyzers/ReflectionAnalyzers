@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL037TypeDoesNotExits.Descriptor;
@@ -20,7 +20,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         [TestCase("System.Collections.Generic.Dictionary`2[System.Int32,System.String]")]
         [TestCase("System.Collections.Generic.Dictionary`2[[System.Int32], [System.String]]")]
         [TestCase("System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]")]
-        public void TypeGetType(string type)
+        public static void TypeGetType(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -37,7 +37,7 @@ namespace RoslynSandbox
         }
 
         [TestCase("system.int32")]
-        public void TypeGetTypeIgnoreCase(string type)
+        public static void TypeGetTypeIgnoreCase(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -61,7 +61,7 @@ namespace RoslynSandbox
         [TestCase("typeof(System.Windows.Forms.FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\", throwOnError: true)")]
         [TestCase("typeof(System.Windows.Forms.FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog+VistaDialogEvents\", throwOnError: true)")]
         [TestCase("typeof(System.Windows.Forms.DataObject).Assembly.GetType(\"System.Windows.Forms.DataObject+OleConverter\", throwOnError: true)")]
-        public void AssemblyGetTypeFullyQualified(string call)
+        public static void AssemblyGetTypeFullyQualified(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -81,7 +81,7 @@ namespace RoslynSandbox
         [TestCase("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\", throwOnError: true)")]
         [TestCase("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog+VistaDialogEvents\", throwOnError: true)")]
         [TestCase("typeof(DataObject).Assembly.GetType(\"System.Windows.Forms.DataObject+OleConverter\", throwOnError: true)")]
-        public void AssemblyGetTypeWhenUsing(string call)
+        public static void AssemblyGetTypeWhenUsing(string call)
         {
             var code = @"
 namespace RoslynSandbox

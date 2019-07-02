@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL015UseContainingType.Descriptor;
@@ -34,7 +34,7 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
         [TestCase("typeof(CBase).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(CBase).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        public void GetMember(string call)
+        public static void GetMember(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -82,7 +82,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void InternalStaticFieldInBase()
+        public static void InternalStaticFieldInBase()
         {
             var baseCode = @"
 namespace RoslynSandbox

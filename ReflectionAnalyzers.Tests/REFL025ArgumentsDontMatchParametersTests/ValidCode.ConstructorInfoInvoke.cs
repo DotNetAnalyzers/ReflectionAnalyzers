@@ -5,15 +5,15 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class ValidCode
+    public static partial class ValidCode
     {
-        public class ConstructorInfoInvoke
+        public static class ConstructorInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL025ArgumentsDontMatchParameters.Descriptor;
 
             [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
-            public void SingleIntParameter(string call)
+            public static void SingleIntParameter(string call)
             {
                 var code = @"
 namespace RoslynSandbox

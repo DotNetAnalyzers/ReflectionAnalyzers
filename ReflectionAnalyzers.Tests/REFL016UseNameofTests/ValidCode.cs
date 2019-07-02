@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL016UseNameof.Descriptor;
 
         [Test]
-        public void TypeofDictionaryGetMethodAdd()
+        public static void TypeofDictionaryGetMethodAdd()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -30,7 +30,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void ThisGetTYpeGetStaticMethod()
+        public static void ThisGetTYpeGetStaticMethod()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -51,7 +51,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void ThisGetTypeGetInstanceMethod()
+        public static void ThisGetTypeGetInstanceMethod()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -81,7 +81,7 @@ namespace RoslynSandbox
         [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean))")]
         [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
-        public void GetMethodWhenConstrainedTypeParameter(string constraint, string call)
+        public static void GetMethodWhenConstrainedTypeParameter(string constraint, string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -110,7 +110,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"op_Inequality\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })")]
         [TestCase("GetMethod(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { 1 })")]
         [TestCase("GetMethod(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { (C)null })")]
-        public void Operators(string call)
+        public static void Operators(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -140,7 +140,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void Finalizer()
+        public static void Finalizer()
         {
             var code = @"
 class C
@@ -158,7 +158,7 @@ class C
         }
 
         [TestCase("GetNestedType(\"Generic`1\", BindingFlags.Public)")]
-        public void GetNestedGenericType(string call)
+        public static void GetNestedGenericType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -181,7 +181,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void NonPublicNotVisible()
+        public static void NonPublicNotVisible()
         {
             var exception = @"
 namespace RoslynSandbox
@@ -212,7 +212,7 @@ namespace RoslynSandbox
 
         [Test]
         //// ReSharper disable once InconsistentNaming
-        public void IEnumeratorGetCurrent()
+        public static void IEnumeratorGetCurrent()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -232,7 +232,7 @@ namespace RoslynSandbox
 
         [TestCase("GetMethod(\"add_Public\")")]
         [TestCase("GetMethod(\"remove_Public\")")]
-        public void EventAccessors(string before)
+        public static void EventAccessors(string before)
         {
             var code = @"
 namespace RoslynSandbox
@@ -256,7 +256,7 @@ namespace RoslynSandbox
 
         [TestCase("GetMethod(\"get_Public\")")]
         [TestCase("GetMethod(\"set_Public\")")]
-        public void PropertyAccessors(string before)
+        public static void PropertyAccessors(string before)
         {
             var code = @"
 namespace RoslynSandbox
@@ -279,7 +279,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void SystemWindowsFormsControlCreateControl()
+        public static void SystemWindowsFormsControlCreateControl()
         {
             var code = @"
 namespace RoslynSandbox
@@ -298,7 +298,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenThrowingArgumentException()
+        public static void WhenThrowingArgumentException()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -320,7 +320,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void ArgumentOutOfRangeException()
+        public static void ArgumentOutOfRangeException()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -343,7 +343,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void IgnoresDebuggerDisplay()
+        public static void IgnoresDebuggerDisplay()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -358,7 +358,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void IgnoresTypeName()
+        public static void IgnoresTypeName()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -382,7 +382,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void IgnoresSameLocal()
+        public static void IgnoresSameLocal()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -401,7 +401,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenUsedInDeclaration()
+        public static void WhenUsedInDeclaration()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -420,7 +420,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void WhenLocalsNotVisible()
+        public static void WhenLocalsNotVisible()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -449,7 +449,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void IgnoresNamespaceName()
+        public static void IgnoresNamespaceName()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -473,7 +473,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void AggregateExceptionInnerExceptionCount()
+        public static void AggregateExceptionInnerExceptionCount()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -495,7 +495,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodReferenceEquals()
+        public static void GetMethodReferenceEquals()
         {
             var testCode = @"
 namespace RoslynSandbox
@@ -525,7 +525,7 @@ namespace RoslynSandbox
         [TestCase("typeof(CBase).GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(CBase).GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        public void MemberInBase(string call)
+        public static void MemberInBase(string call)
         {
             var baseClass = @"
 namespace RoslynSandbox

@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    internal partial class ValidCode
+    public static partial class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL004AmbiguousMatch.Descriptor;
@@ -20,7 +20,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
         [TestCase("GetMethod(nameof(this.PublicPrivateInstance))")]
         [TestCase("GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public void GetMethod(string call)
+        public static void GetMethod(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -62,7 +62,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(nameof(this.Instance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { i.GetType() }, null)")]
         [TestCase("GetMethod(nameof(this.Instance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new Type[] { typeof(int) }, null)")]
         [TestCase("GetMethod(nameof(this.Instance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new Type[1] { typeof(int) }, null)")]
-        public void OverloadsFilteredByType(string call)
+        public static void OverloadsFilteredByType(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -92,7 +92,7 @@ namespace RoslynSandbox
 
         [TestCase("GetProperty(\"Item\", typeof(int), new[] { typeof(int) })")]
         [TestCase("GetProperty(\"Item\", typeof(int), new[] { typeof(int), typeof(int) })")]
-        public void TwoIndexers(string call)
+        public static void TwoIndexers(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -111,7 +111,7 @@ namespace RoslynSandbox
 
         [TestCase("GetProperty(\"Bar\", typeof(int), new[] { typeof(int) })")]
         [TestCase("GetProperty(\"Bar\", typeof(int), new[] { typeof(int), typeof(int) })")]
-        public void TwoNamedIndexers(string call)
+        public static void TwoNamedIndexers(string call)
         {
             var code = @"
 namespace RoslynSandbox
@@ -134,7 +134,7 @@ namespace RoslynSandbox
 
         [TestCase("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null)")]
         [TestCase("GetConstructor(BindingFlags.NonPublic | BindingFlags.Static, null, Type.EmptyTypes, null)")]
-        public void StaticAndInstanceConstructor(string call)
+        public static void StaticAndInstanceConstructor(string call)
         {
             var code = @"
 namespace RoslynSandbox

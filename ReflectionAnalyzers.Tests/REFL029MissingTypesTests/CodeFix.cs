@@ -6,14 +6,14 @@ namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new AddTypesFix();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL029MissingTypes.Descriptor);
 
         [Test]
-        public void GetMethodNoParameter()
+        public static void GetMethodNoParameter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -48,7 +48,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodNoParameterWithFlags()
+        public static void GetMethodNoParameterWithFlags()
         {
             var code = @"
 namespace RoslynSandbox
@@ -86,7 +86,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodOneParameter()
+        public static void GetMethodOneParameter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -119,7 +119,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodOneParameterWithFlags()
+        public static void GetMethodOneParameterWithFlags()
         {
             var code = @"
 namespace RoslynSandbox
@@ -156,7 +156,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodOneParams()
+        public static void GetMethodOneParams()
         {
             var code = @"
 namespace RoslynSandbox
@@ -193,7 +193,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodOneParamsWithFlags()
+        public static void GetMethodOneParamsWithFlags()
         {
             var code = @"
 namespace RoslynSandbox
@@ -232,7 +232,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodTwoParameters()
+        public static void GetMethodTwoParameters()
         {
             var code = @"
 namespace RoslynSandbox
@@ -265,7 +265,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodTwoParameterWithFlags()
+        public static void GetMethodTwoParameterWithFlags()
         {
             var code = @"
 namespace RoslynSandbox

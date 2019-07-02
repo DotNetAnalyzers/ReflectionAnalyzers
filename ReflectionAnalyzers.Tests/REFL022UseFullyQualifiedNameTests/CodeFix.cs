@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
         private static readonly CodeFixProvider Fix = new UseFullyQualifiedFix();
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
         [TestCase("GetInterface(typeof(IEnumerable<>).↓Name)", "GetInterface(typeof(IEnumerable<>).FullName)")]
         [TestCase("GetInterface(↓\"IEnumerable\")", "GetInterface(\"System.Collections.IEnumerable\")")]
         [TestCase("GetInterface(typeof(IEnumerable).↓Name)", "GetInterface(typeof(IEnumerable).FullName)")]
-        public void GetInterface(string call, string expected)
+        public static void GetInterface(string call, string expected)
         {
             var code = @"
 namespace RoslynSandbox

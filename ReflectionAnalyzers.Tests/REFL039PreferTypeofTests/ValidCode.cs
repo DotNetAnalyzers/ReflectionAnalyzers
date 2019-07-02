@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL039PreferTypeof.Descriptor;
 
         [Test]
-        public void AnonymousType()
+        public static void AnonymousType()
         {
             var code = @"
 // ReSharper disable All
@@ -33,7 +33,7 @@ namespace ValidCode
         }
 
         [Test]
-        public void AnonymousTypePropertyWithFlags()
+        public static void AnonymousTypePropertyWithFlags()
         {
             var code = @"
 // ReSharper disable All
@@ -55,7 +55,7 @@ namespace ValidCode
         }
 
         [Test]
-        public void MulticastDelegate()
+        public static void MulticastDelegate()
         {
             var code = @"
 // ReSharper disable All
@@ -73,7 +73,7 @@ namespace ValidCode
         }
 
         [Test]
-        public void Delegate()
+        public static void Delegate()
         {
             var code = @"
 namespace ValidCode
@@ -91,7 +91,7 @@ namespace ValidCode
 
         [TestCase("pi.GetValue(null).GetType()")]
         [TestCase("pi.GetValue(null)?.GetType()")]
-        public void UnknownType(string call)
+        public static void UnknownType(string call)
         {
             var code = @"
 namespace ValidCode

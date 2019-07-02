@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL029MissingTypes.Descriptor;
 
         [Test]
-        public void GetMethodNoParameter()
+        public static void GetMethodNoParameter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -32,7 +32,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodOneParameter()
+        public static void GetMethodOneParameter()
         {
             var code = @"
 namespace RoslynSandbox
@@ -51,7 +51,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetMethodOneGenericParameter()
+        public static void GetMethodOneGenericParameter()
         {
             var code = @"
 namespace RoslynSandbox

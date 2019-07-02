@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    public class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
         private static readonly CodeFixProvider Fix = new UseTypeFix();
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
         [TestCase("typeof(Func<string, string>)")]
         [TestCase("typeof(Func<string, string, int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void StaticStringInt(string type)
+        public static void StaticStringInt(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -58,7 +58,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Func<string, string, int>)")]
         [TestCase("typeof(Action<int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void StaticVoid(string type)
+        public static void StaticVoid(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -101,7 +101,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action)")]
         [TestCase("typeof(Action<int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void StaticStringVoid(string type)
+        public static void StaticStringVoid(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -143,7 +143,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Func<string, string, int>)")]
         [TestCase("typeof(Action<int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void StaticStringVoidFirstArg(string type)
+        public static void StaticStringVoidFirstArg(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -187,7 +187,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action)")]
         [TestCase("typeof(Action<int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void StaticStringStringVoidFirstArg(string type)
+        public static void StaticStringStringVoidFirstArg(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -229,7 +229,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Func<string, string>)")]
         [TestCase("typeof(Func<string, string, int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void InstanceStringInt(string type)
+        public static void InstanceStringInt(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -271,7 +271,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Func<string, string, int>)")]
         [TestCase("typeof(Action<int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void InstanceVoid(string type)
+        public static void InstanceVoid(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -313,7 +313,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Func<string, string, int>)")]
         [TestCase("typeof(Action<int>)")]
         [TestCase("typeof(Action<string, string>)")]
-        public void InstanceVoidWithTarget(string type)
+        public static void InstanceVoidWithTarget(string type)
         {
             var code = @"
 namespace RoslynSandbox
@@ -353,7 +353,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticStringIntCustomDelegate()
+        public static void StaticStringIntCustomDelegate()
         {
             var code = @"
 namespace RoslynSandbox
@@ -395,7 +395,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetGetMethodReturnTypeInstance()
+        public static void GetGetMethodReturnTypeInstance()
         {
             var code = @"
 namespace RoslynSandbox
@@ -437,7 +437,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetGetMethodReturnTypeStatic()
+        public static void GetGetMethodReturnTypeStatic()
         {
             var code = @"
 namespace RoslynSandbox
@@ -479,7 +479,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetSetMethodReturnTypeInstance()
+        public static void GetSetMethodReturnTypeInstance()
         {
             var code = @"
 namespace RoslynSandbox
@@ -521,7 +521,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void GetSetMethodReturnTypeStatic()
+        public static void GetSetMethodReturnTypeStatic()
         {
             var code = @"
 namespace RoslynSandbox
@@ -563,7 +563,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void StaticWithContainingAsArgument()
+        public static void StaticWithContainingAsArgument()
         {
             var code = @"
 namespace RoslynSandbox

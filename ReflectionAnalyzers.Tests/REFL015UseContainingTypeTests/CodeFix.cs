@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
     using NUnit.Framework;
     using ReflectionAnalyzers.Codefixes;
 
-    internal class CodeFix
+    public static class CodeFix
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new UseContainingTypeFix();
@@ -20,7 +20,7 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
         [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        public void GetPrivateMemberTypeof(string call)
+        public static void GetPrivateMemberTypeof(string call)
         {
             var baseCode = @"
 namespace RoslynSandbox
@@ -77,7 +77,7 @@ namespace RoslynSandbox
         [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        public void GetPrivateMemberThisGetType(string call)
+        public static void GetPrivateMemberThisGetType(string call)
         {
             var baseCode = @"
 namespace RoslynSandbox
@@ -128,7 +128,7 @@ namespace RoslynSandbox
 
         [TestCase("PublicStatic")]
         [TestCase("Public")]
-        public void GetPublicNestedType(string type)
+        public static void GetPublicNestedType(string type)
         {
             var baseCode = @"
 namespace RoslynSandbox
@@ -179,7 +179,7 @@ namespace RoslynSandbox
 
         [TestCase("PrivateStatic")]
         [TestCase("Private")]
-        public void GetPrivateNestedType(string type)
+        public static void GetPrivateNestedType(string type)
         {
             var baseCode = @"
 namespace RoslynSandbox
@@ -230,7 +230,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void PrivateFieldInBase()
+        public static void PrivateFieldInBase()
         {
             var baseCode = @"
 namespace RoslynSandbox

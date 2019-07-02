@@ -5,13 +5,13 @@ namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCode
+    public static class ValidCode
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL013MemberIsOfWrongType.Descriptor;
 
         [Test]
-        public void PassingArrayToMakeGenericType()
+        public static void PassingArrayToMakeGenericType()
         {
             var code = @"
 namespace RoslynSandbox
