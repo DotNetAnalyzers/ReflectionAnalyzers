@@ -613,7 +613,7 @@ namespace ReflectionAnalyzers
                     return $"\"{associatedSymbol.MetadataName}\"";
                 }
 
-                if (context.ContainingSymbol.ContainingType == associatedSymbol.ContainingType)
+                if (Equals(context.ContainingSymbol.ContainingType, associatedSymbol.ContainingType))
                 {
                     if (member.Symbol.IsStatic)
                     {

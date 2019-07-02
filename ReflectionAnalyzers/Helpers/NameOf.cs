@@ -66,7 +66,7 @@ namespace ReflectionAnalyzers
             {
                 if (t is INamedTypeSymbol namedType &&
                     namedType.TupleUnderlyingType is INamedTypeSymbol utt &&
-                    utt != namedType)
+                    !Equals(utt, namedType))
                 {
                     return TypeOfString(utt);
                 }
