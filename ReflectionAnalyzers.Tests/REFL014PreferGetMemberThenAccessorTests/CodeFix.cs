@@ -257,7 +257,7 @@ namespace RoslynSandbox
 
         [TestCase("GetMethod(\"get_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
         [TestCase("GetMethod(\"set_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
-        public async static Task InvisibleProperty(string before, string after)
+        public static async Task InvisibleProperty(string before, string after)
         {
             var code = @"
 namespace RoslynSandbox
@@ -580,7 +580,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public async static Task ReferencesMemberThatAnalyzerCannotSee()
+        public static async Task ReferencesMemberThatAnalyzerCannotSee()
         {
             var code = @"
 namespace RoslynSandbox
