@@ -19,10 +19,11 @@ group Analyzers
 group Test
   storage: none
   source http://www.nuget.org/api/v2/
-  nuget Microsoft.CodeAnalysis.CSharp.Workspaces 2.10
-  nuget Gu.Roslyn.Asserts
+  nuget Microsoft.NET.Test.Sdk
   nuget NUnit
   nuget NUnit3TestAdapter
+  nuget Microsoft.CodeAnalysis.CSharp.Workspaces
+  nuget Gu.Roslyn.Asserts
 
 group Build
   source http://www.nuget.org/api/v2/

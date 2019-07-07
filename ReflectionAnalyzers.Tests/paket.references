@@ -1,8 +1,9 @@
 group Test
-  Microsoft.CodeAnalysis.CSharp.Workspaces
-  Gu.Roslyn.Asserts
+  Microsoft.NET.Test.Sdk
   NUnit
   NUnit3TestAdapter
+  Gu.Roslyn.Asserts
+  Microsoft.CodeAnalysis.CSharp.Workspaces
 
 group Analyzers
   AsyncUsageAnalyzers
