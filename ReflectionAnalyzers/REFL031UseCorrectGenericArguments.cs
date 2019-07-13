@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL031UseCorrectGenericArguments
+    public static class REFL031UseCorrectGenericArguments
     {
         public const string DiagnosticId = "REFL031";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Use generic arguments that satisfies the type parameters.",
             messageFormat: "{0}",

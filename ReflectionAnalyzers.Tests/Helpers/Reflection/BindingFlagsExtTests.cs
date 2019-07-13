@@ -6,14 +6,14 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
     using Microsoft.CodeAnalysis.CSharp;
     using NUnit.Framework;
 
-    public class BindingFlagsExtTests
+    public static class BindingFlagsExtTests
     {
         private static readonly BindingFlags[] Flags = Enum.GetValues(typeof(BindingFlags))
                                                            .Cast<BindingFlags>()
                                                            .ToArray();
 
         [TestCaseSource(nameof(Flags))]
-        public void ToDisplayString(object flags)
+        public static void ToDisplayString(object flags)
         {
             var tree = CSharpSyntaxTree.ParseText(@"
 namespace RoslynSandbox
@@ -26,7 +26,7 @@ namespace RoslynSandbox
         }
 
         [TestCaseSource(nameof(Flags))]
-        public void ToDisplayStringUsingStaticInside(object flags)
+        public static void ToDisplayStringUsingStaticInside(object flags)
         {
             var tree = CSharpSyntaxTree.ParseText(@"
 namespace RoslynSandbox
@@ -41,7 +41,7 @@ namespace RoslynSandbox
         }
 
         [TestCaseSource(nameof(Flags))]
-        public void ToDisplayStringUsingStaticOutside(object flags)
+        public static void ToDisplayStringUsingStaticOutside(object flags)
         {
             var tree = CSharpSyntaxTree.ParseText(@"
 using static System.Reflection.BindingFlags;

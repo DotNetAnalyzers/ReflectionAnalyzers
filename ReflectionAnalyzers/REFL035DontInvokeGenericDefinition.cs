@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL035DontInvokeGenericDefinition
+    public static class REFL035DontInvokeGenericDefinition
     {
         public const string DiagnosticId = "REFL035";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Don't call Invoke on a generic definition.",
             messageFormat: "Late bound operations cannot be performed on types or methods for which ContainsGenericParameters is true.",

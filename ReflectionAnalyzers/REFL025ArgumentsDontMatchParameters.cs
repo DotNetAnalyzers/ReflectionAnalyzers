@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL025ArgumentsDontMatchParameters
+    public static class REFL025ArgumentsDontMatchParameters
     {
         public const string DiagnosticId = "REFL025";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Use correct arguments.",
             messageFormat: "Use correct arguments.",

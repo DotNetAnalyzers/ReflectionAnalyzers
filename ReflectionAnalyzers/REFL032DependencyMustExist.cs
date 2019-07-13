@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL032DependencyMustExist
+    public static class REFL032DependencyMustExist
     {
         public const string DiagnosticId = "REFL032";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "The dependency does not exist.",
             messageFormat: "The dependency does not exist.",

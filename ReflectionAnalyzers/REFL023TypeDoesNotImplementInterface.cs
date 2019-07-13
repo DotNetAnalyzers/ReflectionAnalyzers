@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL023TypeDoesNotImplementInterface
+    public static class REFL023TypeDoesNotImplementInterface
     {
         public const string DiagnosticId = "REFL023";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "The type does not implement the interface.",
             messageFormat: "The type does not implement the interface.",

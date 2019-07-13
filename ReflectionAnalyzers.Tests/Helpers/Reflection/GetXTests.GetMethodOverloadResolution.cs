@@ -6,16 +6,16 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class GetXTests
+    public static partial class GetXTests
     {
-        public class GetMethodOverloadResolution
+        public static class GetMethodOverloadResolution
         {
             [TestCase("typeof(System.Array).GetMethod(nameof(System.Array.CreateInstance), new[] { typeof(System.Type), typeof(int) })", "System.Array.CreateInstance(System.Type, int)")]
             [TestCase("typeof(System.Array).GetMethod(nameof(System.Array.CreateInstance), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(Type), typeof(int) }, null)", "System.Array.CreateInstance(System.Type, int)")]
             [TestCase("typeof(System.Activator).GetMethod(nameof(System.Activator.CreateInstance), new[] { typeof(System.Reflection.TypeInfo) })", "System.Activator.CreateInstance(System.Type)")]
             [TestCase("typeof(System.Array).GetMethod(nameof(System.Array.GetValue), new[] { typeof(System.Int32) })", "System.Array.GetValue(int)")]
             [TestCase("typeof(System.Array).GetMethod(nameof(System.Array.GetValue), new[] { typeof(System.Int64) })", "System.Array.GetValue(long)")]
-            public void Success(string call, string expected)
+            public static void Success(string call, string expected)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -44,7 +44,7 @@ namespace RoslynSandbox
             [TestCase("typeof(Activator).GetMethod(nameof(Activator.CreateInstance), new[] { typeof(object) })")]
             [TestCase("typeof(Activator).GetMethod(nameof(Activator.CreateInstance), new[] { typeof(MemberInfo) })")]
             [TestCase("typeof(System.Array).GetMethod(nameof(System.Array.GetValue), new[] { typeof(System.IFormattable) })")]
-            public void NoMatch(string call)
+            public static void NoMatch(string call)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -77,7 +77,7 @@ namespace RoslynSandbox
             [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(int) })", "RoslynSandbox.C.M(int)")]
             [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(double) })", "RoslynSandbox.C.M(double)")]
             [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IFormattable) })", "RoslynSandbox.C.M(System.IFormattable)")]
-            public void SuccessWhenInSameType(string call, string expected)
+            public static void SuccessWhenInSameType(string call, string expected)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -123,7 +123,7 @@ namespace RoslynSandbox
             [TestCase("typeof(A).GetMethod(\"M\", new[] { typeof(int) })", "RoslynSandbox.A.M(int)")]
             [TestCase("typeof(B).GetMethod(\"M\", new[] { typeof(int) })", "RoslynSandbox.A.M(int)")]
             [TestCase("typeof(B).GetMethod(\"M\", new[] { typeof(double) })", "RoslynSandbox.B.M(double)")]
-            public void SuccessWhenInheritance(string call, string expected)
+            public static void SuccessWhenInheritance(string call, string expected)
             {
                 var code = @"
 namespace RoslynSandbox

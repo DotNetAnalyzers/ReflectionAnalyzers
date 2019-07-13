@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Codefixes
+namespace ReflectionAnalyzers
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;

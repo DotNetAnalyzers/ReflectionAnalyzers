@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
     using NUnit.Framework;
     using Type = ReflectionAnalyzers.Type;
 
-    public class TypeTests
+    public static class TypeTests
     {
         [TestCase("typeof(C)", "RoslynSandbox.C", "typeof(C)")]
         [TestCase("new C().GetType()", "RoslynSandbox.C", "new C().GetType()")]
@@ -35,7 +35,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("Type.GetType(\"System.Int32\", false)", "int", "Type.GetType(\"System.Int32\", false)")]
         [TestCase("Type.GetType(\"System.Int32\", true, true)", "int", "Type.GetType(\"System.Int32\", true, true)")]
         [TestCase("Type.GetType(\"System.Int32\", true, false)", "int", "Type.GetType(\"System.Int32\", true, false)")]
-        public void TryGet(string expression, string expected, string expectedSource)
+        public static void TryGet(string expression, string expected, string expectedSource)
         {
             var code = @"
 namespace RoslynSandbox
@@ -79,7 +79,7 @@ namespace RoslynSandbox
         [TestCase("GetOnlyProperty")]
         [TestCase("this.GetOnlyProperty")]
         // [TestCase("Method()")]
-        public void TryGetWalked(string expression)
+        public static void TryGetWalked(string expression)
         {
             var code = @"
 namespace RoslynSandbox
@@ -113,7 +113,7 @@ namespace RoslynSandbox
 
         [TestCase("Assembly.Load(\"mscorlib\").GetType(\"System.Int32\")")]
         [TestCase("Assembly.Load(\"mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089\").GetType(\"System.Int32\")")]
-        public void TryGetAssemblyLoad(string expression)
+        public static void TryGetAssemblyLoad(string expression)
         {
             var code = @"
 namespace RoslynSandbox

@@ -6,12 +6,12 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class MethodInfoTests
+    public static class MethodInfoTests
     {
         [TestCase("typeof(C).GetMethod(nameof(this.M))",                              "RoslynSandbox.C.M()")]
-        [TestCase("foo.GetType().GetMethod(nameof(this.M))",                            "RoslynSandbox.C.M()")]
-        [TestCase("fooType.GetMethod(nameof(this.M))",                                  "RoslynSandbox.C.M()")]
-        [TestCase("Cached",                                                             "RoslynSandbox.C.M()")]
+        [TestCase("foo.GetType().GetMethod(nameof(this.M))",                          "RoslynSandbox.C.M()")]
+        [TestCase("fooType.GetMethod(nameof(this.M))",                                "RoslynSandbox.C.M()")]
+        [TestCase("Cached",                                                           "RoslynSandbox.C.M()")]
         [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetMethod",           "RoslynSandbox.C.Property.get")]
         [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetGetMethod(false)", "RoslynSandbox.C.Property.get")]
         [TestCase("typeof(C).GetProperty(nameof(this.Property)).SetMethod",           "RoslynSandbox.C.Property.set")]

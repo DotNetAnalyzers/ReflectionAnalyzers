@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL046DefaultMemberMustExist
+    public static class REFL046DefaultMemberMustExist
     {
         public const string DiagnosticId = "REFL046";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "The specified default member does not exist.",
             messageFormat: "The specified default member does not exist.",

@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL029MissingTypes
+    public static class REFL029MissingTypes
     {
         public const string DiagnosticId = "REFL029";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Specify types in case an overload is added in the future.",
             messageFormat: "Specify types in case an overload is added in the future.",

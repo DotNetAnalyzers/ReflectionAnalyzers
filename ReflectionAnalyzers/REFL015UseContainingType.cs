@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL015UseContainingType
+    public static class REFL015UseContainingType
     {
         public const string DiagnosticId = "REFL015";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Use the containing type.",
             messageFormat: "Use the containing type {0}.",

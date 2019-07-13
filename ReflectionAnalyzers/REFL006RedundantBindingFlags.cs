@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL006RedundantBindingFlags
+    public static class REFL006RedundantBindingFlags
     {
         public const string DiagnosticId = "REFL006";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "The binding flags can be more precise.",
             messageFormat: "The binding flags can be more precise.{0}",

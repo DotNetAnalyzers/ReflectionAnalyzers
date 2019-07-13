@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL011DuplicateBindingFlags
+    public static class REFL011DuplicateBindingFlags
     {
         public const string DiagnosticId = "REFL011";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Duplicate BindingFlag.",
             messageFormat: "Duplicate flag.",

@@ -4,7 +4,6 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
-    using ReflectionAnalyzers.Codefixes;
 
     public static partial class CodeFix
     {

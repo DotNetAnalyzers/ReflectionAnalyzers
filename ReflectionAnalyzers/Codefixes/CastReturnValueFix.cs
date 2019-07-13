@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Codefixes
+namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers.Codefixes
 
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CastReturnValueFix))]
     [Shared]
-    internal class CastReturnValueFix : DocumentEditorCodeFixProvider
+    public class CastReturnValueFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL001CastReturnValue.DiagnosticId,

@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL036CheckNull
+    public static class REFL036CheckNull
     {
         public const string DiagnosticId = "REFL036";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Pass 'throwOnError: true' or check if null.",
             messageFormat: "Pass 'throwOnError: true' or check if null.",

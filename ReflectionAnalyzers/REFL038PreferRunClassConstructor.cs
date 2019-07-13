@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL038PreferRunClassConstructor
+    public static class REFL038PreferRunClassConstructor
     {
         internal const string DiagnosticId = "REFL038";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Prefer RuntimeHelpers.RunClassConstructor.",
             messageFormat: "Prefer RuntimeHelpers.RunClassConstructor.",

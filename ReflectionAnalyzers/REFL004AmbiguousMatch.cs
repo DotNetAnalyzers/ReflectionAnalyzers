@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL004AmbiguousMatch
+    public static class REFL004AmbiguousMatch
     {
         public const string DiagnosticId = "REFL004";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "More than one member is matching the criteria.",
             messageFormat: "More than one member is matching the criteria.",

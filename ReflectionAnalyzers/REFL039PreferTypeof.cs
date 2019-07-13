@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL039PreferTypeof
+    public static class REFL039PreferTypeof
     {
         internal const string DiagnosticId = "REFL039";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Prefer typeof(...) over instance.GetType when the type is sealed.",
             messageFormat: "Prefer typeof({0}) over instance.GetType when the type is sealed.",

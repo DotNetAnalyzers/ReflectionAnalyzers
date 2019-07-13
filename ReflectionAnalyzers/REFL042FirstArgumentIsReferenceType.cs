@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL042FirstArgumentIsReferenceType
+    public static class REFL042FirstArgumentIsReferenceType
     {
         internal const string DiagnosticId = "REFL042";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "First argument must be reference type.",
             messageFormat: "First argument must be reference type.",

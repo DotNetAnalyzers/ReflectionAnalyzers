@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL002DiscardReturnValue
+    public static class REFL002DiscardReturnValue
     {
         public const string DiagnosticId = "REFL002";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Discard the return value.",
             messageFormat: "Discard the return value.",

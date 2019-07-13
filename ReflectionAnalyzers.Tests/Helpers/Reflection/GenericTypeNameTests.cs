@@ -3,14 +3,14 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
     using System.Linq;
     using NUnit.Framework;
 
-    public class GenericTypeNameTests
+    public static class GenericTypeNameTests
     {
         [TestCase("System.Int32")]
         [TestCase("System.Nullable`1")]
         [TestCase("System.Nullable`1[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]")]
         [TestCase("System.Nullable`1 [System.Int32]")]
         [TestCase("System.Collections.Generic.KeyValuePair`2 [System.Int32,System.String]")]
-        public void TryGetGenericWhenFalse(string name)
+        public static void TryGetGenericWhenFalse(string name)
         {
             Assert.AreEqual(false, GenericTypeName.TryParse(name, out _));
         }
@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("System.Nullable`1[System.Int32]", "System.Int32")]
         [TestCase("System.Nullable`1[[System.Int32]]", "System.Int32")]
         [TestCase("System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", "System.Int32")]
-        public void TryGetGenericWhenNullable(string name, string arg)
+        public static void TryGetGenericWhenNullable(string name, string arg)
         {
             Assert.AreEqual(true, GenericTypeName.TryParse(name, out var generic));
             Assert.AreEqual("System.Nullable`1", generic.MetadataName);
@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("System.Collections.Generic.KeyValuePair`2[System.Int32 ,System.String]", "System.Int32 ", "System.String")]
         [TestCase("System.Collections.Generic.KeyValuePair`2[ System.Int32, System.String ]", "System.Int32", "System.String ")]
         [TestCase("System.Collections.Generic.KeyValuePair`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", "System.Int32", "System.String")]
-        public void TryGetGenericWhenKeyValuePair(string name, string arg0, string arg1)
+        public static void TryGetGenericWhenKeyValuePair(string name, string arg0, string arg1)
         {
             Assert.AreEqual(true, GenericTypeName.TryParse(name, out var generic));
             Assert.AreEqual("System.Collections.Generic.KeyValuePair`2", generic.MetadataName);
@@ -50,7 +50,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 
         [TestCase("System.Nullable`1[System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]]", "System.Int32", "System.String")]
         [TestCase("System.Nullable`1[[System.Collections.Generic.KeyValuePair`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", "System.Int32", "System.String")]
-        public void TryGetGenericWhenNullableKeyValuePair(string name, string arg0, string arg1)
+        public static void TryGetGenericWhenNullableKeyValuePair(string name, string arg0, string arg1)
         {
             Assert.AreEqual(true, GenericTypeName.TryParse(name, out var generic));
             Assert.AreEqual("System.Nullable`1", generic.MetadataName);

@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL034DontMakeGeneric
+    public static class REFL034DontMakeGeneric
     {
         public const string DiagnosticId = "REFL034";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Don't call MakeGeneric when not a generic definition.",
             messageFormat: "{0}",

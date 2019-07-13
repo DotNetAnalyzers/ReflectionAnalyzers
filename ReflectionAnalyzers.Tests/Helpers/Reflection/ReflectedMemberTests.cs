@@ -7,16 +7,16 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ReflectedMemberTests
+    public static class ReflectedMemberTests
     {
-        [TestCase("typeof(C).GetMethod(nameof(this.ToString))",                                                                             "C",           "typeof(C)")]
-        [TestCase("new C().GetType().GetMethod(nameof(this.ToString))",                                                                     "C",           "new C().GetType()")]
+        [TestCase("typeof(C).GetMethod(nameof(this.ToString))",                                                                               "C",           "typeof(C)")]
+        [TestCase("new C().GetType().GetMethod(nameof(this.ToString))",                                                                       "C",           "new C().GetType()")]
         [TestCase("foo.GetType().GetMethod(nameof(this.ToString))",                                                                           "C",           "foo.GetType()")]
         [TestCase("this.GetType().GetMethod(nameof(this.ToString))",                                                                          "C",           "this.GetType()")]
         [TestCase("GetType().GetMethod(nameof(this.ToString))",                                                                               "C",           "GetType()")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\").GetMethod(nameof(this.ToString))",                                       "Int32",         "typeof(string).Assembly.GetType(\"System.Int32\")")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\").GetMethod(nameof(this.ToString))", "IEnumerable`1", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
-        public void TryGetTypeFromExpression(string call, string expected, string expectedSource)
+        public static void TryGetTypeFromExpression(string call, string expected, string expectedSource)
         {
             var code = @"
 namespace RoslynSandbox
@@ -49,7 +49,7 @@ namespace RoslynSandbox
         [TestCase("GetType()", "C")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "Int32")]
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "IEnumerable`1")]
-        public void TryGetTypeFromLocal(string typeExpression, string expected)
+        public static void TryGetTypeFromLocal(string typeExpression, string expected)
         {
             var code = @"
 namespace RoslynSandbox
@@ -77,7 +77,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void Recursion()
+        public static void Recursion()
         {
             var code = @"
 namespace RoslynSandbox
@@ -103,7 +103,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public void Dump()
+        public static void Dump()
         {
             Console.WriteLine(typeof(string).Assembly.GetType("System.Int32"));
         }

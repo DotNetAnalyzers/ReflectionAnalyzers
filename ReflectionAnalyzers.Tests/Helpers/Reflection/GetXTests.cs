@@ -6,10 +6,10 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public partial class GetXTests
+    public static partial class GetXTests
     {
         [Test]
-        public void GetMethodWrongFlagsWhenNotVisible()
+        public static void GetMethodWrongFlagsWhenNotVisible()
         {
             var code = @"
 namespace RoslynSandbox

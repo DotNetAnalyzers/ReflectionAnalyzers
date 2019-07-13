@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL027PreferEmptyTypes
+    public static class REFL027PreferEmptyTypes
     {
         public const string DiagnosticId = "REFL027";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Prefer Type.EmptyTypes.",
             messageFormat: "Prefer Type.EmptyTypes.",

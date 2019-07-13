@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL012PreferIsDefined
+    public static class REFL012PreferIsDefined
     {
         public const string DiagnosticId = "REFL012";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "Prefer Attribute.IsDefined().",
             messageFormat: "Prefer Attribute.IsDefined().",

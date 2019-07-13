@@ -4,7 +4,6 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
-    using ReflectionAnalyzers.Codefixes;
 
     public static class CodeFix
     {

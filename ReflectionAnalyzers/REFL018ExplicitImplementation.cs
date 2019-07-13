@@ -2,11 +2,11 @@ namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
-    internal static class REFL018ExplicitImplementation
+    public static class REFL018ExplicitImplementation
     {
         public const string DiagnosticId = "REFL018";
 
-        internal static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
             title: "The member is explicitly implemented.",
             messageFormat: "{0} is explicitly implemented.",
