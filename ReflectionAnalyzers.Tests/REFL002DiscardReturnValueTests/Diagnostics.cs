@@ -43,7 +43,7 @@ namespace RoslynSandbox
 
         public C()
         {
-            this.value = ↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
+            this.value = (int)↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
         }
 
         public static void Bar()

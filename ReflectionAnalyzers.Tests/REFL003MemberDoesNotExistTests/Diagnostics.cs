@@ -147,9 +147,9 @@ namespace RoslynSandbox
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
-        [TestCase("a1")]
-        [TestCase("a7")]
-        [TestCase("a8")]
+        [TestCase("\"a1\"")]
+        [TestCase("\"a7\"")]
+        [TestCase("\"a8\"")]
         public static void GetTupleFieldItem7ByName(string field)
         {
             var code = @"
@@ -162,7 +162,7 @@ namespace RoslynSandbox
 
         static (int a1, int a2, int a3, int a4, int a5, int a6, int a7, int a8) Create() => default;
     }
-}".AssertReplace("a7", field);
+}".AssertReplace("\"a7\"", field);
 
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
@@ -178,7 +178,7 @@ namespace RoslynSandbox
         public object Get => typeof(C).GetProperty(nameof(P)).↓GetMethod;
 
 
-        public int P { set; }
+        public int P { set { } }
     }
 }".AssertReplace("typeof(C).GetProperty(nameof(P)).↓GetMethod", call);
 

@@ -54,7 +54,7 @@ namespace RoslynSandbox
             [TestCase("where T : unmanaged", "Console")]
             [TestCase("where T : unmanaged", "int?")]
             [TestCase("where T : IComparable", "C<int>")]
-            [TestCase("where T : IComparable<double>", "C<int>")]
+            [TestCase("where T : IComparable<int>", "C<int>")]
             [TestCase("where T : IComparable<double>", "int")]
             [TestCase("where T : new()", "Bar")]
             public static void ConstrainedParameter(string constraint, string arg)
@@ -162,17 +162,16 @@ namespace RoslynSandbox
             return typeof(T).IsValueType
                 ? typeof(C).GetNestedType(""ConstrainedToClass`1"", BindingFlags.Public).MakeGenericType(typeof(T))
                 : typeof(C).GetNestedType(""ConstrainedToStruct`1"", BindingFlags.Public).MakeGenericType(typeof(T));
-            }
+        }
 
-            public class ConstrainedToClass<T>
-                where T : class
-            {
-            }
+        public class ConstrainedToClass<T>
+            where T : class
+        {
+        }
 
-            public class ConstrainedToStruct<T>
-                where T : struct
-            {
-            }
+        public class ConstrainedToStruct<T>
+            where T : struct
+        {
         }
     }
 }";

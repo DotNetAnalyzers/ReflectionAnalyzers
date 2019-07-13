@@ -52,7 +52,7 @@ namespace RoslynSandbox
 {
     class C
     {
-        public int Bar { set; }
+        public int Bar { set { } }
 
         public static object Get(C foo) => foo.GetType().GetMethod(↓""get_Bar"");
     }

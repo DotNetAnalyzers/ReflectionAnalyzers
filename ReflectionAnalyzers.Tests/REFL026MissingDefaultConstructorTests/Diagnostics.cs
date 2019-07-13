@@ -47,7 +47,7 @@ namespace RoslynSandbox
         {
         }
 
-        public C Create() => Activator.CreateInstance<↓C>();
+        public object M() => Activator.CreateInstance<↓C>();
     }
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
@@ -70,7 +70,7 @@ namespace RoslynSandbox
         {
         }
 
-        public C Create() => Activator.CreateInstance<↓C>();
+        public object M() => Activator.CreateInstance<↓C>();
     }
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 

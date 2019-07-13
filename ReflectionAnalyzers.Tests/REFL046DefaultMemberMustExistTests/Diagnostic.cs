@@ -33,11 +33,13 @@ public class Foo
         public void DefaultMemberIsEvent()
         {
             var code = @"
+using System;
 using System.Reflection;
+
 [DefaultMember(""Event"")]
 public class Foo
 {
-    public event EventhHandler Event;
+    public event EventHandler Event;
 }
 ";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);

@@ -24,7 +24,7 @@ namespace RoslynSandbox
             }
 
             [TestCase("typeof(C).GetMethod(↓\"MISSING\")")]
-            [TestCase("foo.GetType().GetMethod(↓\"MISSING\")")]
+            [TestCase("c.GetType().GetMethod(↓\"MISSING\")")]
             [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]
             [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
             [TestCase("GetType().GetMethod(↓\"MISSING\")")]
@@ -35,9 +35,9 @@ namespace RoslynSandbox
 {
     public sealed class C
     {
-        public object Bar(C foo) => typeof(C).GetMethod(↓""MISSING"");
+        public object M(C c) => typeof(C).GetMethod(↓""MISSING"");
     }
-}".AssertReplace("typeof(C).GetMethod(↓\"MISSING\"", type);
+}".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
                 var message = "The type RoslynSandbox.C does not have a member named MISSING.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
@@ -51,7 +51,7 @@ namespace RoslynSandbox
 {
     public struct C
     {
-        public C()
+        public C(int _)
         {
             var methodInfo = typeof(C).GetMethod(↓""MISSING"");
         }
@@ -69,7 +69,7 @@ namespace RoslynSandbox
 {
     public static class C
     {
-        public void Bar()
+        public static void Bar()
         {
             var methodInfo = typeof(C).GetMethod(↓""MISSING"");
         }
@@ -161,7 +161,7 @@ namespace RoslynSandbox
             var methodInfo = typeof(C).GetMethod(↓""get_Bar"");
         }
 
-        public int Bar { set; }
+        public int Bar { set { } }
     }
 }";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
