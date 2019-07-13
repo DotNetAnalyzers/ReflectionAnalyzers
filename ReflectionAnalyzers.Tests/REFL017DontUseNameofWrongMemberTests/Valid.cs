@@ -290,7 +290,7 @@ namespace RoslynSandbox
         [Test]
         public static void WhenThrowingArgumentException()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -306,13 +306,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void ArgumentOutOfRangeException()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -329,13 +329,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void IgnoresDebuggerDisplay()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     [System.Diagnostics.DebuggerDisplay(""{Name}"")]
@@ -344,13 +344,13 @@ namespace RoslynSandbox
         public string Name { get; }
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void IgnoresTypeName()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -368,13 +368,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void IgnoresSameLocal()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -387,13 +387,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void WhenUsedInDeclaration()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     public class C
@@ -406,13 +406,13 @@ namespace RoslynSandbox
         private static string Id(string value) => value;
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void WhenLocalsNotVisible()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     public class C
@@ -435,13 +435,13 @@ namespace RoslynSandbox
         private static string Id(string value) => value;
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void IgnoresNamespaceName()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -459,13 +459,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void AggregateExceptionInnerExceptionCount()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System;
@@ -481,13 +481,13 @@ namespace RoslynSandbox
         public int InnerExceptionCount => 0;
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]
         public static void NullableIntGetTypeGetFieldMaxValue()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -497,7 +497,7 @@ namespace RoslynSandbox
         public static object Get(int? value) => value.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
     }
 }

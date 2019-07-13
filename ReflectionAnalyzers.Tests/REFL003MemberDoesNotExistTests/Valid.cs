@@ -157,7 +157,7 @@ namespace RoslynSandbox
         [Test]
         public static void NullableIntGetTypeGetFieldMaxValue()
         {
-            var testCode = @"
+            var code = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -167,7 +167,7 @@ namespace RoslynSandbox
         public static object Get(int? value) => value.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
     }
 }";
-            RoslynAssert.Valid(Analyzer, testCode);
+            RoslynAssert.Valid(Analyzer, code);
         }
 
         [Test]

@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
             [Test]
             public static void PublicOverloads()
             {
-                var code = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -34,7 +34,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -51,9 +51,9 @@ namespace RoslynSandbox
         public static double Static(double value) => value;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int) }.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int) }.");
 
-                fixedCode = @"
+                after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -70,13 +70,13 @@ namespace RoslynSandbox
         public static double Static(double value) => value;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(double) }.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(double) }.");
             }
 
             [Test]
             public static void TwoIndexers()
             {
-                var code = @"
+                var before = @"
 namespace RoslynSandbox
 {
     public class C
@@ -89,7 +89,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -103,9 +103,9 @@ namespace RoslynSandbox
         public int this[int i1, int i2] => 0;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int) }.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int) }.");
 
-                fixedCode = @"
+                after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -119,7 +119,7 @@ namespace RoslynSandbox
         public int this[int i1, int i2] => 0;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode, fixTitle: "Use: new[] { typeof(int), typeof(int) }.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int), typeof(int) }.");
             }
         }
     }

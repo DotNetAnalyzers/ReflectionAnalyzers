@@ -21,7 +21,7 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
         [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         public static void GetPrivateMemberTypeof(string call)
         {
-            var baseCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -51,7 +51,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -65,7 +65,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
             var message = "Use the containing type CBase.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { before, code }, after);
         }
 
         [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
@@ -78,7 +78,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         public static void GetPrivateMemberThisGetType(string call)
         {
-            var baseCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -108,7 +108,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -122,14 +122,14 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
             var message = "Use the containing type CBase.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { before, code }, after);
         }
 
         [TestCase("PublicStatic")]
         [TestCase("Public")]
         public static void GetPublicNestedType(string type)
         {
-            var baseCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -159,7 +159,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -173,14 +173,14 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
             var message = "Use the containing type CBase.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { before, code }, after);
         }
 
         [TestCase("PrivateStatic")]
         [TestCase("Private")]
         public static void GetPrivateNestedType(string type)
         {
-            var baseCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -210,7 +210,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("PrivateStatic", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -225,7 +225,7 @@ namespace RoslynSandbox
 }".AssertReplace("PrivateStatic", type);
 
             var message = "Use the containing type CBase.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { before, code }, after);
         }
 
         [Test]
@@ -239,7 +239,7 @@ namespace RoslynSandbox
         private readonly int field;
     }
 }";
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -250,7 +250,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -262,7 +262,7 @@ namespace RoslynSandbox
 }";
 
             var message = "Use the containing type B.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, before }, after);
         }
     }
 }

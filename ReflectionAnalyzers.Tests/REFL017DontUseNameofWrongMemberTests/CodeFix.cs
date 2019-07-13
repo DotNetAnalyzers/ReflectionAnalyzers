@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
             [Test]
             public static void WrongContainingTypeWhenNotAccessible()
             {
-                var testCode = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -33,7 +33,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -50,7 +50,7 @@ namespace RoslynSandbox
     }
 }";
                 var message = "Don't use name of wrong member. Expected: \"InnerExceptionCount\"";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use \"InnerExceptionCount\".");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Use \"InnerExceptionCount\".");
             }
 
             [Test]
@@ -66,7 +66,7 @@ namespace RoslynSandbox
         public int InnerExceptionCount { get; }
     }
 }";
-                var code = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -80,7 +80,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -94,7 +94,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { exception, code }, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { exception, before }, after);
             }
         }
     }

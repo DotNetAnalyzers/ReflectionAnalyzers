@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
         [Test]
         public static void GetMethodNoParameter()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     class C
@@ -28,7 +28,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -43,13 +43,13 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetMethodNoParameterWithFlags()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -65,7 +65,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -81,13 +81,13 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetMethodOneParameter()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     class C
@@ -101,7 +101,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     class C
@@ -114,13 +114,13 @@ namespace RoslynSandbox
         public int Bar(int value) => value;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetMethodOneParameterWithFlags()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -136,7 +136,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -151,13 +151,13 @@ namespace RoslynSandbox
         public int Bar(int value) => value;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetMethodOneParams()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Linq;
@@ -173,7 +173,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Linq;
@@ -188,13 +188,13 @@ namespace RoslynSandbox
         public int Bar(params int[] values) => values.Sum();
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetMethodOneParamsWithFlags()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Linq;
@@ -211,7 +211,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Linq;
@@ -227,13 +227,13 @@ namespace RoslynSandbox
         public int Bar(params int[] values) => values.Sum();
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetMethodTwoParameters()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     class C
@@ -247,7 +247,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     class C
@@ -260,13 +260,13 @@ namespace RoslynSandbox
         public double Bar(int i, double d) => i + d;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetMethodTwoParameterWithFlags()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -282,7 +282,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -297,7 +297,7 @@ namespace RoslynSandbox
         public double Bar(int i, double d) => i + d;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

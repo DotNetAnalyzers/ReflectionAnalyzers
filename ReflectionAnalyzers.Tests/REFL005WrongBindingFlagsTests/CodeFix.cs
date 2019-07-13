@@ -30,7 +30,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
         [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public static void GetMethod(string method, string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -52,7 +52,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -75,13 +75,13 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void GetMethodWithTrivia()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -98,7 +98,7 @@ namespace RoslynSandbox
         public int Public() => 0;
     }
 }";
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -115,7 +115,7 @@ namespace RoslynSandbox
         public int Public() => 0;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("this.ToString", "BindingFlags.Public", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
@@ -123,7 +123,7 @@ namespace RoslynSandbox
         [TestCase("this.ToString", "BindingFlags.Public | BindingFlags.Static", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public static void GetMethodWhenShadowed(string method, string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -139,7 +139,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(this.ToString)", $"nameof({method})")
   .AssertReplace("BindingFlags.Static", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -156,14 +156,14 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.ToString)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("ReferenceEquals", "BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy")]
         [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public static void GetMethodWhenMissingFlags(string method, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -185,7 +185,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(this.Public)", $"nameof({method})");
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -209,7 +209,7 @@ namespace RoslynSandbox
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("StaticMethod", "Public | Instance", "Public | Static | DeclaredOnly")]
@@ -231,7 +231,7 @@ namespace RoslynSandbox
         [TestCase("this.PrivateMethod", "NonPublic | Static | DeclaredOnly", "NonPublic | Instance | DeclaredOnly")]
         public static void GetMethodUsingStatic(string method, string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using static System.Reflection.BindingFlags;
@@ -253,7 +253,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(this.PublicMethod)", $"nameof({method})")
   .AssertReplace("Public | Static", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using static System.Reflection.BindingFlags;
@@ -276,7 +276,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.PublicMethod)", $"nameof({method})")
   .AssertReplace("Public | Instance | DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("Static", "BindingFlags.Public | BindingFlags.Instance", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
@@ -290,7 +290,7 @@ namespace RoslynSandbox
         [TestCase("this.Private", "BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public static void GetProperty(string method, string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -312,7 +312,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -335,7 +335,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("PublicStatic", "BindingFlags.NonPublic", "BindingFlags.Public")]
@@ -348,7 +348,7 @@ namespace RoslynSandbox
         [TestCase("Private", "BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic")]
         public static void GetNestedType(string type, string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -378,7 +378,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -409,14 +409,14 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.DeclaredOnly", expected);
             var message = $"There is no member matching the filter. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("PrivateStatic")]
         [TestCase("Private")]
         public static void GetNestedTypeWhenMissingFlags(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -437,7 +437,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("nameof(PrivateStatic)", $"nameof({type})");
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -459,7 +459,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(PrivateStatic)", $"nameof({type})");
             var message = "There is no member matching the filter. Expected: BindingFlags.NonPublic.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("Type.EmptyTypes")]
@@ -470,7 +470,7 @@ namespace RoslynSandbox
         [TestCase("new[] { typeof(double) }")]
         public static void GetConstructorWhenMissingFlags(string types)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -488,7 +488,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Type.EmptyTypes", types);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -507,7 +507,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Type.EmptyTypes", types);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

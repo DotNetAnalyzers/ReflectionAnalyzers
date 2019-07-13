@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
         [TestCase("typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)")]
         public static void GetMethodOneParameterOverloadResolution(string call)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -33,7 +33,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)", call);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -52,7 +52,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null)", call.AssertReplace("↓int", "IComparable"));
 
             var message = "Use the same type as the parameter. Expected: IComparable.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Project1
     }
 }";
 
-            var code = @"
+            var before = @"
 namespace Project2
 {
     using System;
@@ -83,7 +83,7 @@ namespace Project2
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace Project2
 {
     using System;
@@ -97,13 +97,13 @@ namespace Project2
     }
 }";
             var message = "Use the same type as the parameter. Expected: IComparable.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { fooCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { fooCode, before }, after);
         }
 
         [Test]
         public static void Issue121Inline()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -119,7 +119,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -136,13 +136,13 @@ namespace RoslynSandbox
 }";
 
             var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode, fixTitle: "Change to: IReadOnlyDictionary<string, object>.");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Change to: IReadOnlyDictionary<string, object>.");
         }
 
         [Test]
         public static void Issue121()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -165,7 +165,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -189,7 +189,7 @@ namespace RoslynSandbox
 }";
 
             var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode, fixTitle: "Change to: typeof(IReadOnlyDictionary<string, object>).");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Change to: typeof(IReadOnlyDictionary<string, object>).");
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
         [TestCase("new Type[] { }")]
         public static void GetConstructor(string emptyArray)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -32,7 +32,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("new Type[0]", emptyArray);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -47,7 +47,7 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

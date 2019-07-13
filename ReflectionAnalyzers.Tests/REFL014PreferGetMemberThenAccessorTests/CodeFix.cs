@@ -591,7 +591,7 @@ namespace RoslynSandbox
         public object Get => typeof(BinaryReferencedAssembly.Foo).GetMethod(""add_Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -641,7 +641,7 @@ namespace RoslynSandbox.BinaryReferencedAssembly
                                                  .EqualTo("Bar"));
 
             var message = @"Prefer typeof(BinaryReferencedAssembly.Foo).GetEvent(""Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, after);
         }
     }
 }

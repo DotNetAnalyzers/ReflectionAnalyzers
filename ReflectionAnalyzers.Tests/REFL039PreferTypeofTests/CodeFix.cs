@@ -20,7 +20,7 @@ namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
         [TestCase("StringComparison?", "StringComparison")]
         public static void WhenCallingGetType(string parameterType, string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -31,7 +31,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("int?", parameterType);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -43,7 +43,7 @@ namespace RoslynSandbox
 }".AssertReplace("int?", parameterType)
   .AssertReplace("typeof(int)", $"typeof({type})");
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

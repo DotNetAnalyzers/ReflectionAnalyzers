@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
         [TestCase("GetInterface(typeof(IEnumerable).↓Name)", "GetInterface(typeof(IEnumerable).FullName)")]
         public static void GetInterface(string call, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -39,7 +39,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetInterface(↓typeof(IEnumerable<>).Name)", call);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -61,7 +61,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetInterface(typeof(IEnumerable<>).FullName)", expected);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

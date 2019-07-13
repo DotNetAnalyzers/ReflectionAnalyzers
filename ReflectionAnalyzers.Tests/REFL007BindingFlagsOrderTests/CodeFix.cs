@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
         [TestCase("BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly", "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public static void GetMethod(string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -32,7 +32,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -49,7 +49,7 @@ namespace RoslynSandbox
 }".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = $"The binding flags are not in the expected order. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
     }
 }

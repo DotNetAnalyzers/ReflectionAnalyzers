@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
         [TestCase("BindingFlags.Public | BindingFlags.↓Public | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
         public static void GetMethod(string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -33,7 +33,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -50,14 +50,14 @@ namespace RoslynSandbox
 }".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = "Duplicate flag.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("Public | ↓Public",                                "Public")]
         [TestCase("System.Reflection.BindingFlags.Public | ↓Public", "System.Reflection.BindingFlags.Public")]
         public static void GetMethodUsingStatic(string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -73,7 +73,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -91,7 +91,7 @@ namespace RoslynSandbox
 }".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = "Duplicate flag.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
     }
 }

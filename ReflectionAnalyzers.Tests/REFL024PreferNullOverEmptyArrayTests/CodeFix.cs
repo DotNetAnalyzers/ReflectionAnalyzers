@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL024PreferNullOverEmptyArrayTests
         [TestCase("new object[] { }")]
         public static void MemberInfoInvoke(string emptyArray)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -32,7 +32,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Array.Empty<object>()", emptyArray);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -47,7 +47,7 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

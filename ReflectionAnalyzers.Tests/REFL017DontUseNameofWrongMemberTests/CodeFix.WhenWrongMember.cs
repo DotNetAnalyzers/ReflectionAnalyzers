@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
             [Test]
             public static void TypeOfDictionaryGetMethodNameOfStaticAdd()
             {
-                var testCode = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -48,13 +48,13 @@ namespace RoslynSandbox
     }
 }";
                 var message = "Don't use name of wrong member. Expected: Dictionary<string, object>.Add";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), testCode, fixedCode, fixTitle: "Use Dictionary<string, object>.Add.");
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Use Dictionary<string, object>.Add.");
             }
 
             [Test]
             public static void TypeOfConsoleGetMethodNameOfStaticWriteLine()
             {
-                var testCode = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -70,7 +70,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -85,13 +85,13 @@ namespace RoslynSandbox
         public bool WriteLine { get; set; }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [Test]
             public static void TypeOfDictionaryGetMethodNameOfHashSetAdd()
             {
-                var testCode = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -107,7 +107,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -122,13 +122,13 @@ namespace RoslynSandbox
         private static int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [Test]
             public static void ThisGetTypeGetMethodNameOfHashSetAddStatic()
             {
-                var testCode = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -144,7 +144,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -159,13 +159,13 @@ namespace RoslynSandbox
         private static int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [Test]
             public static void ThisGetTypeGetMethodNameOfHashSetAddInstance()
             {
-                var testCode = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -181,7 +181,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -196,13 +196,13 @@ namespace RoslynSandbox
         private int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [Test]
             public static void ThisGetTypeGetMethodNameOfHashSetAddUnderscore()
             {
-                var testCode = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -218,7 +218,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -233,7 +233,7 @@ namespace RoslynSandbox
         private int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
         }
     }

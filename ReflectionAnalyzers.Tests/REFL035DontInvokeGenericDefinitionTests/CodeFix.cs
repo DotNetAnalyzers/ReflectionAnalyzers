@@ -31,7 +31,7 @@ namespace RoslynSandbox
         [Test]
         public static void WithAccessibleParameterSingleLine()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     class C
@@ -42,7 +42,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     class C
@@ -53,7 +53,7 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

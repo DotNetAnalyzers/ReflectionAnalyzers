@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             [Test]
             public static void Typeof()
             {
-                var code = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -30,7 +30,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -43,13 +43,13 @@ namespace RoslynSandbox
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [Test]
             public static void WalkType()
             {
-                var code = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -64,7 +64,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -78,7 +78,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [TestCase("Activator.CreateInstance(typeof(T))")]

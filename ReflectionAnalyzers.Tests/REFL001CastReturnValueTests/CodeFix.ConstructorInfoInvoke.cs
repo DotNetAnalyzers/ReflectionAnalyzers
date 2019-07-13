@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             [Test]
             public static void AssigningLocal()
             {
-                var code = @"
+                var before = @"
 namespace RoslynSandbox
 {
     public class C
@@ -28,7 +28,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     public class C
@@ -39,7 +39,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [Test]

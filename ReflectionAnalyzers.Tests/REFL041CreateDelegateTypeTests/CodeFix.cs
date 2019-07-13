@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
         [TestCase("typeof(Action<string, string>)")]
         public static void StaticStringInt(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -33,7 +33,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -49,7 +49,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<string, int>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -59,7 +59,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action<string, string>)")]
         public static void StaticVoid(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -75,7 +75,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -91,7 +91,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -102,7 +102,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action<string, string>)")]
         public static void StaticStringVoid(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -118,7 +118,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -134,7 +134,7 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -144,7 +144,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action<string, string>)")]
         public static void StaticStringVoidFirstArg(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -161,7 +161,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Action<int>)", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -177,7 +177,7 @@ namespace RoslynSandbox
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -188,7 +188,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action<string, string>)")]
         public static void StaticStringStringVoidFirstArg(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -205,7 +205,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Action<int>)", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -221,7 +221,7 @@ namespace RoslynSandbox
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -230,7 +230,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action<string, string>)")]
         public static void InstanceStringInt(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -246,7 +246,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -262,7 +262,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<C, string, int>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -272,7 +272,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action<string, string>)")]
         public static void InstanceVoid(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -288,7 +288,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -304,7 +304,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action<C>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("typeof(Func<string>)")]
@@ -314,7 +314,7 @@ namespace RoslynSandbox
         [TestCase("typeof(Action<string, string>)")]
         public static void InstanceVoidWithTarget(string type)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -331,7 +331,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -348,13 +348,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void StaticStringIntCustomDelegate()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -372,7 +372,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -390,13 +390,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action<string>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void GetGetMethodReturnTypeInstance()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -414,7 +414,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -432,13 +432,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<C, int>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void GetGetMethodReturnTypeStatic()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -456,7 +456,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -474,13 +474,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<int>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void GetSetMethodReturnTypeInstance()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -498,7 +498,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -516,13 +516,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action<C, int>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void GetSetMethodReturnTypeStatic()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -540,7 +540,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -558,13 +558,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Action<int>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void StaticWithContainingAsArgument()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -582,7 +582,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -600,7 +600,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "Delegate type is not matching expected System.Func<C, int>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
     }
 }

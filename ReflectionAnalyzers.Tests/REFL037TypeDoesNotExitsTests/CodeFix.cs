@@ -20,7 +20,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         [TestCase("Type.GetType(↓\"AppContextSwitches\")", "Type.GetType(\"System.AppContextSwitches\")")]
         public static void TypeGetTypeWithFix(string type, string fixedType)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -31,7 +31,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Type.GetType(↓\"Int32\")", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -42,7 +42,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Type.GetType(\"System.Int32\")", fixedType);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("MISSING")]
@@ -68,7 +68,7 @@ namespace RoslynSandbox
         [TestCase("typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"TemplatedAdorner\", throwOnError: true)", "typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"MS.Internal.Controls.TemplatedAdorner\", throwOnError: true)")]
         public static void AssemblyGetTypeWithFix(string type, string fixedType)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -79,7 +79,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(int).Assembly.GetType(↓\"Int32\")", type);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -90,7 +90,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", fixedType);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("typeof(C).Assembly.GetType(↓\"MISSING\")")]

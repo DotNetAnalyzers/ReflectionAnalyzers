@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL010PreferGenericGetCustomAttributeTests
         [Test]
         public static void WhenCast()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -27,7 +27,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -42,13 +42,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Prefer the generic extension method GetCustomAttribute<ObsoleteAttribute>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void WhenAs()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -61,7 +61,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -75,7 +75,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

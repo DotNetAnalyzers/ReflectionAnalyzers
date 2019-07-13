@@ -59,7 +59,7 @@ namespace ReflectionAnalyzers
         /// <param name="memberName">Member name specified by attribute.</param>
         /// <param name="location">Location of attribute application.</param>
         /// <param name="typeSymbol">Attribute target.</param>
-        /// <returns>Success</returns>
+        /// <returns>Success.</returns>
         private static bool TryGetAttributeAndTypeInfo(
             SyntaxNodeAnalysisContext context,
             out string memberName,

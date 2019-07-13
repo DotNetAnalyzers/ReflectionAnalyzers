@@ -34,7 +34,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
         [TestCase("this.Private",     "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly |  BindingFlags.IgnoreCase",       "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly")]
         public static void GetMethod(string method, string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -56,7 +56,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -80,7 +80,7 @@ namespace RoslynSandbox
   .AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
             var message = $"The binding flags can be more precise. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("PublicStatic",  "BindingFlags.Public | BindingFlags.NonPublic",                                                    "BindingFlags.Public")]
@@ -109,7 +109,7 @@ namespace RoslynSandbox
         [TestCase("Private",       "BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly",                      "BindingFlags.NonPublic")]
         public static void GetNestedType(string type, string flags, string expected)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -139,7 +139,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.NonPublic", flags);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -170,14 +170,14 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.DeclaredOnly", expected);
             var message = $"The binding flags can be more precise. Expected: {expected}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
         [TestCase("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy, null, Type.EmptyTypes, null)")]
         public static void GetConstructor(string call)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -191,7 +191,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)", call);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -206,7 +206,7 @@ namespace RoslynSandbox
     }
 }";
             var message = "The binding flags can be more precise. Expected: BindingFlags.Public | BindingFlags.Instance.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
     }
 }

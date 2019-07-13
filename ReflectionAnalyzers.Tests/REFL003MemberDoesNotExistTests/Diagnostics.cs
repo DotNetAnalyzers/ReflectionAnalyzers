@@ -37,7 +37,7 @@ namespace RoslynSandbox
     {
         public C(C c)
         {
-            var property = c.GetType().GetProperty(""P"");
+            var property = c.GetType().GetProperty(↓""P"");
             if (property != null)
             {
             }

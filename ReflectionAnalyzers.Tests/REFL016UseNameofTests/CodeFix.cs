@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
         [Test]
         public static void GetPropertyInstance()
         {
-            var testCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     class C
@@ -28,7 +28,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     class C
@@ -41,13 +41,13 @@ namespace RoslynSandbox
          public int Bar { get; }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetPropertyInstanceWithTrivia()
         {
-            var testCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -65,7 +65,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -82,13 +82,13 @@ namespace RoslynSandbox
          public int Bar { get; }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void GetPropertyStatic()
         {
-            var testCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     class C
@@ -102,7 +102,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     class C
@@ -115,13 +115,13 @@ namespace RoslynSandbox
          public static int Bar { get; }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void AnonymousType()
         {
-            var testCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     class C
@@ -134,7 +134,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     class C
@@ -146,13 +146,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode, fixTitle: "Use nameof(anon.C).");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use nameof(anon.C).");
         }
 
         [Test]
         public static void TypeofDictionaryGetMethodStringLiteral()
         {
-            var testCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -166,7 +166,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Collections.Generic;
@@ -179,7 +179,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode, fixTitle: "Use nameof(Dictionary<string, object>.Add).");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use nameof(Dictionary<string, object>.Add).");
         }
 
         [TestCase("Class")]
@@ -188,7 +188,7 @@ namespace RoslynSandbox
         [TestCase("Struct")]
         public static void GetNestedTypePrivateInSameType(string type)
         {
-            var testCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -210,7 +210,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.NonPublic)", $"GetNestedType(↓\"{type}\", BindingFlags.NonPublic)");
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -232,7 +232,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(Class)", $"nameof({type})");
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, testCode, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("Class")]
@@ -241,7 +241,7 @@ namespace RoslynSandbox
         [TestCase("Struct")]
         public static void GetNestedTypePublicInOtherType(string type)
         {
-            var fooCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -271,7 +271,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.Public)", $"GetNestedType(↓\"{type}\", BindingFlags.Public)");
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -285,13 +285,13 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(C.Class)", $"nameof(C.{type})");
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { fooCode, testCode }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { before, testCode }, after);
         }
 
         [Test]
         public static void AggregateExceptionMessage()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -306,7 +306,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -321,13 +321,13 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void SystemWindowsFormsControlCreateControl()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -340,7 +340,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -353,13 +353,13 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void NullableGetProperty()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -371,7 +371,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -383,13 +383,13 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void ValueTupleGetFieldItem1()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -400,7 +400,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -411,13 +411,13 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void ValueTupleGetFieldRest()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -428,7 +428,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -439,7 +439,7 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
@@ -454,7 +454,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     class C : BaseClass
@@ -463,7 +463,7 @@ namespace RoslynSandbox
     }
 }";
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     class C : BaseClass
@@ -472,7 +472,7 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, code }, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, before }, after);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
         [Test]
         public static void AttributeGetCustomAttributeEqualsNull()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -24,7 +24,7 @@ namespace RoslynSandbox
         public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) == null;
     }
 }";
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -35,13 +35,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Prefer Attribute.IsDefined().";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void AttributeGetCustomAttributeEqualsNullExplicitInherit()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -51,7 +51,7 @@ namespace RoslynSandbox
         public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute), true) == null;
     }
 }";
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -62,13 +62,13 @@ namespace RoslynSandbox
     }
 }";
             var message = "Prefer Attribute.IsDefined().";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [Test]
         public static void AttributeGetCustomAttributeNotEqualsNull()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -78,7 +78,7 @@ namespace RoslynSandbox
         public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) != null;
     }
 }";
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -89,14 +89,14 @@ namespace RoslynSandbox
     }
 }";
             var message = "Prefer Attribute.IsDefined().";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase(" == null")]
         [TestCase(" is null")]
         public static void IfGetCustomAttributeIsNull(string isNull)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -112,7 +112,7 @@ namespace RoslynSandbox
         }
     }
 }".AssertReplace(" == null", isNull);
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -128,13 +128,13 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
         public static void IfGetCustomAttributeNotNull()
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -150,7 +150,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -166,7 +166,7 @@ namespace RoslynSandbox
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

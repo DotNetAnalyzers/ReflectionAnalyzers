@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
         [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void WhenExplicitImplementation(string call)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -36,7 +36,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -56,7 +56,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
             var message = "Dispose is explicitly implemented.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("GetMethod(\"ToBoolean\")")]
@@ -65,7 +65,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"ToBoolean\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void WhenExplicitImplementationPublicNotInSource(string call)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -80,7 +80,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(\"ToBoolean\")", call);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -96,7 +96,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"ToBoolean\")", call);
 
             var message = "ToBoolean is explicitly implemented.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
     }
 }

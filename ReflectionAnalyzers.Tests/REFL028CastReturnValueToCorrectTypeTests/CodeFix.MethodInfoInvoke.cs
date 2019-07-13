@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
             [Test]
             public static void WhenCastingToWrongType()
             {
-                var code = @"
+                var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -29,7 +29,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var fixedCode = @"
+                var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -41,7 +41,7 @@ namespace RoslynSandbox
         public static int Bar(int i) => i;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
         }
     }
