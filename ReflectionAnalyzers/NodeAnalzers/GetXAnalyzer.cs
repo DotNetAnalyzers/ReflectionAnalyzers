@@ -260,7 +260,7 @@ namespace ReflectionAnalyzers
 
         private static bool TryGetX(SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
-            name = default(Name);
+            name = default;
             if (context.Node is InvocationExpressionSyntax candidate)
             {
                 return GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out types) ||
@@ -271,9 +271,9 @@ namespace ReflectionAnalyzers
                        GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags, out types);
             }
 
-            member = default(ReflectedMember);
-            flags = default(Flags);
-            types = default(Types);
+            member = default;
+            flags = default;
+            types = default;
             return false;
         }
 

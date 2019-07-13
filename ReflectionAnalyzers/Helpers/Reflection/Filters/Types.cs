@@ -33,7 +33,7 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                types = default(Types);
+                types = default;
                 return false;
             }
 

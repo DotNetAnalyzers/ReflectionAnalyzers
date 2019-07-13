@@ -28,14 +28,14 @@ namespace ReflectionAnalyzers
             }
 
             if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out ISymbol local))
+                context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out var local))
             {
-                eventInfo = default(EventInfo);
+                eventInfo = default;
                 return AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
                        TryGet(assignedValue, context, out eventInfo);
             }
 
-            eventInfo = default(EventInfo);
+            eventInfo = default;
             return false;
         }
     }

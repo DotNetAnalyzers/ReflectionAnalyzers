@@ -91,10 +91,10 @@ namespace ReflectionAnalyzers
                 switch (target.Parameters.Length)
                 {
                     case 1:
-                        ignoreCase = default(ArgumentAndValue<bool>);
+                        ignoreCase = default;
                         return true;
                     case 2 when target.TryFindParameter("throwOnError", out _):
-                        ignoreCase = default(ArgumentAndValue<bool>);
+                        ignoreCase = default;
                         return true;
                     case 3 when target.TryFindParameter("throwOnError", out _) &&
                                 target.TryFindParameter("ignoreCase", out var ignoreCaseParameter) &&
@@ -105,8 +105,8 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            typeName = default(TypeNameArgument);
-            ignoreCase = default(ArgumentAndValue<bool>);
+            typeName = default;
+            ignoreCase = default;
             return false;
         }
 
@@ -121,10 +121,10 @@ namespace ReflectionAnalyzers
                 switch (target.Parameters.Length)
                 {
                     case 1:
-                        ignoreCase = default(ArgumentAndValue<bool>);
+                        ignoreCase = default;
                         return true;
                     case 2 when target.TryFindParameter("throwOnError", out _):
-                        ignoreCase = default(ArgumentAndValue<bool>);
+                        ignoreCase = default;
                         return true;
                     case 3 when target.TryFindParameter("throwOnError", out _) &&
                                 target.TryFindParameter("ignoreCase", out var ignoreCaseParameter) &&
@@ -135,8 +135,8 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            typeName = default(TypeNameArgument);
-            ignoreCase = default(ArgumentAndValue<bool>);
+            typeName = default;
+            ignoreCase = default;
             return false;
         }
 
@@ -251,7 +251,7 @@ namespace ReflectionAnalyzers
             }
 
             if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out ISymbol local))
+                context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out var local))
             {
 #pragma warning disable IDISP003 // Dispose previous before re-assigning.
                 using (visited = visited.IncrementUsage())

@@ -41,7 +41,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            typeArguments = default(TypeArguments);
+            typeArguments = default;
             return false;
 
             ImmutableArray<ExpressionSyntax> ArgumentsExpressions()

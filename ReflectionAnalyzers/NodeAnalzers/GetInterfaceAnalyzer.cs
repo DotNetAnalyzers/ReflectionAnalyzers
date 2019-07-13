@@ -110,7 +110,7 @@ namespace ReflectionAnalyzers
 
         private static bool TryGetName(ArgumentSyntax nameArg, SyntaxNodeAnalysisContext context, out Optional<SimpleNameSyntax> nameSyntax, out string name)
         {
-            nameSyntax = default(Optional<SimpleNameSyntax>);
+            nameSyntax = default;
             switch (nameArg.Expression)
             {
                 case MemberAccessExpressionSyntax memberAccess:

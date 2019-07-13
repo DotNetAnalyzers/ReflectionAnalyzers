@@ -70,7 +70,7 @@ namespace ReflectionAnalyzers
             }
 
             member = null;
-            attributeType = default(ArgumentAndValue<ITypeSymbol>);
+            attributeType = default;
             inheritsArg = null;
             return false;
         }

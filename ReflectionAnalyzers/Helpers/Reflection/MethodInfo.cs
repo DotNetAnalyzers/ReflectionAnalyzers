@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers
                                                                 propertyInfo.Property.SetMethod is IMethodSymbol setMethod:
                     methodInfo = new MethodInfo(propertyInfo.ReflectedType, setMethod);
                     return true;
-                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out ISymbol symbol):
+                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol):
                     if (symbol == KnownSymbol.PropertyInfo.GetMethod &&
                         PropertyInfo.TryGet(memberAccess.Expression, context, out var property))
                     {
@@ -55,14 +55,14 @@ namespace ReflectionAnalyzers
             }
 
             if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out ISymbol local))
+                context.SemanticModel.TryGetSymbol(expression, context.CancellationToken, out var local))
             {
-                methodInfo = default(MethodInfo);
+                methodInfo = default;
                 return AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var assignedValue) &&
                        TryGet(assignedValue, context, out methodInfo);
             }
 
-            methodInfo = default(MethodInfo);
+            methodInfo = default;
             return false;
         }
     }

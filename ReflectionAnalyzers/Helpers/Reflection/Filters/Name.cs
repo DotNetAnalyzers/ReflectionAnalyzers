@@ -29,7 +29,7 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
-            name = default(Name);
+            name = default;
             return false;
         }
     }

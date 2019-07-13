@@ -75,7 +75,7 @@ namespace ReflectionAnalyzers
                     return TryGetTypesFromInitializer(initializer, out types);
                 case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
                     return TryGetTypesFromInitializer(initializer, out types);
-                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out ISymbol symbol) &&
+                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol) &&
                                                                     symbol == KnownSymbol.Type.EmptyTypes:
                     types = ImmutableArray<ITypeSymbol>.Empty;
                     return true;
@@ -106,7 +106,7 @@ namespace ReflectionAnalyzers
 
         internal static bool TryGetValues(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
         {
-            values = default(ImmutableArray<ExpressionSyntax>);
+            values = default;
             if (IsCreatingEmpty(creation, context))
             {
                 values = ImmutableArray<ExpressionSyntax>.Empty;
@@ -121,7 +121,7 @@ namespace ReflectionAnalyzers
                 case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
                     values = ImmutableArray.CreateRange(initializer.Expressions);
                     return true;
-                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out ISymbol symbol) &&
+                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol) &&
                                                                     symbol == KnownSymbol.Type.EmptyTypes:
                     values = ImmutableArray<ExpressionSyntax>.Empty;
                     return true;

@@ -34,7 +34,7 @@ namespace ReflectionAnalyzers
                 return;
             }
 
-            if (!TryGetAttributeAndTypeInfo(context, out string memberName, out Location location, out ITypeSymbol symbol))
+            if (!TryGetAttributeAndTypeInfo(context, out var memberName, out var location, out var symbol))
             {
                 return;
             }
@@ -66,9 +66,9 @@ namespace ReflectionAnalyzers
             out Location location,
             out ITypeSymbol typeSymbol)
         {
-            memberName = default(string);
-            location = default(Location);
-            typeSymbol = default(ITypeSymbol);
+            memberName = default;
+            location = default;
+            typeSymbol = default;
 
             if (!(context.Node is AttributeSyntax attribute) ||
                 !Attribute.IsType(attribute, KnownSymbol.DefaultMemberAttribute, context.SemanticModel, context.CancellationToken))
@@ -87,7 +87,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            if (!context.SemanticModel.TryGetSymbol(classDeclaration, context.CancellationToken, out ITypeSymbol workingTypeSymbol))
+            if (!context.SemanticModel.TryGetSymbol(classDeclaration, context.CancellationToken, out var workingTypeSymbol))
             {
                 return false;
             }

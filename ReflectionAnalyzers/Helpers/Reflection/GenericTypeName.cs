@@ -29,7 +29,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            genericTypeName = default(GenericTypeName);
+            genericTypeName = default;
             return false;
         }
 

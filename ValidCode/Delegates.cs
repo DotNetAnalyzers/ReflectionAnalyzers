@@ -10,7 +10,7 @@ namespace ValidCode
         public void Valid()
         {
 #pragma warning disable REFL039 // Prefer typeof(...) over instance.GetType when the type is sealed.
-            Delegate @delegate = Create();
+            var @delegate = Create();
             Action action = () => { };
             Action<int> actionInt = _ => { };
             Func<int> funcInt = () => 0;

@@ -82,9 +82,9 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            member = default(ReflectedMember);
-            flags = default(Flags);
-            types = default(Types);
+            member = default;
+            flags = default;
+            types = default;
             return false;
         }
 
@@ -131,10 +131,10 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            member = default(ReflectedMember);
-            flags = default(Flags);
-            name = default(Name);
-            types = default(Types);
+            member = default;
+            flags = default;
+            name = default;
+            types = default;
             return false;
         }
 
@@ -173,10 +173,10 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            member = default(ReflectedMember);
-            flags = default(Flags);
-            name = default(Name);
-            types = default(Types);
+            member = default;
+            flags = default;
+            name = default;
+            types = default;
             return false;
         }
 
@@ -261,9 +261,9 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            member = default(ReflectedMember);
-            name = default(Name);
-            flags = default(Flags);
+            member = default;
+            name = default;
+            flags = default;
             return false;
         }
     }

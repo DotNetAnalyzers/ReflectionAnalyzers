@@ -33,7 +33,7 @@ namespace ReflectionAnalyzers
             var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (TryFindArgumentList(syntaxRoot, diagnostic, out ArgumentListSyntax argumentList) &&
+                if (TryFindArgumentList(syntaxRoot, diagnostic, out var argumentList) &&
          argumentList.Parent is InvocationExpressionSyntax invocation &&
          diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {

@@ -81,7 +81,7 @@ namespace ReflectionAnalyzers
             }
 
             pos = int.MaxValue;
-            genericTypeArgument = default(GenericTypeArgument);
+            genericTypeArgument = default;
             return false;
         }
 

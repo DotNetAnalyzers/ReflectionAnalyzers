@@ -62,7 +62,7 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
-            flags = default(Flags);
+            flags = default;
             return false;
         }
 
