@@ -782,8 +782,10 @@ GROUP Test
 STORAGE: NONE
 NUGET
   remote: http://www.nuget.org/api/v2
-    Gu.Roslyn.Asserts (3.0)
+    Gu.Roslyn.Asserts (3.1)
+      Gu.Roslyn.Asserts.Analyzers
       Microsoft.CodeAnalysis.CSharp.Workspaces (>= 3.0)
+    Gu.Roslyn.Asserts.Analyzers (3.1.2)
     Microsoft.CodeAnalysis.Analyzers (2.9.3) - restriction: >= netstandard2.0
     Microsoft.CodeAnalysis.Common (3.1) - restriction: >= netstandard2.0
       Microsoft.CodeAnalysis.Analyzers (>= 2.6.2-beta2) - restriction: >= netstandard2.0
