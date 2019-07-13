@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetGetMethod(false)", "RoslynSandbox.C.Property.get")]
         [TestCase("typeof(C).GetProperty(nameof(this.Property)).SetMethod",           "RoslynSandbox.C.Property.set")]
         [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetSetMethod(false)", "RoslynSandbox.C.Property.set")]
-        public void TryGet(string call, string expected)
+        public static void TryGet(string call, string expected)
         {
             var code = @"
 namespace RoslynSandbox
