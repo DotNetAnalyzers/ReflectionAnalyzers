@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers
 
     public static class REFL044ExpectedAttributeType
     {
-        internal const string DiagnosticId = "REFL044";
+        public const string DiagnosticId = "REFL044";
 
         public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,

@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers
 
     public static class REFL039PreferTypeof
     {
-        internal const string DiagnosticId = "REFL039";
+        public const string DiagnosticId = "REFL039";
 
         public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,

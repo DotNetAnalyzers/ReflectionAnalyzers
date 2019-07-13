@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers
 
     public static class REFL043FirstArgumentType
     {
-        internal const string DiagnosticId = "REFL043";
+        public const string DiagnosticId = "REFL043";
 
         public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,

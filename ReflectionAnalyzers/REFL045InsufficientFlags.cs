@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers
 
     public static class REFL045InsufficientFlags
     {
-        internal const string DiagnosticId = "REFL045";
+        public const string DiagnosticId = "REFL045";
 
         public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,

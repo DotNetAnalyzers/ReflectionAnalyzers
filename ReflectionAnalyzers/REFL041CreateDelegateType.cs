@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers
 
     public static class REFL041CreateDelegateType
     {
-        internal const string DiagnosticId = "REFL041";
+        public const string DiagnosticId = "REFL041";
 
         public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
             id: DiagnosticId,
