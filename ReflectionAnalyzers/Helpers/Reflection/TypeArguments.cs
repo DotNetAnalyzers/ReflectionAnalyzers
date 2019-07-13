@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers
         internal readonly ImmutableArray<ITypeParameterSymbol> Parameters;
         internal readonly ImmutableArray<ExpressionSyntax> Arguments;
 
-        public TypeArguments(ISymbol symbol, ImmutableArray<ITypeParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> arguments)
+        internal TypeArguments(ISymbol symbol, ImmutableArray<ITypeParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> arguments)
         {
             this.Symbol = symbol;
             this.Parameters = parameters;

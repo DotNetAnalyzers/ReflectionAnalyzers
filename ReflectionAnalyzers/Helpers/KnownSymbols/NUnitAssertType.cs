@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers
         internal readonly QualifiedMethod IsNull;
         internal readonly QualifiedMethod AreEqual;
 
-        public NUnitAssertType()
+        internal NUnitAssertType()
             : base("NUnit.Framework.Assert")
         {
             this.Null = new QualifiedMethod(this, nameof(this.Null));

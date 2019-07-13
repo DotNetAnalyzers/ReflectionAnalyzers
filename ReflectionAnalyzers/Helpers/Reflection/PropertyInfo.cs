@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
         internal readonly INamedTypeSymbol ReflectedType;
         internal readonly IPropertySymbol Property;
 
-        public PropertyInfo(INamedTypeSymbol reflectedType, IPropertySymbol property)
+        internal PropertyInfo(INamedTypeSymbol reflectedType, IPropertySymbol property)
         {
             this.ReflectedType = reflectedType;
             this.Property = property;

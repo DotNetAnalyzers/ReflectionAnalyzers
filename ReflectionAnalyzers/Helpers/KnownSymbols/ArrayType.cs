@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers
     {
         internal readonly QualifiedMethod Empty;
 
-        public ArrayType()
+        internal ArrayType()
             : base("System.Array")
         {
             this.Empty = new QualifiedMethod(this, nameof(this.Empty));

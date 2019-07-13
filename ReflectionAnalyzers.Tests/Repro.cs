@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests
     using NUnit.Framework;
 
     [Explicit("Only for digging out test cases.")]
-    internal class Repro
+    public static class Repro
     {
         // ReSharper disable once UnusedMember.Local
         private static readonly IReadOnlyList<DiagnosticAnalyzer> AllAnalyzers =
@@ -25,7 +25,7 @@ namespace ReflectionAnalyzers.Tests
             RoslynAssert.MetadataReferences);
 
         [TestCaseSource(nameof(AllAnalyzers))]
-        public void Run(DiagnosticAnalyzer analyzer)
+        public static void Run(DiagnosticAnalyzer analyzer)
         {
             var diagnostics = Analyze.GetDiagnostics(Solution, analyzer);
             RoslynAssert.NoDiagnostics(diagnostics);

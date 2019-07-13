@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers
     {
         internal readonly QualifiedField Value;
 
-        public MissingType()
+        internal MissingType()
             : base("System.Reflection.Missing")
         {
             this.Value = new QualifiedField(this, nameof(this.Value));

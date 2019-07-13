@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
         internal readonly INamedTypeSymbol ReflectedType;
         internal readonly IFieldSymbol Field;
 
-        public FieldInfo(INamedTypeSymbol reflectedType, IFieldSymbol field)
+        internal FieldInfo(INamedTypeSymbol reflectedType, IFieldSymbol field)
         {
             this.ReflectedType = reflectedType;
             this.Field = field;

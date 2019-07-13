@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers
         internal readonly ArgumentSyntax Argument;
         internal readonly string MetadataName;
 
-        public Name(ArgumentSyntax argument, string metadataName)
+        internal Name(ArgumentSyntax argument, string metadataName)
         {
             this.Argument = argument;
             this.MetadataName = metadataName;

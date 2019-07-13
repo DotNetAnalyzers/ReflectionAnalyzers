@@ -194,13 +194,13 @@ namespace ReflectionAnalyzers
 #pragma warning restore RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
             private readonly int startIndex;
 
-            public MethodTypes(MethodInfo methodInfo, bool isCurried)
+            internal MethodTypes(MethodInfo methodInfo, bool isCurried)
             {
                 this.method = methodInfo.Method;
                 this.startIndex = isCurried ? 1 : 0;
             }
 
-            public int Count
+            internal int Count
             {
                 get
                 {
@@ -214,7 +214,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            public ITypeSymbol ReturnType => this.method.ReturnType;
+            internal ITypeSymbol ReturnType => this.method.ReturnType;
 
             public ITypeSymbol this[int index]
             {
@@ -240,7 +240,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            public string TypeArgsText(SyntaxNodeAnalysisContext context)
+            internal string TypeArgsText(SyntaxNodeAnalysisContext context)
             {
                 var builder = StringBuilderPool.Borrow();
                 for (var i = 0; i < this.Count; i++)

@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
         internal readonly INamedTypeSymbol ReflectedType;
         internal readonly IMethodSymbol Method;
 
-        public MethodInfo(INamedTypeSymbol reflectedType, IMethodSymbol method)
+        internal MethodInfo(INamedTypeSymbol reflectedType, IMethodSymbol method)
         {
             this.ReflectedType = reflectedType;
             this.Method = method;

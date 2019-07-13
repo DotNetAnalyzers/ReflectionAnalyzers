@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers
             this.TypeArguments = typeArguments;
         }
 
-        public static bool TryParse(string text, out GenericTypeName genericTypeName)
+        internal static bool TryParse(string text, out GenericTypeName genericTypeName)
         {
             if (text.IndexOf('[') is var index &&
                 index > 0)

@@ -22,7 +22,7 @@ namespace ReflectionAnalyzers
         /// </summary>
         internal readonly BindingFlags Default;
 
-        public Flags(ArgumentSyntax argument, BindingFlags @explicit, BindingFlags @default)
+        internal Flags(ArgumentSyntax argument, BindingFlags @explicit, BindingFlags @default)
         {
             this.Argument = argument;
             this.Explicit = @explicit;

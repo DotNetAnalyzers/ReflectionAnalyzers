@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers
         internal readonly ImmutableArray<ExpressionSyntax> Expressions;
         internal readonly ImmutableArray<ITypeSymbol> Symbols;
 
-        public Types(ArgumentSyntax argument, ImmutableArray<ExpressionSyntax> expressions, ImmutableArray<ITypeSymbol> symbols)
+        internal Types(ArgumentSyntax argument, ImmutableArray<ExpressionSyntax> expressions, ImmutableArray<ITypeSymbol> symbols)
         {
             this.Argument = argument;
             this.Expressions = expressions;

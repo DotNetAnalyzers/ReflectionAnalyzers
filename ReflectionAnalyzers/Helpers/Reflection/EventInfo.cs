@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
         internal readonly INamedTypeSymbol ReflectedType;
         internal readonly IEventSymbol Event;
 
-        public EventInfo(INamedTypeSymbol reflectedType, IEventSymbol @event)
+        internal EventInfo(INamedTypeSymbol reflectedType, IEventSymbol @event)
         {
             this.ReflectedType = reflectedType;
             this.Event = @event;

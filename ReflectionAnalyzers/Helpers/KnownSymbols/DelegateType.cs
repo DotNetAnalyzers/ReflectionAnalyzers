@@ -6,7 +6,7 @@ namespace ReflectionAnalyzers
     {
         internal readonly QualifiedMethod CreateDelegate;
 
-        public DelegateType()
+        internal DelegateType()
             : base("System.Delegate", "delegate")
         {
             this.CreateDelegate = new QualifiedMethod(this, nameof(this.CreateDelegate));
