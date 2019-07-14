@@ -367,7 +367,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public object Get => typeof(int?).GetProperty(""Value"");
+        public object Get => typeof(int?).GetProperty(↓""Value"");
     }
 }";
 

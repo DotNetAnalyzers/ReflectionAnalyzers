@@ -166,7 +166,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.Bar));
         }
 
         public int Bar(params int[] values) => values.Sum();
