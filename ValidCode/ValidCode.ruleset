@@ -10,4 +10,12 @@
     <Rule Id="CS0661" Action="None" />
     <Rule Id="CS0169" Action="None" />
   </Rules>
+
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
+    <Rule Id="IDE0044" Action="None" />
+    <Rule Id="IDE0045" Action="None" />
+    <Rule Id="IDE0051" Action="None" />
+    <Rule Id="IDE0059" Action="None" />
+    <Rule Id="IDE0060" Action="None" />
+  </Rules>
 </RuleSet>

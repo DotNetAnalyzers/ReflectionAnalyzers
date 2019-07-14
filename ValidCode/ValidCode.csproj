@@ -5,8 +5,10 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <CodeAnalysisRuleSet>ValidCode.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
+
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
