@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public static partial class ValidCode
+    public static partial class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL009MemberCantBeFound.Descriptor;
