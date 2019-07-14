@@ -3,7 +3,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
 
-    public static partial class ValidCode
+    public static partial class Valid
     {
         public static class GetMethod
         {
