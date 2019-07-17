@@ -124,4 +124,15 @@
     <Rule Id="UseAsyncSuffix" Action="None" />
     <Rule Id="AvoidAsyncSuffix" Action="None" />
   </Rules>
+  <Rules AnalyzerId="Gu.Roslyn.Asserts.Analyzers" RuleNamespace="Gu.Roslyn.Asserts.Analyzers">
+    <Rule Id="GURA01" Action="Info" />
+    <Rule Id="GURA02" Action="Warning" />
+    <Rule Id="GURA03" Action="Info" />
+    <Rule Id="GURA04" Action="Info" />
+    <Rule Id="GURA05" Action="Info" />
+    <Rule Id="GURA06" Action="Info" />
+    <Rule Id="GURA07" Action="Info" />
+    <Rule Id="GURA08" Action="Info" />
+    <Rule Id="GURA09" Action="Info" />
+  </Rules>
 </RuleSet>
