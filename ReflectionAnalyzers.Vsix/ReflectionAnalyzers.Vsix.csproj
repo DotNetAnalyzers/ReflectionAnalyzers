@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <Import Project="..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.props')" Label="Paket" />
   <Import Sdk="Microsoft.NET.Sdk" Project="Sdk.props" />
 
   <PropertyGroup>
@@ -30,6 +29,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.2.3073" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ReflectionAnalyzers\ReflectionAnalyzers.csproj" />
   </ItemGroup>
 
@@ -46,7 +49,4 @@
       <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Gu.Roslyn.Extensions'" />
     </ItemGroup>
   </Target>
-
-  <Import Project="..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\build\Microsoft.VSSDK.BuildTools\build\Microsoft.VSSDK.BuildTools.targets')" Label="Paket" />
-  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

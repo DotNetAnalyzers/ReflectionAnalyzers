@@ -12,6 +12,14 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\ReflectionAnalyzers.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Gu.Roslyn.Asserts" Version="3.1.0" />
+    <PackageReference Include="Gu.Roslyn.Extensions" Version="0.5.1-dev" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\ReflectionAnalyzers\ReflectionAnalyzers.csproj" />
@@ -24,6 +32,4 @@
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
-  
-  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
