@@ -6,4 +6,6 @@ build_script:
     msbuild ReflectionAnalyzers /t:Pack /p:NoBuild=true /p:PackageOutputPath=..\publish /p:Configuration=Release
 
 on_success:
-- ps: Get-ChildItem publish\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+- ps: |
+    Get-ChildItem publish\*.nupkg | % { Push-AppveyorArtifact $_.FullName }
+    Push-AppveyorArtifact ReflectionAnalyzers.Vsix\bin\Release\ReflectionAnalyzers.Vsix.vsix
