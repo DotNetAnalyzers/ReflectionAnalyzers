@@ -8,4 +8,4 @@ build_script:
 on_success:
 - ps: |
     Get-ChildItem publish\*.nupkg | % { Push-AppveyorArtifact $_.FullName }
-    Push-AppveyorArtifact ReflectionAnalyzers.Vsix\bin\Release\ReflectionAnalyzers.Vsix.vsix
+    Push-AppveyorArtifact ReflectionAnalyzers.Vsix\bin\Release\ReflectionAnalyzers.vsix
