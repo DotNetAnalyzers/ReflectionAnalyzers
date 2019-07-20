@@ -48,9 +48,7 @@ _ReSharper*/
 *.vssscc
 $tf*/
 *.dll
-packages/*
 publish/*
 PropertyChangedAnalyzers.Demo/*
 .vs/*
-/paket-files/*
 /PropertyChangedAnalyzers.Benchmarks/BenchmarkDotNet.Artifacts/*

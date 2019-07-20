@@ -5,13 +5,7 @@
     <PackageTargetFallback>portable-net45+win8</PackageTargetFallback>
     <NeutralLanguage>en-US</NeutralLanguage>
     <CodeAnalysisRuleSet>ReflectionAnalyzers.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <BuildOutputTargetFolder>analyzers\dotnet\cs</BuildOutputTargetFolder>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -20,18 +14,28 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.20.0-dev</Version>
+    <Version>0.1.20-dev</Version>
+    <DevelopmentDependency>true</DevelopmentDependency>
     <Description>Analyzers for System.Reflection</Description>
-    <PackageLicenseUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</PackageProjectUrl>
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
     <PackageReleaseNotes>BUGFIX REFL031: conditional expression.
 BUGFIX REFL031: if statement.</PackageReleaseNotes>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Exec Command=".paket\paket.exe pack publish" WorkingDirectory="$(SolutionDir)" />
-  </Target>
+  <ItemGroup>
+    <PackageReference Include="Gu.Roslyn.Extensions" Version="0.5.1-dev" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.3.1" />
+  </ItemGroup>
 
-  <Import Project="..\.paket\Paket.Restore.targets" />
+  <ItemGroup>
+    <None Update="tools\*" Pack="true" PackagePath="" />
+    <None
+      Include="$(OutputPath)\$(AssemblyName).dll;$(OutputPath)\Gu.Roslyn.Extensions.dll"
+      Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
 </Project>
