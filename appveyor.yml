@@ -1,11 +1,7 @@
 image: Visual Studio 2019
 
 build_script:
-- ps: |
-    msbuild /t:Build /restore /v:minimal /p:Configuration=Release
-    msbuild ReflectionAnalyzers /t:Pack /p:NoBuild=true /p:PackageOutputPath=..\publish /p:Configuration=Release
+- ps: .\build.ps1
 
 on_success:
-- ps: |
-    Get-ChildItem publish\*.nupkg | % { Push-AppveyorArtifact $_.FullName }
-    Push-AppveyorArtifact ReflectionAnalyzers.Vsix\bin\Release\ReflectionAnalyzers.Vsix.vsix
+- ps: Get-ChildItem artifacts\* | % { Push-AppveyorArtifact $_.FullName }
