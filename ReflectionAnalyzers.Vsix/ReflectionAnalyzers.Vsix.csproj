@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.2.3073" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.3.1066" />
   </ItemGroup>
 
   <ItemGroup>
