@@ -71,12 +71,12 @@ namespace ReflectionAnalyzers
             typeSymbol = default;
 
             if (!(context.Node is AttributeSyntax attribute) ||
-                !Attribute.IsType(attribute, KnownSymbol.DefaultMemberAttribute, context.SemanticModel, context.CancellationToken))
+                !context.SemanticModel.TryGetNamedType(attribute, KnownSymbol.DefaultMemberAttribute, context.CancellationToken, out _))
             {
                 return false;
             }
 
-            if (!Attribute.TryFindArgument(attribute, 0, "memberName", out var argument) ||
+            if (!attribute.TryFindArgument(0, "memberName", out var argument) ||
                 !context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string workingMemberName))
             {
                 return false;

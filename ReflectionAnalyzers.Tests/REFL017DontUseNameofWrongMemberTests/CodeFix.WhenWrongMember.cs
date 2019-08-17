@@ -63,7 +63,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            _ = typeof(Console).GetMethod(nameof(WriteLine), Type.EmptyTypes);
+            _ = typeof(Console).GetMethod(nameof(↓WriteLine), Type.EmptyTypes);
         }
 
         public bool WriteLine { get; set; }
@@ -100,7 +100,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = typeof(Dictionary<string, object>).GetMethod(nameof(HashSet<string>.Add));
+            var member = typeof(Dictionary<string, object>).GetMethod(nameof(↓HashSet<string>.Add));
         }
 
         private static int Add(int x, int y) => x + y;
@@ -137,7 +137,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = this.GetType().GetMethod(nameof(HashSet<string>.Add));
+            var member = this.GetType().GetMethod(nameof(↓HashSet<string>.Add));
         }
 
         private static int Add(int x, int y) => x + y;
@@ -174,7 +174,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = this.GetType().GetMethod(nameof(HashSet<string>.Add));
+            var member = this.GetType().GetMethod(nameof(↓HashSet<string>.Add));
         }
 
         private int Add(int x, int y) => x + y;
@@ -202,6 +202,16 @@ namespace RoslynSandbox
             [Test]
             public static void ThisGetTypeGetMethodNameOfHashSetAddUnderscore()
             {
+                var c1 = @"
+namespace RoslynSandbox
+{
+    using System.Collections.Generic;
+
+    public class C1
+    {
+        private readonly int _f;
+    }
+}";
                 var before = @"
 namespace RoslynSandbox
 {
@@ -211,7 +221,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = GetType().GetMethod(nameof(HashSet<string>.Add));
+            var member = GetType().GetMethod(nameof(↓HashSet<string>.Add));
         }
 
         private int Add(int x, int y) => x + y;
@@ -233,7 +243,7 @@ namespace RoslynSandbox
         private int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { c1, before }, after);
             }
         }
     }

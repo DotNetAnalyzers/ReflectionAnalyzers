@@ -35,7 +35,7 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
         public static void SubclassAggregateExceptionGetInnerExceptionCount(string call)
         {
-            var exception = @"
+            var customAggregateException = @"
 namespace RoslynSandbox
 {
     using System;
@@ -60,7 +60,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, exception, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, customAggregateException, code);
         }
 
         [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public)")]

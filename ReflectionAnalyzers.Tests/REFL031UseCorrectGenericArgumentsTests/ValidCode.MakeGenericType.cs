@@ -155,7 +155,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), RoslynAssert.MetadataReferences);
+                var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), MetadataReferences.FromAttributes());
                 RoslynAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
             }
 

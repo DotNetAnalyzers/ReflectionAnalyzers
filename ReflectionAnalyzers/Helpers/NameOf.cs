@@ -42,7 +42,7 @@ namespace ReflectionAnalyzers
                              member.Symbol is ITypeSymbol ||
                              IsStaticContext(context)
                     ? $"{member.Symbol.Name}"
-                    : context.SemanticModel.UnderscoreFields()
+                    : context.SemanticModel.UnderscoreFields() == CodeStyleResult.Yes
                         ? $"{member.Symbol.Name}"
                         : $"this.{member.Symbol.Name}";
                 return true;

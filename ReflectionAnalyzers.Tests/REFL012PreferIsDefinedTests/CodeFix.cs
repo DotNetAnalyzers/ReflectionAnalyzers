@@ -144,7 +144,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            if (typeof(C).GetCustomAttribute(typeof(ObsoleteAttribute)) != null)
+            if (↓typeof(C).GetCustomAttribute(typeof(ObsoleteAttribute)) != null)
             {
             }
         }

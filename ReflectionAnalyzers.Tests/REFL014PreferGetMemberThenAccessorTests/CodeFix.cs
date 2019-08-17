@@ -294,7 +294,7 @@ namespace BinaryReferencedAssembly
                 code,
                 CodeFactory.DefaultCompilationOptions(new[] { Analyzer })
                            .WithMetadataImportOptions(MetadataImportOptions.Public),
-                RoslynAssert.MetadataReferences.Append(binaryReference));
+                MetadataReferences.FromAttributes().Add(binaryReference));
 
             // To make sure the test is effective, assert that ReflectionAnalyzers *can’t* see C.P.
             var compilation = await solution.Projects.Single()
@@ -355,9 +355,9 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"get_Current\")",                                                                          "GetProperty(nameof(IEnumerator.Current)).GetMethod")]
         [TestCase("GetMethod(\"get_Current\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(nameof(IEnumerator.Current), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
         //// ReSharper disable once InconsistentNaming
-        public static void IEnumeratorGetCurrent(string before, string after)
+        public static void IEnumeratorGetCurrent(string beforeExpression, string afterExpression)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Collections;
@@ -370,8 +370,8 @@ namespace RoslynSandbox
             _ = typeof(IEnumerator).GetMethod(""get_Current"");
         }
     }
-}".AssertReplace("GetMethod(\"get_Current\")", before);
-            var fixedCode = @"
+}".AssertReplace("GetMethod(\"get_Current\")", beforeExpression);
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Collections;
@@ -384,9 +384,9 @@ namespace RoslynSandbox
             _ = typeof(IEnumerator).GetProperty(nameof(IEnumerator.Current)).GetMethod;
         }
     }
-}".AssertReplace("GetProperty(nameof(IEnumerator.Current)).GetMethod", after);
+}".AssertReplace("GetProperty(nameof(IEnumerator.Current)).GetMethod", afterExpression);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)",                             "GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod")]
@@ -630,7 +630,7 @@ namespace RoslynSandbox.BinaryReferencedAssembly
                 code,
                 CodeFactory.DefaultCompilationOptions(new[] { Analyzer })
                            .WithMetadataImportOptions(MetadataImportOptions.Public),
-                RoslynAssert.MetadataReferences.Append(binaryReference));
+                MetadataReferences.FromAttributes().Add(binaryReference));
 
             // To make sure the test is effective, assert that ReflectionAnalyzers *can’t* see Foo.Bar.
             var compilation = await solution.Projects.Single()

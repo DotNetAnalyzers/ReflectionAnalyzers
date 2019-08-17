@@ -620,7 +620,7 @@ namespace ReflectionAnalyzers
                         return $"nameof({associatedSymbol.Name})";
                     }
 
-                    return context.SemanticModel.UnderscoreFields() ? associatedSymbol.Name : $"nameof(this.{associatedSymbol.Name})";
+                    return context.SemanticModel.UnderscoreFields() == CodeStyleResult.Yes ? associatedSymbol.Name : $"nameof(this.{associatedSymbol.Name})";
                 }
 
                 return context.SemanticModel.IsAccessible(context.Node.SpanStart, associatedSymbol)

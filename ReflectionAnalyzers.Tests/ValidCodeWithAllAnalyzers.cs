@@ -3,7 +3,6 @@ namespace ReflectionAnalyzers.Tests
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -20,26 +19,12 @@ namespace ReflectionAnalyzers.Tests
         private static readonly Solution AnalyzersProjectSolution = CodeFactory.CreateSolution(
             ProjectFile.Find("ReflectionAnalyzers.csproj"),
             AllAnalyzers,
-            RoslynAssert.MetadataReferences);
+            MetadataReferences.FromAttributes());
 
         private static readonly Solution ValidCodeProjectSln = CodeFactory.CreateSolution(
             ProjectFile.Find("ValidCode.csproj"),
             AllAnalyzers,
-            RoslynAssert.MetadataReferences);
-
-        [SetUp]
-        public void Setup()
-        {
-            // The cache will be enabled when running in VS.
-            // It speeds up the tests and makes them more realistic
-            Cache<SyntaxTree, SemanticModel>.Begin();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            Cache<SyntaxTree, SemanticModel>.End();
-        }
+            MetadataReferences.FromAttributes());
 
         [Test]
         public void NotEmpty()

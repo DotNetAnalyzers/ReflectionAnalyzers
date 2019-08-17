@@ -21,7 +21,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = this.GetType().GetProperty(""Bar"");
+            var member = this.GetType().GetProperty(↓""Bar"");
         }
 
          public int Bar { get; }
@@ -57,7 +57,7 @@ namespace RoslynSandbox
         public C()
         {
             var member = this.GetType().GetProperty(
-  /* trivia1 */ ""Bar""  ,    // trivia2
+  /* trivia1 */ ↓""Bar""  ,    // trivia2
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
@@ -95,7 +95,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = this.GetType().GetProperty(""Bar"");
+            var member = this.GetType().GetProperty(↓""Bar"");
         }
 
          public static int Bar { get; }
@@ -129,7 +129,7 @@ namespace RoslynSandbox
         public C()
         {
             var anon = new { C = 1 };
-            var member = anon.GetType().GetProperty(""C"");
+            var member = anon.GetType().GetProperty(↓""C"");
         }
     }
 }";
@@ -241,7 +241,7 @@ namespace RoslynSandbox
         [TestCase("Struct")]
         public static void GetNestedTypePublicInOtherType(string type)
         {
-            var before = @"
+            var c = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -257,7 +257,7 @@ namespace RoslynSandbox
         public struct Struct { }
     }
 }";
-            var testCode = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -285,7 +285,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(C.Class)", $"nameof(C.{type})");
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { before, testCode }, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { c, before }, after);
         }
 
         [Test]
@@ -301,7 +301,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = typeof(AggregateException).GetProperty(""Message"", BindingFlags.Public | BindingFlags.Instance);
+            var member = typeof(AggregateException).GetProperty(↓""Message"", BindingFlags.Public | BindingFlags.Instance);
         }
     }
 }";
@@ -336,7 +336,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public object Get => typeof(Control).GetMethod(""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+        public object Get => typeof(Control).GetMethod(↓""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
 }";
 
@@ -396,7 +396,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public object Get => typeof((int, double)).GetField(""Item1"");
+        public object Get => typeof((int, double)).GetField(↓""Item1"");
     }
 }";
 
@@ -424,7 +424,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(""Rest"");
+        public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(↓""Rest"");
     }
 }";
 

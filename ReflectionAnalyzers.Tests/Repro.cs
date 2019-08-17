@@ -22,7 +22,7 @@ namespace ReflectionAnalyzers.Tests
         private static readonly Solution Solution = CodeFactory.CreateSolution(
             new FileInfo(@"C:\Git\_GuOrg\Gu.Xml\Gu.Xml.sln"),
             AllAnalyzers,
-            RoslynAssert.MetadataReferences);
+            MetadataReferences.FromAttributes());
 
         [TestCaseSource(nameof(AllAnalyzers))]
         public static void Run(DiagnosticAnalyzer analyzer)

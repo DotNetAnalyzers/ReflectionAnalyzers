@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests
             var binaryReferencedCompilation = CSharpCompilation.Create(
                 "BinaryReferencedAssembly",
                 new[] { CSharpSyntaxTree.ParseText(code) },
-                RoslynAssert.MetadataReferences,
+                MetadataReferences.FromAttributes(),
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             using (var binaryReferencedContent = new MemoryStream())

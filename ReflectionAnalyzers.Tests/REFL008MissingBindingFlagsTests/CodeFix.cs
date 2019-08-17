@@ -81,7 +81,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Type.EmptyTypes);
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Type.EmptyTypes↓);
         }
 
         public int Bar() => 0;
@@ -119,7 +119,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int) });
+            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int) }↓);
         }
 
         public int Bar(int value) => value;
@@ -145,7 +145,7 @@ namespace RoslynSandbox
         }
 
         [Test]
-        public static void GetMethodTwoParameterWithTYpes()
+        public static void GetMethodTwoParameterWithTypes()
         {
             var before = @"
 namespace RoslynSandbox
@@ -193,7 +193,7 @@ namespace RoslynSandbox
         {
             _ = new[]
             {
-                GetType().GetMethod(nameof(ToString))
+                GetType().GetMethod(nameof(ToString)↓)
             };
         }
     }
