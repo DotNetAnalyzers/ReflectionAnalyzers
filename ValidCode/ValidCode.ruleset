@@ -10,12 +10,23 @@
     <Rule Id="CS0661" Action="None" />
     <Rule Id="CS0169" Action="None" />
   </Rules>
-
   <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
     <Rule Id="IDE0044" Action="None" />
     <Rule Id="IDE0045" Action="None" />
     <Rule Id="IDE0051" Action="None" />
     <Rule Id="IDE0059" Action="None" />
     <Rule Id="IDE0060" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
+    <Rule Id="CA1034" Action="None" />
+    <Rule Id="CA1801" Action="None" />
+    <Rule Id="CA1822" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Gu.Analyzers" RuleNamespace="Gu.Analyzers">
+    <Rule Id="GU0009" Action="None" />
+    <Rule Id="GU0073" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1101" Action="None" />
   </Rules>
 </RuleSet>

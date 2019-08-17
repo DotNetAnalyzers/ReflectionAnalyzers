@@ -1,9 +1,9 @@
 namespace ValidCode
 {
-    using NUnit.Framework;
     using System;
     using System.Reflection;
     using System.Windows.Forms;
+    using NUnit.Framework;
 
     public class CustomAggregateException : AggregateException
     {

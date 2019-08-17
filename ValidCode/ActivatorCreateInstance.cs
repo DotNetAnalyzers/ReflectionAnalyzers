@@ -1,8 +1,8 @@
 // ReSharper disable All
 namespace ValidCode
 {
-    using NUnit.Framework;
     using System;
+    using NUnit.Framework;
 
     public class ActivatorCreateInstance
     {

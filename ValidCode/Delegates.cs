@@ -1,8 +1,8 @@
 namespace ValidCode
 {
-    using NUnit.Framework;
     using System;
     using System.Reflection;
+    using NUnit.Framework;
 
     public class Delegates
     {

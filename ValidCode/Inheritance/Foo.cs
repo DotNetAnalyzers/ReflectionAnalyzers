@@ -1,9 +1,9 @@
 // ReSharper disable All
 namespace ValidCode.Inheritance
 {
-    using NUnit.Framework;
     using System;
     using System.Reflection;
+    using NUnit.Framework;
 
     public class FooBase
     {
