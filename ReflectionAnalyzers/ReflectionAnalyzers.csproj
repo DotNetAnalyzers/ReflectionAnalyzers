@@ -28,7 +28,7 @@ BUGFIX REFL031: if statement.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Gu.Roslyn.Extensions" Version="0.5.1-dev" />
+    <PackageReference Include="Gu.Roslyn.Extensions" Version="0.6.2.1-dev" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.3.1" />
   </ItemGroup>
 
