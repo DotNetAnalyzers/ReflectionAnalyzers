@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
     <CodeAnalysisRuleSet>ReflectionAnalyzers.Tests.ruleset</CodeAnalysisRuleSet>
@@ -15,7 +15,11 @@
 
   <ItemGroup>
     <PackageReference Include="Gu.Analyzers" Version="1.6.2-dev" />
-    <PackageReference Include="Gu.Roslyn.Asserts" Version="3.2.2" />
+    <PackageReference Include="Gu.Roslyn.Asserts" Version="3.2.5" />
+    <PackageReference Include="Gu.Roslyn.Asserts.Analyzers" Version="3.2.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="IDisposableAnalyzers" Version="2.1.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6" />
