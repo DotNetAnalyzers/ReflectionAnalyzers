@@ -28,14 +28,16 @@ BUGFIX REFL031: if statement.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Gu.Analyzers" Version="1.6.2-dev" />
     <PackageReference Include="Gu.Roslyn.Extensions" Version="0.6.2.1-dev" />
+    <PackageReference Include="IDisposableAnalyzers" Version="2.1.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.3.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.6" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.66" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="tools\*" Pack="true" PackagePath="" />
-    <None
-      Include="$(OutputPath)\$(AssemblyName).dll;$(OutputPath)\Gu.Roslyn.Extensions.dll"
-      Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)\$(AssemblyName).dll;$(OutputPath)\Gu.Roslyn.Extensions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 </Project>
