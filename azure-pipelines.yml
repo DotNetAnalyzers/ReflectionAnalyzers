@@ -7,19 +7,19 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: DotNetCoreCLI@2
-  displayName: restore
-  inputs:
-    command: 'restore'
+- task: NuGetToolInstaller@1
 
-- task: DotNetCoreCLI@2
-  displayName: build
+- task: NuGetCommand@2
   inputs:
-    command: 'build'
-    arguments: '--configuration $(buildConfiguration) --no-restore'
+    restoreSolution: '$(solution)'
 
-- task: DotNetCoreCLI@2
-  displayName: test
+- task: VSBuild@1
   inputs:
-    command: 'test'
-    arguments: '--configuration $(buildConfiguration) --no-build'
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
