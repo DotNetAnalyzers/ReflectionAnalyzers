@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
             var code = @"
 using System.Reflection;
 [DefaultMember(""Value"")]
-public class Foo
+public class C
 {
     public int Value { get; set; }
 }
@@ -37,7 +37,7 @@ public class Foo
             var code = @"
 using System.Reflection;
 [DefaultMember(""Value"")]
-public class Foo
+public class C
 {
     public int Value;
 }
@@ -55,7 +55,7 @@ public class Foo
             var code = @"
 using System.Reflection;
 [DefaultMember(""Value"")]
-public class Foo
+public class C
 {
     public int Value() => 42;
 }
@@ -73,7 +73,7 @@ public class Foo
             var code = @"
 using System.Reflection;
 [DefaultMember(""Value"")]
-public class Foo
+public class C
 {
     public static int Value() => 42;
 }

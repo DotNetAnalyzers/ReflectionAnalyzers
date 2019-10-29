@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
             var code = @"
 using System.Reflection;
 [DefaultMember(↓""NotValue"")]
-public class Foo
+public class C
 {
     public int Value { get; set; }
 }
@@ -37,7 +37,7 @@ using System;
 using System.Reflection;
 
 [DefaultMember(↓""Event"")]
-public class Foo
+public class C
 {
     public event EventHandler Event;
 }
