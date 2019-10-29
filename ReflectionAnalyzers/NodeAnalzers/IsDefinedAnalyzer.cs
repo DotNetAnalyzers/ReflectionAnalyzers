@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -38,7 +39,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetArgs(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out IMethodSymbol target, out ExpressionSyntax member, out ArgumentAndValue<ITypeSymbol> attributeType, out ArgumentSyntax inheritsArg)
+        private static bool TryGetArgs(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out IMethodSymbol target, [NotNullWhen(true)] out ExpressionSyntax? member, out ArgumentAndValue<ITypeSymbol> attributeType, [NotNullWhen(true)] out ArgumentSyntax? inheritsArg)
         {
             if ((invocation.TryGetTarget(KnownSymbol.Attribute.IsDefined,                 context.SemanticModel, context.CancellationToken, out target) ||
                  invocation.TryGetTarget(KnownSymbol.CustomAttributeExtensions.IsDefined, context.SemanticModel, context.CancellationToken, out target)) &&

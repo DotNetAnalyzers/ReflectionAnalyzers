@@ -24,7 +24,7 @@ namespace ReflectionAnalyzers
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax argument))
+                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax? argument))
                 {
                     context.RegisterCodeFix(
                         "Prefer Type.EmptyTypes.",

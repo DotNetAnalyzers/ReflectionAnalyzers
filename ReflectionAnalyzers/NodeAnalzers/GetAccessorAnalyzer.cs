@@ -69,7 +69,7 @@ namespace ReflectionAnalyzers
         {
             return memberAccess.Name is SimpleNameSyntax name &&
                    name.Identifier.ValueText == property.Name &&
-                   context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out IPropertySymbol propertySymbol) &&
+                   context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out IPropertySymbol? propertySymbol) &&
                    propertySymbol == property;
         }
     }

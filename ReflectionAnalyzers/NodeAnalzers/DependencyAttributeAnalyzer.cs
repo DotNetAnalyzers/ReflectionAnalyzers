@@ -32,7 +32,7 @@ namespace ReflectionAnalyzers
                 context.Node is AttributeSyntax attribute &&
                 context.SemanticModel.TryGetNamedType(attribute, KnownSymbol.DependencyAttribute, context.CancellationToken, out _) &&
                 attribute.TryFindArgument(0, "dependentAssemblyArgument", out var argument) &&
-                context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string assemblyName) &&
+                context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string? assemblyName) &&
                 !context.Compilation.ReferencedAssemblyNames.TryFirst(x => x.Name == assemblyName, out _))
             {
                 context.ReportDiagnostic(Diagnostic.Create(REFL032DependencyMustExist.Descriptor, argument.GetLocation()));

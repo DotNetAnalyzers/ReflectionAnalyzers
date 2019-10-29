@@ -43,7 +43,7 @@ namespace ReflectionAnalyzers
         internal static readonly AssemblyBuilderType AssemblyBuilder = new AssemblyBuilderType();
         internal static readonly NUnitAssertType NUnitAssert = new NUnitAssertType();
 
-        private static QualifiedType Create(string qualifiedName, string alias = null)
+        private static QualifiedType Create(string qualifiedName, string? alias = null)
         {
             return new QualifiedType(qualifiedName, alias);
         }

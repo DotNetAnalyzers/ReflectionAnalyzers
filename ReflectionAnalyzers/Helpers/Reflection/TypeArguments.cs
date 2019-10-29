@@ -228,7 +228,7 @@ namespace ReflectionAnalyzers
 
             bool IsValueTypeContext(SyntaxNode node, ITypeParameterSymbol candidate)
             {
-                if (node.TryFirstAncestor(out ConditionalExpressionSyntax ternary))
+                if (node.TryFirstAncestor(out ConditionalExpressionSyntax? ternary))
                 {
                     if (ternary.WhenTrue.Contains(node) &&
                         TryGetEffectivelyValueType(ternary.Condition, out var result))
@@ -244,7 +244,7 @@ namespace ReflectionAnalyzers
                     return IsValueTypeContext(ternary, candidate);
                 }
 
-                if (node.TryFirstAncestor(out IfStatementSyntax ifStatement))
+                if (node.TryFirstAncestor(out IfStatementSyntax? ifStatement))
                 {
                     if (ifStatement.Statement.Contains(node) &&
                         TryGetEffectivelyValueType(ifStatement.Condition, out var result))

@@ -187,7 +187,7 @@ namespace ReflectionAnalyzers
                 case InvocationExpressionSyntax candidate when candidate.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out _):
                     invocation = candidate;
                     return true;
-                case IdentifierNameSyntax identifierName when context.SemanticModel.TryGetSymbol(identifierName, context.CancellationToken, out ILocalSymbol local) &&
+                case IdentifierNameSyntax identifierName when context.SemanticModel.TryGetSymbol(identifierName, context.CancellationToken, out ILocalSymbol? local) &&
                                                               AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var expression) &&
                                                               expression is InvocationExpressionSyntax candidate &&
                                                               candidate.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out _):
