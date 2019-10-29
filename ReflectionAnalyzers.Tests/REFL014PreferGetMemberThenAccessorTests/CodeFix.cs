@@ -146,9 +146,9 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_PublicGetInternalSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(nameof(C.PublicGetInternalSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_InternalGetSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",       "GetProperty(nameof(C.InternalGetSet), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",        "GetProperty(\"PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
-        public static void InstancePropertyInOtherType(string before, string after)
+        public static void InstancePropertyInOtherType(string beforeExpression, string afterExpression)
         {
-            var foo = @"
+            var c = @"
 namespace RoslynSandbox
 {
     public class C
@@ -163,36 +163,36 @@ namespace RoslynSandbox
     }
 }";
 
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Bar
+    class C2
     {
-        public Bar()
+        public C2()
         {
             var methodInfo = typeof(C).↓GetMethod(""get_PublicGetSet"");
         }
     }
-}".AssertReplace("GetMethod(\"get_PublicGetSet\")", before);
+}".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Bar
+    class C2
     {
-        public Bar()
+        public C2()
         {
             var methodInfo = typeof(C).GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
         }
     }
-}".AssertReplace("GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", after);
+}".AssertReplace("GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", afterExpression);
 
-            var message = $"Prefer typeof(C).{after}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
+            var message = $"Prefer typeof(C).{afterExpression}.";
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { c, before }, after);
         }
 
         [TestCase("GetMethod(\"get_PublicGetSet\")",                                                                                   "GetProperty(nameof(C.PublicGetSet)).GetMethod")]
@@ -205,9 +205,9 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_PublicGetInternalSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)", "GetProperty(nameof(C.PublicGetInternalSet), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_InternalGetSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)",       "GetProperty(nameof(C.InternalGetSet), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)",        "GetProperty(\"PrivateGetSet\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly).SetMethod")]
-        public static void StaticPropertyInOtherType(string before, string after)
+        public static void StaticPropertyInOtherType(string beforeExpression, string afterExpression)
         {
-            var foo = @"
+            var c = @"
 namespace RoslynSandbox
 {
     public static class C
@@ -222,41 +222,41 @@ namespace RoslynSandbox
     }
 }";
 
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Bar
+    class C2
     {
-        public Bar()
+        public C2()
         {
             var methodInfo = typeof(C).↓GetMethod(""get_PublicGetSet"");
         }
     }
-}".AssertReplace("GetMethod(\"get_PublicGetSet\")", before);
+}".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
 
-    class Bar
+    class C2
     {
-        public Bar()
+        public C2()
         {
             var methodInfo = typeof(C).GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
         }
     }
-}".AssertReplace("GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", after);
+}".AssertReplace("GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", afterExpression);
 
-            var message = $"Prefer typeof(C).{after}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { foo, code }, fixedCode);
+            var message = $"Prefer typeof(C).{afterExpression}.";
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { c, before }, after);
         }
 
         [TestCase("GetMethod(\"get_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
         [TestCase("GetMethod(\"set_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
-        public static async Task InvisibleProperty(string before, string after)
+        public static async Task InvisibleProperty(string beforeExpression, string afterExpression)
         {
             var code = @"
 namespace RoslynSandbox
@@ -267,9 +267,9 @@ namespace RoslynSandbox
     {
         public object Get => typeof(BinaryReferencedAssembly.C).GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
-}".AssertReplace("GetMethod(\"get_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", before);
+}".AssertReplace("GetMethod(\"get_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", beforeExpression);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -278,7 +278,7 @@ namespace RoslynSandbox
     {
         public object Get => typeof(BinaryReferencedAssembly.C).GetProperty(""P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
     }
-}".AssertReplace("GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", after);
+}".AssertReplace("GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", afterExpression);
 
             var binaryReferencedCode = @"
 namespace BinaryReferencedAssembly
@@ -304,7 +304,7 @@ namespace BinaryReferencedAssembly
             Assert.That(fooType.GetMembers(), Has.None.With.Property("Name")
                                                  .EqualTo("P"));
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, solution, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, solution, after);
         }
 
         [TestCase("GetMethod(\"add_Public\")",                                                                                                                         "GetEvent(nameof(this.Public)).AddMethod")]
@@ -365,7 +365,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Meh(object value)
+        public void M(object value)
         {
             _ = typeof(IEnumerator).GetMethod(""get_Current"");
         }
@@ -379,7 +379,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Meh(object value)
+        public void M(object value)
         {
             _ = typeof(IEnumerator).GetProperty(nameof(IEnumerator.Current)).GetMethod;
         }
