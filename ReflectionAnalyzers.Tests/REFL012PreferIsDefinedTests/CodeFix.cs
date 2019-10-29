@@ -21,7 +21,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) == null;
+        public static bool M() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) == null;
     }
 }";
             var after = @"
@@ -31,7 +31,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public static bool Bar() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
+        public static bool M() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
             var message = "Prefer Attribute.IsDefined().";
@@ -48,7 +48,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute), true) == null;
+        public static bool M() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute), true) == null;
     }
 }";
             var after = @"
@@ -58,7 +58,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public static bool Bar() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute), true);
+        public static bool M() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute), true);
     }
 }";
             var message = "Prefer Attribute.IsDefined().";
@@ -75,7 +75,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public static bool Bar() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) != null;
+        public static bool M() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) != null;
     }
 }";
             var after = @"
@@ -85,7 +85,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public static bool Bar() => Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
+        public static bool M() => Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
             var message = "Prefer Attribute.IsDefined().";

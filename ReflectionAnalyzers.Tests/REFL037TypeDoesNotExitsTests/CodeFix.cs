@@ -45,24 +45,6 @@ namespace RoslynSandbox
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
-        [TestCase("MISSING")]
-        // [TestCase("RoslynSandbox.MISSING")]
-        public static void TypeGetTypeNoFix(string type)
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System;
-
-    public class C
-    {
-        public static object Get => Type.GetType(↓""MISSING"");
-    }
-}".AssertReplace("MISSING", type);
-
-            RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
-        }
-
         [TestCase("typeof(int).Assembly.GetType(↓\"Int32\")",                                                                             "typeof(int).Assembly.GetType(\"System.Int32\")")]
         [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"BinaryExpression\")",                              "typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.BinaryExpression\")")]
         [TestCase("typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"TemplatedAdorner\", throwOnError: true)", "typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"MS.Internal.Controls.TemplatedAdorner\", throwOnError: true)")]
@@ -91,24 +73,6 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", fixedType);
 
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
-
-        [TestCase("typeof(C).Assembly.GetType(↓\"MISSING\")")]
-        [TestCase("typeof(C).Assembly.GetType(↓\"RoslynSandbox.MISSING\")")]
-        public static void AssemblyGetTypeNoFix(string call)
-        {
-            var code = @"
-namespace RoslynSandbox
-{
-    using System;
-
-    public class C
-    {
-        public static object Get => typeof(C).Assembly.GetType(↓""MISSING"");
-    }
-}".AssertReplace("typeof(C).Assembly.GetType(↓\"MISSING\")", call);
-
-            RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
         }
     }
 }

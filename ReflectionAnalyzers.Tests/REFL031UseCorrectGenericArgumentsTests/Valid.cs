@@ -5,15 +5,15 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public static partial class ValidCode
+    public static partial class Valid
     {
-        public class MakeGenericMethod
+        public static class MakeGenericMethod
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
             private static readonly DiagnosticDescriptor Descriptor = REFL031UseCorrectGenericArguments.Descriptor;
 
             [Test]
-            public void SingleUnconstrained()
+            public static void SingleUnconstrained()
             {
                 var code = @"
 namespace RoslynSandbox
@@ -37,7 +37,7 @@ namespace RoslynSandbox
             [TestCase("where T : IComparable<T>",   "typeof(int)")]
             [TestCase("where T : IComparable<int>", "typeof(int)")]
             [TestCase("where T : new()",            "typeof(C)")]
-            public void ConstrainedParameter(string constraint, string arg)
+            public static void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
 namespace RoslynSandbox
@@ -62,7 +62,7 @@ namespace RoslynSandbox
             [TestCase("!!typeof(T).IsValueType")]
             [TestCase("typeof(T).IsValueType && true")]
             [TestCase("typeof(T).IsValueType && typeof(T).IsValueType")]
-            public void Ternary(string condition)
+            public static void Ternary(string condition)
             {
                 var code = @"
 namespace RoslynSandbox

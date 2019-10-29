@@ -26,7 +26,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var foo = Activator.CreateInstance(typeof(C));
+            var c = Activator.CreateInstance(typeof(C));
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
@@ -65,7 +65,7 @@ namespace RoslynSandbox
     {
         public C(int i)
         {
-            var foo = Activator.CreateInstance(typeof(C), 1);
+            var c = Activator.CreateInstance(typeof(C), 1);
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
@@ -87,7 +87,7 @@ namespace RoslynSandbox
     {
         public C(int i = 0)
         {
-            var foo = Activator.CreateInstance(typeof(C), 1);
+            var c = Activator.CreateInstance(typeof(C), 1);
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
@@ -110,7 +110,7 @@ namespace RoslynSandbox
     {
         public C(string text)
         {
-            var foo = Activator.CreateInstance(typeof(C), ""abc"");
+            var c = Activator.CreateInstance(typeof(C), ""abc"");
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), \"abc\")", call);
@@ -133,7 +133,7 @@ namespace RoslynSandbox
     {
         public C(double d)
         {
-            var foo = Activator.CreateInstance(typeof(C), 1);
+            var c = Activator.CreateInstance(typeof(C), 1);
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
@@ -241,7 +241,7 @@ namespace RoslynSandbox
     {
         public C(params int[] ints)
         {
-            var foo = Activator.CreateInstance(typeof(C), 1);
+            var c = Activator.CreateInstance(typeof(C), 1);
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);
@@ -267,7 +267,7 @@ namespace RoslynSandbox
     {
         public C(int i, params int[] ints)
         {
-            var foo = Activator.CreateInstance(typeof(C), 1);
+            var c = Activator.CreateInstance(typeof(C), 1);
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1)", call);

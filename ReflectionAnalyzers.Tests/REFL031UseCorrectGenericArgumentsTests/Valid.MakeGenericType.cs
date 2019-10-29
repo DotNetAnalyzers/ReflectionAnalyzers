@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public static partial class ValidCode
+    public static partial class Valid
     {
         public static class MakeGenericType
         {
@@ -135,28 +135,6 @@ namespace RoslynSandbox
   .AssertReplace("AttributeTargets", arg);
 
                 RoslynAssert.Valid(Analyzer, Descriptor, safeCode, code);
-            }
-
-            [Test]
-            public static void Recursion()
-            {
-                var code = @"
-namespace RoslynSandbox
-{
-    using System;
-
-    public class C<T1, T2>
-        where T1 : T2
-        where T2 : T1
-    {
-        public static void Bar()
-        {
-            var type = typeof(C<,>).MakeGenericType(typeof(int), typeof(int));
-        }
-    }
-}";
-                var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), MetadataReferences.FromAttributes());
-                RoslynAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
             }
 
             [Test]

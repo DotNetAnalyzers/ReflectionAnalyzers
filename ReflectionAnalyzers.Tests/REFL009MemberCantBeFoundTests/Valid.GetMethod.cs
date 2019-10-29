@@ -115,14 +115,14 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod(nameof(this.M));
         }
 
-        public void Bar()
+        public void M()
         {
         }
 
-        public int Bar(int i) => i;
+        public int M(int i) => i;
     }
 }";
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -178,14 +178,14 @@ namespace RoslynSandbox
 
     class C
     {
-        public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
+        public MethodInfo M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
-            [TestCase("where T : C", "GetMethod(nameof(this.Baz))")]
-            [TestCase("where T : C", "GetMethod(nameof(this.Baz), BindingFlags.Public | BindingFlags.Instance)")]
+            [TestCase("where T : C", "GetMethod(nameof(this.M1))")]
+            [TestCase("where T : C", "GetMethod(nameof(this.M1), BindingFlags.Public | BindingFlags.Instance)")]
             [TestCase("where T : IConvertible", "GetMethod(nameof(IConvertible.ToString))")]
             [TestCase("where T : IConvertible", "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
             [TestCase("where T : IConvertible", "GetMethod(nameof(IConvertible.ToBoolean))")]
@@ -204,16 +204,16 @@ namespace RoslynSandbox
 
     class C
     {
-        public MethodInfo Bar<T>()
+        public MethodInfo M1<T>()
             where T : C
         {
-            return typeof(T).GetMethod(nameof(this.Baz));
+            return typeof(T).GetMethod(nameof(this.M1));
         }
 
-        public int Baz() => 0;
+        public int M1() => 0;
     }
 }".AssertReplace("where T : C", constraint)
-      .AssertReplace("GetMethod(nameof(this.Baz))", call);
+      .AssertReplace("GetMethod(nameof(this.M1))", call);
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
