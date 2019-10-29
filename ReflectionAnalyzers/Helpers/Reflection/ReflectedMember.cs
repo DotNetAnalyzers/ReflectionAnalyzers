@@ -252,7 +252,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
+            static bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
             {
                 if (symbol == null)
                 {

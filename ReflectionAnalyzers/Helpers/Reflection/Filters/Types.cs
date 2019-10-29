@@ -118,7 +118,7 @@ namespace ReflectionAnalyzers
 
             return this.TryMostSpecific(x as IMethodSymbol, y as IMethodSymbol, out unique);
 
-            bool ByNull(ISymbol? first, ISymbol? other, out ISymbol? result)
+            static bool ByNull(ISymbol? first, ISymbol? other, out ISymbol? result)
             {
                 if (first is null &&
                     !(other is null))
@@ -189,7 +189,7 @@ namespace ReflectionAnalyzers
             unique = null;
             return false;
 
-            bool TryExact(ImmutableArray<ITypeSymbol> symbols, IMethodSymbol method, out ISymbol? result)
+            static bool TryExact(ImmutableArray<ITypeSymbol> symbols, IMethodSymbol method, out ISymbol? result)
             {
                 if (method.Parameters.Length != symbols.Length)
                 {

@@ -10,13 +10,13 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
         private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
         private static readonly DiagnosticDescriptor Descriptor = REFL011DuplicateBindingFlags.Descriptor;
 
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void GetMethod(string call)
         {
             var code = @"
@@ -28,22 +28,22 @@ namespace N
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
-}".AssertReplace("GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
+}".AssertReplace("GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)")]
-        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.M), Public | Static | DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.M), Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("GetMethod(nameof(this.M), Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.M), Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void GetMethodUsingStatic(string call)
         {
             var code = @"
@@ -56,12 +56,12 @@ namespace N
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
-}".AssertReplace("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)", call);
+}".AssertReplace("GetMethod(nameof(this.M), Public | Static | DeclaredOnly)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }

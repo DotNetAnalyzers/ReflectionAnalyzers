@@ -27,7 +27,7 @@ namespace N
     {
         public C(int i)
         {
-            var foo = Activator.CreateInstance(typeof(C));
+            var c = Activator.CreateInstance(typeof(C));
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
@@ -50,7 +50,7 @@ namespace N
     {
         public C(int i = 0)
         {
-            var foo = Activator.CreateInstance(typeof(C));
+            var c = Activator.CreateInstance(typeof(C));
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
@@ -70,7 +70,7 @@ namespace N
     {
         public C(string text1)
         {
-            var foo = Activator.CreateInstance(typeof(C), ↓null);
+            var c = Activator.CreateInstance(typeof(C), ↓null);
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), ↓null)", call);
@@ -148,7 +148,7 @@ namespace N
     {
         public C(int i, params int[] ints)
         {
-            var foo = Activator.CreateInstance(typeof(C), 1, null);
+            var c = Activator.CreateInstance(typeof(C), 1, null);
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1, null)", call);

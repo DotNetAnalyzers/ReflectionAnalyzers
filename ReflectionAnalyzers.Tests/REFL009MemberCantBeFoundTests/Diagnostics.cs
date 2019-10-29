@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL009MemberCantBeFound.Descriptor);
 
-        [TestCase("foo.GetType().GetMethod(↓\"MISSING\")")]
+        [TestCase("c.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("GetType().GetMethod(↓\"MISSING\")")]
@@ -20,7 +20,7 @@ namespace N
 {
     public class C
     {
-        public object M(C foo) => typeof(C).GetMethod(↓""MISSING"");
+        public object M(C c) => typeof(C).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
@@ -38,7 +38,7 @@ namespace N
     {
         public int P { get; }
 
-        public static object Get(C foo) => foo.GetType().GetMethod(↓""set_P"");
+        public static object Get(C c) => c.GetType().GetMethod(↓""set_P"");
     }
 }";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -54,7 +54,7 @@ namespace N
     {
         public int P { set { } }
 
-        public static object Get(C foo) => foo.GetType().GetMethod(↓""get_P"");
+        public static object Get(C c) => c.GetType().GetMethod(↓""get_P"");
     }
 }";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -81,7 +81,7 @@ namespace N
 
     class C
     {
-        public static object Get(CustomAggregateException foo) => foo.GetType()
+        public static object Get(CustomAggregateException c) => c.GetType()
                                                                      .GetField(↓""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
@@ -104,7 +104,7 @@ namespace N
         [IndexerName(""Bar"")]
         public int this[int i] => 0;
 
-        public static object Get(C foo) => foo.GetType().GetProperty(""Item"");
+        public static object Get(C c) => c.GetType().GetProperty(""Item"");
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 

@@ -9,8 +9,8 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
     public static class MethodInfoTests
     {
         [TestCase("typeof(C).GetMethod(nameof(this.M))",                              "N.C.M()")]
-        [TestCase("foo.GetType().GetMethod(nameof(this.M))",                          "N.C.M()")]
-        [TestCase("fooType.GetMethod(nameof(this.M))",                                "N.C.M()")]
+        [TestCase("c.GetType().GetMethod(nameof(this.M))",                          "N.C.M()")]
+        [TestCase("cType.GetMethod(nameof(this.M))",                                "N.C.M()")]
         [TestCase("Cached",                                                           "N.C.M()")]
         [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetMethod",           "N.C.Property.get")]
         [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetGetMethod(false)", "N.C.Property.get")]
@@ -29,9 +29,9 @@ namespace N
     {
         private static readonly MethodInfo Cached = typeof(C).GetMethod(nameof(M));
 
-        public C(C foo)
+        public C(C c)
         {
-            var fooType = typeof(C);
+            var cType = typeof(C);
             var mi = typeof(C).GetMethod(nameof(this.M));
         }
 

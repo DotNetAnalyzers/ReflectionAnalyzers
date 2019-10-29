@@ -100,13 +100,11 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            switch (symbol)
+            return symbol switch
             {
-                case IMethodSymbol method:
-                    return method.MethodKind == MethodKind.Ordinary;
-                default:
-                    return true;
-            }
+                IMethodSymbol method => method.MethodKind == MethodKind.Ordinary,
+                _ => true,
+            };
         }
 
         internal static bool IsStaticContext(SyntaxNodeAnalysisContext context)

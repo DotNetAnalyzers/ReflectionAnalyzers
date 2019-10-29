@@ -239,23 +239,21 @@ namespace ReflectionAnalyzers
 
             return false;
 
-            bool IsNullCheck(ExpressionSyntax expression, string name)
+            static bool IsNullCheck(ExpressionSyntax expression, string name)
             {
-                switch (expression)
+                return expression switch
                 {
-                    case BinaryExpressionSyntax binary when binary.IsEither(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression) &&
-                                                            binary.Right.IsKind(SyntaxKind.NullLiteralExpression) &&
-                                                            binary.Left is IdentifierNameSyntax left &&
-                                                            left.Identifier.ValueText == name:
-                        return true;
-                    case IsPatternExpressionSyntax isPattern when isPattern.Expression is IdentifierNameSyntax identifier &&
-                                                                  identifier.Identifier.ValueText == name &&
-                                                                  isPattern.Pattern is ConstantPatternSyntax constant &&
-                                                                  constant.Expression.IsKind(SyntaxKind.NullLiteralExpression):
-                        return true;
-                }
+                    BinaryExpressionSyntax binary => binary.IsEither(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression) &&
+                                                     binary.Right.IsKind(SyntaxKind.NullLiteralExpression) &&
+                                                     binary.Left is IdentifierNameSyntax left &&
+                                                     left.Identifier.ValueText == name,
+                    IsPatternExpressionSyntax isPattern => isPattern.Expression is IdentifierNameSyntax identifier &&
+                                                           identifier.Identifier.ValueText == name &&
+                                                           isPattern.Pattern is ConstantPatternSyntax constant &&
+                                                           constant.Expression.IsKind(SyntaxKind.NullLiteralExpression),
 
-                return false;
+                    _ => false,
+                };
             }
         }
 

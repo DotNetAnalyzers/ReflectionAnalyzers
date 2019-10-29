@@ -11,9 +11,9 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
 
-            [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, new object[] { ↓1.2 })")]
-            [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { 1, 2 })")]
-            [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, new object[] { ↓\"abc\" })")]
+            [TestCase("GetMethod(nameof(this.M)).Invoke(null, new object[] { ↓1.2 })")]
+            [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1, 2 })")]
+            [TestCase("GetMethod(nameof(this.M)).Invoke(null, new object[] { ↓\"abc\" })")]
             public static void SingleIntParameter(string call)
             {
                 var code = @"
@@ -23,19 +23,19 @@ namespace N
     {
         public C()
         {
-            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 });
+            var value = (int)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { ↓1.2 });
         }
 
-        public static int Bar(int value) => value;
+        public static int M(int value) => value;
     }
-}".AssertReplace("GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 })", call);
+}".AssertReplace("GetMethod(nameof(M)).Invoke(null, new object[] { ↓1.2 })", call);
 
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
-            [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { 1.2 })")]
-            [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { 1, 2 })")]
-            [TestCase("GetMethod(nameof(this.Bar)).Invoke(null, ↓new object[] { \"abc\" })")]
+            [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1.2 })")]
+            [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1, 2 })")]
+            [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { \"abc\" })")]
             public static void NoParameter(string call)
             {
                 var code = @"
@@ -45,14 +45,14 @@ namespace N
     {
         public C()
         {
-            typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 });
+            typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { ↓1.2 });
         }
 
-        public static void Bar()
+        public static void M()
         {
         }
     }
-}".AssertReplace("GetMethod(nameof(Bar)).Invoke(null, new object[] { ↓1.2 })", call);
+}".AssertReplace("GetMethod(nameof(M)).Invoke(null, new object[] { ↓1.2 })", call);
 
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }

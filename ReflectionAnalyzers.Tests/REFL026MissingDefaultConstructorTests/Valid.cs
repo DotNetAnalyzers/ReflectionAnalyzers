@@ -125,7 +125,7 @@ namespace N
 
     public class C
     {
-        public static object Bar(Type type) => Activator.CreateInstance(type, ""foo"");
+        public static object M(Type type) => Activator.CreateInstance(type, ""foo"");
     }
 }";
 
@@ -142,7 +142,7 @@ namespace N
 
     public class C
     {
-        public static object Bar<T>() => Activator.CreateInstance(typeof(T), ""foo"");
+        public static object M<T>() => Activator.CreateInstance(typeof(T), ""foo"");
     }
 }";
 

@@ -24,7 +24,7 @@ namespace N
             var foo = (int)typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { ↓1.2 });
         }
 
-        public static int Bar(int value) => value;
+        public static int M(int value) => value;
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { ↓1.2 })", call);
 

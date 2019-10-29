@@ -101,7 +101,7 @@ namespace N
         {
             var type = typeof(C);
             var instance = FormatterServices.GetUninitializedObject(type);
-            var foo = type.GetConstructor(Type.EmptyTypes).Invoke(instance, null);
+            var c = type.GetConstructor(Type.EmptyTypes).Invoke(instance, null);
         }
     }
 }".AssertReplace("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)", call);
