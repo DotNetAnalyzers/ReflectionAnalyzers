@@ -31,8 +31,8 @@ namespace RoslynSandbox
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(IC).GetEvent(nameof(IC.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(IC).GetEvent(nameof(IC.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void WhenExplicitAndExplicit(string call)
         {
             var interfaceCode = @"
@@ -42,7 +42,7 @@ namespace RoslynSandbox
 
     public interface IC
     {
-        event EventHandler Bar;
+        event EventHandler E;
     }
 }";
 
@@ -56,18 +56,18 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var member = typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-        internal event EventHandler Bar;
+        internal event EventHandler E;
 
-        event EventHandler IC.Bar
+        event EventHandler IC.E
         {
-            add => this.Bar += value;
-            remove => this.Bar -= value;
+            add => this.E += value;
+            remove => this.E -= value;
         }
     }
-}".AssertReplace("typeof(C).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
+}".AssertReplace("typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
 
             RoslynAssert.Valid(Analyzer, Descriptor, interfaceCode, code);
         }
