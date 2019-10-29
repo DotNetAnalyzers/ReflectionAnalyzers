@@ -588,7 +588,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public object Get => typeof(BinaryReferencedAssembly.Foo).GetMethod(""add_Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public object Get => typeof(BinaryReferencedAssembly.C1).GetMethod(""add_E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
             var after = @"
@@ -598,33 +598,32 @@ namespace RoslynSandbox
 
     public class C
     {
-        public object Get => typeof(BinaryReferencedAssembly.Foo).GetEvent(""Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod;
+        public object Get => typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod;
     }
 }";
 
-            var binaryReferencedCode = @"
+            var binaryReference = TestHelper.CompileBinaryReference(@"
 namespace RoslynSandbox.BinaryReferencedAssembly
 {
     using System;
 
-    public interface IFoo
+    public interface IC1
     {
-        event EventHandler Bar;
+        event EventHandler E;
     }
 
-    public class Foo : IFoo
+    public class C1 : IC1
     {
         #pragma warning disable CS0067
-        internal event EventHandler Bar;
+        internal event EventHandler E;
 
-        event EventHandler IFoo.Bar
+        event EventHandler IC1.E
         {
             add { }
             remove { }
         }
     }
-}";
-            var binaryReference = TestHelper.CompileBinaryReference(binaryReferencedCode);
+}");
 
             var solution = CodeFactory.CreateSolution(
                 code,
@@ -636,11 +635,11 @@ namespace RoslynSandbox.BinaryReferencedAssembly
             var compilation = await solution.Projects.Single()
                                             .GetCompilationAsync()
                                             .ConfigureAwait(true);
-            var fooType = compilation.GetTypeByMetadataName("RoslynSandbox.BinaryReferencedAssembly.Foo");
+            var fooType = compilation.GetTypeByMetadataName("RoslynSandbox.BinaryReferencedAssembly.C1");
             Assert.That(fooType.GetMembers(), Has.None.With.Property("Name")
                                                  .EqualTo("Bar"));
 
-            var message = @"Prefer typeof(BinaryReferencedAssembly.Foo).GetEvent(""Bar"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
+            var message = @"Prefer typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, after);
         }
     }
