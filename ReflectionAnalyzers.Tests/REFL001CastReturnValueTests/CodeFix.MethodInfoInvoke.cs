@@ -23,10 +23,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var value = ↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
+            var value = ↓typeof(C).GetMethod(nameof(M)).Invoke(null, null);
         }
 
-        public static int Bar() => 0;
+        public static int M() => 0;
     }
 }";
 
@@ -37,34 +37,13 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
+            var value = (int)typeof(C).GetMethod(nameof(M)).Invoke(null, null);
         }
 
-        public static int Bar() => 0;
+        public static int M() => 0;
     }
 }";
                 RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
-
-            [Test]
-            public static void Walk()
-            {
-                var code = @"
-namespace RoslynSandbox
-{
-    public class C
-    {
-        public C()
-        {
-            var info = typeof(C).GetMethod(nameof(Bar));
-            var value = ↓info.Invoke(null, null);
-        }
-
-        public static int Bar() => 0;
-    }
-}";
-
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

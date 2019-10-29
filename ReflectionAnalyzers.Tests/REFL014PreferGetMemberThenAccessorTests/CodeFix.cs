@@ -312,9 +312,9 @@ namespace BinaryReferencedAssembly
         [TestCase("GetMethod(\"add_Public\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(EventHandler) }, null)",    "GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod")]
         [TestCase("GetMethod(\"remove_Public\")",                                                                                                                      "GetEvent(nameof(this.Public)).RemoveMethod")]
         [TestCase("GetMethod(\"remove_Public\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(EventHandler) }, null)", "GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).RemoveMethod")]
-        public static void InstanceEventInSameType(string before, string after)
+        public static void InstanceEventInSameType(string beforeExpression, string afterExpression)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -329,9 +329,9 @@ namespace RoslynSandbox
 
         public event EventHandler Public;
     }
-}".AssertReplace("GetMethod(\"add_Public\")", before);
+}".AssertReplace("GetMethod(\"add_Public\")", beforeExpression);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -346,10 +346,10 @@ namespace RoslynSandbox
 
         public event EventHandler Public;
     }
-}".AssertReplace("GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod", after);
+}".AssertReplace("GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod", afterExpression);
 
-            var message = $"Prefer typeof(C).{after}.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code, fixedCode);
+            var message = $"Prefer typeof(C).{afterExpression}.";
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
         [TestCase("GetMethod(\"get_Current\")",                                                                          "GetProperty(nameof(IEnumerator.Current)).GetMethod")]
@@ -393,9 +393,9 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod")]
         [TestCase("GetMethod(\"set_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)",                             "GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance).SetMethod")]
         [TestCase("GetMethod(\"set_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", "GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
-        public static void AggregateException(string before, string after)
+        public static void AggregateException(string beforeExpression, string afterExpression)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System;
@@ -408,9 +408,9 @@ namespace RoslynSandbox
             var member = typeof(AggregateException).GetMethod(""get_InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance);
         }
     }
-}".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", before);
+}".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", beforeExpression);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System;
@@ -423,9 +423,9 @@ namespace RoslynSandbox
             var member = typeof(AggregateException).GetProperty(""InnerExceptionCount"", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod;
         }
     }
-}".AssertReplace("GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod", after);
+}".AssertReplace("GetProperty(\"InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance).GetMethod", afterExpression);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("GetMethod(\"get_Item\")",                                                                                                                          "GetProperty(\"Item\").GetMethod")]
@@ -434,9 +434,9 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_Item\")",                                                                                                                          "GetProperty(\"Item\").SetMethod")]
         [TestCase("GetMethod(\"set_Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                                                 "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(int) }, null)", "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null).SetMethod")]
-        public static void Indexer(string before, string after)
+        public static void Indexer(string beforeExpression, string afterExpression)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -453,9 +453,9 @@ namespace RoslynSandbox
             set => this.ints[i] = value;
         }
     }
-}".AssertReplace("GetMethod(\"get_Item\")", before);
+}".AssertReplace("GetMethod(\"get_Item\")", beforeExpression);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -472,9 +472,9 @@ namespace RoslynSandbox
             set => this.ints[i] = value;
         }
     }
-}".AssertReplace("GetProperty(\"Item\").GetMethod", after);
+}".AssertReplace("GetProperty(\"Item\").GetMethod", afterExpression);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("GetMethod(\"get_Item\")",                                                                                                                             "GetProperty(\"Item\").GetMethod")]
@@ -482,9 +482,9 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"get_Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)",                 "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null).GetMethod")]
         [TestCase("GetMethod(\"set_Item\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                                                 "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_Item\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(int) }, null)", "GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null).SetMethod")]
-        public static void IndexerPrivateSet(string before, string after)
+        public static void IndexerPrivateSet(string beforeExpression, string afterExpression)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -501,9 +501,9 @@ namespace RoslynSandbox
             private set => this.ints[i] = value;
         }
     }
-}".AssertReplace("GetMethod(\"get_Item\")", before);
+}".AssertReplace("GetMethod(\"get_Item\")", beforeExpression);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -520,9 +520,9 @@ namespace RoslynSandbox
             private set => this.ints[i] = value;
         }
     }
-}".AssertReplace("GetProperty(\"Item\").GetMethod", after);
+}".AssertReplace("GetProperty(\"Item\").GetMethod", afterExpression);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase("GetMethod(\"get_Foo\")",                                                                                                                          "GetProperty(\"Foo\").GetMethod")]
@@ -531,9 +531,9 @@ namespace RoslynSandbox
         [TestCase("GetMethod(\"set_Foo\")",                                                                                                                          "GetProperty(\"Foo\").SetMethod")]
         [TestCase("GetMethod(\"set_Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)",                                                 "GetProperty(\"Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).SetMethod")]
         [TestCase("GetMethod(\"set_Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(int) }, null)", "GetProperty(\"Foo\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null).SetMethod")]
-        public static void NamedIndexer(string before, string after)
+        public static void NamedIndexer(string beforeExpression, string afterExpression)
         {
-            var code = @"
+            var before = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -552,9 +552,9 @@ namespace RoslynSandbox
             set => this.ints[i] = value;
         }
     }
-}".AssertReplace("GetMethod(\"get_Foo\")", before);
+}".AssertReplace("GetMethod(\"get_Foo\")", beforeExpression);
 
-            var fixedCode = @"
+            var after = @"
 namespace RoslynSandbox
 {
     using System.Reflection;
@@ -573,9 +573,9 @@ namespace RoslynSandbox
             set => this.ints[i] = value;
         }
     }
-}".AssertReplace("GetProperty(\"Item\").GetMethod", after);
+}".AssertReplace("GetProperty(\"Item\").GetMethod", afterExpression);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, code, fixedCode);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]

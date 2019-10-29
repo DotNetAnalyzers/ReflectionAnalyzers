@@ -6,23 +6,26 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
 
     public static partial class Diagnostics
     {
-        public static class ConstructorInfoInvoke
+        public static class MethodInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL001CastReturnValue.Descriptor);
 
             [Test]
-            public static void AssigningLocal()
+            public static void Walk()
             {
                 var code = @"
 namespace RoslynSandbox
 {
     public class C
     {
-        public C(int i)
+        public C()
         {
-            var value = ↓typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
+            var info = typeof(C).GetMethod(nameof(Bar));
+            var value = ↓info.Invoke(null, null);
         }
+
+        public static int Bar() => 0;
     }
 }";
 

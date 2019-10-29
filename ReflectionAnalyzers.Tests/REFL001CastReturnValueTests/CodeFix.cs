@@ -23,9 +23,9 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static void Bar()
+        public static void M()
         {
-            var foo = ↓Activator.CreateInstance(typeof(C));
+            var c = ↓Activator.CreateInstance(typeof(C));
         }
     }
 }";
@@ -37,9 +37,9 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static void Bar()
+        public static void M()
         {
-            var foo = (C)Activator.CreateInstance(typeof(C));
+            var c = (C)Activator.CreateInstance(typeof(C));
         }
     }
 }";
@@ -56,10 +56,10 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static void Bar()
+        public static void M()
         {
             var type = typeof(C);
-            var foo = ↓Activator.CreateInstance(type);
+            var c = ↓Activator.CreateInstance(type);
         }
     }
 }";
@@ -71,10 +71,10 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static void Bar()
+        public static void M()
         {
             var type = typeof(C);
-            var foo = (C)Activator.CreateInstance(type);
+            var c = (C)Activator.CreateInstance(type);
         }
     }
 }";
@@ -94,9 +94,9 @@ namespace RoslynSandbox
 
     public class C
     {
-        public static void Bar<T>()
+        public static void M<T>()
         {
-            var foo = ↓Activator.CreateInstance(typeof(T));
+            var c = ↓Activator.CreateInstance(typeof(T));
         }
     }
 }".AssertReplace("Activator.CreateInstance(typeof(T))", call);
