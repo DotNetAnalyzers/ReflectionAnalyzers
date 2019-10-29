@@ -24,7 +24,7 @@ namespace RoslynSandbox
 
         public static object Get => Delegate.CreateDelegate(
             typeof(Action),
-            new C(),
+            ↓new C(),
             typeof(C).GetMethod(nameof(M)));
     }
 }";

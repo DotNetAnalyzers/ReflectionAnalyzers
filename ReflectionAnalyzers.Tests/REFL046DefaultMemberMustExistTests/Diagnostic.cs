@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
         {
             var code = @"
 using System.Reflection;
-[DefaultMember(""NotValue"")]
+[DefaultMember(↓""NotValue"")]
 public class Foo
 {
     public int Value { get; set; }
@@ -36,7 +36,7 @@ public class Foo
 using System;
 using System.Reflection;
 
-[DefaultMember(""Event"")]
+[DefaultMember(↓""Event"")]
 public class Foo
 {
     public event EventHandler Event;
@@ -62,7 +62,7 @@ public class Base
     }
 }
 
-[DefaultMember(""Base"")]
+[DefaultMember(↓""Base"")]
 public class Foo { }
 ";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);

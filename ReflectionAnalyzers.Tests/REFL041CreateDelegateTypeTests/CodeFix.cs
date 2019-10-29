@@ -405,7 +405,7 @@ namespace RoslynSandbox
     class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Func<C, string>),
+                typeof(↓Func<C, string>),
                 typeof(C).GetProperty(
                     nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetGetMethod());
@@ -447,7 +447,7 @@ namespace RoslynSandbox
     class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Func<string>),
+                typeof(↓Func<string>),
                 typeof(C).GetProperty(
                     nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetGetMethod());
@@ -489,7 +489,7 @@ namespace RoslynSandbox
     class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Action<C, string>),
+                typeof(↓Action<C, string>),
                 typeof(C).GetProperty(
                     nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetSetMethod());
@@ -531,7 +531,7 @@ namespace RoslynSandbox
     class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Action<string>),
+                typeof(↓Action<string>),
                 typeof(C).GetProperty(
                     nameof(C.Value),
                     BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetSetMethod());
@@ -573,7 +573,7 @@ namespace RoslynSandbox
     class C
     {
         public static object Getter { get; } = Delegate.CreateDelegate(
-                typeof(Func<C, string>),
+                typeof(↓Func<C, string>),
                 typeof(C).GetMethod(nameof(C.M)));
 
         public int P { get; set; }

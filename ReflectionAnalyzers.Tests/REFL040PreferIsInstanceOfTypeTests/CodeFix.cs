@@ -21,7 +21,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public bool M(Type t1, object o) => t1.IsAssignableFrom(o.GetType());
+        public bool M(Type t1, object o) => ↓t1.IsAssignableFrom(o.GetType());
     }
 }";
 

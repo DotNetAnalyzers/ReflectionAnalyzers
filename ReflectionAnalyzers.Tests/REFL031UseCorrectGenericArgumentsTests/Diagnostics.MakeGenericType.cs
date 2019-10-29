@@ -160,8 +160,8 @@ namespace RoslynSandbox
         public Type Get<T>()
         {
             return typeof(T).IsValueType
-                ? typeof(C).GetNestedType(""ConstrainedToClass`1"", BindingFlags.Public).MakeGenericType(typeof(T))
-                : typeof(C).GetNestedType(""ConstrainedToStruct`1"", BindingFlags.Public).MakeGenericType(typeof(T));
+                ? typeof(C).GetNestedType(""ConstrainedToClass`1"", BindingFlags.Public).MakeGenericType(↓typeof(T))
+                : typeof(C).GetNestedType(""ConstrainedToStruct`1"", BindingFlags.Public).MakeGenericType(↓typeof(T));
         }
 
         public class ConstrainedToClass<T>
@@ -192,8 +192,8 @@ namespace RoslynSandbox
         public Type Get<T>()
         {
             return typeof(T).IsValueType
-                ? typeof(C).GetNestedType(""ConstrainedToClass`2"", BindingFlags.Public).MakeGenericType(typeof(T), typeof(C))
-                : typeof(C).GetNestedType(""ConstrainedToStruct`2"", BindingFlags.Public).MakeGenericType(typeof(T), typeof(C));
+                ? typeof(C).GetNestedType(""ConstrainedToClass`2"", BindingFlags.Public).MakeGenericType(↓typeof(T), typeof(C))
+                : typeof(C).GetNestedType(""ConstrainedToStruct`2"", BindingFlags.Public).MakeGenericType(↓typeof(T), typeof(C));
         }
 
         public class ConstrainedToClass<T1, T2>
