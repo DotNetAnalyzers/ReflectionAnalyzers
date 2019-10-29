@@ -81,10 +81,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Type.EmptyTypes↓);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), Type.EmptyTypes↓);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
 }";
 
@@ -98,10 +98,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
 }";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
@@ -119,10 +119,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int) }↓);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), new[] { typeof(int) }↓);
         }
 
-        public int Bar(int value) => value;
+        public int M(int value) => value;
     }
 }";
 
@@ -135,10 +135,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
         }
 
-        public int Bar(int value) => value;
+        public int M(int value) => value;
     }
 }";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
@@ -154,10 +154,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), new[] { typeof(int), typeof(double) }↓);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), new[] { typeof(int), typeof(double) }↓);
         }
 
-        public double Bar(int i, double d) => i + d;
+        public double M(int i, double d) => i + d;
     }
 }";
 
@@ -170,10 +170,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(double) }, null);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int), typeof(double) }, null);
         }
 
-        public double Bar(int i, double d) => i + d;
+        public double M(int i, double d) => i + d;
     }
 }";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);

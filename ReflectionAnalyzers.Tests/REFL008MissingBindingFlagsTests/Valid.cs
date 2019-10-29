@@ -50,7 +50,7 @@ namespace RoslynSandbox
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("GetMethod(\"Bar\")")]
+        [TestCase("GetMethod(\"M\")")]
         [TestCase("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null)")]
         public static void GetMethodFromTypeParameter(string call)
@@ -63,7 +63,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance);
+        public MethodInfo M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance);
     }
 }".AssertReplace("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -81,14 +81,14 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod(nameof(this.M));
         }
 
-        public void Bar()
+        public void M()
         {
         }
 
-        public int Bar(int i) => i;
+        public int M(int i) => i;
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, code);

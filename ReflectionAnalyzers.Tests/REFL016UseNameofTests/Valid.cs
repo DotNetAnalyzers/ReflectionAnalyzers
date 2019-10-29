@@ -71,12 +71,12 @@ namespace RoslynSandbox
             RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
-        [TestCase("where T : C",               "GetMethod(nameof(this.Baz))")]
-        [TestCase("where T : C",               "GetMethod(nameof(this.Baz), BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToString))")]
-        [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToBoolean))")]
-        [TestCase("where T : IConvertible",      "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : C",               "GetMethod(nameof(this.M2))")]
+        [TestCase("where T : C",               "GetMethod(nameof(this.M2), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : IConvertible",    "GetMethod(nameof(IConvertible.ToString))")]
+        [TestCase("where T : IConvertible",    "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("where T : IConvertible",    "GetMethod(nameof(IConvertible.ToBoolean))")]
+        [TestCase("where T : IConvertible",    "GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToString))")]
         [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToString), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("where T : C, IConvertible", "GetMethod(nameof(IConvertible.ToBoolean))")]
@@ -91,16 +91,16 @@ namespace RoslynSandbox
 
     class C
     {
-        public MethodInfo Bar<T>()
+        public MethodInfo M1<T>()
             where T : C
         {
-            return typeof(T).GetMethod(nameof(this.Baz));
+            return typeof(T).GetMethod(nameof(this.M2));
         }
 
-        public int Baz() => 0;
+        public int M2() => 0;
     }
 }".AssertReplace("where T : C", constraint)
-  .AssertReplace("GetMethod(nameof(this.Baz))", call);
+  .AssertReplace("GetMethod(nameof(this.M2))", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
