@@ -138,7 +138,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool IsCorrectDelegateType(MethodTypes methodTypes, IMethodSymbol delegateMethod, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? delegateText)
+        private static bool IsCorrectDelegateType(MethodTypes methodTypes, IMethodSymbol delegateMethod, SyntaxNodeAnalysisContext context, [NotNullWhen(false)] out string? delegateText)
         {
             if (!methodTypes.ReturnType.Equals(delegateMethod.ReturnType))
             {

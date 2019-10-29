@@ -23,7 +23,7 @@ namespace ReflectionAnalyzers
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText) &&
-                    syntaxRoot.TryFindNode(diagnostic, out InvocationExpressionSyntax invocation))
+                    syntaxRoot.TryFindNode(diagnostic, out InvocationExpressionSyntax? invocation))
                 {
                     context.RegisterCodeFix(
                         $"Change to: typeof({typeText}).",

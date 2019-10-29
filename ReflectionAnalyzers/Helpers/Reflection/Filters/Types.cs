@@ -12,11 +12,11 @@ namespace ReflectionAnalyzers
     internal struct Types
     {
         internal static readonly Types Any = new Types(null, ImmutableArray<ExpressionSyntax>.Empty, ImmutableArray<ITypeSymbol>.Empty);
-        internal readonly ArgumentSyntax Argument;
+        internal readonly ArgumentSyntax? Argument;
         internal readonly ImmutableArray<ExpressionSyntax> Expressions;
         internal readonly ImmutableArray<ITypeSymbol> Symbols;
 
-        internal Types(ArgumentSyntax argument, ImmutableArray<ExpressionSyntax> expressions, ImmutableArray<ITypeSymbol> symbols)
+        internal Types(ArgumentSyntax? argument, ImmutableArray<ExpressionSyntax> expressions, ImmutableArray<ITypeSymbol> symbols)
         {
             this.Argument = argument;
             this.Expressions = expressions;
@@ -95,7 +95,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        internal bool TryMostSpecific(ISymbol x, ISymbol y, [NotNullWhen(true)] out ISymbol? unique)
+        internal bool TryMostSpecific(ISymbol? x, ISymbol? y, [NotNullWhen(true)] out ISymbol? unique)
         {
             if (x is null &&
                 y is null)
@@ -139,7 +139,7 @@ namespace ReflectionAnalyzers
                    invocation.TryFindArgument(parameter, out argument);
         }
 
-        private bool TryMostSpecific(IMethodSymbol x, IMethodSymbol y, [NotNullWhen(true)] out ISymbol? unique)
+        private bool TryMostSpecific(IMethodSymbol? x, IMethodSymbol? y, [NotNullWhen(true)] out ISymbol? unique)
         {
             if (this.Argument is null ||
                 x is null ||

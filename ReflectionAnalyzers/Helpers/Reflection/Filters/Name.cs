@@ -10,10 +10,10 @@ namespace ReflectionAnalyzers
     internal struct Name
     {
         internal static Name Ctor = new Name(null, ".ctor");
-        internal readonly ArgumentSyntax Argument;
+        internal readonly ArgumentSyntax? Argument;
         internal readonly string MetadataName;
 
-        internal Name(ArgumentSyntax argument, string metadataName)
+        internal Name(ArgumentSyntax? argument, string metadataName)
         {
             this.Argument = argument;
             this.MetadataName = metadataName;
@@ -25,7 +25,7 @@ namespace ReflectionAnalyzers
                 invocation.TryFindArgument(parameter, out var argument) &&
                 context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string? metadataName))
             {
-                name = new Name(argument, metadataName);
+                name = new Name(argument, metadataName!);
                 return true;
             }
 

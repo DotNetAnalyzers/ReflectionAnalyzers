@@ -192,7 +192,7 @@ namespace ReflectionAnalyzers
                             }
 
                             return false;
-                        case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax containingType):
+                        case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax? containingType):
                             source = invocation;
                             return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);
                         case MemberBindingExpressionSyntax memberBinding when memberBinding.Parent?.Parent is ConditionalAccessExpressionSyntax conditionalAccess:

@@ -130,28 +130,19 @@ namespace ReflectionAnalyzers
                     return false;
                 }
 
-                int Index(IdentifierNameSyntax identifierName)
+                static int Index(IdentifierNameSyntax identifierName)
                 {
-                    switch (identifierName.Identifier.ValueText)
+                    return identifierName.Identifier.ValueText switch
                     {
-                        case nameof(BindingFlags.Public):
-                            return 0;
-                        case nameof(BindingFlags.NonPublic):
-                            return 1;
-                        case nameof(BindingFlags.Static):
-                            return 2;
-                        case nameof(BindingFlags.Instance):
-                            return 3;
-                        case nameof(BindingFlags.DeclaredOnly):
-                            return 4;
-                        case nameof(BindingFlags.FlattenHierarchy):
-                            return 5;
-                        case nameof(BindingFlags.IgnoreCase):
-                            return 6;
-                        default:
-                            // We don't support stuff like BindingFlags.GetProperty
-                            return -1;
-                    }
+                        nameof(BindingFlags.Public) => 0,
+                        nameof(BindingFlags.NonPublic) => 1,
+                        nameof(BindingFlags.Static) => 2,
+                        nameof(BindingFlags.Instance) => 3,
+                        nameof(BindingFlags.DeclaredOnly) => 4,
+                        nameof(BindingFlags.FlattenHierarchy) => 5,
+                        nameof(BindingFlags.IgnoreCase) => 6,
+                        _ => -1,
+                    };
                 }
             }
 

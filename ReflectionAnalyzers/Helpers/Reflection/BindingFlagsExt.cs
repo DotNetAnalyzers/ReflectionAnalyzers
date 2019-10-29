@@ -69,7 +69,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool IsUsingStatic(SyntaxNode location)
+        private static bool IsUsingStatic(SyntaxNode? location)
         {
             if (location is null)
             {

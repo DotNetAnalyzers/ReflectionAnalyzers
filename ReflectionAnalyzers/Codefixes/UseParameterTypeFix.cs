@@ -24,7 +24,7 @@ namespace ReflectionAnalyzers
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText))
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax typeSyntax) &&
+                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax? typeSyntax) &&
                         typeSyntax.Parent is TypeOfExpressionSyntax)
                     {
                         context.RegisterCodeFix(
@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers
                             nameof(UseParameterTypeFix),
                             diagnostic);
                     }
-                    else if (syntaxRoot.TryFindNode(diagnostic, out ExpressionSyntax expression))
+                    else if (syntaxRoot.TryFindNode(diagnostic, out ExpressionSyntax? expression))
                     {
                         context.RegisterCodeFix(
                             $"Change to: typeof({typeText}).",

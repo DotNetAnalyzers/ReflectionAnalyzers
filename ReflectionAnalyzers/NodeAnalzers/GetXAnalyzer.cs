@@ -509,7 +509,7 @@ namespace ReflectionAnalyzers
             callText = null;
             return false;
 
-            bool TryGetPropertyAccessor(string propertyName, BindingFlags bindingFlags, ITypeSymbol type, out string result)
+            bool TryGetPropertyAccessor(string propertyName, BindingFlags bindingFlags, ITypeSymbol? type, out string result)
             {
                 if (name.MetadataName.StartsWith("get_", StringComparison.Ordinal))
                 {
@@ -584,7 +584,7 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                result = null;
+                result = null!;
                 return false;
 
                 string GetEvent() => flags.Argument == null

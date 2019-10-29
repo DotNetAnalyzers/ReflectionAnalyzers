@@ -13,22 +13,22 @@ namespace ReflectionAnalyzers
         /// <summary>
         /// The type that was used to obtain <see cref="Symbol"/>.
         /// </summary>
-        internal readonly INamedTypeSymbol ReflectedType;
+        internal readonly INamedTypeSymbol? ReflectedType;
 
         /// <summary>
         /// The expression the type was determined from when walking. Example foo.GetType() or typeof(Foo).
         /// </summary>
-        internal readonly ExpressionSyntax TypeSource;
+        internal readonly ExpressionSyntax? TypeSource;
 
-        internal readonly ISymbol Symbol;
+        internal readonly ISymbol? Symbol;
 
-        internal readonly IMethodSymbol GetX;
+        internal readonly IMethodSymbol? GetX;
 
-        internal readonly InvocationExpressionSyntax Invocation;
+        internal readonly InvocationExpressionSyntax? Invocation;
 
-        internal readonly FilterMatch Match;
+        internal readonly FilterMatch? Match;
 
-        internal ReflectedMember(INamedTypeSymbol reflectedType, ExpressionSyntax typeSource, ISymbol symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)
+        internal ReflectedMember(INamedTypeSymbol? reflectedType, ExpressionSyntax? typeSource, ISymbol? symbol, IMethodSymbol? getX, InvocationExpressionSyntax? invocation, FilterMatch match)
         {
             this.ReflectedType = reflectedType;
             this.TypeSource = typeSource;
@@ -252,7 +252,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            static bool IsOverriding(ISymbol symbol, ISymbol candidateBase)
+            static bool IsOverriding(ISymbol? symbol, ISymbol candidateBase)
             {
                 if (symbol == null)
                 {
