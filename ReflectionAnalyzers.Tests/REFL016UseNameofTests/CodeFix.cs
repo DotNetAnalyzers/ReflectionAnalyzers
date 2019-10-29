@@ -21,10 +21,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = this.GetType().GetProperty(↓""Bar"");
+            var member = this.GetType().GetProperty(↓""P"");
         }
 
-         public int Bar { get; }
+         public int P { get; }
     }
 }";
 
@@ -35,10 +35,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = this.GetType().GetProperty(nameof(this.Bar));
+            var member = this.GetType().GetProperty(nameof(this.P));
         }
 
-         public int Bar { get; }
+         public int P { get; }
     }
 }";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
@@ -57,11 +57,11 @@ namespace RoslynSandbox
         public C()
         {
             var member = this.GetType().GetProperty(
-  /* trivia1 */ ↓""Bar""  ,    // trivia2
+  /* trivia1 */ ↓""P""  ,    // trivia2
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-         public int Bar { get; }
+         public int P { get; }
     }
 }";
 
@@ -75,11 +75,11 @@ namespace RoslynSandbox
         public C()
         {
             var member = this.GetType().GetProperty(
-  /* trivia1 */ nameof(this.Bar)  ,    // trivia2
+  /* trivia1 */ nameof(this.P)  ,    // trivia2
                 BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
-         public int Bar { get; }
+         public int P { get; }
     }
 }";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
@@ -95,10 +95,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = this.GetType().GetProperty(↓""Bar"");
+            var member = this.GetType().GetProperty(↓""P"");
         }
 
-         public static int Bar { get; }
+         public static int P { get; }
     }
 }";
 
@@ -109,10 +109,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var member = this.GetType().GetProperty(nameof(Bar));
+            var member = this.GetType().GetProperty(nameof(P));
         }
 
-         public static int Bar { get; }
+         public static int P { get; }
     }
 }";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
@@ -262,9 +262,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Bar
+    public class C2
     {
-        public Bar()
+        public C2()
         {
             var member = typeof(C).GetNestedType(↓""Class"", BindingFlags.Public);
         }
@@ -276,9 +276,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Bar
+    public class C2
     {
-        public Bar()
+        public C2()
         {
             var member = typeof(C).GetNestedType(nameof(C.Class), BindingFlags.Public);
         }

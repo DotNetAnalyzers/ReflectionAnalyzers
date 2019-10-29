@@ -221,7 +221,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Meh(object value)
+        public void M(object value)
         {
             _ = typeof(IEnumerator).GetMethod(""get_Current"");
         }
@@ -307,7 +307,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Meh(object value)
+        public void M(object value)
         {
             if (value == null)
             {
@@ -329,7 +329,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Meh(StringComparison value)
+        public void M(StringComparison value)
         {
             switch (value)
             {
@@ -367,12 +367,12 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Bar()
+        public void M1()
         {
-            this.Meh(""Exception"");
+            this.M1(""Exception"");
         }
 
-        public void Meh(string value)
+        public void M1(string value)
         {
             throw new ArgumentException(nameof(value), value);
         }
@@ -458,12 +458,12 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Bar()
+        public void M1()
         {
-            this.Meh(""Test"");
+            this.M1(""Test"");
         }
 
-        public void Meh(string value)
+        public void M1(string value)
         {
             throw new ArgumentException(nameof(value), value);
         }

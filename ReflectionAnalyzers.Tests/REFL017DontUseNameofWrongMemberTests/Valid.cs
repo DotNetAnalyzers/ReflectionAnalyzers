@@ -35,9 +35,9 @@ namespace RoslynSandbox
 {
     using System.Reflection;
 
-    public class Bar
+    public class C2
     {
-        public Bar()
+        public C2()
         {
             var member = typeof(C).GetNestedType(""Class"", BindingFlags.NonPublic);
         }
@@ -198,7 +198,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public MethodInfo Bar<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
+        public MethodInfo M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, testCode);
@@ -214,13 +214,13 @@ namespace RoslynSandbox
 
     class C
     {
-        public MethodInfo Bar<T>()
+        public MethodInfo M1<T>()
             where T : C
         {
-            return typeof(T).GetMethod(nameof(this.Baz));
+            return typeof(T).GetMethod(nameof(this.M1));
         }
 
-        public int Baz() => 0;
+        public int M1() => 0;
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, testCode);
@@ -297,7 +297,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Meh(object value)
+        public void M(object value)
         {
             if (value == null)
             {
@@ -319,7 +319,7 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Meh(StringComparison value)
+        public void M(StringComparison value)
         {
             switch (value)
             {
@@ -357,12 +357,12 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Bar()
+        public void M1()
         {
-            this.Meh(""Exception"");
+            this.M1(""Exception"");
         }
 
-        public void Meh(string value)
+        public void M1(string value)
         {
             throw new ArgumentException(nameof(value), value);
         }
@@ -448,12 +448,12 @@ namespace RoslynSandbox
 
     public class C
     {
-        public void Bar()
+        public void M1()
         {
-            this.Meh(""Test"");
+            this.M1(""Test"");
         }
 
-        public void Meh(string value)
+        public void M1(string value)
         {
             throw new ArgumentException(nameof(value), value);
         }
