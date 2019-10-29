@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class Diagnostic
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DefaultMemberAttributeAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL046DefaultMemberMustExist.Descriptor);
@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
         /// Verify diagnostic is present when no such member exists.
         /// </summary>
         [Test]
-        public void DefaultMemberAbsent()
+        public static void DefaultMemberAbsent()
         {
             var code = @"
 using System.Reflection;
@@ -30,7 +30,7 @@ public class Foo
         /// Verify events are not considered valid targets.
         /// </summary>
         [Test]
-        public void DefaultMemberIsEvent()
+        public static void DefaultMemberIsEvent()
         {
             var code = @"
 using System;
@@ -49,7 +49,7 @@ public class Foo
         /// Verify base class names are not considered valid targets.
         /// </summary>
         [Test]
-        public void DefaultMemberIsBaseClass()
+        public static void DefaultMemberIsBaseClass()
         {
             var code = @"
 using System.Reflection;

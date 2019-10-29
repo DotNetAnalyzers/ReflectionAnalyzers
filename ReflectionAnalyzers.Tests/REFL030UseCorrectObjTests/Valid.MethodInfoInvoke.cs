@@ -22,10 +22,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            _ = typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
+            _ = typeof(C).GetMethod(nameof(M)).Invoke(null, null);
         }
 
-        public static void Bar()
+        public static void M()
         {
         }
     }
@@ -44,10 +44,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(new C(), null);
+            var value = (int)typeof(C).GetMethod(nameof(M)).Invoke(new C(), null);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
 }";
 
@@ -65,7 +65,7 @@ namespace RoslynSandbox
 
     public static class C
     {
-        public static object Bar() => typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null);
+        public static object M() => typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null);
     }
 }".AssertReplace("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null)", call);
 
