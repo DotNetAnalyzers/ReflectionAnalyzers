@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers
 
     internal static class Arguments
     {
-        internal static bool? TryFindFirstMisMatch(ImmutableArray<IParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context, out ExpressionSyntax expression)
+        internal static bool? TryFindFirstMisMatch(ImmutableArray<IParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context, out ExpressionSyntax? expression)
         {
             if (parameters.Length == 0 &&
                 values.Length > 0)
@@ -40,7 +40,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            IParameterSymbol lastParameter = null;
+            IParameterSymbol? lastParameter = null;
             for (var i = 0; i < values.Length; i++)
             {
                 expression = values[i];
@@ -54,7 +54,7 @@ namespace ReflectionAnalyzers
                 }
 
                 if (lastParameter.IsOptional &&
-                    context.SemanticModel.TryGetSymbol(values[i], context.CancellationToken, out IFieldSymbol field) &&
+                    context.SemanticModel.TryGetSymbol(values[i], context.CancellationToken, out IFieldSymbol? field) &&
                     field == KnownSymbol.Missing.Value)
                 {
                     continue;

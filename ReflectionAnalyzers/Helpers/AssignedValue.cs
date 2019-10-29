@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
@@ -7,7 +8,7 @@ namespace ReflectionAnalyzers
 
     public static class AssignedValue
     {
-        internal static bool TryGetSingle(ISymbol symbol, SemanticModel semanticModel, CancellationToken cancellationToken, out ExpressionSyntax expression)
+        internal static bool TryGetSingle(ISymbol symbol, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ExpressionSyntax? expression)
         {
             switch (symbol)
             {
@@ -23,11 +24,11 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        internal static bool TryGetSingle(IFieldSymbol field, SemanticModel semanticModel, CancellationToken cancellationToken, out ExpressionSyntax expression)
+        internal static bool TryGetSingle(IFieldSymbol field, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ExpressionSyntax? expression)
         {
             expression = null;
             if (field.IsReadOnly &&
-                field.TrySingleDeclaration(cancellationToken, out VariableDeclarationSyntax declaration) &&
+                field.TrySingleDeclaration(cancellationToken, out VariableDeclarationSyntax? declaration) &&
                 declaration.Variables.TrySingle(out var variable))
             {
                 using (var walker = MutationWalker.For(field, semanticModel, cancellationToken))
@@ -53,11 +54,11 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        internal static bool TryGetSingle(IPropertySymbol property, SemanticModel semanticModel, CancellationToken cancellationToken, out ExpressionSyntax expression)
+        internal static bool TryGetSingle(IPropertySymbol property, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ExpressionSyntax? expression)
         {
             expression = null;
             if (property.IsGetOnly() &&
-                property.TrySingleDeclaration(cancellationToken, out PropertyDeclarationSyntax declaration))
+                property.TrySingleDeclaration(cancellationToken, out PropertyDeclarationSyntax? declaration))
             {
                 using (var walker = MutationWalker.For(property, semanticModel, cancellationToken))
                 {
@@ -82,10 +83,10 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        internal static bool TryGetSingle(ILocalSymbol local, SemanticModel semanticModel, CancellationToken cancellationToken, out ExpressionSyntax expression)
+        internal static bool TryGetSingle(ILocalSymbol local, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ExpressionSyntax? expression)
         {
             expression = null;
-            if (local.TrySingleDeclaration(cancellationToken, out VariableDeclarationSyntax declaration) &&
+            if (local.TrySingleDeclaration(cancellationToken, out VariableDeclarationSyntax? declaration) &&
                 declaration.Variables.TrySingle(out var variable))
             {
                 using (var walker = MutationWalker.For(local, semanticModel, cancellationToken))

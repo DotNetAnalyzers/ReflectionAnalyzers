@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
     using Microsoft.CodeAnalysis;
@@ -11,7 +12,7 @@ namespace ReflectionAnalyzers
         private static readonly SymbolDisplayFormat Format = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
             SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
-        internal static bool TryGetExpressionText(ReflectedMember member, SyntaxNodeAnalysisContext context, out string targetName)
+        internal static bool TryGetExpressionText(ReflectedMember member, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? targetName)
         {
             targetName = null;
             if (member.Symbol.ContainingType.IsAnonymousType)
@@ -75,7 +76,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        internal static bool IsNameOf(ArgumentSyntax argument, out ExpressionSyntax expression)
+        internal static bool IsNameOf(ArgumentSyntax argument, [NotNullWhen(true)] out ExpressionSyntax? expression)
         {
             if (argument.Expression is InvocationExpressionSyntax candidate &&
                 candidate.ArgumentList is ArgumentListSyntax argumentList &&

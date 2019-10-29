@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
@@ -62,9 +63,9 @@ namespace ReflectionAnalyzers
         /// <returns>Success.</returns>
         private static bool TryGetAttributeAndTypeInfo(
             SyntaxNodeAnalysisContext context,
-            out string memberName,
-            out Location location,
-            out ITypeSymbol typeSymbol)
+            [NotNullWhen(true)] out string? memberName,
+            [NotNullWhen(true)] out Location? location,
+            [NotNullWhen(true)] out ITypeSymbol? typeSymbol)
         {
             memberName = default;
             location = default;
@@ -77,12 +78,12 @@ namespace ReflectionAnalyzers
             }
 
             if (!attribute.TryFindArgument(0, "memberName", out var argument) ||
-                !context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string workingMemberName))
+                !context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string? workingMemberName))
             {
                 return false;
             }
 
-            if (!attribute.TryFirstAncestor(out ClassDeclarationSyntax classDeclaration))
+            if (!attribute.TryFirstAncestor(out ClassDeclarationSyntax? classDeclaration))
             {
                 return false;
             }

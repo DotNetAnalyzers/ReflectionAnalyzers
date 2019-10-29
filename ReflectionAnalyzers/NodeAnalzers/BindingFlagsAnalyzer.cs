@@ -2,6 +2,7 @@ namespace ReflectionAnalyzers
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -96,7 +97,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            internal static bool HasWrongOrder(BinaryExpressionSyntax flags, out string inExpectedOrder)
+            internal static bool HasWrongOrder(BinaryExpressionSyntax flags, [NotNullWhen(true)] out string? inExpectedOrder)
             {
                 inExpectedOrder = null;
                 if (flags == null)
@@ -154,7 +155,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            internal static bool HasDuplicate(BinaryExpressionSyntax flags, out IdentifierNameSyntax dupe, out string expectedFlags)
+            internal static bool HasDuplicate(BinaryExpressionSyntax flags, [NotNullWhen(true)] out IdentifierNameSyntax? dupe, [NotNullWhen(true)] out string? expectedFlags)
             {
                 expectedFlags = null;
                 dupe = null;

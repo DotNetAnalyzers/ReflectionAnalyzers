@@ -42,7 +42,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        internal static bool TryGetTypesArrayText(ImmutableArray<IParameterSymbol> parameters, SemanticModel semanticModel, int position, out string typesArrayText)
+        internal static bool TryGetTypesArrayText(ImmutableArray<IParameterSymbol> parameters, SemanticModel semanticModel, int position, [NotNullWhen(true)] out string? typesArrayText)
         {
             if (parameters.Length == 0)
             {
@@ -132,14 +132,14 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetTypesArgument(InvocationExpressionSyntax invocation, IMethodSymbol getX, out ArgumentSyntax argument)
+        private static bool TryGetTypesArgument(InvocationExpressionSyntax invocation, IMethodSymbol getX, [NotNullWhen(true)] out ArgumentSyntax? argument)
         {
             argument = null;
             return getX.TryFindParameter("types", out var parameter) &&
                    invocation.TryFindArgument(parameter, out argument);
         }
 
-        private bool TryMostSpecific(IMethodSymbol x, IMethodSymbol y, out ISymbol unique)
+        private bool TryMostSpecific(IMethodSymbol x, IMethodSymbol y, [NotNullWhen(true)] out ISymbol? unique)
         {
             if (this.Argument is null ||
                 x is null ||

@@ -2,6 +2,7 @@ namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
@@ -123,7 +124,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryFindArgumentList(SyntaxNode syntaxRoot, Diagnostic diagnostic, out ArgumentListSyntax argumentList)
+        private static bool TryFindArgumentList(SyntaxNode syntaxRoot, Diagnostic diagnostic, [NotNullWhen(true)] out ArgumentListSyntax? argumentList)
         {
             if (syntaxRoot.TryFindNode(diagnostic, out argumentList))
             {
