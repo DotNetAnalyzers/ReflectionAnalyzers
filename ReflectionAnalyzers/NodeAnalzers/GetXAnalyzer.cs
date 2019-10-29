@@ -2,6 +2,7 @@ namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
@@ -277,7 +278,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool HasMissingFlags(ReflectedMember member, Flags flags, out Location location, out string flagsText)
+        private static bool HasMissingFlags(ReflectedMember member, Flags flags, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? flagsText)
         {
             if (Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags) &&
                 member.Invocation?.ArgumentList is ArgumentListSyntax argumentList &&
@@ -324,7 +325,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool HasWrongFlags(ReflectedMember member, Flags flags, out Location location, out string flagText)
+        private static bool HasWrongFlags(ReflectedMember member, Flags flags, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? flagText)
         {
             if (member.Match == FilterMatch.WrongFlags &&
                 Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags))
@@ -350,7 +351,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool HasRedundantFlag(ReflectedMember member, Flags flags, out string flagsText)
+        private static bool HasRedundantFlag(ReflectedMember member, Flags flags, [NotNullWhen(true)] out string? flagsText)
         {
             if (member.Match != FilterMatch.Single ||
                 !member.ReflectedType.Locations.Any(x => x.IsInSource))
@@ -406,7 +407,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameText)
+        private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? nameText)
         {
             if (name.Argument is ArgumentSyntax argument &&
                 NameOf.CanUseFor(member.Symbol) &&
@@ -432,7 +433,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool UsesNameOfWrongMember(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, out Location location, out string nameText)
+        private static bool UsesNameOfWrongMember(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? nameText)
         {
             if (name.Argument is ArgumentSyntax argument &&
                 NameOf.IsNameOf(argument, out var expression))
@@ -462,13 +463,13 @@ namespace ReflectionAnalyzers
 
             bool TryGetSymbol(ExpressionSyntax e, out ISymbol symbol)
             {
-                return context.SemanticModel.TryGetSymbol(e, context.CancellationToken, out symbol) ||
+                return context.SemanticModel.TryGetSymbol(e, context.CancellationToken, out symbol!) ||
                        context.SemanticModel.GetSymbolInfo(e, context.CancellationToken)
                               .CandidateSymbols.TryFirst(out symbol);
             }
         }
 
-        private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, Name name, Flags flags, Types types, SyntaxNodeAnalysisContext context, out string callText)
+        private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, Name name, Flags flags, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? callText)
         {
             if (member.Invocation?.Expression is MemberAccessExpressionSyntax memberAccess)
             {
@@ -523,7 +524,7 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                result = null;
+                result = null!;
                 return false;
 
                 string GetProperty()
@@ -601,7 +602,7 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                memberName = null;
+                memberName = null!;
                 return false;
             }
 
@@ -629,7 +630,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out string typesArrayText)
+        private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? typesArrayText)
         {
             if ((member.Symbol as IMethodSymbol)?.AssociatedSymbol != null)
             {
@@ -650,7 +651,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool ShouldUseSameTypeAsParameter(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, out Location location, out string typeText)
+        private static bool ShouldUseSameTypeAsParameter(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? typeText)
         {
             if (types.Argument is ArgumentSyntax argument &&
                 member.Symbol is IMethodSymbol method)

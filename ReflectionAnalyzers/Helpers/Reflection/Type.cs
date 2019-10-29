@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -140,7 +141,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, out ITypeSymbol result, out ExpressionSyntax source)
+        private static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, PooledSet<ExpressionSyntax> visited, [NotNullWhen(true)] out ITypeSymbol? result, [NotNullWhen(true)] out ExpressionSyntax? source)
         {
             switch (expression)
             {

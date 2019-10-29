@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -11,7 +12,7 @@ namespace ReflectionAnalyzers
     /// </summary>
     internal static class GetX
     {
-        internal static bool TryGetConstructorInfo(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol constructor)
+        internal static bool TryGetConstructorInfo(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IMethodSymbol? constructor)
         {
             if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetConstructor, context, out var invocation) &&
                 TryMatchGetConstructor(invocation, context, out var member, out _, out _) &&
@@ -26,7 +27,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        internal static bool TryGetMethodInfo(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, out IMethodSymbol method)
+        internal static bool TryGetMethodInfo(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IMethodSymbol? method)
         {
             if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetMethod, context, out var invocation) &&
                 TryMatchGetMethod(invocation, context, out var member, out _, out _, out _) &&
@@ -41,7 +42,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        internal static bool TryGetNestedType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out INamedTypeSymbol type)
+        internal static bool TryGetNestedType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out INamedTypeSymbol? type)
         {
             if (expression is MemberAccessExpressionSyntax memberAccess &&
                 TryFindInvocation(memberAccess, KnownSymbol.Type.GetNestedType, context, out var invocation) &&
@@ -180,7 +181,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryFindInvocation(MemberAccessExpressionSyntax memberAccess, QualifiedMethod expected, SyntaxNodeAnalysisContext context, out InvocationExpressionSyntax invocation)
+        private static bool TryFindInvocation(MemberAccessExpressionSyntax memberAccess, QualifiedMethod expected, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out InvocationExpressionSyntax? invocation)
         {
             switch (memberAccess.Expression)
             {

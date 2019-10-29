@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -10,7 +11,8 @@ namespace ReflectionAnalyzers
     internal struct Flags
     {
         internal static readonly Flags MatchAll = new Flags(null, BindingFlags.Default, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
-        internal readonly ArgumentSyntax Argument;
+
+        internal readonly ArgumentSyntax? Argument;
 
         /// <summary>
         /// The flags explicitly provided in the argument.
@@ -22,7 +24,7 @@ namespace ReflectionAnalyzers
         /// </summary>
         internal readonly BindingFlags Default;
 
-        internal Flags(ArgumentSyntax argument, BindingFlags @explicit, BindingFlags @default)
+        internal Flags(ArgumentSyntax? argument, BindingFlags @explicit, BindingFlags @default)
         {
             this.Argument = argument;
             this.Explicit = @explicit;
@@ -139,7 +141,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetBindingFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out ArgumentSyntax argument, out BindingFlags bindingFlags)
+        private static bool TryGetBindingFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ArgumentSyntax? argument, out BindingFlags bindingFlags)
         {
             argument = null;
             bindingFlags = 0;

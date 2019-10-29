@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
@@ -64,7 +65,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        internal bool TryFindConstraintViolation(SyntaxNodeAnalysisContext context, out ExpressionSyntax argument, out ITypeParameterSymbol parameter)
+        internal bool TryFindConstraintViolation(SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ExpressionSyntax? argument, [NotNullWhen(true)] out ITypeParameterSymbol? parameter)
         {
             for (var i = 0; i < this.Parameters.Length; i++)
             {
@@ -108,7 +109,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
+        private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
             if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
@@ -133,7 +134,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ISymbol symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
+        private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
             if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
@@ -295,7 +296,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private bool TryFindArgumentType(ITypeParameterSymbol parameter, SyntaxNodeAnalysisContext context, out ITypeSymbol type)
+        private bool TryFindArgumentType(ITypeParameterSymbol parameter, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ITypeSymbol? type)
         {
             var i = this.Parameters.IndexOf(parameter);
             if (i >= 0)

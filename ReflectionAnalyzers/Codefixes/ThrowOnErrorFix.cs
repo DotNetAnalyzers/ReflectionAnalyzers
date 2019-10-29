@@ -24,7 +24,7 @@ namespace ReflectionAnalyzers
 
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax invocation) &&
+                if (syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
                     invocation.ArgumentList is ArgumentListSyntax argumentList)
                 {
                     if (argumentList.Arguments.Count == 1)

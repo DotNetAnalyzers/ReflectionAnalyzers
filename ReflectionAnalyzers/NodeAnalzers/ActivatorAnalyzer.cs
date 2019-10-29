@@ -1,6 +1,7 @@
 namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -73,7 +74,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetCreatedType(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol createdType, out ExpressionSyntax typeSource)
+        private static bool TryGetCreatedType(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ITypeSymbol? createdType, [NotNullWhen(true)] out ExpressionSyntax? typeSource)
         {
             if (createInstance.IsGenericMethod &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&

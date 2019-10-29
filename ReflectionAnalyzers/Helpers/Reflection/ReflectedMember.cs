@@ -1,5 +1,6 @@
 namespace ReflectionAnalyzers
 {
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -52,7 +53,7 @@ namespace ReflectionAnalyzers
         /// <param name="result">The type.</param>
         /// <param name="typeSource">The expression the type was ultimately produced from.</param>
         /// <returns>True if the type could be determined.</returns>
-        internal static bool TryGetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, out INamedTypeSymbol result, out ExpressionSyntax typeSource)
+        internal static bool TryGetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out INamedTypeSymbol? result, [NotNullWhen(true)] out ExpressionSyntax? typeSource)
         {
             result = null;
             typeSource = null;
@@ -65,7 +66,7 @@ namespace ReflectionAnalyzers
             return result != null;
         }
 
-        private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ISymbol member)
+        private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ISymbol? member)
         {
             member = null;
             if (type is ITypeParameterSymbol typeParameter)

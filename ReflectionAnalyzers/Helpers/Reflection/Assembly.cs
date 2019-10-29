@@ -2,6 +2,7 @@ namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -19,7 +20,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out IAssemblySymbol assembly)
+        internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IAssemblySymbol? assembly)
         {
             switch (expression)
             {
