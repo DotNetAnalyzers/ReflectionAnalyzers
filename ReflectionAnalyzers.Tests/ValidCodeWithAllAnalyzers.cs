@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class ValidCodeWithAllAnalyzers
+    public static class ValidCodeWithAllAnalyzers
     {
         private static readonly IReadOnlyList<DiagnosticAnalyzer> AllAnalyzers = typeof(KnownSymbol)
                                                                                  .Assembly.GetTypes()
@@ -27,21 +27,21 @@ namespace ReflectionAnalyzers.Tests
             MetadataReferences.FromAttributes());
 
         [Test]
-        public void NotEmpty()
+        public static void NotEmpty()
         {
             CollectionAssert.IsNotEmpty(AllAnalyzers);
             Assert.Pass($"Count: {AllAnalyzers.Count}");
         }
 
         [TestCaseSource(nameof(AllAnalyzers))]
-        public void ValidCodeProject(DiagnosticAnalyzer analyzer)
+        public static void ValidCodeProject(DiagnosticAnalyzer analyzer)
         {
             RoslynAssert.Valid(analyzer, ValidCodeProjectSln);
         }
 
         [Ignore("Not working with nullable attributes.")]
         [TestCaseSource(nameof(AllAnalyzers))]
-        public void AnalyzersSolution(DiagnosticAnalyzer analyzer)
+        public static void AnalyzersSolution(DiagnosticAnalyzer analyzer)
         {
             RoslynAssert.Valid(analyzer, AnalyzersProjectSolution);
         }

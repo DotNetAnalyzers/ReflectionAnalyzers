@@ -9,6 +9,7 @@ namespace ReflectionAnalyzers.Tests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
+#pragma warning disable GURA06 // Move test to correct class.
     [Explicit("Only for digging out test cases.")]
     public static class Repro
     {
