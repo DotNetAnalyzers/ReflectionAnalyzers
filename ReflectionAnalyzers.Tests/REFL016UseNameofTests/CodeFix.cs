@@ -445,7 +445,7 @@ namespace RoslynSandbox
         [Test]
         public static void ProtectedMemberInBase()
         {
-            var baseCode = @"
+            var baseClass = @"
 namespace RoslynSandbox
 {
     class BaseClass
@@ -472,7 +472,7 @@ namespace RoslynSandbox
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, before }, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseClass, before }, after);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public static partial class Valid
+    public static partial class Diagnostics
     {
         public static class ConstructorInfoInvoke
         {

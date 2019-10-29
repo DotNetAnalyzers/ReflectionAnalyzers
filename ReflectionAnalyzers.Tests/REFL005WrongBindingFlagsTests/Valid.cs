@@ -161,13 +161,13 @@ namespace RoslynSandbox
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("GetMethod(nameof(this.Bar), Public | Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), Public | Instance | DeclaredOnly)")]
-        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(nameof(this.Bar), Public | BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(this.Bar), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), Public | Instance)")]
+        [TestCase("GetMethod(nameof(this.M), Public | Instance | DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.M), Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+        [TestCase("GetMethod(nameof(this.M), Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(nameof(this.M), Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
+        [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | System.Reflection.BindingFlags.Instance)")]
         public static void GetMethodUsingStatic(string call)
         {
             var code = @"
@@ -180,12 +180,12 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
-}".AssertReplace("GetMethod(nameof(this.Bar), Public | Static | DeclaredOnly)", call);
+}".AssertReplace("GetMethod(nameof(this.M), Public | Static | DeclaredOnly)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 

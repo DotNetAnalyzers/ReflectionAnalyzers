@@ -5,7 +5,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public static partial class ValidCode
+    public static partial class Valid
     {
         public static class ConstructorInfoInvoke
         {
