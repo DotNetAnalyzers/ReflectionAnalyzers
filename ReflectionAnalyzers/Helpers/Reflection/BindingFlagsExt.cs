@@ -21,7 +21,7 @@ namespace ReflectionAnalyzers
                    (flags & flag) != 0;
         }
 
-        internal static string ToDisplayString(this BindingFlags flags, SyntaxNode location)
+        internal static string ToDisplayString(this BindingFlags flags, SyntaxNode? location)
         {
             var usingStatic = IsUsingStatic(location);
             var builder = StringBuilderPool.Borrow();
@@ -76,7 +76,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            if (location.TryFirstAncestor(out NamespaceDeclarationSyntax namespaceDeclaration))
+            if (location.TryFirstAncestor(out NamespaceDeclarationSyntax? namespaceDeclaration))
             {
                 return namespaceDeclaration.Usings.TryFirst(x => IsBindingFlags(x), out _) ||
                        (namespaceDeclaration.Parent is CompilationUnitSyntax compilationUnit &&
@@ -85,7 +85,7 @@ namespace ReflectionAnalyzers
 
             return false;
 
-            bool IsBindingFlags(UsingDirectiveSyntax @using)
+            static bool IsBindingFlags(UsingDirectiveSyntax @using)
             {
                 return @using.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) &&
                        @using.Name is QualifiedNameSyntax qn &&
@@ -95,51 +95,30 @@ namespace ReflectionAnalyzers
 
         private static string Name(this BindingFlags flag)
         {
-            switch (flag)
+            return flag switch
             {
-                case BindingFlags.CreateInstance:
-                    return "CreateInstance";
-                case BindingFlags.Default:
-                    return "Default";
-                case BindingFlags.DeclaredOnly:
-                    return "DeclaredOnly";
-                case BindingFlags.ExactBinding:
-                    return "ExactBinding";
-                case BindingFlags.FlattenHierarchy:
-                    return "FlattenHierarchy";
-                case BindingFlags.GetField:
-                    return "GetField";
-                case BindingFlags.GetProperty:
-                    return "GetProperty";
-                case BindingFlags.IgnoreCase:
-                    return "IgnoreCase";
-                case BindingFlags.IgnoreReturn:
-                    return "IgnoreReturn";
-                case BindingFlags.Instance:
-                    return "Instance";
-                case BindingFlags.InvokeMethod:
-                    return "InvokeMethod";
-                case BindingFlags.NonPublic:
-                    return "NonPublic";
-                case BindingFlags.OptionalParamBinding:
-                    return "OptionalParamBinding";
-                case BindingFlags.PutDispProperty:
-                    return "PutDispProperty";
-                case BindingFlags.PutRefDispProperty:
-                    return "PutRefDispProperty";
-                case BindingFlags.Public:
-                    return "Public";
-                case BindingFlags.SetField:
-                    return "SetField";
-                case BindingFlags.SetProperty:
-                    return "SetProperty";
-                case BindingFlags.Static:
-                    return "Static";
-                case BindingFlags.SuppressChangeType:
-                    return "SuppressChangeType";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(flag), flag, null);
-            }
+                BindingFlags.CreateInstance => "CreateInstance",
+                BindingFlags.Default => "Default",
+                BindingFlags.DeclaredOnly => "DeclaredOnly",
+                BindingFlags.ExactBinding => "ExactBinding",
+                BindingFlags.FlattenHierarchy => "FlattenHierarchy",
+                BindingFlags.GetField => "GetField",
+                BindingFlags.GetProperty => "GetProperty",
+                BindingFlags.IgnoreCase => "IgnoreCase",
+                BindingFlags.IgnoreReturn => "IgnoreReturn",
+                BindingFlags.Instance => "Instance",
+                BindingFlags.InvokeMethod => "InvokeMethod",
+                BindingFlags.NonPublic => "NonPublic",
+                BindingFlags.OptionalParamBinding => "OptionalParamBinding",
+                BindingFlags.PutDispProperty => "PutDispProperty",
+                BindingFlags.PutRefDispProperty => "PutRefDispProperty",
+                BindingFlags.Public => "Public",
+                BindingFlags.SetField => "SetField",
+                BindingFlags.SetProperty => "SetProperty",
+                BindingFlags.Static => "Static",
+                BindingFlags.SuppressChangeType => "SuppressChangeType",
+                _ => throw new ArgumentOutOfRangeException(nameof(flag), flag, null),
+            };
         }
     }
 }

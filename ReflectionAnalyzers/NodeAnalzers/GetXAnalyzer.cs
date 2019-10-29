@@ -3,6 +3,7 @@ namespace ReflectionAnalyzers
     using System;
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
     using System.Linq;
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
@@ -114,7 +115,7 @@ namespace ReflectionAnalyzers
                                 REFL013MemberIsOfWrongType.Descriptor,
                                 invocation.GetNameLocation(),
                                 member.ReflectedType,
-                                member.Symbol.Kind.ToString().ToLower(),
+                                member.Symbol.Kind.ToString().ToLower(CultureInfo.InvariantCulture),
                                 name.MetadataName));
                     }
 

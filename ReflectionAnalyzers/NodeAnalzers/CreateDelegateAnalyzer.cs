@@ -99,11 +99,11 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            bool TryFindArgument(string name, out ArgumentSyntax? argument)
+            bool TryFindArgument(string name, out ArgumentSyntax argument)
             {
-                argument = null;
+                argument = null!;
                 return createDelegate.TryFindParameter(name, out var parameter) &&
-                       invocation.TryFindArgument(parameter, out argument);
+                       invocation.TryFindArgument(parameter, out argument!);
             }
 
             bool TryFindDelegateMethod(out IMethodSymbol delegateMethod)

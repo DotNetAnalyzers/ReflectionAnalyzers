@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers
 
     internal static class CompilationExt
     {
-        internal static INamedTypeSymbol GetTypeByMetadataName(this Compilation compilation, TypeNameArgument typeName, bool ignoreCase)
+        internal static INamedTypeSymbol? GetTypeByMetadataName(this Compilation compilation, TypeNameArgument typeName, bool ignoreCase)
         {
             if (typeName.TryGetGeneric(out var generic))
             {
@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers
             return GetTypeByMetadataName(compilation, typeName.Value, ignoreCase);
         }
 
-        internal static INamedTypeSymbol GetTypeByMetadataName(this Compilation compilation, string fullyQualifiedMetadataName, bool ignoreCase)
+        internal static INamedTypeSymbol? GetTypeByMetadataName(this Compilation compilation, string fullyQualifiedMetadataName, bool ignoreCase)
         {
             if (!ignoreCase)
             {
@@ -35,7 +35,7 @@ namespace ReflectionAnalyzers
         {
             if (TryGetArgsTypes(out var args))
             {
-                return compilation.GetTypeByMetadataName(genericTypeName.MetadataName, ignoreCase).Construct(args);
+                return compilation.GetTypeByMetadataName(genericTypeName.MetadataName, ignoreCase)?.Construct(args);
             }
 
             return null;

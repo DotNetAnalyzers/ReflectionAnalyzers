@@ -38,7 +38,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        internal static INamedTypeSymbol GetTypeByMetadataName(this IAssemblySymbol assembly, TypeNameArgument typeName, bool ignoreCase)
+        internal static INamedTypeSymbol? GetTypeByMetadataName(this IAssemblySymbol assembly, TypeNameArgument typeName, bool ignoreCase)
         {
             if (typeName.TryGetGeneric(out var generic))
             {
@@ -48,7 +48,7 @@ namespace ReflectionAnalyzers
             return GetTypeByMetadataName(assembly, typeName.Value, ignoreCase);
         }
 
-        internal static INamedTypeSymbol GetTypeByMetadataName(this IAssemblySymbol assembly, string fullyQualifiedMetadataName, bool ignoreCase)
+        internal static INamedTypeSymbol? GetTypeByMetadataName(this IAssemblySymbol assembly, string fullyQualifiedMetadataName, bool ignoreCase)
         {
             if (!ignoreCase)
             {
@@ -58,7 +58,7 @@ namespace ReflectionAnalyzers
             return assembly.GetTypeByMetadataName(fullyQualifiedMetadataName) ??
                    GetTypeByMetadataNameIgnoreCase(assembly.GlobalNamespace);
 
-            INamedTypeSymbol GetTypeByMetadataNameIgnoreCase(INamespaceSymbol ns)
+            INamedTypeSymbol? GetTypeByMetadataNameIgnoreCase(INamespaceSymbol ns)
             {
                 if (fullyQualifiedMetadataName.StartsWith(ns.MetadataName, StringComparison.OrdinalIgnoreCase))
                 {
@@ -84,11 +84,11 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static INamedTypeSymbol GetTypeByMetadataName(this IAssemblySymbol assembly, GenericTypeName genericTypeName, bool ignoreCase)
+        private static INamedTypeSymbol? GetTypeByMetadataName(this IAssemblySymbol assembly, GenericTypeName genericTypeName, bool ignoreCase)
         {
             if (TryGetArgsTypes(out var args))
             {
-                return assembly.GetTypeByMetadataName(genericTypeName.MetadataName, ignoreCase).Construct(args);
+                return assembly.GetTypeByMetadataName(genericTypeName.MetadataName, ignoreCase)?.Construct(args);
             }
 
             return null;

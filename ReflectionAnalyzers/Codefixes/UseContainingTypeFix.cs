@@ -25,7 +25,7 @@ namespace ReflectionAnalyzers
             {
                 if (diagnostic.Properties.TryGetValue(nameof(ITypeSymbol.ContainingType), out var typeName))
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax type))
+                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax? type))
                     {
                         context.RegisterCodeFix(
                             $"Use containing type: {typeName}.",
@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers
                             nameof(UseContainingTypeFix),
                             diagnostic);
                     }
-                    else if (syntaxRoot.TryFindNode(diagnostic, out MemberAccessExpressionSyntax memberAccess) &&
+                    else if (syntaxRoot.TryFindNode(diagnostic, out MemberAccessExpressionSyntax? memberAccess) &&
                              memberAccess.Expression is ExpressionSyntax expression)
                     {
                         context.RegisterCodeFix(

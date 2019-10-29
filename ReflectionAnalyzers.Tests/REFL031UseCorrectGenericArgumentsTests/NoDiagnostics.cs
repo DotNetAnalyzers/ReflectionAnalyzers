@@ -1,21 +1,17 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
+namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public static partial class Valid
+    public static class NoDiagnostics
     {
-        public static class NoDiagnostics
-        {
-            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL031UseCorrectGenericArguments.Descriptor;
+        private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
 
-            [Test]
-            public static void Recursion()
-            {
-                var code = @"
+        [Test]
+        public static void Recursion()
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -24,15 +20,14 @@ namespace N
         where T1 : T2
         where T2 : T1
     {
-        public static void Bar()
+        public static void M()
         {
             var type = typeof(C<,>).MakeGenericType(typeof(int), typeof(int));
         }
     }
 }";
-                var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), MetadataReferences.FromAttributes());
-                RoslynAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
-            }
+            var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), MetadataReferences.FromAttributes());
+            RoslynAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
         }
     }
 }

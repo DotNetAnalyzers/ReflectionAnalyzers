@@ -41,7 +41,7 @@ namespace ReflectionAnalyzers
             {
                 targetName = member.Symbol.IsStatic ||
                              member.Symbol is ITypeSymbol ||
-                             IsStaticContext(context)
+                             context.Node.IsInStaticContext()
                     ? $"{member.Symbol.Name}"
                     : context.SemanticModel.UnderscoreFields() == CodeStyleResult.Yes
                         ? $"{member.Symbol.Name}"
@@ -105,21 +105,6 @@ namespace ReflectionAnalyzers
                 IMethodSymbol method => method.MethodKind == MethodKind.Ordinary,
                 _ => true,
             };
-        }
-
-        internal static bool IsStaticContext(SyntaxNodeAnalysisContext context)
-        {
-            if (context.Node.TryFirstAncestor(out AccessorDeclarationSyntax? accessor))
-            {
-                return context.SemanticModel.GetDeclaredSymbolSafe(accessor.FirstAncestor<PropertyDeclarationSyntax>(), context.CancellationToken)?.IsStatic != false;
-            }
-
-            if (context.Node.TryFirstAncestor(out BaseMethodDeclarationSyntax? methodDeclaration))
-            {
-                return context.SemanticModel.GetDeclaredSymbolSafe(methodDeclaration, context.CancellationToken)?.IsStatic != false;
-            }
-
-            return context.Node.TryFirstAncestor<AttributeArgumentListSyntax>(out _);
         }
     }
 }

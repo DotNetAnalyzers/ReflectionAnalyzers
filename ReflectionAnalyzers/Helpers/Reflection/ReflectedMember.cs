@@ -323,13 +323,13 @@ namespace ReflectionAnalyzers
             {
                 foreach (var @interface in type.AllInterfaces)
                 {
-                    if (@interface.TryFindFirstMember(x => MatchesFilter(x, name, Flags.MatchAll.Effective, types), out result))
+                    if (@interface.TryFindFirstMember(x => MatchesFilter(x, name, Flags.MatchAll.Effective, types), out result!))
                     {
                         return true;
                     }
                 }
 
-                result = null;
+                result = null!;
                 return false;
             }
         }
