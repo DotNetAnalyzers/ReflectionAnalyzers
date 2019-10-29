@@ -23,7 +23,7 @@ namespace ReflectionAnalyzers
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typesText) &&
-                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax invocation) &&
+                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
                     invocation.Expression is MemberAccessExpressionSyntax)
                 {
                     context.RegisterCodeFix(

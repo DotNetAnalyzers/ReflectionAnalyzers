@@ -31,7 +31,7 @@ namespace ReflectionAnalyzers
                                              .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentList) &&
+                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax? argumentList) &&
                     argumentList.Arguments.TrySingle(out var arg) &&
                     arg.TryGetStringValue(semanticModel, context.CancellationToken, out var memberName) &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&

@@ -2,6 +2,7 @@ namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -94,7 +95,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        internal bool TryMostSpecific(ISymbol x, ISymbol y, out ISymbol unique)
+        internal bool TryMostSpecific(ISymbol x, ISymbol y, [NotNullWhen(true)] out ISymbol? unique)
         {
             if (x is null &&
                 y is null)

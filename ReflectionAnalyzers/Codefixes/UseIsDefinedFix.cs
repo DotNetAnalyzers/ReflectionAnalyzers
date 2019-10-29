@@ -38,20 +38,20 @@ namespace ReflectionAnalyzers
 
                 bool TryFindExpression(out ExpressionSyntax result)
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out BinaryExpressionSyntax binary) &&
+                    if (syntaxRoot.TryFindNode(diagnostic, out BinaryExpressionSyntax? binary) &&
                         binary.IsEither(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression))
                     {
                         result = binary;
                         return true;
                     }
 
-                    if (syntaxRoot.TryFindNode(diagnostic, out IsPatternExpressionSyntax isPattern))
+                    if (syntaxRoot.TryFindNode(diagnostic, out IsPatternExpressionSyntax? isPattern))
                     {
                         result = isPattern;
                         return true;
                     }
 
-                    result = null;
+                    result = null!;
                     return false;
                 }
             }

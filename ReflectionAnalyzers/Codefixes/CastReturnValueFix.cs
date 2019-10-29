@@ -25,7 +25,7 @@ namespace ReflectionAnalyzers
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeString))
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax typeSyntax))
+                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax? typeSyntax))
                     {
                         context.RegisterCodeFix(
                             $"Cast to {typeString}.",
@@ -35,7 +35,7 @@ namespace ReflectionAnalyzers
                             nameof(CastReturnValueFix),
                             diagnostic);
                     }
-                    else if (syntaxRoot.TryFindNode(diagnostic, out InvocationExpressionSyntax invocation))
+                    else if (syntaxRoot.TryFindNode(diagnostic, out InvocationExpressionSyntax? invocation))
                     {
                         context.RegisterCodeFix(
                             $"Cast to {typeString}.",

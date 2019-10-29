@@ -31,7 +31,7 @@ namespace ReflectionAnalyzers
                               .FirstOrDefault();
         }
 
-        private static INamedTypeSymbol GetTypeByMetadataName(this Compilation compilation, GenericTypeName genericTypeName, bool ignoreCase)
+        private static INamedTypeSymbol? GetTypeByMetadataName(this Compilation compilation, GenericTypeName genericTypeName, bool ignoreCase)
         {
             if (TryGetArgsTypes(out var args))
             {

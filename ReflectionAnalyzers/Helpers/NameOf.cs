@@ -110,12 +110,12 @@ namespace ReflectionAnalyzers
 
         internal static bool IsStaticContext(SyntaxNodeAnalysisContext context)
         {
-            if (context.Node.TryFirstAncestor(out AccessorDeclarationSyntax accessor))
+            if (context.Node.TryFirstAncestor(out AccessorDeclarationSyntax? accessor))
             {
                 return context.SemanticModel.GetDeclaredSymbolSafe(accessor.FirstAncestor<PropertyDeclarationSyntax>(), context.CancellationToken)?.IsStatic != false;
             }
 
-            if (context.Node.TryFirstAncestor(out BaseMethodDeclarationSyntax methodDeclaration))
+            if (context.Node.TryFirstAncestor(out BaseMethodDeclarationSyntax? methodDeclaration))
             {
                 return context.SemanticModel.GetDeclaredSymbolSafe(methodDeclaration, context.CancellationToken)?.IsStatic != false;
             }

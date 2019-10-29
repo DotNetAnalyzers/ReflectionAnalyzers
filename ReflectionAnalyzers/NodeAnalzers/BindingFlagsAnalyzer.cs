@@ -53,8 +53,8 @@ namespace ReflectionAnalyzers
         {
             flags = context.Node as BinaryExpressionSyntax;
             return flags?.Parent is ArgumentSyntax &&
-                   context.SemanticModel.TryGetType(flags, context.CancellationToken, out var type) &&
-                   type == KnownSymbol.BindingFlags;
+                    context.SemanticModel.TryGetType(flags, context.CancellationToken, out var type) &&
+                    type == KnownSymbol.BindingFlags;
         }
 
         private class BindingFlagsWalker : PooledWalker<BindingFlagsWalker>

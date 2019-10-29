@@ -34,8 +34,8 @@ namespace ReflectionAnalyzers
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (TryFindArgumentList(syntaxRoot, diagnostic, out var argumentList) &&
-         argumentList.Parent is InvocationExpressionSyntax invocation &&
-         diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
+                    argumentList.Parent is InvocationExpressionSyntax invocation &&
+                    diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {
                     if (argumentList.Arguments.Count == 1)
                     {
@@ -110,7 +110,7 @@ namespace ReflectionAnalyzers
                     }
                 }
                 else if (diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var expressionString) &&
-                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax argument))
+                         syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax? argument))
                 {
                     context.RegisterCodeFix(
                         $"Change to: {expressionString}.",

@@ -28,7 +28,7 @@ namespace ReflectionAnalyzers
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax argumentListSyntax) &&
+                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax? argumentListSyntax) &&
                     diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeArrayString))
                 {
                     if (argumentListSyntax.Arguments.Count == 1)
