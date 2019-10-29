@@ -20,7 +20,7 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
         public static void GetMethod(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -47,7 +47,7 @@ namespace RoslynSandbox
         public static void GetMethodUsingStatic(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using static System.Reflection.BindingFlags;

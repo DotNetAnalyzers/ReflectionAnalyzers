@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL035DontInvokeGenericDefinitionTests
         public static void ParameterlessGeneric()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -32,7 +32,7 @@ namespace RoslynSandbox
         public static void WithAccessibleParameterSingleLine()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -43,7 +43,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {

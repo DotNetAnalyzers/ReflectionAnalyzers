@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Filters
         public void TryMostSpecific(string filterType, string signature1, string signature2)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -50,7 +50,7 @@ namespace RoslynSandbox
         public void TryMostSpecificWhenAmbiguous(string filterTypes, string signature1, string signature2)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
         public static void WhenExplicitImplementation(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -36,7 +36,7 @@ namespace RoslynSandbox
         public static void WhenExplicitAndExplicit(string call)
         {
             var interfaceCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -47,7 +47,7 @@ namespace RoslynSandbox
 }";
 
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
         public static void WhenExplicitImplementation(string call)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -37,7 +37,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -66,7 +66,7 @@ namespace RoslynSandbox
         public static void WhenExplicitImplementationPublicNotInSource(string call)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -81,7 +81,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"ToBoolean\")", call);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

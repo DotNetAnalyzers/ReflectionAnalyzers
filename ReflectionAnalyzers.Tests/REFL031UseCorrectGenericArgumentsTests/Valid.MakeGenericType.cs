@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             public static void SingleUnconstrained(string type)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -44,7 +44,7 @@ namespace RoslynSandbox
             public static void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -63,7 +63,7 @@ namespace RoslynSandbox
             public static void TransitiveConstraints(string where1, string where2, string types)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -84,7 +84,7 @@ namespace RoslynSandbox
             public static void ImplicitDefaultConstructor()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public struct S
     {
@@ -110,7 +110,7 @@ namespace RoslynSandbox
             public static void ConstrainedToEnum(string constraint, string arg)
             {
                 var safeCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -122,7 +122,7 @@ namespace RoslynSandbox
 }";
 
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -141,7 +141,7 @@ namespace RoslynSandbox
             public static void NestedType()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -164,7 +164,7 @@ namespace RoslynSandbox
             public static void NestedGenericInGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C<T>
     {
@@ -182,7 +182,7 @@ namespace RoslynSandbox
             public static void PassingArrayOfUnknownToMakeGenericType()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -201,7 +201,7 @@ namespace RoslynSandbox
             public static void Ternary()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -233,7 +233,7 @@ namespace RoslynSandbox
             public static void TernaryTwoArguments()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -265,7 +265,7 @@ namespace RoslynSandbox
             public static void IfElse()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -302,7 +302,7 @@ namespace RoslynSandbox
             public static void IfReturn()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -337,7 +337,7 @@ namespace RoslynSandbox
             public static void NestedIf()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

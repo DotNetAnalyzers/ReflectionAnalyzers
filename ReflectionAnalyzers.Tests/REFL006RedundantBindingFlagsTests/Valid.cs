@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
         public static void GetMethod(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -54,7 +54,7 @@ namespace RoslynSandbox
         public static void GetMethodUnknownType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -82,7 +82,7 @@ namespace RoslynSandbox
         public static void DontWarnWhenTypeIsNotInSln(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -107,7 +107,7 @@ namespace RoslynSandbox
         public static void GetNestedType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

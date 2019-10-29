@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
         public static void OneConstructorSingleIntParameter(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -27,7 +27,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance(typeof(↓C))", call);
 
-            var message = "No parameterless constructor defined for RoslynSandbox.C.";
+            var message = "No parameterless constructor defined for N.C.";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -37,7 +37,7 @@ namespace RoslynSandbox
         public static void PrivateConstructor(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -51,7 +51,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
-            var message = "No parameterless constructor defined for RoslynSandbox.C.";
+            var message = "No parameterless constructor defined for N.C.";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -60,7 +60,7 @@ namespace RoslynSandbox
         public static void OneConstructorSingleParams(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -74,7 +74,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
-            var message = "No parameterless constructor defined for RoslynSandbox.C.";
+            var message = "No parameterless constructor defined for N.C.";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }

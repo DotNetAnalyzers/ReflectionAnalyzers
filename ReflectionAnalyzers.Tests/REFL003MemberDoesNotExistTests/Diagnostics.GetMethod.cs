@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
             public static void MissingMethodWhenKnownExactType(string type)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -19,7 +19,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-                var message = "The type RoslynSandbox.C does not have a member named MISSING.";
+                var message = "The type N.C does not have a member named MISSING.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -31,7 +31,7 @@ namespace RoslynSandbox
             public static void MissingMethodWhenSealed(string type)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public sealed class C
     {
@@ -39,7 +39,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-                var message = "The type RoslynSandbox.C does not have a member named MISSING.";
+                var message = "The type N.C does not have a member named MISSING.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -47,7 +47,7 @@ namespace RoslynSandbox
             public static void MissingMethodWhenStruct()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public struct C
     {
@@ -57,7 +57,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "The type RoslynSandbox.C does not have a member named MISSING.";
+                var message = "The type N.C does not have a member named MISSING.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -65,7 +65,7 @@ namespace RoslynSandbox
             public static void MissingMethodWhenStatic()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public static class C
     {
@@ -75,7 +75,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "The type RoslynSandbox.C does not have a member named MISSING.";
+                var message = "The type N.C does not have a member named MISSING.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -83,7 +83,7 @@ namespace RoslynSandbox
             public static void MissingMethodWhenInterface()
             {
                 var interfaceCode = @"
-namespace RoslynSandbox
+namespace N
 {
     public interface IC
     {
@@ -91,7 +91,7 @@ namespace RoslynSandbox
 }";
 
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -101,7 +101,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "The type RoslynSandbox.IC does not have a member named MISSING.";
+                var message = "The type N.IC does not have a member named MISSING.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), interfaceCode, code);
             }
 
@@ -115,7 +115,7 @@ namespace RoslynSandbox
             public static void MissingMethodNotInSource(string type)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -133,7 +133,7 @@ namespace RoslynSandbox
             public static void MissingPropertySetAccessor()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public sealed class C
     {
@@ -152,7 +152,7 @@ namespace RoslynSandbox
             public static void MissingPropertyGetAccessor()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public sealed class C
     {

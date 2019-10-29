@@ -10,16 +10,16 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 
     public static class TypeTests
     {
-        [TestCase("typeof(C)", "RoslynSandbox.C", "typeof(C)")]
-        [TestCase("new C().GetType()", "RoslynSandbox.C", "new C().GetType()")]
-        [TestCase("foo.GetType()", "RoslynSandbox.C", "foo.GetType()")]
-        [TestCase("foo?.GetType()", "RoslynSandbox.C", "foo?.GetType()")]
+        [TestCase("typeof(C)", "N.C", "typeof(C)")]
+        [TestCase("new C().GetType()", "N.C", "new C().GetType()")]
+        [TestCase("foo.GetType()", "N.C", "foo.GetType()")]
+        [TestCase("foo?.GetType()", "N.C", "foo?.GetType()")]
         [TestCase("nullableInt.GetType()", "int", "nullableInt.GetType()")]
-        [TestCase("this.GetType()", "RoslynSandbox.C", "this.GetType()")]
-        [TestCase("GetType()", "RoslynSandbox.C", "GetType()")]
-        [TestCase("typeof(C).GetNestedType(\"Baz`1\")", "RoslynSandbox.C.Baz<T>", "typeof(C).GetNestedType(\"Baz`1\")")]
-        [TestCase("typeof(C).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))", "RoslynSandbox.C.Baz<int>", "typeof(C).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))")]
-        [TestCase("typeof(C.Baz<int>).GetGenericTypeDefinition()", "RoslynSandbox.C.Baz<T>", "typeof(C.Baz<int>).GetGenericTypeDefinition()")]
+        [TestCase("this.GetType()", "N.C", "this.GetType()")]
+        [TestCase("GetType()", "N.C", "GetType()")]
+        [TestCase("typeof(C).GetNestedType(\"Baz`1\")", "N.C.Baz<T>", "typeof(C).GetNestedType(\"Baz`1\")")]
+        [TestCase("typeof(C).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))", "N.C.Baz<int>", "typeof(C).GetNestedType(\"Baz`1\").MakeGenericType(typeof(int))")]
+        [TestCase("typeof(C.Baz<int>).GetGenericTypeDefinition()", "N.C.Baz<T>", "typeof(C.Baz<int>).GetGenericTypeDefinition()")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "int", "typeof(string).Assembly.GetType(\"System.Int32\")")]
         [TestCase("typeof(string).Assembly.GetType(\"System.Int32\", true)", "int", "typeof(string).Assembly.GetType(\"System.Int32\", true)")]
         [TestCase("typeof(string).Assembly.GetType(\"system.int32\", true, true)", "int", "typeof(string).Assembly.GetType(\"system.int32\", true, true)")]
@@ -27,8 +27,8 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "System.Collections.Generic.IEnumerable<T>", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("typeof(C).GetField(nameof(C.Field)).FieldType", "int", "typeof(C).GetField(nameof(C.Field)).FieldType")]
         [TestCase("typeof(C).GetProperty(nameof(C.Property)).PropertyType", "int", "typeof(C).GetProperty(nameof(C.Property)).PropertyType")]
-        [TestCase("Type.GetType(\"RoslynSandbox.C\")", "RoslynSandbox.C", "Type.GetType(\"RoslynSandbox.C\")")]
-        [TestCase("Type.GetType(\"RoslynSandbox.C+Nested\")", "RoslynSandbox.C.Nested", "Type.GetType(\"RoslynSandbox.C+Nested\")")]
+        [TestCase("Type.GetType(\"N.C\")", "N.C", "Type.GetType(\"N.C\")")]
+        [TestCase("Type.GetType(\"N.C+Nested\")", "N.C.Nested", "Type.GetType(\"N.C+Nested\")")]
         [TestCase("Type.GetType(\"System.Int32\")", "int", "Type.GetType(\"System.Int32\")")]
         [TestCase("Type.GetType(\"System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]\")", "System.Collections.Generic.KeyValuePair<int, string>", "Type.GetType(\"System.Collections.Generic.KeyValuePair`2[System.Int32,System.String]\")")]
         [TestCase("Type.GetType(\"System.Int32\", true)", "int", "Type.GetType(\"System.Int32\", true)")]
@@ -38,7 +38,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         public static void TryGet(string expression, string expected, string expectedSource)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections.Generic;
@@ -82,7 +82,7 @@ namespace RoslynSandbox
         public static void TryGetWalked(string expression)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -116,7 +116,7 @@ namespace RoslynSandbox
         public static void TryGetAssemblyLoad(string expression)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections.Generic;

@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
             public static void InvokeWithOneArgument(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -43,7 +43,7 @@ namespace RoslynSandbox
             public static void InvokeWithGetUninitializedObjectAndArgument(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Runtime.Serialization;

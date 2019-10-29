@@ -37,7 +37,7 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
         public static void GetMember(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -85,7 +85,7 @@ namespace RoslynSandbox
         public static void InternalStaticFieldInBase()
         {
             var baseCode = @"
-namespace RoslynSandbox
+namespace N
 {
     class B
     {
@@ -93,7 +93,7 @@ namespace RoslynSandbox
     }
 }";
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

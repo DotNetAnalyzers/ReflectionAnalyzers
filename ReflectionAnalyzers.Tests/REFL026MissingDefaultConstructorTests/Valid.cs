@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
         public static void ExplicitDefaultConstructor(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -39,7 +39,7 @@ namespace RoslynSandbox
         public static void ImplicitDefaultConstructor(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -57,7 +57,7 @@ namespace RoslynSandbox
         public static void OneConstructorSingleIntParameter(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -79,7 +79,7 @@ namespace RoslynSandbox
         public static void OneConstructorSingleStringParameter(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -99,7 +99,7 @@ namespace RoslynSandbox
         public static void PrivateConstructor()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -119,7 +119,7 @@ namespace RoslynSandbox
         public static void WhenUnknown()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -136,7 +136,7 @@ namespace RoslynSandbox
         public static void WhenUnconstrainedGeneric()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

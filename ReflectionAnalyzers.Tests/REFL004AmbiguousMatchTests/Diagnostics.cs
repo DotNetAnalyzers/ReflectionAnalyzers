@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
         public static void IndexerAndPropertyNamedItem(string call)
         {
             var baseCode = @"
-namespace RoslynSandbox
+namespace N
 {
     public class Base
     {
@@ -23,7 +23,7 @@ namespace RoslynSandbox
 }";
 
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -44,7 +44,7 @@ namespace RoslynSandbox
         public static void TwoIndexers()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -62,7 +62,7 @@ namespace RoslynSandbox
         public static void TwoNamedIndexers()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Runtime.CompilerServices;
 
@@ -84,7 +84,7 @@ namespace RoslynSandbox
         public static void StaticAndInstanceConstructor()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

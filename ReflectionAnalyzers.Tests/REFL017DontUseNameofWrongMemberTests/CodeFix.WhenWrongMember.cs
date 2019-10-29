@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
             public static void TypeOfDictionaryGetMethodNameOfStaticAdd()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -33,7 +33,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -55,7 +55,7 @@ namespace RoslynSandbox
             public static void TypeOfConsoleGetMethodNameOfStaticWriteLine()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -71,7 +71,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -92,7 +92,7 @@ namespace RoslynSandbox
             public static void TypeOfDictionaryGetMethodNameOfHashSetAdd()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -108,7 +108,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -129,7 +129,7 @@ namespace RoslynSandbox
             public static void ThisGetTypeGetMethodNameOfHashSetAddStatic()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -145,7 +145,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -166,7 +166,7 @@ namespace RoslynSandbox
             public static void ThisGetTypeGetMethodNameOfHashSetAddInstance()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -182,7 +182,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -203,7 +203,7 @@ namespace RoslynSandbox
             public static void ThisGetTypeGetMethodNameOfHashSetAddUnderscore()
             {
                 var c1 = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -213,7 +213,7 @@ namespace RoslynSandbox
     }
 }";
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -229,7 +229,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 

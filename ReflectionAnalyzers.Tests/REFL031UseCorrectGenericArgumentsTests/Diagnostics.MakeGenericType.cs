@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             public static void SingleUnconstrained()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C<T>
     {
@@ -30,7 +30,7 @@ namespace RoslynSandbox
             public static void GetGenericTypeDefinition()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -60,7 +60,7 @@ namespace RoslynSandbox
             public static void ConstrainedParameter(string constraint, string arg)
             {
                 var bar = @"
-namespace RoslynSandbox
+namespace N
 {
     public class Bar
     {
@@ -71,7 +71,7 @@ namespace RoslynSandbox
 }";
 
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -83,7 +83,7 @@ namespace RoslynSandbox
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", $"typeof({arg})");
 
-                var message = $"The argument typeof({arg}), on 'RoslynSandbox.C<>' violates the constraint of type 'T'.";
+                var message = $"The argument typeof({arg}), on 'N.C<>' violates the constraint of type 'T'.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, code);
             }
 
@@ -91,7 +91,7 @@ namespace RoslynSandbox
             public static void TransitiveConstraints(string where1, string where2, string types)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections;
 
@@ -112,7 +112,7 @@ namespace RoslynSandbox
             public static void NestedType()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -132,7 +132,7 @@ namespace RoslynSandbox
             public static void NestedGenericInGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C<T>
     {
@@ -150,7 +150,7 @@ namespace RoslynSandbox
             public static void TernaryWrongOrder()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -182,7 +182,7 @@ namespace RoslynSandbox
             public static void TernaryTwoArgumentsWrongOrder()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

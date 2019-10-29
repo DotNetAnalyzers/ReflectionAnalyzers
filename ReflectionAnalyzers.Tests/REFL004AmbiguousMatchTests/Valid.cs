@@ -23,7 +23,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
         public static void GetMethod(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -65,7 +65,7 @@ namespace RoslynSandbox
         public static void OverloadsFilteredByType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -95,7 +95,7 @@ namespace RoslynSandbox
         public static void TwoIndexers(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -114,7 +114,7 @@ namespace RoslynSandbox
         public static void TwoNamedIndexers(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Runtime.CompilerServices;
 
@@ -137,7 +137,7 @@ namespace RoslynSandbox
         public static void StaticAndInstanceConstructor(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

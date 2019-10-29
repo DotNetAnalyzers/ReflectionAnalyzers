@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         public static void ToDisplayString(object flags)
         {
             var tree = CSharpSyntaxTree.ParseText(@"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -29,7 +29,7 @@ namespace RoslynSandbox
         public static void ToDisplayStringUsingStaticInside(object flags)
         {
             var tree = CSharpSyntaxTree.ParseText(@"
-namespace RoslynSandbox
+namespace N
 {
     using static System.Reflection.BindingFlags;
 
@@ -46,7 +46,7 @@ namespace RoslynSandbox
             var tree = CSharpSyntaxTree.ParseText(@"
 using static System.Reflection.BindingFlags;
 
-namespace RoslynSandbox
+namespace N
 {
     class C
     {

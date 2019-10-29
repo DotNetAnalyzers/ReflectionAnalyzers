@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
         public static void GetInterface(string call, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections;
@@ -40,7 +40,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetInterface(↓typeof(IEnumerable<>).Name)", call);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections;

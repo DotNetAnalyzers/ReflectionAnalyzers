@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL038PreferRunClassConstructorTests
         public static void WhenInvokingStatic()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -34,7 +34,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

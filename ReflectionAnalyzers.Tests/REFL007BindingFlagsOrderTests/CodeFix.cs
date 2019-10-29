@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
         public static void GetMethod(string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -33,7 +33,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

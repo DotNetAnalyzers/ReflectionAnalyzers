@@ -23,7 +23,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         public static void TypeGetType(string type)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -40,7 +40,7 @@ namespace RoslynSandbox
         public static void TypeGetTypeIgnoreCase(string type)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -64,7 +64,7 @@ namespace RoslynSandbox
         public static void AssemblyGetTypeFullyQualified(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -84,7 +84,7 @@ namespace RoslynSandbox
         public static void AssemblyGetTypeWhenUsing(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Windows.Forms;

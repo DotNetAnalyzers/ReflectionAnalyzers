@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             public static void SingleUnconstrained()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -40,7 +40,7 @@ namespace RoslynSandbox
             public static void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -65,7 +65,7 @@ namespace RoslynSandbox
             public static void Ternary(string condition)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

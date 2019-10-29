@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             public static void AssigningLocal()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {

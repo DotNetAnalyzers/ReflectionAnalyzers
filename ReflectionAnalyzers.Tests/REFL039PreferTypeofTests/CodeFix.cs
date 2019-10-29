@@ -21,7 +21,7 @@ namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
         public static void WhenCallingGetType(string parameterType, string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -32,7 +32,7 @@ namespace RoslynSandbox
 }".AssertReplace("int?", parameterType);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
         public static void MissingMethod(string type)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -24,7 +24,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-            var message = "The referenced member MISSING is not known to exist in RoslynSandbox.C.";
+            var message = "The referenced member MISSING is not known to exist in N.C.";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -32,7 +32,7 @@ namespace RoslynSandbox
         public static void MissingPropertySetAccessor()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -48,7 +48,7 @@ namespace RoslynSandbox
         public static void MissingPropertyGetAccessor()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -64,7 +64,7 @@ namespace RoslynSandbox
         public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
         {
             var exception = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -74,7 +74,7 @@ namespace RoslynSandbox
     }
 }";
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -94,7 +94,7 @@ namespace RoslynSandbox
         public static void NamedIndexer(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using System.Runtime.CompilerServices;

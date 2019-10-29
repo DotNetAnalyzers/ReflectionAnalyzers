@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
         public static void GetPropertyInstance()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -29,7 +29,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -48,7 +48,7 @@ namespace RoslynSandbox
         public static void GetPropertyInstanceWithTrivia()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -66,7 +66,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -89,7 +89,7 @@ namespace RoslynSandbox
         public static void GetPropertyStatic()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -103,7 +103,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -122,7 +122,7 @@ namespace RoslynSandbox
         public static void AnonymousType()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -135,7 +135,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -153,7 +153,7 @@ namespace RoslynSandbox
         public static void TypeofDictionaryGetMethodStringLiteral()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -167,7 +167,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -189,7 +189,7 @@ namespace RoslynSandbox
         public static void GetNestedTypePrivateInSameType(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -211,7 +211,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.NonPublic)", $"GetNestedType(↓\"{type}\", BindingFlags.NonPublic)");
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -242,7 +242,7 @@ namespace RoslynSandbox
         public static void GetNestedTypePublicInOtherType(string type)
         {
             var c = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -258,7 +258,7 @@ namespace RoslynSandbox
     }
 }";
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -272,7 +272,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.Public)", $"GetNestedType(↓\"{type}\", BindingFlags.Public)");
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -292,7 +292,7 @@ namespace RoslynSandbox
         public static void AggregateExceptionMessage()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -307,7 +307,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -328,7 +328,7 @@ namespace RoslynSandbox
         public static void SystemWindowsFormsControlCreateControl()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -341,7 +341,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -360,7 +360,7 @@ namespace RoslynSandbox
         public static void NullableGetProperty()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -372,7 +372,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -390,7 +390,7 @@ namespace RoslynSandbox
         public static void ValueTupleGetFieldItem1()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -401,7 +401,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -418,7 +418,7 @@ namespace RoslynSandbox
         public static void ValueTupleGetFieldRest()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -429,7 +429,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -446,7 +446,7 @@ namespace RoslynSandbox
         public static void ProtectedMemberInBase()
         {
             var baseClass = @"
-namespace RoslynSandbox
+namespace N
 {
     class BaseClass
     {
@@ -455,7 +455,7 @@ namespace RoslynSandbox
 }";
 
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C : BaseClass
     {
@@ -464,7 +464,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     class C : BaseClass
     {

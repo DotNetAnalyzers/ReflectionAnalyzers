@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
         public static void GetPropertyGetMethod()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -33,7 +33,7 @@ namespace RoslynSandbox
         public static void GetPropertySetMethod()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {

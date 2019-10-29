@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
         public static void GetMethodNoParameter()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -29,7 +29,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -50,7 +50,7 @@ namespace RoslynSandbox
         public static void GetMethodNoParameterWithFlags()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -66,7 +66,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -88,7 +88,7 @@ namespace RoslynSandbox
         public static void GetMethodOneParameter()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -102,7 +102,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -121,7 +121,7 @@ namespace RoslynSandbox
         public static void GetMethodOneParameterWithFlags()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -137,7 +137,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -158,7 +158,7 @@ namespace RoslynSandbox
         public static void GetMethodOneParams()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Linq;
 
@@ -174,7 +174,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Linq;
 
@@ -195,7 +195,7 @@ namespace RoslynSandbox
         public static void GetMethodOneParamsWithFlags()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Linq;
     using System.Reflection;
@@ -212,7 +212,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Linq;
     using System.Reflection;
@@ -234,7 +234,7 @@ namespace RoslynSandbox
         public static void GetMethodTwoParameters()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -248,7 +248,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -267,7 +267,7 @@ namespace RoslynSandbox
         public static void GetMethodTwoParameterWithFlags()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -283,7 +283,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

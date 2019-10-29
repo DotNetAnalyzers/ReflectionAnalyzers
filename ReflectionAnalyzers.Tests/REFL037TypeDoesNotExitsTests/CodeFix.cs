@@ -21,7 +21,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         public static void TypeGetTypeWithFix(string type, string fixedType)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -32,7 +32,7 @@ namespace RoslynSandbox
 }".AssertReplace("Type.GetType(↓\"Int32\")", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -51,7 +51,7 @@ namespace RoslynSandbox
         public static void AssemblyGetTypeWithFix(string type, string fixedType)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -62,7 +62,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(int).Assembly.GetType(↓\"Int32\")", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

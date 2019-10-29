@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
             public static void WhenCasting(string cast)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -40,7 +40,7 @@ namespace RoslynSandbox
             public static void WhenUnknown()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -57,7 +57,7 @@ namespace RoslynSandbox
             public static void WhenUnconstrainedGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

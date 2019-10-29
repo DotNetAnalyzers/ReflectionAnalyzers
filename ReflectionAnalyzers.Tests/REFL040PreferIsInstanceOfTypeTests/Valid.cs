@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL040PreferIsInstanceOfTypeTests
         public static void UnknownTypesIsAssignableFrom()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -31,7 +31,7 @@ namespace RoslynSandbox
         public static void UnknownTypesIsInstanceOfType()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

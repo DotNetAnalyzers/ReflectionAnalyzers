@@ -26,7 +26,7 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
         public static void GetMethod(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -56,7 +56,7 @@ namespace RoslynSandbox
         public static void GetMethodFromTypeParameter(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -73,7 +73,7 @@ namespace RoslynSandbox
         public static void GetBarOverloaded()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -107,7 +107,7 @@ namespace RoslynSandbox
         public static void GetMethodUnknownType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -130,7 +130,7 @@ namespace RoslynSandbox
         public static void GetNestedType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -166,7 +166,7 @@ namespace RoslynSandbox
         public static void AggregateExceptionMessage(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

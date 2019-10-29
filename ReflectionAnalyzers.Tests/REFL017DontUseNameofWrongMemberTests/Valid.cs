@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
         public static void GetNestedTypePrivateInOtherType(string type)
         {
             var fooCode = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -31,7 +31,7 @@ namespace RoslynSandbox
     }
 }";
             var testCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -53,7 +53,7 @@ namespace RoslynSandbox
         public static void WhenExplicitImplementationVisibleMembers(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -98,7 +98,7 @@ namespace TestApp.Infrastructure
         public static void InterfaceMethod(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -155,7 +155,7 @@ namespace ValidCode
         public static void SystemWindowsFormsControlCreateControl()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -174,7 +174,7 @@ namespace RoslynSandbox
         public static void AnonymousTypeNameofInstanceProperty()
         {
             var testCode = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -192,7 +192,7 @@ namespace RoslynSandbox
         public static void TypeOfTGetMethodGetHashCode()
         {
             var testCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -208,7 +208,7 @@ namespace RoslynSandbox
         public static void TypeOfConstrainedTGetMethod()
         {
             var testCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -230,7 +230,7 @@ namespace RoslynSandbox
         public static void TypeofDictionaryGetMethodAdd()
         {
             var testCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -249,7 +249,7 @@ namespace RoslynSandbox
         public static void ThisGetTYpeGetStaticMethod()
         {
             var testCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -270,7 +270,7 @@ namespace RoslynSandbox
         public static void ThisGetTYpeGetInstanceMethod()
         {
             var testCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
 
@@ -291,7 +291,7 @@ namespace RoslynSandbox
         public static void WhenThrowingArgumentException()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -313,7 +313,7 @@ namespace RoslynSandbox
         public static void ArgumentOutOfRangeException()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -336,7 +336,7 @@ namespace RoslynSandbox
         public static void IgnoresDebuggerDisplay()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     [System.Diagnostics.DebuggerDisplay(""{Name}"")]
     public class C
@@ -351,7 +351,7 @@ namespace RoslynSandbox
         public static void IgnoresTypeName()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -375,7 +375,7 @@ namespace RoslynSandbox
         public static void IgnoresSameLocal()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -394,7 +394,7 @@ namespace RoslynSandbox
         public static void WhenUsedInDeclaration()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -413,7 +413,7 @@ namespace RoslynSandbox
         public static void WhenLocalsNotVisible()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -442,7 +442,7 @@ namespace RoslynSandbox
         public static void IgnoresNamespaceName()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -466,7 +466,7 @@ namespace RoslynSandbox
         public static void AggregateExceptionInnerExceptionCount()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -488,7 +488,7 @@ namespace RoslynSandbox
         public static void NullableIntGetTypeGetFieldMaxValue()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

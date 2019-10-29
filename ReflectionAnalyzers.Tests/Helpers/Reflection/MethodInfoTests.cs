@@ -8,18 +8,18 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 
     public static class MethodInfoTests
     {
-        [TestCase("typeof(C).GetMethod(nameof(this.M))",                              "RoslynSandbox.C.M()")]
-        [TestCase("foo.GetType().GetMethod(nameof(this.M))",                          "RoslynSandbox.C.M()")]
-        [TestCase("fooType.GetMethod(nameof(this.M))",                                "RoslynSandbox.C.M()")]
-        [TestCase("Cached",                                                           "RoslynSandbox.C.M()")]
-        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetMethod",           "RoslynSandbox.C.Property.get")]
-        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetGetMethod(false)", "RoslynSandbox.C.Property.get")]
-        [TestCase("typeof(C).GetProperty(nameof(this.Property)).SetMethod",           "RoslynSandbox.C.Property.set")]
-        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetSetMethod(false)", "RoslynSandbox.C.Property.set")]
+        [TestCase("typeof(C).GetMethod(nameof(this.M))",                              "N.C.M()")]
+        [TestCase("foo.GetType().GetMethod(nameof(this.M))",                          "N.C.M()")]
+        [TestCase("fooType.GetMethod(nameof(this.M))",                                "N.C.M()")]
+        [TestCase("Cached",                                                           "N.C.M()")]
+        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetMethod",           "N.C.Property.get")]
+        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetGetMethod(false)", "N.C.Property.get")]
+        [TestCase("typeof(C).GetProperty(nameof(this.Property)).SetMethod",           "N.C.Property.set")]
+        [TestCase("typeof(C).GetProperty(nameof(this.Property)).GetSetMethod(false)", "N.C.Property.set")]
         public static void TryGet(string call, string expected)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections.Generic;

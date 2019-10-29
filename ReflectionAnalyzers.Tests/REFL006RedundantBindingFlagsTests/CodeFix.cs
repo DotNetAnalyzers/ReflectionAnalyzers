@@ -35,7 +35,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
         public static void GetMethod(string method, string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -57,7 +57,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -110,7 +110,7 @@ namespace RoslynSandbox
         public static void GetNestedType(string type, string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -140,7 +140,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.NonPublic", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -178,7 +178,7 @@ namespace RoslynSandbox
         public static void GetConstructor(string call)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -192,7 +192,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(↓BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)", call);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
         public static void GetMethod(string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -34,7 +34,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -58,7 +58,7 @@ namespace RoslynSandbox
         public static void GetMethodUsingStatic(string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using static System.Reflection.BindingFlags;
@@ -74,7 +74,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using static System.Reflection.BindingFlags;

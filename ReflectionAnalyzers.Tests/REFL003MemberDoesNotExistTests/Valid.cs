@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         public static void AggregateExceptionGetInnerExceptionCount(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -36,7 +36,7 @@ namespace RoslynSandbox
         public static void SubclassAggregateExceptionGetInnerExceptionCount(string call)
         {
             var customAggregateException = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -46,7 +46,7 @@ namespace RoslynSandbox
     }
 }";
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -71,7 +71,7 @@ namespace RoslynSandbox
         public static void GetNestedType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -111,7 +111,7 @@ namespace RoslynSandbox
         public static void Indexer(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -134,7 +134,7 @@ namespace RoslynSandbox
         public static void NamedIndexer(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -158,7 +158,7 @@ namespace RoslynSandbox
         public static void NullableIntGetTypeGetFieldMaxValue()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -174,7 +174,7 @@ namespace RoslynSandbox
         public static void TupleGetFieldItem1()
         {
             var testCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -190,7 +190,7 @@ namespace RoslynSandbox
         public static void GetMissingPropertyThenNullCheck()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {

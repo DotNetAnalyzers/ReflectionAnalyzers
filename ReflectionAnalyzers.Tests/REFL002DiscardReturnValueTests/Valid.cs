@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
         public static void Discarding(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -41,7 +41,7 @@ namespace RoslynSandbox
         public static void WhenUsedInAssert(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using NUnit.Framework;
 
@@ -65,7 +65,7 @@ namespace RoslynSandbox
         public static void AssigningLocal()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -85,7 +85,7 @@ namespace RoslynSandbox
         public static void AssigningField()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -107,7 +107,7 @@ namespace RoslynSandbox
         public static void UsingInExpression()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {

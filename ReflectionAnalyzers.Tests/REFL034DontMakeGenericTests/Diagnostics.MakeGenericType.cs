@@ -15,14 +15,14 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
             public static void WhenNotGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
         public object Get => typeof(C).↓MakeGenericType(typeof(int));
     }
 }";
-                var message = "RoslynSandbox.C is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
+                var message = "N.C is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -30,14 +30,14 @@ namespace RoslynSandbox
             public static void WhenNotGenericDefinition()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C<T>
     {
         public object Get => typeof(C<int>).↓MakeGenericType(typeof(int));
     }
 }";
-                var message = "RoslynSandbox.C<int> is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
+                var message = "N.C<int> is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -45,7 +45,7 @@ namespace RoslynSandbox
             public static void Nested()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -58,7 +58,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "RoslynSandbox.C.D is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
+                var message = "N.C.D is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -66,7 +66,7 @@ namespace RoslynSandbox
             public static void NestedInGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -79,7 +79,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "RoslynSandbox.C<int>.D is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
+                var message = "N.C<int>.D is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }

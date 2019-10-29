@@ -29,7 +29,7 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
         public static void InstancePropertyInSameType(string beforeExpression, string afterExpression)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -51,7 +51,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -89,7 +89,7 @@ namespace RoslynSandbox
         public static void StaticPropertyInSameType(string beforeExpression, string afterExpression)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -111,7 +111,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -149,7 +149,7 @@ namespace RoslynSandbox
         public static void InstancePropertyInOtherType(string beforeExpression, string afterExpression)
         {
             var c = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -164,7 +164,7 @@ namespace RoslynSandbox
 }";
 
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -178,7 +178,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -208,7 +208,7 @@ namespace RoslynSandbox
         public static void StaticPropertyInOtherType(string beforeExpression, string afterExpression)
         {
             var c = @"
-namespace RoslynSandbox
+namespace N
 {
     public static class C
     {
@@ -223,7 +223,7 @@ namespace RoslynSandbox
 }";
 
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -237,7 +237,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -259,7 +259,7 @@ namespace RoslynSandbox
         public static async Task InvisibleProperty(string beforeExpression, string afterExpression)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -270,7 +270,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"get_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -315,7 +315,7 @@ namespace BinaryReferencedAssembly
         public static void InstanceEventInSameType(string beforeExpression, string afterExpression)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -332,7 +332,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"add_Public\")", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -358,7 +358,7 @@ namespace RoslynSandbox
         public static void IEnumeratorGetCurrent(string beforeExpression, string afterExpression)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections;
     using System.Reflection;
@@ -372,7 +372,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetMethod(\"get_Current\")", beforeExpression);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections;
     using System.Reflection;
@@ -396,7 +396,7 @@ namespace RoslynSandbox
         public static void AggregateException(string beforeExpression, string afterExpression)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -411,7 +411,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -437,7 +437,7 @@ namespace RoslynSandbox
         public static void Indexer(string beforeExpression, string afterExpression)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -456,7 +456,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"get_Item\")", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -485,7 +485,7 @@ namespace RoslynSandbox
         public static void IndexerPrivateSet(string beforeExpression, string afterExpression)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -504,7 +504,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"get_Item\")", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -534,7 +534,7 @@ namespace RoslynSandbox
         public static void NamedIndexer(string beforeExpression, string afterExpression)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -555,7 +555,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetMethod(\"get_Foo\")", beforeExpression);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -582,7 +582,7 @@ namespace RoslynSandbox
         public static async Task ReferencesMemberThatAnalyzerCannotSee()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -592,7 +592,7 @@ namespace RoslynSandbox
     }
 }";
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -603,7 +603,7 @@ namespace RoslynSandbox
 }";
 
             var binaryReference = TestHelper.CompileBinaryReference(@"
-namespace RoslynSandbox.BinaryReferencedAssembly
+namespace N.BinaryReferencedAssembly
 {
     using System;
 
@@ -635,7 +635,7 @@ namespace RoslynSandbox.BinaryReferencedAssembly
             var compilation = await solution.Projects.Single()
                                             .GetCompilationAsync()
                                             .ConfigureAwait(true);
-            var fooType = compilation.GetTypeByMetadataName("RoslynSandbox.BinaryReferencedAssembly.C1");
+            var fooType = compilation.GetTypeByMetadataName("N.BinaryReferencedAssembly.C1");
             Assert.That(fooType.GetMembers(), Has.None.With.Property("Name")
                                                  .EqualTo("Bar"));
 

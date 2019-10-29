@@ -20,7 +20,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
         public static void WhenMemberAccess(string before, string after)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -31,7 +31,7 @@ namespace RoslynSandbox
 }".AssertReplace("Get() => Type.GetType(\"C\").Assembly", before);
 
             var fixedCode = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
             public static void PublicPrivateOverloads(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -45,7 +45,7 @@ namespace RoslynSandbox
             public static void PublicOverloads(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -74,7 +74,7 @@ namespace RoslynSandbox
             public static void OverloadedOperatorExplicit(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -96,7 +96,7 @@ namespace RoslynSandbox
             public static void OverloadResolution(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

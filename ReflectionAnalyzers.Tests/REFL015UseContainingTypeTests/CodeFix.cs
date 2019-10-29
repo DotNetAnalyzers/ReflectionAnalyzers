@@ -22,7 +22,7 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
         public static void GetPrivateMemberTypeof(string call)
         {
             var cBase = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -38,7 +38,7 @@ namespace RoslynSandbox
     }
 }";
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -52,7 +52,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -79,7 +79,7 @@ namespace RoslynSandbox
         public static void GetPrivateMemberThisGetType(string call)
         {
             var cBase = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -95,7 +95,7 @@ namespace RoslynSandbox
     }
 }";
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -109,7 +109,7 @@ namespace RoslynSandbox
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -130,7 +130,7 @@ namespace RoslynSandbox
         public static void GetPublicNestedType(string type)
         {
             var cbase = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -146,7 +146,7 @@ namespace RoslynSandbox
     }
 }";
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -160,7 +160,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -181,7 +181,7 @@ namespace RoslynSandbox
         public static void GetPrivateNestedType(string type)
         {
             var cbase = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -197,7 +197,7 @@ namespace RoslynSandbox
     }
 }";
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -211,7 +211,7 @@ namespace RoslynSandbox
 }".AssertReplace("PrivateStatic", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -232,7 +232,7 @@ namespace RoslynSandbox
         public static void PrivateFieldInBase()
         {
             var baseCode = @"
-namespace RoslynSandbox
+namespace N
 {
     class B
     {
@@ -240,7 +240,7 @@ namespace RoslynSandbox
     }
 }";
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -251,7 +251,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

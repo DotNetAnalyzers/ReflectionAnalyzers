@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL043FirstArgumentTypeTests
         public static void StaticStringVoidFirstArg()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         public static void GetPropertyAnonymousType()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -31,7 +31,7 @@ namespace RoslynSandbox
         public static void GetMissingPropertyThenNullCheck()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public sealed class C
     {
@@ -52,7 +52,7 @@ namespace RoslynSandbox
         public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
         {
             var exception = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -62,7 +62,7 @@ namespace RoslynSandbox
     }
 }";
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -85,7 +85,7 @@ namespace RoslynSandbox
         public static void GetNestedType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -109,7 +109,7 @@ namespace RoslynSandbox
         public static void NamedIndexer(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using System.Runtime.CompilerServices;
@@ -133,7 +133,7 @@ namespace RoslynSandbox
         public static void GetTupleFieldItem1ByName()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -153,7 +153,7 @@ namespace RoslynSandbox
         public static void GetTupleFieldItem7ByName(string field)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -171,7 +171,7 @@ namespace RoslynSandbox
         public static void MissingGetter(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -189,7 +189,7 @@ namespace RoslynSandbox
         public static void MissingSetter(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {

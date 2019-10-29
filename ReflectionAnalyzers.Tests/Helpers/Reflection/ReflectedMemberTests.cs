@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         public static void TryGetTypeFromExpression(string call, string expected, string expectedSource)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
     using System.Reflection;
@@ -52,7 +52,7 @@ namespace RoslynSandbox
         public static void TryGetTypeFromLocal(string typeExpression, string expected)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Collections.Generic;
     using System.Reflection;
@@ -80,7 +80,7 @@ namespace RoslynSandbox
         public static void Recursion()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

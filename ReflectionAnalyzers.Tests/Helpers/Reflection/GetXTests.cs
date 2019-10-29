@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         public static void GetMethodWrongFlagsWhenNotVisible()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
             public static void AttributeGetCustomAttribute()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

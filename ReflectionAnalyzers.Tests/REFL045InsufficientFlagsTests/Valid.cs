@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
         public static void GetX(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
         public static void GetMethodNoFlags(string method, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -41,7 +41,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})");
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -73,7 +73,7 @@ namespace RoslynSandbox
         public static void GetMethodNoParameterWithTypes()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -89,7 +89,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -111,7 +111,7 @@ namespace RoslynSandbox
         public static void GetMethodOneParameterWithTypes()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -127,7 +127,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -148,7 +148,7 @@ namespace RoslynSandbox
         public static void GetMethodTwoParameterWithTypes()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -162,7 +162,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -183,7 +183,7 @@ namespace RoslynSandbox
         public static void GetMethodNoFlagsFixInsideArrayInitializer()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -200,7 +200,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -227,7 +227,7 @@ namespace RoslynSandbox
         public static void GetMethod(string method, string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -252,7 +252,7 @@ namespace RoslynSandbox
   .AssertReplace("BindingFlags.Public", flags);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -284,7 +284,7 @@ namespace RoslynSandbox
         public static void GetMethodWhenInvocationIsArgumentIssue64()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection.Emit;
@@ -299,7 +299,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -326,7 +326,7 @@ namespace RoslynSandbox
         public static void GetConstructorWhenMissingFlags(string types, string flags)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -344,7 +344,7 @@ namespace RoslynSandbox
 }".AssertReplace("Type.EmptyTypes", types);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -373,7 +373,7 @@ namespace RoslynSandbox
         public static void GetNestedTypeNoFlags(string method, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -401,7 +401,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicInstance)", $"nameof({method})");
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
             public static void PublicOverloads()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -35,7 +35,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -54,7 +54,7 @@ namespace RoslynSandbox
                 RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int) }.");
 
                 after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -77,7 +77,7 @@ namespace RoslynSandbox
             public static void TwoIndexers()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -90,7 +90,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -106,7 +106,7 @@ namespace RoslynSandbox
                 RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int) }.");
 
                 after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             public static void Discarding(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -41,7 +41,7 @@ namespace RoslynSandbox
             public static void AssigningLocal()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -61,7 +61,7 @@ namespace RoslynSandbox
             public static void IsPattern()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -83,7 +83,7 @@ namespace RoslynSandbox
             public static void SwitchPattern()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -107,7 +107,7 @@ namespace RoslynSandbox
             public static void AssigningField()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -129,7 +129,7 @@ namespace RoslynSandbox
             public static void UsingInExpression()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -149,7 +149,7 @@ namespace RoslynSandbox
             public static void CallingToString()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -171,7 +171,7 @@ namespace RoslynSandbox
             public static void Discarded(string discard)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {

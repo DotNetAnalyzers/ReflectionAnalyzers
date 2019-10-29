@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
             public static void Success(string call, string expected)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections.Generic;
@@ -47,7 +47,7 @@ namespace RoslynSandbox
             public static void NoMatch(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections.Generic;
@@ -68,19 +68,19 @@ namespace RoslynSandbox
                 Assert.AreEqual(FilterMatch.WrongTypes, reflectedMember.Match);
             }
 
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IComparable) })", "RoslynSandbox.C.M(System.IComparable)")]
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IConvertible) })", "RoslynSandbox.C.M(System.IConvertible)")]
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IEquatable<int>) })", "RoslynSandbox.C.M(System.IEquatable<int>)")]
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IEquatable<double>) })", "RoslynSandbox.C.M(System.IEquatable<double>)")]
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IComparable<int>) })", "RoslynSandbox.C.M(System.IComparable<int>)")]
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IComparable<double>) })", "RoslynSandbox.C.M(System.IComparable<double>)")]
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(int) })", "RoslynSandbox.C.M(int)")]
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(double) })", "RoslynSandbox.C.M(double)")]
-            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IFormattable) })", "RoslynSandbox.C.M(System.IFormattable)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IComparable) })", "N.C.M(System.IComparable)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IConvertible) })", "N.C.M(System.IConvertible)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IEquatable<int>) })", "N.C.M(System.IEquatable<int>)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IEquatable<double>) })", "N.C.M(System.IEquatable<double>)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IComparable<int>) })", "N.C.M(System.IComparable<int>)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IComparable<double>) })", "N.C.M(System.IComparable<double>)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(int) })", "N.C.M(int)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(double) })", "N.C.M(double)")]
+            [TestCase("typeof(C).GetMethod(nameof(M), new[] { typeof(IFormattable) })", "N.C.M(System.IFormattable)")]
             public static void SuccessWhenInSameType(string call, string expected)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections.Generic;
@@ -120,13 +120,13 @@ namespace RoslynSandbox
                 Assert.AreEqual(expected, reflectedMember.Symbol.ToDisplayString());
             }
 
-            [TestCase("typeof(A).GetMethod(\"M\", new[] { typeof(int) })", "RoslynSandbox.A.M(int)")]
-            [TestCase("typeof(B).GetMethod(\"M\", new[] { typeof(int) })", "RoslynSandbox.A.M(int)")]
-            [TestCase("typeof(B).GetMethod(\"M\", new[] { typeof(double) })", "RoslynSandbox.B.M(double)")]
+            [TestCase("typeof(A).GetMethod(\"M\", new[] { typeof(int) })", "N.A.M(int)")]
+            [TestCase("typeof(B).GetMethod(\"M\", new[] { typeof(int) })", "N.A.M(int)")]
+            [TestCase("typeof(B).GetMethod(\"M\", new[] { typeof(double) })", "N.B.M(double)")]
             public static void SuccessWhenInheritance(string call, string expected)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

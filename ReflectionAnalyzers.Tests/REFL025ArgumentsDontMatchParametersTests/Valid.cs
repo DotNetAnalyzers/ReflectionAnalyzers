@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             public static void ExplicitDefaultConstructor(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -39,7 +39,7 @@ namespace RoslynSandbox
             public static void ImplicitDefaultConstructor(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -57,7 +57,7 @@ namespace RoslynSandbox
             public static void OneConstructorOneIntParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -78,7 +78,7 @@ namespace RoslynSandbox
             public static void OneConstructorOptionalIntParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -102,7 +102,7 @@ namespace RoslynSandbox
             public static void OneConstructorSingleStringParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -125,7 +125,7 @@ namespace RoslynSandbox
             public static void OneConstructorOneDoubleParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -145,7 +145,7 @@ namespace RoslynSandbox
             public static void OverloadedConstructorsStringAndStringBuilder(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Text;
@@ -174,7 +174,7 @@ namespace RoslynSandbox
             public static void OverloadedConstructorsStringAndInt(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -202,7 +202,7 @@ namespace RoslynSandbox
             public static void OverloadedConstructorsDifferentLength(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Text;
@@ -233,7 +233,7 @@ namespace RoslynSandbox
             public static void ParamsConstructor(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -259,7 +259,7 @@ namespace RoslynSandbox
             public static void ParamsConstructorSecondParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -279,7 +279,7 @@ namespace RoslynSandbox
             public static void WhenUnknown()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -296,7 +296,7 @@ namespace RoslynSandbox
             public static void WhenUnconstrainedGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -313,7 +313,7 @@ namespace RoslynSandbox
             public static void Issue202()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

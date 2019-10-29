@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
         public static void AssigningLocal()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -35,7 +35,7 @@ namespace RoslynSandbox
         public static void AssigningField()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -59,7 +59,7 @@ namespace RoslynSandbox
         public static void UsingInExpression()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -82,7 +82,7 @@ namespace RoslynSandbox
         public static void InvokeWithGetUninitializedObjectAndArgument(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Runtime.Serialization;

@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             public static void OneConstructorSingleIntParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -42,7 +42,7 @@ namespace RoslynSandbox
             public static void OneConstructorOptionalIntParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -62,7 +62,7 @@ namespace RoslynSandbox
             public static void OneConstructorOneStringParameters(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -85,7 +85,7 @@ namespace RoslynSandbox
             public static void OverloadedConstructorsStringAndStringBuilder(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Text;
@@ -112,7 +112,7 @@ namespace RoslynSandbox
             public static void OverloadedConstructorsStringAndInt(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -140,7 +140,7 @@ namespace RoslynSandbox
             public static void ParamsConstructorSecondParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

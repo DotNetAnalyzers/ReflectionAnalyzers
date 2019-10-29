@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
         public static void PassingArrayToMakeGenericType()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

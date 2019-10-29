@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
         public static void GetConstructor(string emptyArray)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -33,7 +33,7 @@ namespace RoslynSandbox
 }".AssertReplace("new Type[0]", emptyArray);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

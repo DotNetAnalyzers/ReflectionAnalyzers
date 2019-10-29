@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
         public static void WhenMemberAccess(string body)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

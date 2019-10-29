@@ -19,7 +19,7 @@ namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
         public static void GetMethod(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

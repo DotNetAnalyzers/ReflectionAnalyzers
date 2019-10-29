@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
             public static void PassingNullAsObj(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -35,7 +35,7 @@ namespace RoslynSandbox
             public static void InvokeWithGetUninitializedObjectAndArgument(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -56,7 +56,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(text, null)", call);
 
-                var message = "Use an instance of type RoslynSandbox.C.";
+                var message = "Use an instance of type N.C.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }

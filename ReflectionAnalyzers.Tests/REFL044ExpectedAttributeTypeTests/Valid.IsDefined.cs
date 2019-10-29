@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
             public static void AttributeIsDefined(string type)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -34,7 +34,7 @@ namespace RoslynSandbox
             public static void AttributeIsDefinedGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
         public static void WhenUsingGeneric()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -34,7 +34,7 @@ namespace RoslynSandbox
         public static void WhenGetCustomAttributeCast()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -53,7 +53,7 @@ namespace RoslynSandbox
         public static void WhenGetCustomAttributeAs()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

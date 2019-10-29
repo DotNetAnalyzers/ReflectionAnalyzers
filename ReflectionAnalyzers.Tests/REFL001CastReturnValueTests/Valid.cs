@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             public static void Generic(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

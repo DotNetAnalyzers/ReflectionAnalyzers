@@ -15,14 +15,14 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
             public static void WhenNotGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
         public static object M() => typeof(C).GetMethod(nameof(M)).↓MakeGenericMethod(typeof(int));
     }
 }";
-                var message = "RoslynSandbox.C.M() is not a GenericMethodDefinition. MakeGenericMethod may only be called on a method for which MethodBase.IsGenericMethodDefinition is true.";
+                var message = "N.C.M() is not a GenericMethodDefinition. MakeGenericMethod may only be called on a method for which MethodBase.IsGenericMethodDefinition is true.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }

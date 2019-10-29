@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
             public static void InterfaceAndSame(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -32,7 +32,7 @@ namespace RoslynSandbox
             public static void ObjectAndInterface()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

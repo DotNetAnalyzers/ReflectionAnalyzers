@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             public static void AssigningLocal()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -31,7 +31,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {

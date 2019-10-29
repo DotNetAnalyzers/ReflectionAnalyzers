@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             public static void SingleIntParameter()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -39,7 +39,7 @@ namespace RoslynSandbox
             public static void NoParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -59,7 +59,7 @@ namespace RoslynSandbox
             public static void OptionalParameter(string value)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

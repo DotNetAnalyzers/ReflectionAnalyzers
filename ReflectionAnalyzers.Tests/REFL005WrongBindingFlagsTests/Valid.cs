@@ -44,7 +44,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
         public static void GetMethod(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -80,7 +80,7 @@ namespace RoslynSandbox
         public static void GetMethodWhenShadowed(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -108,7 +108,7 @@ namespace RoslynSandbox
         public static void OverloadsFilteredByType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -145,7 +145,7 @@ namespace RoslynSandbox
         public static void GetMethodUnknownType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -171,7 +171,7 @@ namespace RoslynSandbox
         public static void GetMethodUsingStatic(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
     using static System.Reflection.BindingFlags;
@@ -208,7 +208,7 @@ namespace RoslynSandbox
         public static void GetProperty(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -254,7 +254,7 @@ namespace RoslynSandbox
         public static void GetNestedType(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -289,7 +289,7 @@ namespace RoslynSandbox
         public static void NonPublicNotVisible()
         {
             var exception = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -299,7 +299,7 @@ namespace RoslynSandbox
     }
 }";
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

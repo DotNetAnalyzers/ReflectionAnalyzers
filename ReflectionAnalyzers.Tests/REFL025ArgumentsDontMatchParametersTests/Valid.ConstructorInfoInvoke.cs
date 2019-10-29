@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
             public static void SingleIntParameter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {

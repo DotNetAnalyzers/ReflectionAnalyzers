@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
         public static void StaticStringInt(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -34,7 +34,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -60,7 +60,7 @@ namespace RoslynSandbox
         public static void StaticVoid(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -76,7 +76,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -103,7 +103,7 @@ namespace RoslynSandbox
         public static void StaticStringVoid(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -119,7 +119,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -145,7 +145,7 @@ namespace RoslynSandbox
         public static void StaticStringVoidFirstArg(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -162,7 +162,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Action<int>)", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -189,7 +189,7 @@ namespace RoslynSandbox
         public static void StaticStringStringVoidFirstArg(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -206,7 +206,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Action<int>)", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -231,7 +231,7 @@ namespace RoslynSandbox
         public static void InstanceStringInt(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -247,7 +247,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -273,7 +273,7 @@ namespace RoslynSandbox
         public static void InstanceVoid(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -289,7 +289,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -315,7 +315,7 @@ namespace RoslynSandbox
         public static void InstanceVoidWithTarget(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -332,7 +332,7 @@ namespace RoslynSandbox
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -355,7 +355,7 @@ namespace RoslynSandbox
         public static void StaticStringIntCustomDelegate()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -373,7 +373,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -397,7 +397,7 @@ namespace RoslynSandbox
         public static void GetGetMethodReturnTypeInstance()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -415,7 +415,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -439,7 +439,7 @@ namespace RoslynSandbox
         public static void GetGetMethodReturnTypeStatic()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -457,7 +457,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -481,7 +481,7 @@ namespace RoslynSandbox
         public static void GetSetMethodReturnTypeInstance()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -499,7 +499,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -523,7 +523,7 @@ namespace RoslynSandbox
         public static void GetSetMethodReturnTypeStatic()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -541,7 +541,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -565,7 +565,7 @@ namespace RoslynSandbox
         public static void StaticWithContainingAsArgument()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -583,7 +583,7 @@ namespace RoslynSandbox
 }";
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

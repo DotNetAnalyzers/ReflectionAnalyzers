@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
             public static void Vanilla()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C<T>
     {
@@ -30,7 +30,7 @@ namespace RoslynSandbox
             public static void Constrained()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -47,7 +47,7 @@ namespace RoslynSandbox
             public static void Nested()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -67,7 +67,7 @@ namespace RoslynSandbox
             public static void NestedInGeneric()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

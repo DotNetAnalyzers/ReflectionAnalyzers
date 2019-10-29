@@ -12,11 +12,11 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL037TypeDoesNotExits.Descriptor);
 
         [TestCase("MISSING")]
-        // [TestCase("RoslynSandbox.MISSING")]
+        // [TestCase("N.MISSING")]
         public static void TypeGetTypeNoFix(string type)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -30,11 +30,11 @@ namespace RoslynSandbox
         }
 
         [TestCase("typeof(C).Assembly.GetType(↓\"MISSING\")")]
-        [TestCase("typeof(C).Assembly.GetType(↓\"RoslynSandbox.MISSING\")")]
+        [TestCase("typeof(C).Assembly.GetType(↓\"N.MISSING\")")]
         public static void AssemblyGetTypeNoFix(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

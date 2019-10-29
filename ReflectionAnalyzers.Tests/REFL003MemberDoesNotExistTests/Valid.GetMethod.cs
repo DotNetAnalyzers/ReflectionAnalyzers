@@ -22,7 +22,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
             public static void Vanilla(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -51,7 +51,7 @@ namespace RoslynSandbox
             public static void MissingMethod(string type)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -71,7 +71,7 @@ namespace RoslynSandbox
             public static void ExcludeNonPublicNotInSource(string invocation)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -90,7 +90,7 @@ namespace RoslynSandbox
             public static void ToStringOverridden()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -109,7 +109,7 @@ namespace RoslynSandbox
             public static void ToStringShadowing()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -128,7 +128,7 @@ namespace RoslynSandbox
             public static void OverloadedMethodInSameType()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -152,7 +152,7 @@ namespace RoslynSandbox
             public static void ExplicitImplementation(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -172,7 +172,7 @@ namespace RoslynSandbox
             public static void UnknownType()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -191,7 +191,7 @@ namespace RoslynSandbox
             public static void TypeParameter()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -216,7 +216,7 @@ namespace RoslynSandbox
             public static void ConstrainedTypeParameter(string constraint, string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -240,7 +240,7 @@ namespace RoslynSandbox
             public static void Generic()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -262,7 +262,7 @@ namespace RoslynSandbox
             public static void PropertyAccessors(string name)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -283,7 +283,7 @@ namespace RoslynSandbox
             public static void DelegateInvoke(string type)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -318,7 +318,7 @@ namespace RoslynSandbox
             public static void WrongFlags(string method, string flags)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

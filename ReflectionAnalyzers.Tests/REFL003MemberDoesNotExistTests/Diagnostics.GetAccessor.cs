@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
             public static void MissingGetter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -40,7 +40,7 @@ namespace RoslynSandbox
             public static void MissingSetter(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {

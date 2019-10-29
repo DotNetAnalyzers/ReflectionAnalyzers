@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
             public static void GetNestedType(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -36,7 +36,7 @@ namespace RoslynSandbox
             public static void GetPropertyAnonymousType()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -58,7 +58,7 @@ namespace RoslynSandbox
             public static void MissingMethodNotInSource(string type)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

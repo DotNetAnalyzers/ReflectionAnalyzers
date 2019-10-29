@@ -31,7 +31,7 @@ namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
         public static void GetMethod(string method, string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -53,7 +53,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -82,7 +82,7 @@ namespace RoslynSandbox
         public static void GetMethodWithTrivia()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -99,7 +99,7 @@ namespace RoslynSandbox
     }
 }";
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -124,7 +124,7 @@ namespace RoslynSandbox
         public static void GetMethodWhenShadowed(string method, string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -140,7 +140,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.ToString)", $"nameof({method})")
   .AssertReplace("BindingFlags.Static", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -164,7 +164,7 @@ namespace RoslynSandbox
         public static void GetMethodWhenMissingFlags(string method, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -186,7 +186,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})");
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -232,7 +232,7 @@ namespace RoslynSandbox
         public static void GetMethodUsingStatic(string method, string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using static System.Reflection.BindingFlags;
 
@@ -254,7 +254,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.PublicMethod)", $"nameof({method})")
   .AssertReplace("Public | Static", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using static System.Reflection.BindingFlags;
 
@@ -291,7 +291,7 @@ namespace RoslynSandbox
         public static void GetProperty(string method, string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -313,7 +313,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(this.Public)", $"nameof({method})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -349,7 +349,7 @@ namespace RoslynSandbox
         public static void GetNestedType(string type, string flags, string expected)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -379,7 +379,7 @@ namespace RoslynSandbox
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})")
   .AssertReplace("BindingFlags.Public | BindingFlags.Static", flags);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -417,7 +417,7 @@ namespace RoslynSandbox
         public static void GetNestedTypeWhenMissingFlags(string type)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -438,7 +438,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace("nameof(PrivateStatic)", $"nameof({type})");
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 
@@ -471,7 +471,7 @@ namespace RoslynSandbox
         public static void GetConstructorWhenMissingFlags(string types)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -489,7 +489,7 @@ namespace RoslynSandbox
 }".AssertReplace("Type.EmptyTypes", types);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

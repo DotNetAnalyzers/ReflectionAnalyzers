@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
             public static void WrongContainingTypeWhenNotAccessible()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -34,7 +34,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -57,7 +57,7 @@ namespace RoslynSandbox
             public static void NonPublicNotVisible()
             {
                 var exception = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -67,7 +67,7 @@ namespace RoslynSandbox
     }
 }";
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -81,7 +81,7 @@ namespace RoslynSandbox
     }
 }";
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

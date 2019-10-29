@@ -18,7 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL024PreferNullOverEmptyArrayTests
         public static void MemberInfoInvoke(string emptyArray)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -33,7 +33,7 @@ namespace RoslynSandbox
 }".AssertReplace("Array.Empty<object>()", emptyArray);
 
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

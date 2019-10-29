@@ -16,7 +16,7 @@
             public static void Recursion()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

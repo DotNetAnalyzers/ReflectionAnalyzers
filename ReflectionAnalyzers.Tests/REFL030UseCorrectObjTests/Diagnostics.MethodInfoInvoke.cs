@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
             public static void Static()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -30,7 +30,7 @@ namespace RoslynSandbox
     }
 }";
 
-                var message = "The method RoslynSandbox.C.Bar() is static and null should be passed as obj.";
+                var message = "The method N.C.Bar() is static and null should be passed as obj.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -38,7 +38,7 @@ namespace RoslynSandbox
             public static void Instance()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -50,7 +50,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-                var message = "The method RoslynSandbox.C.Bar() is an instance method and the instance should be passed as obj.";
+                var message = "The method N.C.Bar() is an instance method and the instance should be passed as obj.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -58,7 +58,7 @@ namespace RoslynSandbox
             public static void NullableInstance()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -78,7 +78,7 @@ namespace RoslynSandbox
             public static void InstanceWrongType()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -90,7 +90,7 @@ namespace RoslynSandbox
         public int Bar() => 0;
     }
 }";
-                var message = "Expected an argument of type RoslynSandbox.C.";
+                var message = "Expected an argument of type N.C.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
         }

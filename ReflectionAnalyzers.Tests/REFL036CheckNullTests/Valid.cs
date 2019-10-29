@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
         public static void TypeGetTypeElvisAssembly()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -30,7 +30,7 @@ namespace RoslynSandbox
         public static void TypeGetTypeThrowOnErrorAssembly()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
         public static void AttributeGetCustomAttributeEqualsNull()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -25,7 +25,7 @@ namespace RoslynSandbox
     }
 }";
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -42,7 +42,7 @@ namespace RoslynSandbox
         public static void AttributeGetCustomAttributeEqualsNullExplicitInherit()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -52,7 +52,7 @@ namespace RoslynSandbox
     }
 }";
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -69,7 +69,7 @@ namespace RoslynSandbox
         public static void AttributeGetCustomAttributeNotEqualsNull()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -79,7 +79,7 @@ namespace RoslynSandbox
     }
 }";
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -97,7 +97,7 @@ namespace RoslynSandbox
         public static void IfGetCustomAttributeIsNull(string isNull)
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -113,7 +113,7 @@ namespace RoslynSandbox
     }
 }".AssertReplace(" == null", isNull);
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -135,7 +135,7 @@ namespace RoslynSandbox
         public static void IfGetCustomAttributeNotNull()
         {
             var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -151,7 +151,7 @@ namespace RoslynSandbox
     }
 }";
             var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

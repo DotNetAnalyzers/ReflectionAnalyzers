@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
             public static void Static()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -38,7 +38,7 @@ namespace RoslynSandbox
             public static void Instance()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     public class C
     {
@@ -59,7 +59,7 @@ namespace RoslynSandbox
             public static void Invoke(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

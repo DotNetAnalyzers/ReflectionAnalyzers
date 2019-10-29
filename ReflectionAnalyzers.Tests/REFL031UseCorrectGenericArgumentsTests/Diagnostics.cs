@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             public static void CountError()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -35,7 +35,7 @@ namespace RoslynSandbox
             public static void ConstraintError()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -48,7 +48,7 @@ namespace RoslynSandbox
         }
     }
 }";
-                var message = "The argument typeof(string), on 'RoslynSandbox.C.Bar<T>()' violates the constraint of type 'T'.";
+                var message = "The argument typeof(string), on 'N.C.Bar<T>()' violates the constraint of type 'T'.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -58,7 +58,7 @@ namespace RoslynSandbox
             public static void ConstrainedParameterWrongArguments(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -82,7 +82,7 @@ namespace RoslynSandbox
             public static void Constraints(string constraint, string arg)
             {
                 var barCode = @"
-namespace RoslynSandbox
+namespace N
 {
     public class Bar
     {
@@ -92,7 +92,7 @@ namespace RoslynSandbox
     }
 }";
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -113,7 +113,7 @@ namespace RoslynSandbox
             public static void TernaryWrongOrder()
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System.Reflection;
 

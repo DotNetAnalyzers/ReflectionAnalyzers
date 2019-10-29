@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
         public static void CreateDelegateParameterExpressionMake()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Linq.Expressions;
@@ -35,7 +35,7 @@ namespace RoslynSandbox
         public static void StaticStringInt()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -56,7 +56,7 @@ namespace RoslynSandbox
         public static void StaticStringIntWithFirstArg()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -78,7 +78,7 @@ namespace RoslynSandbox
         public static void StaticVoid()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -99,7 +99,7 @@ namespace RoslynSandbox
         public static void StaticStringVoid()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -121,7 +121,7 @@ namespace RoslynSandbox
         public static void StaticStringVoidFirstArg()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -144,7 +144,7 @@ namespace RoslynSandbox
         public static void StaticStringStringVoidFirstArg()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -167,7 +167,7 @@ namespace RoslynSandbox
         public static void InstanceStringInt()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -188,7 +188,7 @@ namespace RoslynSandbox
         public static void InstanceStringIntWithTarget()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -210,7 +210,7 @@ namespace RoslynSandbox
         public static void StaticStringIntCustomDelegate()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -233,7 +233,7 @@ namespace RoslynSandbox
         public static void GetGetMethodReturnType()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -258,7 +258,7 @@ namespace RoslynSandbox
         public static void GetMethodReturnType()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

@@ -17,7 +17,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             public static void Typeof()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -31,7 +31,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -50,7 +50,7 @@ namespace RoslynSandbox
             public static void WalkType()
             {
                 var before = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -65,7 +65,7 @@ namespace RoslynSandbox
 }";
 
                 var after = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -88,7 +88,7 @@ namespace RoslynSandbox
             public static void WhenUnconstrainedGeneric(string call)
             {
                 var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 

@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
         public static void ExactInterfaceParameter()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;
@@ -34,7 +34,7 @@ namespace RoslynSandbox
         public static void SystemWindowsFormsControlCreateControl()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Reflection;

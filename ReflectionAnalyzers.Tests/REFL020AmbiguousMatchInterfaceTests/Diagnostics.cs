@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
         public static void GetInterface(string call)
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
     using System.Collections;

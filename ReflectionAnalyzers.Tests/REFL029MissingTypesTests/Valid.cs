@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
         public static void GetMethodNoParameter()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     using System;
 
@@ -35,7 +35,7 @@ namespace RoslynSandbox
         public static void GetMethodOneParameter()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
@@ -54,7 +54,7 @@ namespace RoslynSandbox
         public static void GetMethodOneGenericParameter()
         {
             var code = @"
-namespace RoslynSandbox
+namespace N
 {
     class C
     {
