@@ -15,7 +15,7 @@ namespace RoslynSandbox
 {
     public class C
     {
-        public object Bar(C foo) => typeof(C).GetMethod(↓""MISSING"");
+        public object M(C c) => typeof(C).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
@@ -69,7 +69,7 @@ namespace RoslynSandbox
 {
     public static class C
     {
-        public static void Bar()
+        public static void M()
         {
             var methodInfo = typeof(C).GetMethod(↓""MISSING"");
         }

@@ -19,10 +19,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var value = ↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
+            var value = ↓typeof(C).GetMethod(nameof(M)).Invoke(null, null);
         }
 
-        public static void Bar()
+        public static void M()
         {
         }
     }
@@ -43,10 +43,10 @@ namespace RoslynSandbox
 
         public C()
         {
-            this.value = (int)↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null);
+            this.value = (int)↓typeof(C).GetMethod(nameof(M)).Invoke(null, null);
         }
 
-        public static void Bar()
+        public static void M()
         {
         }
     }
@@ -65,10 +65,10 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var text = ((int)↓typeof(C).GetMethod(nameof(Bar)).Invoke(null, null)).ToString();
+            var text = ((int)↓typeof(C).GetMethod(nameof(M)).Invoke(null, null)).ToString();
         }
 
-        public static void Bar()
+        public static void M()
         {
         }
     }
@@ -97,7 +97,7 @@ namespace RoslynSandbox
         {
         }
 
-        public static void Bar()
+        public static void M()
         {
             var type = typeof(C);
             var instance = FormatterServices.GetUninitializedObject(type);

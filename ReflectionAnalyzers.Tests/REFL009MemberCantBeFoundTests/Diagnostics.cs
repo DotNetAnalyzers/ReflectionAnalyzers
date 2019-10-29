@@ -20,7 +20,7 @@ namespace RoslynSandbox
 {
     public class C
     {
-        public object Bar(C foo) => typeof(C).GetMethod(↓""MISSING"");
+        public object M(C foo) => typeof(C).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
@@ -36,9 +36,9 @@ namespace RoslynSandbox
 {
     class C
     {
-        public int Bar { get; }
+        public int P { get; }
 
-        public static object Get(C foo) => foo.GetType().GetMethod(↓""set_Bar"");
+        public static object Get(C foo) => foo.GetType().GetMethod(↓""set_P"");
     }
 }";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -52,9 +52,9 @@ namespace RoslynSandbox
 {
     class C
     {
-        public int Bar { set { } }
+        public int P { set { } }
 
-        public static object Get(C foo) => foo.GetType().GetMethod(↓""get_Bar"");
+        public static object Get(C foo) => foo.GetType().GetMethod(↓""get_P"");
     }
 }";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
