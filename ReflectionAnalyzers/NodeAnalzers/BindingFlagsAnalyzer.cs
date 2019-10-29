@@ -50,7 +50,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetFlags(SyntaxNodeAnalysisContext context, out BinaryExpressionSyntax flags)
+        private static bool TryGetFlags(SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out BinaryExpressionSyntax? flags)
         {
             flags = context.Node as BinaryExpressionSyntax;
             return flags?.Parent is ArgumentSyntax &&

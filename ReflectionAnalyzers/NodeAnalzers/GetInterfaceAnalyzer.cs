@@ -109,7 +109,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetName(ArgumentSyntax nameArg, SyntaxNodeAnalysisContext context, out Optional<SimpleNameSyntax> nameSyntax, out string name)
+        private static bool TryGetName(ArgumentSyntax nameArg, SyntaxNodeAnalysisContext context, out Optional<SimpleNameSyntax> nameSyntax, [NotNullWhen(true)] out string? name)
         {
             nameSyntax = default;
             switch (nameArg.Expression)

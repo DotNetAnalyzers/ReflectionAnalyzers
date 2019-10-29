@@ -1,8 +1,10 @@
 namespace ReflectionAnalyzers
 {
+    using System.Diagnostics.CodeAnalysis;
+
     internal static class StringExt
     {
-        internal static bool TrySlice(this string text, int start, int end, out string slice)
+        internal static bool TrySlice(this string text, int start, int end, [NotNullWhen(true)] out string? slice)
         {
             if (end > start)
             {

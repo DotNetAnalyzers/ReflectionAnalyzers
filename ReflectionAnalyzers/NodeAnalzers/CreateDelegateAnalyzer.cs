@@ -2,6 +2,7 @@ namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
+    using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -119,7 +120,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static bool TryGetFirstArgType(MethodInfo methodInfo, out ITypeSymbol type)
+        private static bool TryGetFirstArgType(MethodInfo methodInfo, [NotNullWhen(true)] out ITypeSymbol? type)
         {
             if (!methodInfo.Method.IsStatic)
             {
@@ -137,7 +138,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool IsCorrectDelegateType(MethodTypes methodTypes, IMethodSymbol delegateMethod, SyntaxNodeAnalysisContext context, out string delegateText)
+        private static bool IsCorrectDelegateType(MethodTypes methodTypes, IMethodSymbol delegateMethod, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? delegateText)
         {
             if (!methodTypes.ReturnType.Equals(delegateMethod.ReturnType))
             {

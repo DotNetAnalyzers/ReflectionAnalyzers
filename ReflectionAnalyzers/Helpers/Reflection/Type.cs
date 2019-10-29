@@ -21,7 +21,7 @@ namespace ReflectionAnalyzers
             return ToString(type.BaseType, semanticModel, position);
         }
 
-        internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, out ITypeSymbol result, out ExpressionSyntax source)
+        internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ITypeSymbol? result, [NotNullWhen(true)] out ExpressionSyntax? source)
         {
             return TryGet(expression, context, null, out result, out source);
         }
@@ -64,7 +64,7 @@ namespace ReflectionAnalyzers
             return !recursive || HasVisibleNonPublicMembers(type.BaseType, recursive: true);
         }
 
-        internal static bool IsCastToWrongType(InvocationExpressionSyntax invocation, ITypeSymbol expectedType, SyntaxNodeAnalysisContext context, out TypeSyntax typeSyntax)
+        internal static bool IsCastToWrongType(InvocationExpressionSyntax invocation, ITypeSymbol expectedType, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out TypeSyntax? typeSyntax)
         {
             if (context.SemanticModel.IsAccessible(context.Node.SpanStart, expectedType))
             {

@@ -3,6 +3,7 @@ namespace ReflectionAnalyzers
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
 
     [DebuggerDisplay("{this.MetadataName}")]
@@ -85,7 +86,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryFindMetadataName(string text, ref int pos, out string metadataName, out int arity)
+        private static bool TryFindMetadataName(string text, ref int pos, [NotNullWhen(true)] out string? metadataName, out int arity)
         {
             if (text.IndexOfAny(new[] { ',', '[', ']' }, pos) is var index &&
                 text.TrySlice(pos, index - 1, out metadataName))
@@ -125,7 +126,7 @@ namespace ReflectionAnalyzers
             return true;
         }
 
-        private static bool TryFindBracketedList(string text, int start, out string result)
+        private static bool TryFindBracketedList(string text, int start, [NotNullWhen(true)] out string? result)
         {
             // Span opportunity here.
             var level = 0;

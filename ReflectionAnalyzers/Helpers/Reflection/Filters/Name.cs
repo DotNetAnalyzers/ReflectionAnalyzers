@@ -23,7 +23,7 @@ namespace ReflectionAnalyzers
         {
             if (getX.TryFindParameter(KnownSymbol.String, out var parameter) &&
                 invocation.TryFindArgument(parameter, out var argument) &&
-                context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string metadataName))
+                context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string? metadataName))
             {
                 name = new Name(argument, metadataName);
                 return true;

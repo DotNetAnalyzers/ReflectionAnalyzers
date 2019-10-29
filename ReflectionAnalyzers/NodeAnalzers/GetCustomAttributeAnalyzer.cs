@@ -101,7 +101,7 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool PreferIsDefined(InvocationExpressionSyntax invocation, IMethodSymbol target, ExpressionSyntax member, ArgumentAndValue<ITypeSymbol> attributeType, ArgumentSyntax inherits, out Location location, out string invocationText)
+        private static bool PreferIsDefined(InvocationExpressionSyntax invocation, IMethodSymbol target, ExpressionSyntax member, ArgumentAndValue<ITypeSymbol> attributeType, ArgumentSyntax inherits, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? invocationText)
         {
             switch (invocation.Parent)
             {
