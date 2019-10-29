@@ -21,11 +21,11 @@ namespace N
     {
         public C()
         {
-            var info = typeof(C).GetMethod(nameof(Bar));
+            var info = typeof(C).GetMethod(nameof(M));
             var value = ↓info.Invoke(null, null);
         }
 
-        public static int Bar() => 0;
+        public static int M() => 0;
     }
 }";
 

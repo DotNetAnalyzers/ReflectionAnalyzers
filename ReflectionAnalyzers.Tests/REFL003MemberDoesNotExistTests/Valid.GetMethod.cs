@@ -289,9 +289,9 @@ namespace N
 
     class C
     {
-        public C(Delegate foo)
+        public C(Delegate d)
         {
-            var methodInfo = foo.GetType().GetMethod(""Invoke"");
+            var methodInfo = d.GetType().GetMethod(""Invoke"");
         }
     }
 }".AssertReplace("Delegate", type);

@@ -133,15 +133,15 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("GetMethod(\"Bar\")")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(\"M\")")]
+        [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.Static)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void GetMethodUnknownType(string call)
         {
             var code = @"
@@ -154,10 +154,10 @@ namespace N
     {
         public C(Type type)
         {
-            var methodInfo = type.GetMethod(""Bar"");
+            var methodInfo = type.GetMethod(""M"");
         }
     }
-}".AssertReplace("GetMethod(\"Bar\")", call);
+}".AssertReplace("GetMethod(\"M\")", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
