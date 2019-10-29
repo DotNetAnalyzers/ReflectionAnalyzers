@@ -51,7 +51,7 @@ namespace RoslynSandbox
 
     class C
     {
-        public object Get => typeof(C.D).MakeGenericType(typeof(int));
+        public object Get => typeof(C.D).↓MakeGenericType(typeof(int));
 
         class D
         {
@@ -72,7 +72,7 @@ namespace RoslynSandbox
 
     class C<T>
     {
-        public object Get => typeof(C<int>.D).MakeGenericType(typeof(int));
+        public object Get => typeof(C<int>.D).↓MakeGenericType(typeof(int));
 
         class D
         {

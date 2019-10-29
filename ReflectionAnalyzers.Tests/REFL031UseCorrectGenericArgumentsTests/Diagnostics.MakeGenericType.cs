@@ -19,7 +19,7 @@ namespace RoslynSandbox
 {
     public class C<T>
     {
-        public static object Get() => typeof(C<>).MakeGenericType(typeof(int), typeof(double));
+        public static object Get() => typeof(C<>).MakeGenericType↓(typeof(int), typeof(double));
     }
 }";
                 var message = "The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has 1 parameter but 2 arguments are passed in.";
@@ -136,7 +136,7 @@ namespace RoslynSandbox
 {
     public class C<T>
     {
-        public object Get => typeof(C<>.D<>).MakeGenericType(typeof(int), typeof(int), typeof(int));
+        public object Get => typeof(C<>.D<>).MakeGenericType↓(typeof(int), typeof(int), typeof(int));
 
         public class D<U>
         {

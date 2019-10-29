@@ -21,7 +21,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.Bar));
         }
 
         public int Bar() => 0;
@@ -58,7 +58,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int Bar() => 0;
@@ -94,7 +94,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.Bar));
         }
 
         public int Bar(int value) => value;
@@ -129,7 +129,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int Bar(int value) => value;
@@ -204,7 +204,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public int Bar(params int[] values) => values.Sum();
@@ -240,7 +240,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar));
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.Bar));
         }
 
         public double Bar(int i, double d) => i + d;
@@ -275,7 +275,7 @@ namespace RoslynSandbox
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            var methodInfo = typeof(C).GetMethod↓(nameof(this.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
 
         public double Bar(int i, double d) => i + d;

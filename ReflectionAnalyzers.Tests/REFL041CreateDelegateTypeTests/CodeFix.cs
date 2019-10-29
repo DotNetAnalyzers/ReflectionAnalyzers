@@ -367,7 +367,7 @@ namespace RoslynSandbox
         public static void M(string arg) { }
 
         public static object Get => Delegate.CreateDelegate(
-            typeof(StringInt),
+            typeof(↓StringInt),
             typeof(C).GetMethod(nameof(M)));
     }
 }";

@@ -28,7 +28,7 @@ namespace RoslynSandbox
 
         public static void M()
         {
-            typeof(C).GetConstructor(BindingFlags.NonPublic| BindingFlags.Static, null, Type.EmptyTypes, null).Invoke(null, null);
+            ↓typeof(C).GetConstructor(BindingFlags.NonPublic| BindingFlags.Static, null, Type.EmptyTypes, null).Invoke(null, null);
         }
     }
 }";
