@@ -1,6 +1,7 @@
 # ReflectionAnalyzers
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build status](https://ci.appveyor.com/api/projects/status/5apvp4qa64q3tyi8/branch/master?svg=true)](https://ci.appveyor.com/project/JohanLarsson/reflectionanalyzers/branch/master)
+[![Build Status](https://dev.azure.com/DotNetAnalyzers/ReflectionAnalyzers/_apis/build/status/DotNetAnalyzers.ReflectionAnalyzers?branchName=master)](https://dev.azure.com/DotNetAnalyzers/ReflectionAnalyzers/_build/latest?definitionId=5&branchName=master)
 [![NuGet](https://img.shields.io/nuget/v/ReflectionAnalyzers.svg)](https://www.nuget.org/packages/ReflectionAnalyzers/)
 [![Join the chat at https://gitter.im/DotNetAnalyzers/ReflectionAnalyzers](https://badges.gitter.im/DotNetAnalyzers/ReflectionAnalyzers.svg)](https://gitter.im/DotNetAnalyzers/ReflectionAnalyzers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
