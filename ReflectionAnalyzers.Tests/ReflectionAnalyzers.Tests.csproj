@@ -19,15 +19,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Gu.Analyzers" Version="1.6.3-dev">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Gu.Analyzers" Version="1.6.3-dev" PrivateAssets="all" />
     <PackageReference Include="Gu.Roslyn.Asserts" Version="3.2.5" />
-    <PackageReference Include="Gu.Roslyn.Asserts.Analyzers" Version="3.2.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Gu.Roslyn.Asserts.Analyzers" Version="3.2.4" PrivateAssets="all" />
     <PackageReference Include="IDisposableAnalyzers" Version="2.1.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.3.1" PrivateAssets="all" />
