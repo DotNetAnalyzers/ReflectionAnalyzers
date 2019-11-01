@@ -1,4 +1,3 @@
-
 # ReflectionAnalyzers
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Build status](https://ci.appveyor.com/api/projects/status/5apvp4qa64q3tyi8/branch/master?svg=true)](https://ci.appveyor.com/project/JohanLarsson/reflectionanalyzers/branch/master)
