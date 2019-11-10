@@ -19,8 +19,7 @@ namespace ReflectionAnalyzers
             {
                 if (member.TypeSource is InvocationExpressionSyntax getType &&
                     getType.TryGetTarget(KnownSymbol.Object.GetType, context.SemanticModel, context.CancellationToken, out _) &&
-                    getType.Expression is MemberAccessExpressionSyntax memberAccess &&
-                    memberAccess.Expression is IdentifierNameSyntax identifierName)
+                    getType.Expression is MemberAccessExpressionSyntax { Expression: IdentifierNameSyntax identifierName })
                 {
                     targetName = $"{identifierName}.{member.Symbol.Name}";
                     return true;
@@ -49,10 +48,9 @@ namespace ReflectionAnalyzers
                 return true;
             }
 
-            if (member.Symbol.ContainingType.TupleUnderlyingType is INamedTypeSymbol tupleType)
+            if (member.Symbol.ContainingType.TupleUnderlyingType is { } tupleType)
             {
-                targetName = member.Symbol is IFieldSymbol field &&
-                             field.CorrespondingTupleField is IFieldSymbol tupleField
+                targetName = member.Symbol is IFieldSymbol { CorrespondingTupleField: { } tupleField }
                     ? $"{TypeOfString(tupleType)}.{tupleField.Name}"
                     : $"{TypeOfString(tupleType)}.{member.Symbol.Name}";
                 return true;
@@ -65,8 +63,7 @@ namespace ReflectionAnalyzers
 
             string TypeOfString(ITypeSymbol t)
             {
-                if (t is INamedTypeSymbol namedType &&
-                    namedType.TupleUnderlyingType is INamedTypeSymbol utt &&
+                if (t is INamedTypeSymbol { TupleUnderlyingType: { } utt } namedType &&
                     !Equals(utt, namedType))
                 {
                     return TypeOfString(utt);
@@ -78,11 +75,8 @@ namespace ReflectionAnalyzers
 
         internal static bool IsNameOf(ArgumentSyntax argument, [NotNullWhen(true)] out ExpressionSyntax? expression)
         {
-            if (argument.Expression is InvocationExpressionSyntax candidate &&
-                candidate.ArgumentList is ArgumentListSyntax argumentList &&
-                argumentList.Arguments.TrySingle(out var arg) &&
-                candidate.Expression is IdentifierNameSyntax identifierName &&
-                identifierName.Identifier.ValueText == "nameof")
+            if (argument.Expression is InvocationExpressionSyntax { Expression: IdentifierNameSyntax { Identifier: { ValueText: "nameof" } }, ArgumentList: { Arguments: { Count: 1 } arguments } } candidate &&
+                arguments.TrySingle(out var arg))
             {
                 expression = arg.Expression;
                 return true;

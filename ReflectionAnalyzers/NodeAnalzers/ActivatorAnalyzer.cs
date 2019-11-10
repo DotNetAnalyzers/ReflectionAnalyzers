@@ -29,8 +29,7 @@ namespace ReflectionAnalyzers
         private static void Handle(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList != null &&
+                context.Node is InvocationExpressionSyntax { ArgumentList: { } } invocation &&
                 invocation.TryGetTarget(KnownSymbol.Activator.CreateInstance, context.SemanticModel, context.CancellationToken, out var createInstance) &&
                 TryGetCreatedType(createInstance, invocation, context, out var createdType, out var typeSource))
             {
@@ -77,10 +76,8 @@ namespace ReflectionAnalyzers
         private static bool TryGetCreatedType(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ITypeSymbol? createdType, [NotNullWhen(true)] out ExpressionSyntax? typeSource)
         {
             if (createInstance.IsGenericMethod &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                memberAccess.Name is GenericNameSyntax genericName &&
-                genericName.TypeArgumentList is TypeArgumentListSyntax typeArgumentList &&
-                typeArgumentList.Arguments.TrySingle(out var typeArgument) &&
+                invocation.Expression is MemberAccessExpressionSyntax { Name: GenericNameSyntax { TypeArgumentList: { Arguments: { Count: 1 } typeArguments } } } &&
+                typeArguments.TrySingle(out var typeArgument) &&
                 context.SemanticModel.TryGetType(typeArgument, context.CancellationToken, out createdType))
             {
                 typeSource = typeArgument;
@@ -130,8 +127,7 @@ namespace ReflectionAnalyzers
                     case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.TrueLiteralExpression) &&
                                                               Type.HasVisibleNonPublicMembers(createdType, recursive: false) &&
                                                               !createdType.Constructors.TrySingle(
-                                                                  x => x.Parameters.Length == 0 &&
-                                                                       !x.IsStatic,
+                                                                  x => x is { IsStatic: false, Parameters: { Length: 0 } },
                                                                   out _):
                         return true;
                     case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.FalseLiteralExpression) &&
@@ -145,16 +141,14 @@ namespace ReflectionAnalyzers
             bool HasDefaultConstructor()
             {
                 return createdType.Constructors.TrySingle(
-                           x => x.Parameters.Length == 0 &&
-                                x.DeclaredAccessibility == Accessibility.Public &&
-                                !x.IsStatic,
-                           out _);
+                    x => x is { DeclaredAccessibility: Accessibility.Public, IsStatic: false, Parameters: { Length: 0 } },
+                    out _);
             }
         }
 
         private static bool IsArgumentMisMatch(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, INamedTypeSymbol createdType, SyntaxNodeAnalysisContext context)
         {
-            if (invocation.ArgumentList is ArgumentListSyntax argumentList &&
+            if (invocation.ArgumentList is { } argumentList &&
                 createInstance.Parameters.Length > 1 &&
                 createInstance.Parameters.Length == 2 &&
                 createInstance.Parameters.TryElementAt(1, out var parameter) && parameter.IsParams)
@@ -181,9 +175,8 @@ namespace ReflectionAnalyzers
             {
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
                     return false;
-                case ExpressionSyntax expression when context.SemanticModel.TryGetType(expression, context.CancellationToken, out var type) &&
-                                                      type is IArrayTypeSymbol arrayType &&
-                                                      arrayType.ElementType == KnownSymbol.Object:
+                case { } expression when context.SemanticModel.TryGetType(expression, context.CancellationToken, out var type) &&
+                                         type is IArrayTypeSymbol { ElementType: { SpecialType: SpecialType.System_Object } }:
                     return Array.TryGetValues(expression, context, out values);
             }
 
