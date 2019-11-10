@@ -21,7 +21,6 @@ namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
 namespace N
 {
     using System;
-    using System.Reflection;
 
     public class C
     {
@@ -36,7 +35,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     public class C
     {

@@ -28,8 +28,7 @@ namespace ReflectionAnalyzers
         private static void Handle(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList != null &&
+                context.Node is InvocationExpressionSyntax { ArgumentList: { } } invocation &&
                 TryGetTarget(invocation, context, out var target))
             {
                 if (ShouldCheckNull(invocation, target) &&

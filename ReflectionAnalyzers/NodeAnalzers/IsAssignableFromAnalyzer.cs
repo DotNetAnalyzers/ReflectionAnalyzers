@@ -24,13 +24,11 @@ namespace ReflectionAnalyzers
 
         internal static bool IsInstanceGetType(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ExpressionSyntax? instance)
         {
-            if (expression is InvocationExpressionSyntax invocation &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                invocation.ArgumentList?.Arguments.Count == 0 &&
+            if (expression is InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax { Expression: { } temp, Name: { Identifier: { ValueText: "GetType" } } }, ArgumentList: { Arguments: { Count: 0 } } } invocation &&
                 invocation.TryGetTarget(KnownSymbol.Object.GetType, semanticModel, cancellationToken, out _))
             {
-                instance = memberAccess.Expression;
-                return instance != null;
+                instance = temp;
+                return true;
             }
 
             instance = null;

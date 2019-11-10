@@ -25,20 +25,20 @@ namespace ReflectionAnalyzers
         private static void Handle(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is ArgumentSyntax argument &&
-                ShouldCheck(argument) &&
-                Array.IsCreatingEmpty(argument.Expression, context) &&
-                context.SemanticModel.TryGetType(argument.Expression, context.CancellationToken, out var type) &&
-                type is IArrayTypeSymbol arrayType &&
-                arrayType.ElementType == KnownSymbol.Type)
+                context.Node is ArgumentSyntax { Expression: { } expression } argument &&
+                ShouldCheck(expression) &&
+                Array.IsCreatingEmpty(expression, context) &&
+                context.SemanticModel.TryGetType(expression, context.CancellationToken, out var type) &&
+                type is IArrayTypeSymbol { ElementType: { } elementType } &&
+                elementType == KnownSymbol.Type)
             {
                 context.ReportDiagnostic(Diagnostic.Create(REFL027PreferEmptyTypes.Descriptor, argument.GetLocation()));
             }
         }
 
-        private static bool ShouldCheck(ArgumentSyntax argument)
+        private static bool ShouldCheck(ExpressionSyntax argument)
         {
-            switch (argument.Expression.Kind())
+            switch (argument.Kind())
             {
                 case SyntaxKind.InvocationExpression:
                 case SyntaxKind.ArrayCreationExpression:
