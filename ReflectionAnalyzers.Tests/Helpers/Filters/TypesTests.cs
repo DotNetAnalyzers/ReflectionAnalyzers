@@ -7,13 +7,13 @@ namespace ReflectionAnalyzers.Tests.Helpers.Filters
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public class TypesTests
+    public static class TypesTests
     {
         [TestCase("new[] { typeof(int) }", "M(IFormattable _)", "M(object _)")]
         [TestCase("new[] { typeof(object) }", "M(object _)", "M(IFormattable _)")]
         [TestCase("new[] { typeof(int) }", "M(int _)", "M(object _)")]
         [TestCase("new[] { typeof(int) }", "M(int _)", "M(IFormattable _)")]
-        public void TryMostSpecific(string filterType, string signature1, string signature2)
+        public static void TryMostSpecific(string filterType, string signature1, string signature2)
         {
             var code = @"
 namespace N
@@ -47,7 +47,7 @@ namespace N
         }
 
         [TestCase("new[] { typeof(int), typeof(int) }", "M(IFormattable _, object __)", "M(object _, IFormattable __)")]
-        public void TryMostSpecificWhenAmbiguous(string filterTypes, string signature1, string signature2)
+        public static void TryMostSpecificWhenAmbiguous(string filterTypes, string signature1, string signature2)
         {
             var code = @"
 namespace N

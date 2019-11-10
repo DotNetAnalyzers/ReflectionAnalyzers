@@ -91,16 +91,11 @@ namespace ReflectionAnalyzers
                 invocation.TryFindArgument(typeParameter, out var typeArg) &&
                 Type.TryGet(typeArg.Expression, context, out createdType, out var source))
             {
-                switch (source)
+                typeSource = source switch
                 {
-                    case TypeOfExpressionSyntax typeOf:
-                        typeSource = typeOf.Type;
-                        break;
-                    default:
-                        typeSource = typeArg.Expression;
-                        break;
-                }
-
+                    TypeOfExpressionSyntax typeOf => typeOf.Type,
+                    _ => typeArg.Expression,
+                };
                 return true;
             }
 

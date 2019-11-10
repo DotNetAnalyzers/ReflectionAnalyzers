@@ -288,7 +288,7 @@ namespace N
         [Test]
         public static void NonPublicNotVisible()
         {
-            var exception = @"
+            var customAggregateException = @"
 namespace N
 {
     using System;
@@ -313,7 +313,7 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, exception, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, customAggregateException, code);
         }
     }
 }

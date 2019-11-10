@@ -58,7 +58,7 @@ namespace N
         {
         }
 
-        public static void Bar()
+        public static void M()
         {
             var type = typeof(C);
             var instance = FormatterServices.GetUninitializedObject(type);

@@ -51,7 +51,7 @@ namespace N
         [Test]
         public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
         {
-            var exception = @"
+            var customAggregateException = @"
 namespace N
 {
     using System;
@@ -76,7 +76,7 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, exception, code);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, customAggregateException, code);
         }
 
         [TestCase("GetNestedType(↓\"Generic\", BindingFlags.Public)")]

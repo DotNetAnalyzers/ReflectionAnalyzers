@@ -23,9 +23,9 @@ namespace N
 
     public class C
     {
-        public static object Get => (↓string)typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { 1 });
+        public static object Get => (↓string)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { 1 });
 
-        public static int Bar(int i) => i;
+        public static int M(int i) => i;
     }
 }";
 
@@ -36,9 +36,9 @@ namespace N
 
     public class C
     {
-        public static object Get => (int)typeof(C).GetMethod(nameof(Bar)).Invoke(null, new object[] { 1 });
+        public static object Get => (int)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { 1 });
 
-        public static int Bar(int i) => i;
+        public static int M(int i) => i;
     }
 }";
                 RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);

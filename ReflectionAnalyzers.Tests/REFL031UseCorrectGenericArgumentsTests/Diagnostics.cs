@@ -21,9 +21,9 @@ namespace N
 
     public class C
     {
-        public static void Bar<T>()
+        public static void M<T>()
         {
-            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod↓(typeof(int), typeof(double));
+            var method = typeof(C).GetMethod(nameof(C.M)).MakeGenericMethod↓(typeof(int), typeof(double));
         }
     }
 }";
@@ -41,14 +41,14 @@ namespace N
 
     public class C
     {
-        public static void Bar<T>()
+        public static void M<T>()
             where T : struct
         {
-            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(↓typeof(string));
+            var method = typeof(C).GetMethod(nameof(C.M)).MakeGenericMethod(↓typeof(string));
         }
     }
 }";
-                var message = "The argument typeof(string), on 'N.C.Bar<T>()' violates the constraint of type 'T'.";
+                var message = "The argument typeof(string), on 'N.C.M<T>()' violates the constraint of type 'T'.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -64,10 +64,10 @@ namespace N
 
     public class C
     {
-        public static void Bar<T>()
+        public static void M<T>()
             where T : struct
         {
-            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(↓typeof(string));
+            var method = typeof(C).GetMethod(nameof(C.M)).MakeGenericMethod(↓typeof(string));
         }
     }
 }".AssertReplace("MakeGenericMethod(↓typeof(string))", call);
@@ -78,15 +78,15 @@ namespace N
             [TestCase("where T : class", "typeof(int)")]
             [TestCase("where T : struct", "typeof(string)")]
             [TestCase("where T : IComparable", "typeof(C)")]
-            [TestCase("where T : new()", "typeof(Bar)")]
+            [TestCase("where T : new()", "typeof(C1)")]
             public static void Constraints(string constraint, string arg)
             {
-                var barCode = @"
+                var c1 = @"
 namespace N
 {
-    public class Bar
+    public class C1
     {
-        public Bar(int i)
+        public C1(int i)
         {
         }
     }
@@ -98,15 +98,15 @@ namespace N
 
     public class C
     {
-        public static void Bar<T>()
+        public static void M<T>()
             where T : class
         {
-            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(↓typeof(int));
+            var method = typeof(C).GetMethod(nameof(C.M)).MakeGenericMethod(↓typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, barCode, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, c1, code);
             }
 
             [Test]

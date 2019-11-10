@@ -4,7 +4,7 @@ namespace ReflectionAnalyzers.Tests.REFL032DependencyMustExistTests
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public static class Diagnostic
+    public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DependencyAttributeAnalyzer();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL032DependencyMustExist.Descriptor);

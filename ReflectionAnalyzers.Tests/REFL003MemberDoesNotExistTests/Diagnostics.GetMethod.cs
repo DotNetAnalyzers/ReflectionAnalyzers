@@ -82,7 +82,7 @@ namespace N
             [Test]
             public static void MissingMethodWhenInterface()
             {
-                var interfaceCode = @"
+                var iC = @"
 namespace N
 {
     public interface IC
@@ -102,7 +102,7 @@ namespace N
     }
 }";
                 var message = "The type N.IC does not have a member named MISSING.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), interfaceCode, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), iC, code);
             }
 
             [TestCase("typeof(string).GetMethod(↓\"MISSING\")")]
@@ -139,10 +139,10 @@ namespace N
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(↓""set_Bar"");
+            var methodInfo = typeof(C).GetMethod(↓""set_P"");
         }
 
-        public int Bar { get; }
+        public int P { get; }
     }
 }";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -158,10 +158,10 @@ namespace N
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(↓""get_Bar"");
+            var methodInfo = typeof(C).GetMethod(↓""get_P"");
         }
 
-        public int Bar { set { } }
+        public int P { set { } }
     }
 }";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);

@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
         [TestCase("Struct")]
         public static void GetNestedTypePrivateInOtherType(string type)
         {
-            var fooCode = @"
+            var c = @"
 namespace N
 {
     public class C
@@ -30,7 +30,7 @@ namespace N
         private struct Struct { }
     }
 }";
-            var testCode = @"
+            var c2 = @"
 namespace N
 {
     using System.Reflection;
@@ -44,7 +44,7 @@ namespace N
     }
 }".AssertReplace("GetNestedType(\"Class\", BindingFlags.NonPublic)", $"GetNestedType(\"{type}\", BindingFlags.NonPublic)");
 
-            RoslynAssert.Valid(Analyzer, Descriptor, fooCode, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, c, c2);
         }
 
         [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
@@ -77,7 +77,7 @@ namespace N
         [Test]
         public static void DelegateInvoke()
         {
-            var testCode = @"
+            var code = @"
 using System;
 
 namespace TestApp.Infrastructure
@@ -88,7 +88,7 @@ namespace TestApp.Infrastructure
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [TestCase("GetMethod(nameof(IDisposable.Dispose))")]

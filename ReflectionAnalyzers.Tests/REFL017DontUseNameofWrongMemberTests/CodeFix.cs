@@ -56,7 +56,7 @@ namespace N
             [Test]
             public static void NonPublicNotVisible()
             {
-                var exception = @"
+                var customAggregateException = @"
 namespace N
 {
     using System;
@@ -94,7 +94,7 @@ namespace N
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { exception, before }, after);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { customAggregateException, before }, after);
             }
         }
     }

@@ -183,7 +183,7 @@ namespace N
         [Test]
         public static void NonPublicNotVisible()
         {
-            var exception = @"
+            var customAggregateException = @"
 namespace N
 {
     using System;
@@ -207,7 +207,7 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, exception, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, customAggregateException, code);
         }
 
         [Test]
@@ -527,7 +527,7 @@ namespace N
         [TestCase("typeof(CBase).GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         public static void MemberInBase(string call)
         {
-            var baseClass = @"
+            var cBase = @"
 namespace N
 {
     using System;
@@ -565,7 +565,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, baseClass, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, cBase, code);
         }
     }
 }
