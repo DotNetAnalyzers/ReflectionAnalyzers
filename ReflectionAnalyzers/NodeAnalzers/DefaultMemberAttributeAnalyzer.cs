@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
     using Attribute = Gu.Roslyn.AnalyzerExtensions.Attribute;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class DefaultMemberAttributeAnalyzer : DiagnosticAnalyzer
+    internal class DefaultMemberAttributeAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL046DefaultMemberMustExist.Descriptor);

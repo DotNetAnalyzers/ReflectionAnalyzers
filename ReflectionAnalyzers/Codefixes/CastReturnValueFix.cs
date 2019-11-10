@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
 
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(CastReturnValueFix))]
     [Shared]
-    public class CastReturnValueFix : DocumentEditorCodeFixProvider
+    internal class CastReturnValueFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
             REFL001CastReturnValue.DiagnosticId,
