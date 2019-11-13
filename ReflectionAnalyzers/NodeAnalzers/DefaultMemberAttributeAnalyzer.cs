@@ -151,7 +151,7 @@ namespace ReflectionAnalyzers
 
             return IsInvokableNonConstructor(symbol.BaseType, memberName);
 
-            bool IsInvokableMember(ISymbol member)
+            static bool IsInvokableMember(ISymbol member)
             {
                 return
                     member is IFieldSymbol ||

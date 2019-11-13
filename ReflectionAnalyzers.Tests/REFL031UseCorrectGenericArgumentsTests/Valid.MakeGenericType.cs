@@ -25,7 +25,7 @@ namespace N
 
     public class C<T>
     {
-        public static void Bar()
+        public static void M()
         {
             var type = typeof(C<>).MakeGenericType(typeof(int));
         }
@@ -147,12 +147,12 @@ namespace N
 
     public class C
     {
-        public static void Bar()
+        public static void M1()
         {
-            var type = typeof(C).GetNestedType(""Baz`1"").MakeGenericType(typeof(int));
+            var type = typeof(C).GetNestedType(""M2`1"").MakeGenericType(typeof(int));
         }
 
-        public class Baz<T>
+        public class M2<T>
         {
         }
     }

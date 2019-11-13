@@ -58,12 +58,12 @@ namespace N
         [Test]
         public static void TwoProjects()
         {
-            var fooCode = @"
+            var c1 = @"
 namespace Project1
 {
     using System;
 
-    public class C
+    public class C1
     {
         public static IComparable Static(IComparable i) => i;
     }
@@ -77,9 +77,9 @@ namespace Project2
 
     using Project1;
 
-    public class Bar
+    public class C2
     {
-        public object Get() => typeof(C).GetMethod(nameof(C.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null);
+        public object Get() => typeof(C1).GetMethod(nameof(C1.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null);
     }
 }";
 
@@ -91,13 +91,13 @@ namespace Project2
 
     using Project1;
 
-    public class Bar
+    public class C2
     {
-        public object Get() => typeof(C).GetMethod(nameof(C.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
+        public object Get() => typeof(C1).GetMethod(nameof(C1.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
     }
 }";
             var message = "Use the same type as the parameter. Expected: IComparable.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { fooCode, before }, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { c1, before }, after);
         }
 
         [Test]

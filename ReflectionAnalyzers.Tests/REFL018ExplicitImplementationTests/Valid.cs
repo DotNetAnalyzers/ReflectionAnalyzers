@@ -35,7 +35,7 @@ namespace N
         [TestCase("typeof(IC).GetEvent(nameof(IC.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void WhenExplicitAndExplicit(string call)
         {
-            var interfaceCode = @"
+            var iC = @"
 namespace N
 {
     using System;
@@ -69,7 +69,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, interfaceCode, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, iC, code);
         }
     }
 }

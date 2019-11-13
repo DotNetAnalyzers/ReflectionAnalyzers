@@ -56,15 +56,15 @@ namespace N
             [TestCase("where T : IComparable", "C<int>")]
             [TestCase("where T : IComparable<int>", "C<int>")]
             [TestCase("where T : IComparable<double>", "int")]
-            [TestCase("where T : new()", "Bar")]
+            [TestCase("where T : new()", "C1")]
             public static void ConstrainedParameter(string constraint, string arg)
             {
-                var bar = @"
+                var c1 = @"
 namespace N
 {
-    public class Bar
+    public class C1
     {
-        public Bar(int i)
+        public C1(int i)
         {
         }
     }
@@ -84,7 +84,7 @@ namespace N
   .AssertReplace("typeof(int)", $"typeof({arg})");
 
                 var message = $"The argument typeof({arg}), on 'N.C<>' violates the constraint of type 'T'.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), bar, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), c1, code);
             }
 
             [TestCase("where T1 : class", "where T2 : T1", "typeof(IEnumerable), typeof(object)")]
@@ -118,9 +118,9 @@ namespace N
 
     public class C
     {
-        public static object Get() => typeof(C).GetNestedType(""Baz`1"").MakeGenericType↓(typeof(int), typeof(double));
+        public static object Get() => typeof(C).GetNestedType(""M`1"").MakeGenericType↓(typeof(int), typeof(double));
 
-        public class Baz<T>
+        public class M<T>
         {
         }
     }

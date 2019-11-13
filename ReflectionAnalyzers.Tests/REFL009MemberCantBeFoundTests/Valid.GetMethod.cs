@@ -238,8 +238,8 @@ namespace N
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
-            [TestCase("get_Bar")]
-            [TestCase("set_Bar")]
+            [TestCase("get_P")]
+            [TestCase("set_P")]
             public static void PropertyAccessors(string name)
             {
                 var code = @"
@@ -249,12 +249,12 @@ namespace N
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(""get_Bar"");
+            var methodInfo = typeof(C).GetMethod(""get_P"");
         }
 
-        public int Bar { get; set; }
+        public int P { get; set; }
     }
-}".AssertReplace("get_Bar", name);
+}".AssertReplace("get_P", name);
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
@@ -270,9 +270,9 @@ namespace N
 
     class C
     {
-        public C(Delegate foo)
+        public C(Delegate d)
         {
-            var methodInfo = foo.GetType().GetMethod(""Invoke"");
+            var methodInfo = d.GetType().GetMethod(""Invoke"");
         }
     }
 }".AssertReplace("Delegate", type);

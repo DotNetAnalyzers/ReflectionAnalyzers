@@ -49,7 +49,7 @@ namespace N
         {
         }
 
-        public static void Bar(string text)
+        public static void M(string text)
         {
             typeof(C).GetConstructor(Type.EmptyTypes).Invoke(text, null);
         }

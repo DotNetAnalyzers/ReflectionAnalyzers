@@ -19,18 +19,18 @@ namespace N
 {
     public class C
     {
-        public C(C foo)
+        public C(C c)
         {
-            _ = typeof(C).GetMethod(nameof(Bar)).Invoke(↓foo, null);
+            _ = typeof(C).GetMethod(nameof(M)).Invoke(↓c, null);
         }
 
-        public static void Bar()
+        public static void M()
         {
         }
     }
 }";
 
-                var message = "The method N.C.Bar() is static and null should be passed as obj.";
+                var message = "The method N.C.M() is static and null should be passed as obj.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -44,13 +44,13 @@ namespace N
     {
         public C()
         {
-            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(↓null, null);
+            var value = (int)typeof(C).GetMethod(nameof(M)).Invoke(↓null, null);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
 }";
-                var message = "The method N.C.Bar() is an instance method and the instance should be passed as obj.";
+                var message = "The method N.C.M() is an instance method and the instance should be passed as obj.";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -84,10 +84,10 @@ namespace N
     {
         public C(int i)
         {
-            var value = (int)typeof(C).GetMethod(nameof(Bar)).Invoke(↓i, null);
+            var value = (int)typeof(C).GetMethod(nameof(M)).Invoke(↓i, null);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
 }";
                 var message = "Expected an argument of type N.C.";

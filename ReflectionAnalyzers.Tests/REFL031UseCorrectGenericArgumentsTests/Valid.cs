@@ -22,9 +22,9 @@ namespace N
 
     public class C
     {
-        public static void Bar<T>()
+        public static void M<T>()
         {
-            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(typeof(int));
+            var method = typeof(C).GetMethod(nameof(C.M)).MakeGenericMethod(typeof(int));
         }
     }
 }";
@@ -46,10 +46,10 @@ namespace N
 
     public class C
     {
-        public static void Bar<T>()
+        public static void M<T>()
             where T : class
         {
-            var method = typeof(C).GetMethod(nameof(C.Bar)).MakeGenericMethod(typeof(int));
+            var method = typeof(C).GetMethod(nameof(C.M)).MakeGenericMethod(typeof(int));
         }
     }
 }".AssertReplace("where T : class", constraint)

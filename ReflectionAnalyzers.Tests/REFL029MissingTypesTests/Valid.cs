@@ -22,10 +22,10 @@ namespace N
     {
         public C()
         {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Bar), Type.EmptyTypes);
+            var methodInfo = typeof(C).GetMethod(nameof(this.M), Type.EmptyTypes);
         }
 
-        public int Bar() => 0;
+        public int M() => 0;
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, code);

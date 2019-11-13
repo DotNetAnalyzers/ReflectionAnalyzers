@@ -58,7 +58,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            string PluralS(int i) => i == 1 ? string.Empty : "s";
+            static string PluralS(int i) => i == 1 ? string.Empty : "s";
         }
     }
 }

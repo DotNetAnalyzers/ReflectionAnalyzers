@@ -90,12 +90,12 @@ public class C
         {
             var code = @"
 using System.Reflection;
-[DefaultMember(""Foo"")]
-public class Foo
+[DefaultMember(""C"")]
+public class C
 {
     public int Value { get; }
 
-    public Foo(int value)
+    public C(int value)
     {
         Value = value;
     }

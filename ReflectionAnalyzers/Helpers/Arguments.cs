@@ -107,19 +107,15 @@ namespace ReflectionAnalyzers
             expression = null;
             return false;
 
-            bool IsNull(ExpressionSyntax candidate)
+            static bool IsNull(ExpressionSyntax candidate)
             {
-                switch (candidate)
+                return candidate switch
                 {
-                    case LiteralExpressionSyntax literal:
-                        return literal.IsKind(SyntaxKind.NullLiteralExpression);
-                    case CastExpressionSyntax cast:
-                        return IsNull(cast.Expression);
-                    case BinaryExpressionSyntax binary when binary.IsKind(SyntaxKind.AsExpression):
-                        return IsNull(binary.Left);
-                    default:
-                        return false;
-                }
+                    LiteralExpressionSyntax literal => literal.IsKind(SyntaxKind.NullLiteralExpression),
+                    CastExpressionSyntax cast => IsNull(cast.Expression),
+                    BinaryExpressionSyntax binary when binary.IsKind(SyntaxKind.AsExpression) => IsNull(binary.Left),
+                    _ => false,
+                };
             }
         }
     }

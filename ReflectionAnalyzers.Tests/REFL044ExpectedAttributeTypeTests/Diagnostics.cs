@@ -21,7 +21,7 @@ namespace N
 
     class C
     {
-        public static bool Bar() => Attribute.GetCustomAttribute(typeof(C), ↓typeof(string)) == null;
+        public static bool M() => Attribute.GetCustomAttribute(typeof(C), ↓typeof(string)) == null;
     }
 }";
 

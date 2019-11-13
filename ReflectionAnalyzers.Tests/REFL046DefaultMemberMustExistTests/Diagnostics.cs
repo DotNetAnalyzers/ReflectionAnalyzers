@@ -36,10 +36,10 @@ public class C
 using System;
 using System.Reflection;
 
-[DefaultMember(↓""Event"")]
+[DefaultMember(↓""E"")]
 public class C
 {
-    public event EventHandler Event;
+    public event EventHandler E;
 }
 ";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -63,7 +63,7 @@ public class Base
 }
 
 [DefaultMember(↓""Base"")]
-public class Foo { }
+public class C { }
 ";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
