@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -157,8 +157,7 @@ namespace ReflectionAnalyzers
 
                 using (var walker = Borrow(flags))
                 {
-                    if (!walker.isUnHandled &&
-                        walker.duplicate != null)
+                    if (walker is { isUnHandled: false, duplicate: { } })
                     {
                         dupe = walker.duplicate;
                         walker.flags.RemoveAt(walker.flags.LastIndexOf(dupe));

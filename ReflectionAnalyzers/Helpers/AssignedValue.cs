@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
@@ -31,24 +31,22 @@ namespace ReflectionAnalyzers
                 field.TrySingleDeclaration(cancellationToken, out VariableDeclarationSyntax? declaration) &&
                 declaration.Variables.TrySingle(out var variable))
             {
-                using (var walker = MutationWalker.For(field, semanticModel, cancellationToken))
+                using var walker = MutationWalker.For(field, semanticModel, cancellationToken);
+                if (walker.IsEmpty)
                 {
-                    if (walker.IsEmpty)
-                    {
-                        expression = variable.Initializer?.Value;
-                        return expression != null;
-                    }
-
-                    if (variable.Initializer == null &&
-                        walker.TrySingle(out var node) &&
-                        node.Parent is AssignmentExpressionSyntax assignment)
-                    {
-                        expression = assignment.Right;
-                        return expression != null;
-                    }
-
-                    return false;
+                    expression = variable.Initializer?.Value;
+                    return expression != null;
                 }
+
+                if (variable.Initializer == null &&
+                    walker.TrySingle(out var node) &&
+                    node.Parent is AssignmentExpressionSyntax assignment)
+                {
+                    expression = assignment.Right;
+                    return expression != null;
+                }
+
+                return false;
             }
 
             return false;
@@ -60,24 +58,22 @@ namespace ReflectionAnalyzers
             if (property.IsGetOnly() &&
                 property.TrySingleDeclaration(cancellationToken, out PropertyDeclarationSyntax? declaration))
             {
-                using (var walker = MutationWalker.For(property, semanticModel, cancellationToken))
+                using var walker = MutationWalker.For(property, semanticModel, cancellationToken);
+                if (walker.IsEmpty)
                 {
-                    if (walker.IsEmpty)
-                    {
-                        expression = declaration.Initializer?.Value;
-                        return expression != null;
-                    }
-
-                    if (declaration.Initializer == null &&
-                        walker.TrySingle(out var node) &&
-                        node.Parent is AssignmentExpressionSyntax assignment)
-                    {
-                        expression = assignment.Right;
-                        return expression != null;
-                    }
-
-                    return false;
+                    expression = declaration.Initializer?.Value;
+                    return expression != null;
                 }
+
+                if (declaration.Initializer == null &&
+                    walker.TrySingle(out var node) &&
+                    node.Parent is AssignmentExpressionSyntax assignment)
+                {
+                    expression = assignment.Right;
+                    return expression != null;
+                }
+
+                return false;
             }
 
             return false;
@@ -89,24 +85,22 @@ namespace ReflectionAnalyzers
             if (local.TrySingleDeclaration(cancellationToken, out VariableDeclarationSyntax? declaration) &&
                 declaration.Variables.TrySingle(out var variable))
             {
-                using (var walker = MutationWalker.For(local, semanticModel, cancellationToken))
+                using var walker = MutationWalker.For(local, semanticModel, cancellationToken);
+                if (walker.IsEmpty)
                 {
-                    if (walker.IsEmpty)
-                    {
-                        expression = variable.Initializer?.Value;
-                        return expression != null;
-                    }
-
-                    if (variable.Initializer == null &&
-                       walker.TrySingle(out var node) &&
-                       node.Parent is AssignmentExpressionSyntax assignment)
-                    {
-                        expression = assignment.Right;
-                        return expression != null;
-                    }
-
-                    return false;
+                    expression = variable.Initializer?.Value;
+                    return expression != null;
                 }
+
+                if (variable.Initializer == null &&
+                   walker.TrySingle(out var node) &&
+                   node.Parent is AssignmentExpressionSyntax assignment)
+                {
+                    expression = assignment.Right;
+                    return expression != null;
+                }
+
+                return false;
             }
 
             return false;
