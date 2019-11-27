@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -57,7 +57,7 @@ namespace ReflectionAnalyzers
                         {
                             context.RegisterCodeFix(
                                 $"Add argument: {typeArrayString}.",
-                                (editor, __) =>
+                                editor =>
                                 {
                                     if (typeArrayString.Contains("Type.EmptyTypes"))
                                     {

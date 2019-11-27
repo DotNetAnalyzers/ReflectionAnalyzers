@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -24,17 +24,18 @@ namespace ReflectionAnalyzers
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typesText) &&
                     syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
-                    invocation.Expression is MemberAccessExpressionSyntax)
+                    invocation.Expression is MemberAccessExpressionSyntax { Expression: { } expression })
                 {
                     context.RegisterCodeFix(
                         $"Call MakeGenericMethod({typesText}).",
-                        (editor, _) => editor.ReplaceNode(
-                            invocation,
-                            x =>
-                            {
-                                var memberAccess = (MemberAccessExpressionSyntax)invocation.Expression;
-                                return x.WithExpression(memberAccess.WithExpression(SyntaxFactory.ParseExpression($"{memberAccess.Expression.ToFullString()}.MakeGenericMethod({typesText})")));
-                            }),
+                        editor => editor.ReplaceNode(
+                            expression,
+                            x => SyntaxFactory.InvocationExpression(
+                                SyntaxFactory.MemberAccessExpression(
+                                    SyntaxKind.SimpleMemberAccessExpression,
+                                    x,
+                                    SyntaxFactory.IdentifierName("MakeGenericMethod")),
+                                SyntaxFactory.ParseArgumentList($"({typesText})"))),
                         nameof(CallMakeGenericMethodFix),
                         diagnostic);
                 }

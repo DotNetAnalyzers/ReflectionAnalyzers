@@ -6,6 +6,7 @@
     <Nullable>Enable</Nullable>
     <NeutralLanguage>en-US</NeutralLanguage>
     <CodeAnalysisRuleSet>ReflectionAnalyzers.ruleset</CodeAnalysisRuleSet>
+    <NoWarn>$(NoWarn);IDE0009</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -52,5 +53,6 @@
 
   <ItemGroup>
     <None Update="tools\*" Pack="true" PackagePath="" />
+    <None Include="$(OutputPath)\$(AssemblyName).dll;$(OutputPath)\Gu.Roslyn.Extensions.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 </Project>
