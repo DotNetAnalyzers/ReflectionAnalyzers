@@ -45,8 +45,7 @@
         private static void Handle(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList is ArgumentListSyntax argumentList)
+                context.Node is InvocationExpressionSyntax { ArgumentList: ArgumentListSyntax argumentList } invocation)
             {
                 if (TryGetX(context, out var member, out var name, out var flags, out var types))
                 {
@@ -213,8 +212,7 @@
 
             Location TargetTypeLocation()
             {
-                return invocation.Expression is MemberAccessExpressionSyntax explicitMemberAccess &&
-                        explicitMemberAccess.Expression is TypeOfExpressionSyntax typeOf
+                return invocation.Expression is MemberAccessExpressionSyntax { Expression: TypeOfExpressionSyntax typeOf }
                     ? typeOf.Type.GetLocation()
                     : invocation.Expression.GetLocation();
             }
@@ -224,15 +222,11 @@
         {
             switch (invocation.Parent)
             {
-                case EqualsValueClauseSyntax equalsValueClause when equalsValueClause.Parent is VariableDeclaratorSyntax declarator &&
-                                                                    declarator.Parent is VariableDeclarationSyntax declaration &&
-                                                                    declaration.Parent is LocalDeclarationStatementSyntax statement &&
-                                                                    statement.Parent is BlockSyntax block &&
-                                                                    block.Statements.TryElementAt(block.Statements.IndexOf(statement) + 1, out var next) &&
-                                                                    next is IfStatementSyntax ifStatement &&
-                                                                    IsNullCheck(ifStatement.Condition, declarator.Identifier.ValueText):
+                case EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: LocalDeclarationStatementSyntax { Parent: BlockSyntax { Statements: { } statements } } statement } } declarator }
+                    when statements.TryElementAt(statements.IndexOf(statement) + 1, out var next) &&
+                         next is IfStatementSyntax ifStatement:
 
-                    return true;
+                    return IsNullCheck(ifStatement.Condition, declarator.Identifier.ValueText);
                 case IsPatternExpressionSyntax _:
                 case ConditionalAccessExpressionSyntax _:
                     return true;
@@ -306,8 +300,7 @@
             bool HasMissingFlag()
             {
                 if (member.Symbol is ITypeSymbol ||
-                    (member.Symbol is IMethodSymbol method &&
-                     method.MethodKind == MethodKind.Constructor))
+                    member.Symbol is IMethodSymbol { MethodKind: MethodKind.Constructor })
                 {
                     return false;
                 }
@@ -362,8 +355,7 @@
             if (flags.Argument is { } argument &&
                 Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
             {
-                if (member.Symbol is IMethodSymbol method &&
-                    method.MethodKind == MethodKind.Constructor &&
+                if (member.Symbol is IMethodSymbol { MethodKind: MethodKind.Constructor } &&
                     (flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly) ||
                      flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)))
                 {
@@ -447,7 +439,7 @@
                 }
 
                 if (member.Symbol is { } memberSymbol &&
-                    TryGetSymbol(expression, out var symbol) &&
+                    TryGetSymbol(expression) is { } symbol &&
                     !symbol.ContainingType.IsAssignableTo(memberSymbol.ContainingType, context.Compilation) &&
                     NameOf.TryGetExpressionText(member, context, out nameText))
                 {
@@ -460,11 +452,13 @@
             nameText = null;
             return false;
 
-            bool TryGetSymbol(ExpressionSyntax e, out ISymbol symbol)
+            ISymbol? TryGetSymbol(ExpressionSyntax e)
             {
-                return context.SemanticModel.TryGetSymbol(e, context.CancellationToken, out symbol!) ||
+                return context.SemanticModel.TryGetSymbol(e, context.CancellationToken, out var symbol) ||
                        context.SemanticModel.GetSymbolInfo(e, context.CancellationToken)
-                              .CandidateSymbols.TryFirst(out symbol);
+                              .CandidateSymbols.TryFirst(out symbol)
+                    ? symbol
+                    : null;
             }
         }
 
@@ -543,9 +537,7 @@
                         return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {types.Argument}, null)";
                     }
 
-                    if (member.Symbol is IMethodSymbol method &&
-                        method.AssociatedSymbol is IPropertySymbol property &&
-                        property.IsIndexer)
+                    if (member.Symbol is IMethodSymbol { AssociatedSymbol: IPropertySymbol { IsIndexer: true } property })
                     {
                         if (property.GetMethod is { } getMethod &&
                             Types.TryGetTypesArrayText(getMethod.Parameters, context.SemanticModel, context.Node.SpanStart, out var typesArrayText))
@@ -607,8 +599,7 @@
 
             string MemberName(ISymbol associatedSymbol)
             {
-                if (associatedSymbol is IPropertySymbol property &&
-                    property.IsIndexer)
+                if (associatedSymbol is IPropertySymbol { IsIndexer: true })
                 {
                     return $"\"{associatedSymbol.MetadataName}\"";
                 }
@@ -640,8 +631,7 @@
             if (member.Match == FilterMatch.Single &&
                 types.Argument == null &&
                 member.GetX == KnownSymbol.Type.GetMethod &&
-                member.Symbol is IMethodSymbol method &&
-                !method.IsGenericMethod)
+                member.Symbol is IMethodSymbol { IsGenericMethod: false } method)
             {
                 return Types.TryGetTypesArrayText(method.Parameters, context.SemanticModel, context.Node.SpanStart, out typesArrayText);
             }
