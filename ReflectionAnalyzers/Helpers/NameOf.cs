@@ -29,9 +29,8 @@
             }
 
             if (!context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol) ||
-                (member.Symbol is INamedTypeSymbol { IsGenericType: true } type) ||
-                (member.Symbol is IMethodSymbol method &&
-                 method.AssociatedSymbol != null))
+                member.Symbol is INamedTypeSymbol { IsGenericType: true } ||
+                member.Symbol is IMethodSymbol { AssociatedSymbol: { } })
             {
                 return false;
             }
@@ -75,7 +74,7 @@
 
         internal static bool IsNameOf(ArgumentSyntax argument, [NotNullWhen(true)] out ExpressionSyntax? expression)
         {
-            if (argument.Expression is InvocationExpressionSyntax { Expression: IdentifierNameSyntax { Identifier: { ValueText: "nameof" } }, ArgumentList: { Arguments: { Count: 1 } arguments } } candidate &&
+            if (argument.Expression is InvocationExpressionSyntax { Expression: IdentifierNameSyntax { Identifier: { ValueText: "nameof" } }, ArgumentList: { Arguments: { Count: 1 } arguments } } &&
                 arguments.TrySingle(out var arg))
             {
                 expression = arg.Expression;

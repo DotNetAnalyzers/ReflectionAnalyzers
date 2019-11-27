@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
@@ -148,17 +148,16 @@ namespace ReflectionAnalyzers
 
         private static bool IsArgumentMisMatch(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, INamedTypeSymbol createdType, SyntaxNodeAnalysisContext context)
         {
-            if (invocation.ArgumentList is { } argumentList &&
-                createInstance.Parameters.Length > 1 &&
+            if (invocation.ArgumentList is { Arguments: { } arguments } &&
                 createInstance.Parameters.Length == 2 &&
                 createInstance.Parameters.TryElementAt(1, out var parameter) && parameter.IsParams)
             {
-                if (invocation.ArgumentList.Arguments[1].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                if (arguments[1].Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
                 {
-                    return !createdType.Constructors.TrySingle(x => x.Parameters.TrySingle(out parameter) && parameter.IsParams, out _);
+                    return !createdType.Constructors.TrySingle(x => x.Parameters.TrySingle<IParameterSymbol>(out parameter) && parameter.IsParams, out _);
                 }
 
-                if (TryGetValues(argumentList, 1, context, out var values) &&
+                if (TryGetValues(arguments, 1, context, out var values) &&
                     TryFindConstructor(createdType, values, context) == false)
                 {
                     return true;
@@ -168,10 +167,10 @@ namespace ReflectionAnalyzers
             return false;
         }
 
-        private static bool TryGetValues(ArgumentListSyntax argumentList, int startIndex, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
+        private static bool TryGetValues(SeparatedSyntaxList<ArgumentSyntax> arguments, int startIndex, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
         {
-            var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>(argumentList.Arguments.Count - startIndex);
-            switch (argumentList.Arguments[startIndex].Expression)
+            var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>(arguments.Count - startIndex);
+            switch (arguments[startIndex].Expression)
             {
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
                     return false;
@@ -180,9 +179,9 @@ namespace ReflectionAnalyzers
                     return Array.TryGetValues(expression, context, out values);
             }
 
-            for (var i = startIndex; i < argumentList.Arguments.Count; i++)
+            for (var i = startIndex; i < arguments.Count; i++)
             {
-                builder.Add(argumentList.Arguments[i].Expression);
+                builder.Add(arguments[i].Expression);
             }
 
             values = builder.ToImmutable();

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
@@ -82,7 +82,7 @@ namespace ReflectionAnalyzers
             }
         }
 
-        private static int CountInterfaces(ITypeSymbol type, string name, [NotNullWhen(true)] out ITypeSymbol? match)
+        private static int CountInterfaces(ITypeSymbol type, string name, out ITypeSymbol? match)
         {
             var count = 0;
             match = null;

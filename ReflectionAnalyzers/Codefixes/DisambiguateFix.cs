@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -36,7 +36,7 @@ namespace ReflectionAnalyzers
                     arg.TryGetStringValue(semanticModel, context.CancellationToken, out var memberName) &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
                     diagnostic.Properties.TryGetValue(nameof(INamedTypeSymbol), out var typeName) &&
-                    semanticModel.Compilation.GetTypeByMetadataName(typeName) is INamedTypeSymbol type)
+                    semanticModel.Compilation.GetTypeByMetadataName(typeName) is { } type)
                 {
                     if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out _))
                     {
@@ -45,7 +45,7 @@ namespace ReflectionAnalyzers
                             if (member is IMethodSymbol method &&
                                 method.MetadataName == memberName &&
                                 Flags.TryGetExpectedBindingFlags(type, method, out var flags) &&
-                                flags.ToDisplayString(invocation) is string flagsText &&
+                                flags.ToDisplayString(invocation) is { } flagsText &&
                                 Types.TryGetTypesArrayText(method.Parameters, semanticModel, invocation.SpanStart, out var typesArrayText))
                             {
                                 context.RegisterCodeFix(
@@ -68,7 +68,7 @@ namespace ReflectionAnalyzers
                             if (member is IPropertySymbol property &&
                                 property.MetadataName == memberName &&
                                 Flags.TryGetExpectedBindingFlags(type, property, out var flags) &&
-                                flags.ToDisplayString(invocation) is string flagsText &&
+                                flags.ToDisplayString(invocation) is { } flagsText &&
                                 Types.TryGetTypesArrayText(property.Parameters, semanticModel, invocation.SpanStart, out var typesArrayText))
                             {
                                 context.RegisterCodeFix(

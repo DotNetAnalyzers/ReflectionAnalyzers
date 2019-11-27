@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
@@ -22,8 +22,8 @@ namespace ReflectionAnalyzers
             switch (expression)
             {
                 case InvocationExpressionSyntax invocation when GetX.TryMatchGetField(invocation, context, out var member, out _, out _) &&
-                                                                member.Symbol is IFieldSymbol field:
-                    fieldInfo = new FieldInfo(member.ReflectedType, field);
+                                                                member is { ReflectedType: { } reflectedType, Symbol: IFieldSymbol field }:
+                    fieldInfo = new FieldInfo(reflectedType, field);
                     return true;
             }
 

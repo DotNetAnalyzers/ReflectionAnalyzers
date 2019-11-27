@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -345,8 +345,7 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            if (candidate is IFieldSymbol field &&
-                field.CorrespondingTupleField is IFieldSymbol tupleField &&
+            if (candidate is IFieldSymbol { CorrespondingTupleField: IFieldSymbol tupleField } field &&
                 tupleField.Name != field.Name)
             {
                 return false;

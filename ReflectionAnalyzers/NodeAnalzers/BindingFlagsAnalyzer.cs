@@ -61,10 +61,9 @@
         private class BindingFlagsWalker : PooledWalker<BindingFlagsWalker>
         {
             private readonly List<IdentifierNameSyntax> flags = new List<IdentifierNameSyntax>();
-            private IdentifierNameSyntax duplicate;
+            private IdentifierNameSyntax duplicate = null!;
             private bool isUnHandled;
 
-            /// <inheritdoc />
             public override void Visit(SyntaxNode node)
             {
                 if (!this.isUnHandled)
@@ -105,30 +104,28 @@
                     return false;
                 }
 
-                using (var walker = Borrow(flags))
+                using var walker = Borrow(flags);
+                var current = 0;
+                foreach (var flag in walker.flags)
                 {
-                    var current = 0;
-                    foreach (var flag in walker.flags)
+                    var index = Index(flag);
+                    if (index == -1)
                     {
-                        var index = Index(flag);
-                        if (index == -1)
-                        {
-                            return false;
-                        }
-
-                        current = index < current ? int.MaxValue : index;
+                        return false;
                     }
 
-                    if (current == int.MaxValue)
-                    {
-                        walker.flags.Sort((x, y) => Index(x)
-                                              .CompareTo(Index(y)));
-                        inExpectedOrder = Format(walker.flags);
-                        return true;
-                    }
-
-                    return false;
+                    current = index < current ? int.MaxValue : index;
                 }
+
+                if (current == int.MaxValue)
+                {
+                    walker.flags.Sort((x, y) => Index(x)
+                                          .CompareTo(Index(y)));
+                    inExpectedOrder = Format(walker.flags);
+                    return true;
+                }
+
+                return false;
 
                 static int Index(IdentifierNameSyntax identifierName)
                 {
@@ -172,7 +169,7 @@
             protected override void Clear()
             {
                 this.flags.Clear();
-                this.duplicate = null;
+                this.duplicate = null!;
                 this.isUnHandled = false;
             }
 

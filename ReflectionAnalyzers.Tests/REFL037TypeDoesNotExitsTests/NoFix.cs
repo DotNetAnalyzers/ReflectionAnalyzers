@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;

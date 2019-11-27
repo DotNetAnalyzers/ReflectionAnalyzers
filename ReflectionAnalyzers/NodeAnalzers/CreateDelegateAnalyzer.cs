@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
@@ -12,7 +12,6 @@ namespace ReflectionAnalyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class CreateDelegateAnalyzer : DiagnosticAnalyzer
     {
-        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             REFL001CastReturnValue.Descriptor,
             REFL028CastReturnValueToCorrectType.Descriptor,
@@ -20,7 +19,6 @@ namespace ReflectionAnalyzers
             REFL042FirstArgumentIsReferenceType.Descriptor,
             REFL043FirstArgumentType.Descriptor);
 
-        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
@@ -33,10 +31,9 @@ namespace ReflectionAnalyzers
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.TryGetTarget(KnownSymbol.Delegate.CreateDelegate, context.SemanticModel, context.CancellationToken, out var createDelegate) &&
-                TryFindArgument("type", out var typeArg) &&
-                TryFindArgument("method", out var methodArg) &&
+                FindArgument("type") is { Expression: TypeOfExpressionSyntax typeOf } &&
+                FindArgument("method") is { Expression: { } } methodArg &&
                 MethodInfo.TryGet(methodArg.Expression, context, out var methodInfo) &&
-                typeArg.Expression is TypeOfExpressionSyntax typeOf &&
                 context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType))
             {
                 if (ReturnValue.ShouldCast(invocation, delegateType, context))
@@ -51,7 +48,7 @@ namespace ReflectionAnalyzers
                             delegateType.ToString(context)));
                 }
 
-                if (TryFindDelegateMethod(out var delegateMethod) &&
+                if (FindDelegateMethod() is { } delegateMethod &&
                     new MethodTypes(methodInfo, createDelegate.TryFindParameter("firstArgument", out _)) is var argumentTypes)
                 {
                     if (!IsCorrectDelegateType(argumentTypes, delegateMethod, context, out var delegateText))
@@ -75,7 +72,7 @@ namespace ReflectionAnalyzers
                                 delegateType.ToString(context)));
                     }
 
-                    if (TryFindArgument("firstArgument", out var firstArg) &&
+                    if (FindArgument("firstArgument") is { } firstArg &&
                         TryGetFirstArgType(methodInfo, out var firstArgType))
                     {
                         if (!firstArgType.IsReferenceType)
@@ -99,24 +96,22 @@ namespace ReflectionAnalyzers
                 }
             }
 
-            bool TryFindArgument(string name, out ArgumentSyntax argument)
+            ArgumentSyntax? FindArgument(string name)
             {
-                argument = null!;
                 return createDelegate.TryFindParameter(name, out var parameter) &&
-                       invocation.TryFindArgument(parameter, out argument!);
+                       invocation.TryFindArgument(parameter, out var argument)
+                    ? argument
+                    : null;
             }
 
-            bool TryFindDelegateMethod(out IMethodSymbol delegateMethod)
+            IMethodSymbol? FindDelegateMethod()
             {
-                if (delegateType is INamedTypeSymbol namedType &&
-                    namedType.DelegateInvokeMethod is IMethodSymbol temp)
+                if (delegateType is INamedTypeSymbol { DelegateInvokeMethod: IMethodSymbol temp })
                 {
-                    delegateMethod = temp;
-                    return true;
+                    return temp;
                 }
 
-                delegateMethod = null;
-                return false;
+                return null;
             }
         }
 
