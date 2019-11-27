@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -26,8 +26,7 @@ namespace ReflectionAnalyzers
         private static void HandleInvocation(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is InvocationExpressionSyntax invocation &&
-                invocation.Expression is MemberAccessExpressionSyntax propertyInfoAccess)
+                context.Node is InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax propertyInfoAccess } invocation)
             {
                 if (invocation.TryGetTarget(KnownSymbol.PropertyInfo.GetGetMethod, context.SemanticModel, context.CancellationToken, out _) &&
                     PropertyInfo.TryGet(propertyInfoAccess.Expression, context, out var propertyInfo) &&
@@ -47,8 +46,7 @@ namespace ReflectionAnalyzers
         private static void HandleMemberAccess(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is MemberAccessExpressionSyntax memberAccess &&
-                memberAccess.Expression is InvocationExpressionSyntax invocation)
+                context.Node is MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation } memberAccess)
             {
                 if (IsProperty(memberAccess, KnownSymbol.PropertyInfo.GetMethod, context) &&
                     PropertyInfo.TryGet(invocation, context, out var propertyInfo) &&
@@ -67,7 +65,7 @@ namespace ReflectionAnalyzers
 
         private static bool IsProperty(MemberAccessExpressionSyntax memberAccess, QualifiedProperty property, SyntaxNodeAnalysisContext context)
         {
-            return memberAccess.Name is SimpleNameSyntax name &&
+            return memberAccess.Name is { } name &&
                    name.Identifier.ValueText == property.Name &&
                    context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out IPropertySymbol? propertySymbol) &&
                    propertySymbol == property;

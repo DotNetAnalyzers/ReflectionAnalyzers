@@ -54,8 +54,8 @@
         {
             flags = context.Node as BinaryExpressionSyntax;
             return flags?.Parent is ArgumentSyntax &&
-                    context.SemanticModel.TryGetType(flags, context.CancellationToken, out var type) &&
-                    type == KnownSymbol.BindingFlags;
+                   context.SemanticModel.TryGetType(flags, context.CancellationToken, out var type) &&
+                   type == KnownSymbol.BindingFlags;
         }
 
         private class BindingFlagsWalker : PooledWalker<BindingFlagsWalker>
@@ -70,14 +70,16 @@
                 {
                     switch (node)
                     {
-                        case BinaryExpressionSyntax binary when binary.IsKind(SyntaxKind.BitwiseOrExpression):
+                        case BinaryExpressionSyntax binary
+                            when binary.IsKind(SyntaxKind.BitwiseOrExpression):
                         case MemberAccessExpressionSyntax _:
                             base.Visit(node);
                             break;
-                        case IdentifierNameSyntax identifierName when (identifierName.Parent is MemberAccessExpressionSyntax memberAccess &&
-                                                                       !(memberAccess.Parent is MemberAccessExpressionSyntax) &&
-                                                                       memberAccess.Name == identifierName) ||
-                                                                      identifierName.Parent is BinaryExpressionSyntax:
+                        case IdentifierNameSyntax identifierName
+                            when (identifierName.Parent is MemberAccessExpressionSyntax memberAccess &&
+                                  !(memberAccess.Parent is MemberAccessExpressionSyntax) &&
+                                  memberAccess.Name == identifierName) ||
+                                 identifierName.Parent is BinaryExpressionSyntax:
                             if (this.duplicate == null &&
                                 this.flags.TryFirst(x => x.Identifier.ValueText == identifierName.Identifier.ValueText, out _))
                             {

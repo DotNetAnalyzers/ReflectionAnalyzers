@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -10,10 +10,10 @@ namespace ReflectionAnalyzers
     internal struct Name
     {
         internal static Name Ctor = new Name(null, ".ctor");
-        internal readonly ArgumentSyntax? Argument;
+        internal readonly ArgumentSyntax Argument;
         internal readonly string MetadataName;
 
-        internal Name(ArgumentSyntax? argument, string metadataName)
+        internal Name(ArgumentSyntax argument, string metadataName)
         {
             this.Argument = argument;
             this.MetadataName = metadataName;

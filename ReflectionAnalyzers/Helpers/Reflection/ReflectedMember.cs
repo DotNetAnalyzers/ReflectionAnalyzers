@@ -337,7 +337,7 @@
             if (candidate.MetadataName != name.MetadataName)
             {
                 if (candidate.MetadataName != ".cctor" ||
-                    name.MetadataName != Name.Ctor.MetadataName)
+                    name.MetadataName != ".ctor")
                 {
                     return false;
                 }

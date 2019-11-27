@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics;
@@ -212,8 +212,8 @@ namespace ReflectionAnalyzers
 
             int ByIndex(int index, ImmutableArray<ITypeSymbol> symbols)
             {
-                var xt = x.Parameters[index].Type;
-                var yt = y.Parameters[index].Type;
+                var xt = x!.Parameters[index].Type;
+                var yt = y!.Parameters[index].Type;
                 if (xt.Equals(yt))
                 {
                     return 0;

@@ -466,8 +466,7 @@
         {
             if (member.Invocation?.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                if (member.Symbol is IMethodSymbol method &&
-                    member.Match == FilterMatch.Single)
+                if (member is { Match: FilterMatch.Single, Symbol: IMethodSymbol method })
                 {
                     if (method.AssociatedSymbol is IPropertySymbol property &&
                         Flags.TryGetExpectedBindingFlags(property.ContainingType, property, out var bindingFlags))
@@ -628,10 +627,9 @@
                 return false;
             }
 
-            if (member.Match == FilterMatch.Single &&
-                types.Argument == null &&
-                member.GetX == KnownSymbol.Type.GetMethod &&
-                member.Symbol is IMethodSymbol { IsGenericMethod: false } method)
+            if (types.Argument == null &&
+                member is { Match: FilterMatch.Single, Symbol: IMethodSymbol { IsGenericMethod: false } method } &&
+                member.GetX == KnownSymbol.Type.GetMethod)
             {
                 return Types.TryGetTypesArrayText(method.Parameters, context.SemanticModel, context.Node.SpanStart, out typesArrayText);
             }

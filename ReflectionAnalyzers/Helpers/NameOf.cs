@@ -15,6 +15,11 @@
         internal static bool TryGetExpressionText(ReflectedMember member, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? targetName)
         {
             targetName = null;
+            if (member.Symbol is null)
+            {
+                return false;
+            }
+
             if (member.Symbol.ContainingType.IsAnonymousType)
             {
                 if (member.TypeSource is InvocationExpressionSyntax getType &&

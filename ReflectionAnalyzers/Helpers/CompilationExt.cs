@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -46,7 +46,7 @@ namespace ReflectionAnalyzers
                 for (var i = 0; i < genericTypeName.TypeArguments.Length; i++)
                 {
                     var argument = genericTypeName.TypeArguments[i];
-                    if (argument.TypeArguments is IReadOnlyList<GenericTypeArgument> typeArguments)
+                    if (argument.TypeArguments is { } typeArguments)
                     {
                         var type = GetTypeByMetadataName(compilation, new GenericTypeName(argument.MetadataName, typeArguments.ToImmutableArray()), ignoreCase);
                         if (type == null)

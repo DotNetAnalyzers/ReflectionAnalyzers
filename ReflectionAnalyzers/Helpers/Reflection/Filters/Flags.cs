@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
@@ -12,7 +12,7 @@ namespace ReflectionAnalyzers
     {
         internal static readonly Flags MatchAll = new Flags(null, BindingFlags.Default, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 
-        internal readonly ArgumentSyntax? Argument;
+        internal readonly ArgumentSyntax Argument;
 
         /// <summary>
         /// The flags explicitly provided in the argument.
@@ -24,7 +24,7 @@ namespace ReflectionAnalyzers
         /// </summary>
         internal readonly BindingFlags Default;
 
-        internal Flags(ArgumentSyntax? argument, BindingFlags @explicit, BindingFlags @default)
+        internal Flags(ArgumentSyntax argument, BindingFlags @explicit, BindingFlags @default)
         {
             this.Argument = argument;
             this.Explicit = @explicit;
@@ -97,8 +97,7 @@ namespace ReflectionAnalyzers
                     flags |= BindingFlags.Instance;
                 }
 
-                if (!(member is IMethodSymbol method &&
-                      method.MethodKind == MethodKind.Constructor))
+                if (!(member is IMethodSymbol { MethodKind: MethodKind.Constructor }))
                 {
                     if (Equals(member.ContainingType, reflectedType))
                     {
