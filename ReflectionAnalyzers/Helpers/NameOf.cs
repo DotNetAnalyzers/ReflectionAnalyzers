@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -29,7 +29,7 @@ namespace ReflectionAnalyzers
             }
 
             if (!context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol) ||
-                (member.Symbol is INamedTypeSymbol type && type.IsGenericType) ||
+                (member.Symbol is INamedTypeSymbol { IsGenericType: true } type) ||
                 (member.Symbol is IMethodSymbol method &&
                  method.AssociatedSymbol != null))
             {

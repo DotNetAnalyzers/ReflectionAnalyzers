@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,15 +7,12 @@ namespace ReflectionAnalyzers
     {
         internal static Location GetNameLocation(this InvocationExpressionSyntax invocation)
         {
-            switch (invocation.Expression)
+            return invocation.Expression switch
             {
-                case IdentifierNameSyntax identifierName:
-                    return identifierName.GetLocation();
-                case MemberAccessExpressionSyntax memberAccess:
-                    return memberAccess.Name.GetLocation();
-            }
-
-            return invocation.GetLocation();
+                IdentifierNameSyntax identifierName => identifierName.GetLocation(),
+                MemberAccessExpressionSyntax { Name: { } name } => name.GetLocation(),
+                _ => invocation.GetLocation(),
+            };
         }
     }
 }
