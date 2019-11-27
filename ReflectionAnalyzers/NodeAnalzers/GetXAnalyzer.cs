@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
@@ -280,7 +280,7 @@ namespace ReflectionAnalyzers
         private static bool HasMissingFlags(ReflectedMember member, Flags flags, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? flagsText)
         {
             if (Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags) &&
-                member.Invocation?.ArgumentList is ArgumentListSyntax argumentList &&
+                member.Invocation?.ArgumentList is { } argumentList &&
                 (member.Match == FilterMatch.Single || member.Match == FilterMatch.WrongFlags))
             {
                 if (flags.Argument == null)
@@ -290,7 +290,7 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                if (flags.Argument is ArgumentSyntax argument &&
+                if (flags.Argument is { } argument &&
                     HasMissingFlag())
                 {
                     location = argument.GetLocation();
@@ -330,13 +330,13 @@ namespace ReflectionAnalyzers
                 Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags))
             {
                 flagText = correctFlags.ToDisplayString(flags.Argument);
-                if (flags.Argument is ArgumentSyntax argument)
+                if (flags.Argument is { } argument)
                 {
                     location = argument.GetLocation();
                     return true;
                 }
 
-                if (member.Invocation?.ArgumentList is ArgumentListSyntax argumentList)
+                if (member.Invocation?.ArgumentList is { } argumentList)
                 {
                     location = member.GetX == KnownSymbol.Type.GetConstructor
                         ? argumentList.OpenParenToken.GetLocation()
@@ -359,7 +359,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            if (flags.Argument is ArgumentSyntax argument &&
+            if (flags.Argument is { } argument &&
                 Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
             {
                 if (member.Symbol is IMethodSymbol method &&
@@ -408,7 +408,7 @@ namespace ReflectionAnalyzers
 
         private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? nameText)
         {
-            if (name.Argument is ArgumentSyntax argument &&
+            if (name.Argument is { } argument &&
                 NameOf.CanUseFor(member.Symbol) &&
                 (member.Match == FilterMatch.Single ||
                  member.Match == FilterMatch.Ambiguous ||
@@ -434,7 +434,7 @@ namespace ReflectionAnalyzers
 
         private static bool UsesNameOfWrongMember(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? nameText)
         {
-            if (name.Argument is ArgumentSyntax argument &&
+            if (name.Argument is { } argument &&
                 NameOf.IsNameOf(argument, out var expression))
             {
                 if (member.Match == FilterMatch.NoMatch ||
@@ -446,7 +446,7 @@ namespace ReflectionAnalyzers
                     return true;
                 }
 
-                if (member.Symbol is ISymbol memberSymbol &&
+                if (member.Symbol is { } memberSymbol &&
                     TryGetSymbol(expression, out var symbol) &&
                     !symbol.ContainingType.IsAssignableTo(memberSymbol.ContainingType, context.Compilation) &&
                     NameOf.TryGetExpressionText(member, context, out nameText))
@@ -547,13 +547,13 @@ namespace ReflectionAnalyzers
                         method.AssociatedSymbol is IPropertySymbol property &&
                         property.IsIndexer)
                     {
-                        if (property.GetMethod is IMethodSymbol getMethod &&
+                        if (property.GetMethod is { } getMethod &&
                             Types.TryGetTypesArrayText(getMethod.Parameters, context.SemanticModel, context.Node.SpanStart, out var typesArrayText))
                         {
                             return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {typesArrayText}, null)";
                         }
 
-                        if (property.SetMethod is IMethodSymbol setMethod &&
+                        if (property.SetMethod is { } setMethod &&
                             Types.TryGetTypesArrayText(setMethod.Parameters.RemoveAt(setMethod.Parameters.Length - 1), context.SemanticModel, context.Node.SpanStart, out typesArrayText))
                         {
                             return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)}, null, typeof({type.ToString(context)}), {typesArrayText}, null)";
@@ -594,7 +594,7 @@ namespace ReflectionAnalyzers
 
             bool TryGetInvisibleMemberName(string prefix, out string memberName)
             {
-                if (name.MetadataName is string metadataName &&
+                if (name.MetadataName is { } metadataName &&
                     metadataName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                 {
                     memberName = $"\"{metadataName.Substring(prefix.Length)}\"";
@@ -652,7 +652,7 @@ namespace ReflectionAnalyzers
 
         private static bool ShouldUseSameTypeAsParameter(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? typeText)
         {
-            if (types.Argument is ArgumentSyntax argument &&
+            if (types.Argument is { } argument &&
                 member.Symbol is IMethodSymbol method)
             {
                 if (method.Parameters.Length != types.Expressions.Length)
