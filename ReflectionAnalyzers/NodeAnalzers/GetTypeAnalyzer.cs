@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
@@ -39,8 +39,7 @@ namespace ReflectionAnalyzers
 
                 switch (TypeExists(invocation, context, out var type, out var nameArgument))
                 {
-                    case true when type.IsSealed &&
-                                   !type.IsAnonymousType &&
+                    case true when type is { IsSealed: true, IsAnonymousType: false } &&
                                    target.Parameters.Length == 0 &&
                                    target == KnownSymbol.Object.GetType &&
                                    context.SemanticModel.IsAccessible(invocation.SpanStart, type):
@@ -70,7 +69,7 @@ namespace ReflectionAnalyzers
 
             if (target.ReturnType == KnownSymbol.Type &&
                 target.Parameters.TryFirst(out parameter) &&
-                parameter.Type == KnownSymbol.String &&
+                parameter!.Type == KnownSymbol.String &&
                 target.TryFindParameter("throwOnError", out parameter) &&
                 invocation.TryFindArgument(parameter, out var arg) &&
                 arg.Expression.IsKind(SyntaxKind.FalseLiteralExpression))

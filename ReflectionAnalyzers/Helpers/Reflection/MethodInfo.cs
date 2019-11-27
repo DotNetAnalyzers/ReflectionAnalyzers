@@ -21,7 +21,9 @@
         {
             switch (expression)
             {
-                case InvocationExpressionSyntax invocation when GetX.TryMatchGetMethod(invocation, context, out var member, out _, out _, out _) && member.Symbol is IMethodSymbol method:
+                case InvocationExpressionSyntax invocation
+                    when GetX.TryMatchGetMethod(invocation, context, out var member, out _, out _, out _) &&
+                         member is { ReflectedType: { }, Symbol: IMethodSymbol method }:
                     methodInfo = new MethodInfo(member.ReflectedType, method);
                     return true;
                 case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Linq;
@@ -33,9 +33,7 @@ namespace ReflectionAnalyzers
         private static void Handle(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is InvocationExpressionSyntax invocation &&
-                invocation.ArgumentList != null &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+                context.Node is InvocationExpressionSyntax { ArgumentList: { }, Expression: MemberAccessExpressionSyntax memberAccess } invocation &&
                 invocation.TryGetMethodName(out var name) &&
                 name == "Invoke" &&
                 context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var invoke) &&
@@ -216,9 +214,8 @@ namespace ReflectionAnalyzers
         {
             switch (invocation.Parent)
             {
-                case ArgumentSyntax argument when argument.Parent is ArgumentListSyntax argumentList &&
-                                                  argumentList.Parent is InvocationExpressionSyntax candidate &&
-                                                  IsAssert(candidate):
+                case ArgumentSyntax { Parent: ArgumentListSyntax { Parent: InvocationExpressionSyntax candidate } }
+                    when IsAssert(candidate):
                     return true;
                 case ArgumentSyntax _:
                 case MemberAccessExpressionSyntax _:
@@ -227,7 +224,7 @@ namespace ReflectionAnalyzers
                     return false;
                 case AssignmentExpressionSyntax assignment:
                     return assignment.Left is IdentifierNameSyntax identifierName && IsDiscardName(identifierName.Identifier.ValueText);
-                case EqualsValueClauseSyntax equalsValueClause when equalsValueClause.Parent is VariableDeclaratorSyntax variableDeclarator:
+                case EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax variableDeclarator }:
                     return IsDiscardName(variableDeclarator.Identifier.ValueText);
                 default:
                     return true;

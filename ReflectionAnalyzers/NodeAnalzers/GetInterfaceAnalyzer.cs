@@ -42,7 +42,8 @@
                     context.ReportDiagnostic(Diagnostic.Create(REFL020AmbiguousMatchInterface.Descriptor, nameArg.GetLocation()));
                 }
 
-                if (count == 1 && match.MetadataName == name)
+                if (count == 1 &&
+                    match?.MetadataName == name)
                 {
                     switch (nameArg.Expression)
                     {

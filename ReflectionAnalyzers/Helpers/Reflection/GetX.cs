@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -16,8 +16,7 @@ namespace ReflectionAnalyzers
         {
             if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetConstructor, context, out var invocation) &&
                 TryMatchGetConstructor(invocation, context, out var member, out _, out _) &&
-                member.Match == FilterMatch.Single &&
-                member.Symbol is IMethodSymbol match)
+                member is { Match: FilterMatch.Single, Symbol: IMethodSymbol match })
             {
                 constructor = match;
                 return true;
@@ -31,8 +30,7 @@ namespace ReflectionAnalyzers
         {
             if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetMethod, context, out var invocation) &&
                 TryMatchGetMethod(invocation, context, out var member, out _, out _, out _) &&
-                member.Match == FilterMatch.Single &&
-                member.Symbol is IMethodSymbol match)
+                member is { Match: FilterMatch.Single, Symbol: IMethodSymbol match })
             {
                 method = match;
                 return true;
@@ -47,8 +45,7 @@ namespace ReflectionAnalyzers
             if (expression is MemberAccessExpressionSyntax memberAccess &&
                 TryFindInvocation(memberAccess, KnownSymbol.Type.GetNestedType, context, out var invocation) &&
                 TryMatchGetNestedType(invocation, context, out var nestedType, out _, out _) &&
-                nestedType.Match == FilterMatch.Single &&
-                nestedType.Symbol is INamedTypeSymbol namedNested)
+                nestedType is { Match: FilterMatch.Single, Symbol: INamedTypeSymbol namedNested })
             {
                 type = namedNested;
                 return true;
