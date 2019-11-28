@@ -3,6 +3,7 @@
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -69,8 +70,7 @@
         {
             for (var i = 0; i < this.Parameters.Length; i++)
             {
-                if (Type.TryGet(this.Arguments[i], context, out var type, out _) &&
-                    !this.SatisfiesConstraints(type, this.Parameters[i], context))
+                if (!this.SatisfiesConstraints(this.Arguments[i], this.Parameters[i], context))
                 {
                     argument = this.Arguments[i];
                     parameter = this.Parameters[i];
@@ -160,79 +160,82 @@
                    arrayType.ElementType == KnownSymbol.Type;
         }
 
-        private bool SatisfiesConstraints(ITypeSymbol type, ITypeParameterSymbol typeParameter, SyntaxNodeAnalysisContext context)
+        private bool SatisfiesConstraints(ExpressionSyntax expression, ITypeParameterSymbol typeParameter, SyntaxNodeAnalysisContext context)
         {
-            if (typeParameter.HasConstructorConstraint)
+            if (Type.TryGet(expression, context, out var type, out _))
             {
-                switch (type)
+                if (typeParameter.HasConstructorConstraint)
                 {
-                    case INamedTypeSymbol namedType
-                        when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.Length == 0, out _):
-                    case ITypeParameterSymbol { HasConstructorConstraint: false }:
-                        return false;
-                }
-            }
-
-            if (typeParameter.HasReferenceTypeConstraint)
-            {
-                switch (type)
-                {
-                    case INamedTypeSymbol { IsReferenceType: false }:
-                    case ITypeParameterSymbol parameter
-                        when parameter.HasValueTypeConstraint ||
-                                                             IsValueTypeContext(context.Node, parameter):
-                        return false;
-                }
-            }
-
-            if (typeParameter.HasValueTypeConstraint)
-            {
-                switch (type)
-                {
-                    case INamedTypeSymbol namedType
-                        when !namedType.IsValueType ||
-                             namedType == KnownSymbol.NullableOfT:
-                    case ITypeParameterSymbol parameter
-                        when parameter.HasReferenceTypeConstraint ||
-                             !IsValueTypeContext(context.Node, parameter):
-                        return false;
-                }
-            }
-
-            foreach (var constraintType in typeParameter.ConstraintTypes)
-            {
-                switch (constraintType)
-                {
-                    case ITypeParameterSymbol parameter when this.TryFindArgumentType(parameter, context, out var argumentType):
-                        if (!IsAssignableTo(type, argumentType))
-                        {
+                    switch (type)
+                    {
+                        case INamedTypeSymbol namedType
+                            when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.Length == 0, out _):
+                        case ITypeParameterSymbol { HasConstructorConstraint: false }:
                             return false;
-                        }
+                    }
+                }
 
-                        break;
-                    case INamedTypeSymbol namedType:
-                        if (!IsAssignableTo(type, namedType))
-                        {
-                            if (namedType.IsGenericType)
+                if (typeParameter.HasReferenceTypeConstraint)
+                {
+                    switch (type)
+                    {
+                        case INamedTypeSymbol { IsReferenceType: false }:
+                        case ITypeParameterSymbol parameter
+                            when parameter.HasValueTypeConstraint ||
+                                 IsValueTypeContext(expression, parameter):
+                            return false;
+                    }
+                }
+
+                if (typeParameter.HasValueTypeConstraint)
+                {
+                    switch (type)
+                    {
+                        case INamedTypeSymbol namedType
+                            when !namedType.IsValueType ||
+                                 namedType == KnownSymbol.NullableOfT:
+                        case ITypeParameterSymbol parameter
+                            when parameter.HasReferenceTypeConstraint ||
+                                 !IsValueTypeContext(expression, parameter):
+                            return false;
+                    }
+                }
+
+                foreach (var constraintType in typeParameter.ConstraintTypes)
+                {
+                    switch (constraintType)
+                    {
+                        case ITypeParameterSymbol parameter when this.TryFindArgumentType(parameter, context, out var argumentType):
+                            if (!IsAssignableTo(type, argumentType))
                             {
-                                if (namedType.TypeArguments.All(x => x.TypeKind != TypeKind.TypeParameter))
+                                return false;
+                            }
+
+                            break;
+                        case INamedTypeSymbol namedType:
+                            if (!IsAssignableTo(type, namedType))
+                            {
+                                if (namedType.IsGenericType)
+                                {
+                                    if (namedType.TypeArguments.All(x => x.TypeKind != TypeKind.TypeParameter))
+                                    {
+                                        return false;
+                                    }
+                                }
+                                else
                                 {
                                     return false;
                                 }
                             }
-                            else
-                            {
-                                return false;
-                            }
-                        }
 
-                        break;
+                            break;
+                    }
                 }
             }
 
             return true;
 
-            bool IsValueTypeContext(SyntaxNode node, ITypeParameterSymbol candidate)
+            static bool IsValueTypeContext(SyntaxNode node, ITypeParameterSymbol candidate)
             {
                 if (node.TryFirstAncestor(out ConditionalExpressionSyntax? ternary))
                 {
