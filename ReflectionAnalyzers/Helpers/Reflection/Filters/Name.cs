@@ -1,10 +1,10 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     [DebuggerDisplay("{this.Argument}")]
     internal struct Name
@@ -19,11 +19,11 @@
             this.MetadataName = metadataName;
         }
 
-        internal static bool TryCreate(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out Name name)
+        internal static bool TryCreate(InvocationExpressionSyntax invocation, IMethodSymbol getX, SemanticModel semanticModel, CancellationToken cancellationToken, out Name name)
         {
             if (getX.TryFindParameter(KnownSymbol.String, out var parameter) &&
                 invocation.TryFindArgument(parameter, out var argument) &&
-                context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string? metadataName))
+                semanticModel.TryGetConstantValue(argument.Expression, cancellationToken, out string? metadataName))
             {
                 name = new Name(argument, metadataName!);
                 return true;

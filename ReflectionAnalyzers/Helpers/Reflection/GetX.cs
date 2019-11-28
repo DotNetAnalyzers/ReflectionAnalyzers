@@ -65,13 +65,13 @@
             {
                 if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
-                    Flags.TryCreate(invocation, getX, context, out flags) &&
+                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     Types.TryCreate(invocation, getX, context, out types))
                 {
                     return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, context, out member);
                 }
 
-                if (Flags.TryCreate(invocation, getX, context, out flags) &&
+                if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     flags.AreInSufficient)
                 {
                     member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
@@ -112,17 +112,17 @@
             {
                 if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
-                    Name.TryCreate(invocation, getX, context, out name) &&
-                    Flags.TryCreate(invocation, getX, context, out flags) &&
+                    Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name) &&
+                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     Types.TryCreate(invocation, getX, context, out types))
                 {
                     return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context, out member);
                 }
 
-                if (Flags.TryCreate(invocation, getX, context, out flags) &&
+                if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     flags.AreInSufficient)
                 {
-                    _ = Name.TryCreate(invocation, getX, context, out name);
+                    _ = Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name);
                     _ = Types.TryCreate(invocation, getX, context, out types);
                     member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
                     return true;
@@ -154,17 +154,17 @@
             {
                 if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
-                    Name.TryCreate(invocation, getX, context, out name) &&
-                    Flags.TryCreate(invocation, getX, context, out flags) &&
+                    Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name) &&
+                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     Types.TryCreate(invocation, getX, context, out types))
                 {
                     return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context, out member);
                 }
 
-                if (Flags.TryCreate(invocation, getX, context, out flags) &&
+                if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     flags.AreInSufficient)
                 {
-                    _ = Name.TryCreate(invocation, getX, context, out name);
+                    _ = Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name);
                     _ = Types.TryCreate(invocation, getX, context, out types);
                     member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
                     return true;
@@ -242,18 +242,18 @@
                 invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX))
             {
                 if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
-                    Name.TryCreate(invocation, getX, context, out name) &&
-                    Flags.TryCreate(invocation, getX, context, out flags) &&
+                    Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name) &&
+                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, Types.Any, context, out member))
                 {
                     return true;
                 }
 
                 if (getXMethod.Name != "GetNestedType" &&
-                    Flags.TryCreate(invocation, getX, context, out flags) &&
+                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     flags.AreInSufficient)
                 {
-                    _ = Name.TryCreate(invocation, getX, context, out name);
+                    _ = Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name);
                     member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
                     return true;
                 }

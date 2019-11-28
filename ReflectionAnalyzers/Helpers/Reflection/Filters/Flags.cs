@@ -2,10 +2,10 @@
 {
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     [DebuggerDisplay("{this.Effective}")]
     internal struct Flags
@@ -50,9 +50,9 @@
             }
         }
 
-        internal static bool TryCreate(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out Flags flags)
+        internal static bool TryCreate(InvocationExpressionSyntax invocation, IMethodSymbol getX, SemanticModel semanticModel, CancellationToken cancellationToken, out Flags flags)
         {
-            if (TryGetBindingFlags(invocation, getX, context, out var argument, out var explicitFlags))
+            if (TryGetBindingFlags(invocation, getX, semanticModel, cancellationToken, out var argument, out var explicitFlags))
             {
                 _ = TryGetDefaultBindingFlags(getX.MetadataName, out var defaultFlags);
                 flags = new Flags(argument, explicitFlags, defaultFlags);
@@ -140,13 +140,13 @@
             return false;
         }
 
-        private static bool TryGetBindingFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ArgumentSyntax? argument, out BindingFlags bindingFlags)
+        private static bool TryGetBindingFlags(InvocationExpressionSyntax invocation, IMethodSymbol getX, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ArgumentSyntax? argument, out BindingFlags bindingFlags)
         {
             argument = null;
             bindingFlags = 0;
             return getX.TryFindParameter(KnownSymbol.BindingFlags, out var parameter) &&
                    invocation.TryFindArgument(parameter, out argument) &&
-                   context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out bindingFlags);
+                   semanticModel.TryGetConstantValue(argument.Expression, cancellationToken, out bindingFlags);
         }
     }
 }
