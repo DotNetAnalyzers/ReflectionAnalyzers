@@ -4,7 +4,6 @@
     using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -29,7 +28,6 @@
             {
                 using var recursion = Recursion.Borrow(type, semanticModel, cancellationToken);
                 return TryGet(expression, recursion, out result, out source);
-
             }
 
             result = null;
@@ -251,18 +249,46 @@
                     result = null;
                     return false;
 
-                case ConditionalAccessExpressionSyntax conditionalAccess:
+                case ConditionalAccessExpressionSyntax { WhenNotNull: { } whenNotNull } conditionalAccess:
                     source = conditionalAccess;
-                    return TryGet(conditionalAccess.WhenNotNull, recursion, out result, out _);
-            }
+                    return TryGet(whenNotNull, recursion, out result, out _);
+                default:
+                    if (recursion.Target(expression) is { } target)
+                    {
+                        switch (target.Symbol)
+                        {
+                            case ILocalSymbol local:
+                                result = null;
+                                source = null;
+                                return AssignedValue.TryGetSingle(local, recursion.SemanticModel, recursion.CancellationToken, out var value) &&
+                                       TryGet(value, recursion, out result, out source);
+                            case IFieldSymbol field:
+                                result = null;
+                                source = null;
+                                return AssignedValue.TryGetSingle(field, recursion.SemanticModel, recursion.CancellationToken, out value) &&
+                                       TryGet(value, recursion, out result, out source);
+                            case IPropertySymbol property
+                                when !property.IsAutoProperty() &&
+                                     target.TargetNode is { } declaration:
+                                result = null;
+                                source = null;
+                                return ReturnValueWalker.TrySingle(declaration, out value) &&
+                                       TryGet(value, recursion, out result, out source);
+                            case IPropertySymbol property:
+                                result = null;
+                                source = null;
+                                return AssignedValue.TryGetSingle(property, recursion.SemanticModel, recursion.CancellationToken, out value) &&
+                                       TryGet(value, recursion, out result, out source);
+                            case IMethodSymbol _
+                                when target.TargetNode is { } declaration:
+                                result = null;
+                                source = null;
+                                return ReturnValueWalker.TrySingle(declaration, out value) &&
+                                       TryGet(value, recursion, out result, out source);
+                        }
+                    }
 
-            if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                recursion.SemanticModel.TryGetSymbol(expression, recursion.CancellationToken, out var local))
-            {
-                source = null;
-                result = null;
-                return AssignedValue.TryGetSingle(local, recursion.SemanticModel, recursion.CancellationToken, out var assignedValue) &&
-                       TryGet(assignedValue, recursion, out result, out source);
+                    break;
             }
 
             source = null;
