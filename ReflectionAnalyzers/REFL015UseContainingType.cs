@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
@@ -6,14 +6,13 @@ namespace ReflectionAnalyzers
     {
         public const string DiagnosticId = "REFL015";
 
-        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
             id: DiagnosticId,
             title: "Use the containing type.",
             messageFormat: "Use the containing type {0}.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Use the containing type.",
-            helpLinkUri: HelpLink.ForId(DiagnosticId));
+            description: "Use the containing type.");
     }
 }

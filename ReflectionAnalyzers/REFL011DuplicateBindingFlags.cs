@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
@@ -6,14 +6,13 @@ namespace ReflectionAnalyzers
     {
         public const string DiagnosticId = "REFL011";
 
-        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
             id: DiagnosticId,
             title: "Duplicate BindingFlag.",
             messageFormat: "Duplicate flag.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Duplicate BindingFlag.",
-            helpLinkUri: HelpLink.ForId(DiagnosticId));
+            description: "Duplicate BindingFlag.");
     }
 }

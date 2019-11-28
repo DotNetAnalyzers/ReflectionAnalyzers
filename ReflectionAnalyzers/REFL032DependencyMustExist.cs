@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
@@ -6,14 +6,13 @@ namespace ReflectionAnalyzers
     {
         public const string DiagnosticId = "REFL032";
 
-        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
             id: DiagnosticId,
             title: "The dependency does not exist.",
             messageFormat: "The dependency does not exist.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "The dependency does not exist.",
-            helpLinkUri: HelpLink.ForId(DiagnosticId));
+            description: "The dependency does not exist.");
     }
 }

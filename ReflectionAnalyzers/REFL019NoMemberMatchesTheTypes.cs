@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
@@ -6,14 +6,13 @@ namespace ReflectionAnalyzers
     {
         public const string DiagnosticId = "REFL019";
 
-        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
             id: DiagnosticId,
             title: "No member matches the types.",
             messageFormat: "No member matches the types.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "No member matches the types.",
-            helpLinkUri: HelpLink.ForId(DiagnosticId));
+            description: "No member matches the types.");
     }
 }

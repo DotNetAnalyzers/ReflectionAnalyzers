@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
@@ -6,14 +6,13 @@ namespace ReflectionAnalyzers
     {
         public const string DiagnosticId = "REFL010";
 
-        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
             id: DiagnosticId,
             title: "Prefer the generic extension method GetCustomAttribute<T>.",
             messageFormat: "Prefer the generic extension method GetCustomAttribute<{0}>.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "Prefer the generic extension method GetCustomAttribute<T>.",
-            helpLinkUri: HelpLink.ForId(DiagnosticId));
+            description: "Prefer the generic extension method GetCustomAttribute<T>.");
     }
 }

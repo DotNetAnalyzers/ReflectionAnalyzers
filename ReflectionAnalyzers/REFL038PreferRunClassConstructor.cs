@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
@@ -6,14 +6,13 @@ namespace ReflectionAnalyzers
     {
         public const string DiagnosticId = "REFL038";
 
-        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
             id: DiagnosticId,
             title: "Prefer RuntimeHelpers.RunClassConstructor.",
             messageFormat: "Prefer RuntimeHelpers.RunClassConstructor.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
-            description: "The static constructor should only be run once. Prefer RuntimeHelpers.RunClassConstructor().",
-            helpLinkUri: HelpLink.ForId(DiagnosticId));
+            description: "The static constructor should only be run once. Prefer RuntimeHelpers.RunClassConstructor().");
     }
 }

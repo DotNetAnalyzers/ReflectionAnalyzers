@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
@@ -6,14 +6,13 @@ namespace ReflectionAnalyzers
     {
         public const string DiagnosticId = "REFL007";
 
-        public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
             id: DiagnosticId,
             title: "The binding flags are not in the expected order.",
             messageFormat: "The binding flags are not in the expected order.{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Hidden,
             isEnabledByDefault: true,
-            description: "The binding flags are not in the expected order.",
-            helpLinkUri: HelpLink.ForId(DiagnosticId));
+            description: "The binding flags are not in the expected order.");
     }
 }
