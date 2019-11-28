@@ -107,10 +107,10 @@
             }
         }
 
-        internal static bool TryGetValues(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
+        internal static bool TryGetValues(ExpressionSyntax creation, SemanticModel semanticModel, CancellationToken cancellationToken, out ImmutableArray<ExpressionSyntax> values)
         {
             values = default;
-            if (IsCreatingEmpty(creation, context.SemanticModel, context.CancellationToken))
+            if (IsCreatingEmpty(creation, semanticModel, cancellationToken))
             {
                 values = ImmutableArray<ExpressionSyntax>.Empty;
                 return true;
@@ -125,7 +125,7 @@
                     values = ImmutableArray.CreateRange(initializer.Expressions);
                     return true;
                 case MemberAccessExpressionSyntax memberAccess
-                    when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol) &&
+                    when semanticModel.TryGetSymbol(memberAccess, cancellationToken, out var symbol) &&
                          symbol == KnownSymbol.Type.EmptyTypes:
                     values = ImmutableArray<ExpressionSyntax>.Empty;
                     return true;

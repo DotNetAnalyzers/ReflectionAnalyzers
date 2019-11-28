@@ -27,7 +27,7 @@
         {
             if (TryGetTypesArgument(invocation, getX, out var typesArg))
             {
-                if (Array.TryGetValues(typesArg.Expression, context, out var expressions) &&
+                if (Array.TryGetValues(typesArg.Expression, context.SemanticModel, context.CancellationToken, out var expressions) &&
                     Array.TryGetTypes(typesArg.Expression, context, out var symbols))
                 {
                     types = new Types(typesArg, expressions, symbols);

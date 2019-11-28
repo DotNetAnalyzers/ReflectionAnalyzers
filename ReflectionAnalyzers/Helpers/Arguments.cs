@@ -1,15 +1,15 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     internal static class Arguments
     {
-        internal static bool? TryFindFirstMisMatch(ImmutableArray<IParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context, out ExpressionSyntax? expression)
+        internal static bool? TryFindFirstMisMatch(ImmutableArray<IParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> values, SemanticModel semanticModel, CancellationToken cancellationToken, out ExpressionSyntax? expression)
         {
             if (parameters.Length == 0 &&
                 values.Length > 0)
@@ -54,7 +54,7 @@ namespace ReflectionAnalyzers
                 }
 
                 if (lastParameter.IsOptional &&
-                    context.SemanticModel.TryGetSymbol(values[i], context.CancellationToken, out IFieldSymbol? field) &&
+                    semanticModel.TryGetSymbol(values[i], cancellationToken, out IFieldSymbol? field) &&
                     field == KnownSymbol.Missing.Value)
                 {
                     continue;
@@ -70,11 +70,11 @@ namespace ReflectionAnalyzers
                     continue;
                 }
 
-                var conversion = context.SemanticModel.ClassifyConversion(values[i], lastParameter.Type);
+                var conversion = semanticModel.ClassifyConversion(values[i], lastParameter.Type);
                 if (!conversion.Exists)
                 {
                     if (lastParameter.Type is IArrayTypeSymbol arrayType &&
-                        context.SemanticModel.ClassifyConversion(values[i], arrayType.ElementType).IsIdentity)
+                        semanticModel.ClassifyConversion(values[i], arrayType.ElementType).IsIdentity)
                     {
                         continue;
                     }
@@ -86,7 +86,7 @@ namespace ReflectionAnalyzers
                 {
                     if (values[i] is MemberAccessExpressionSyntax memberAccess &&
                         memberAccess.Name.Identifier.ValueText == "Value" &&
-                        context.SemanticModel.TryGetSymbol(values[i], context.CancellationToken, out field) &&
+                        semanticModel.TryGetSymbol(values[i], cancellationToken, out field) &&
                         field == KnownSymbol.Missing.Value)
                     {
                         return true;

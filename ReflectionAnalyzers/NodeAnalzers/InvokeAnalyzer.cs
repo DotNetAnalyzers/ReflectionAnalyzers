@@ -70,8 +70,8 @@
                         context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL002DiscardReturnValue, invocation.GetLocation()));
                     }
 
-                    if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
-                        Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
+                    if (Array.TryGetValues(parametersArg.Expression, context.SemanticModel, context.CancellationToken, out var values) &&
+                        Arguments.TryFindFirstMisMatch(method.Parameters, values, context.SemanticModel, context.CancellationToken, out var misMatch) == true)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }
@@ -154,8 +154,8 @@
                                 ctor.ContainingType.ToString(context)));
                     }
 
-                    if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
-                        Arguments.TryFindFirstMisMatch(ctor.Parameters, values, context, out var misMatch) == true)
+                    if (Array.TryGetValues(parametersArg.Expression, context.SemanticModel, context.CancellationToken, out var values) &&
+                        Arguments.TryFindFirstMisMatch(ctor.Parameters, values, context.SemanticModel, context.CancellationToken, out var misMatch) == true)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }

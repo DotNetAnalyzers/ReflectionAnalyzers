@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
@@ -24,12 +24,12 @@ namespace ReflectionAnalyzers
 
         internal static bool TryCreate(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeArguments typeArguments)
         {
-            if (invocation?.ArgumentList is ArgumentListSyntax argumentList &&
+            if (invocation?.ArgumentList is { } argumentList &&
                 (TryGetTypeParameters(invocation, context, out var symbol, out var parameters) ||
                  TryGetMethodParameters(invocation, context, out symbol, out parameters)))
             {
                 if (argumentList.Arguments.TrySingle(out var argument) &&
-                    Array.TryGetValues(argument.Expression, context, out var arrayExpressions))
+                    Array.TryGetValues(argument.Expression, context.SemanticModel, context.CancellationToken, out var arrayExpressions))
                 {
                     typeArguments = new TypeArguments(symbol, parameters, arrayExpressions);
                     return true;
@@ -120,7 +120,7 @@ namespace ReflectionAnalyzers
                     symbol = type;
                     parameters = namedType.TypeParameters;
 
-                    while (type.ContainingType is INamedTypeSymbol containingType)
+                    while (type.ContainingType is { } containingType)
                     {
                         parameters = parameters.InsertRange(0, containingType.TypeParameters);
                         type = containingType;
@@ -166,8 +166,9 @@ namespace ReflectionAnalyzers
             {
                 switch (type)
                 {
-                    case INamedTypeSymbol namedType when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.Length == 0, out _):
-                    case ITypeParameterSymbol parameter when !parameter.HasConstructorConstraint:
+                    case INamedTypeSymbol namedType
+                        when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.Length == 0, out _):
+                    case ITypeParameterSymbol { HasConstructorConstraint: false }:
                         return false;
                 }
             }
@@ -176,8 +177,9 @@ namespace ReflectionAnalyzers
             {
                 switch (type)
                 {
-                    case INamedTypeSymbol namedType when !namedType.IsReferenceType:
-                    case ITypeParameterSymbol parameter when parameter.HasValueTypeConstraint ||
+                    case INamedTypeSymbol { IsReferenceType: false }:
+                    case ITypeParameterSymbol parameter
+                        when parameter.HasValueTypeConstraint ||
                                                              IsValueTypeContext(context.Node, parameter):
                         return false;
                 }
@@ -187,9 +189,12 @@ namespace ReflectionAnalyzers
             {
                 switch (type)
                 {
-                    case INamedTypeSymbol namedType when !namedType.IsValueType || namedType == KnownSymbol.NullableOfT:
-                    case ITypeParameterSymbol parameter when parameter.HasReferenceTypeConstraint ||
-                                                             !IsValueTypeContext(context.Node, parameter):
+                    case INamedTypeSymbol namedType
+                        when !namedType.IsValueType ||
+                             namedType == KnownSymbol.NullableOfT:
+                    case ITypeParameterSymbol parameter
+                        when parameter.HasReferenceTypeConstraint ||
+                             !IsValueTypeContext(context.Node, parameter):
                         return false;
                 }
             }
@@ -267,18 +272,16 @@ namespace ReflectionAnalyzers
                 {
                     switch (condition)
                     {
-                        case MemberAccessExpressionSyntax memberAccess when
-                            memberAccess.Name.Identifier.Text == "IsValueType" &&
-                            memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                            typeOf.Type is IdentifierNameSyntax identifierName &&
-                            identifierName.Identifier.Text == candidate.Name:
+                        case MemberAccessExpressionSyntax { Expression: TypeOfExpressionSyntax { Type: IdentifierNameSyntax identifierName } } memberAccess
+                            when memberAccess.Name.Identifier.Text == "IsValueType" &&
+                                 identifierName.Identifier.Text == candidate.Name:
                             result = true;
                             return true;
-                        case PrefixUnaryExpressionSyntax prefixUnary when
-                             prefixUnary.IsKind(SyntaxKind.LogicalNotExpression):
+                        case PrefixUnaryExpressionSyntax prefixUnary
+                            when prefixUnary.IsKind(SyntaxKind.LogicalNotExpression):
                             return !TryGetEffectivelyValueType(prefixUnary.Operand, out result);
-                        case BinaryExpressionSyntax binary when
-                             binary.IsKind(SyntaxKind.LogicalAndExpression):
+                        case BinaryExpressionSyntax binary
+                            when binary.IsKind(SyntaxKind.LogicalAndExpression):
                             return TryGetEffectivelyValueType(binary.Left, out result) ||
                                    TryGetEffectivelyValueType(binary.Right, out result);
                     }

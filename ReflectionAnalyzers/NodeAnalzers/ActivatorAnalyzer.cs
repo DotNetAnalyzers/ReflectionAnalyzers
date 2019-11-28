@@ -2,6 +2,7 @@
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -157,8 +158,8 @@
                     return !createdType.Constructors.TrySingle(x => x.Parameters.TrySingle<IParameterSymbol>(out parameter) && parameter.IsParams, out _);
                 }
 
-                if (TryGetValues(arguments, 1, context, out var values) &&
-                    TryFindConstructor(createdType, values, context) == false)
+                if (TryGetValues(arguments, 1, context.SemanticModel, context.CancellationToken, out var values) &&
+                    TryFindConstructor(createdType, values, context.SemanticModel, context.CancellationToken) == false)
                 {
                     return true;
                 }
@@ -167,16 +168,16 @@
             return false;
         }
 
-        private static bool TryGetValues(SeparatedSyntaxList<ArgumentSyntax> arguments, int startIndex, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
+        private static bool TryGetValues(SeparatedSyntaxList<ArgumentSyntax> arguments, int startIndex, SemanticModel semanticModel, CancellationToken cancellationToken, out ImmutableArray<ExpressionSyntax> values)
         {
             var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>(arguments.Count - startIndex);
             switch (arguments[startIndex].Expression)
             {
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
                     return false;
-                case { } expression when context.SemanticModel.TryGetType(expression, context.CancellationToken, out var type) &&
+                case { } expression when semanticModel.TryGetType(expression, cancellationToken, out var type) &&
                                          type is IArrayTypeSymbol { ElementType: { SpecialType: SpecialType.System_Object } }:
-                    return Array.TryGetValues(expression, context, out values);
+                    return Array.TryGetValues(expression, semanticModel, cancellationToken, out values);
             }
 
             for (var i = startIndex; i < arguments.Count; i++)
@@ -188,7 +189,7 @@
             return true;
         }
 
-        private static bool? TryFindConstructor(INamedTypeSymbol type, ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context)
+        private static bool? TryFindConstructor(INamedTypeSymbol type, ImmutableArray<ExpressionSyntax> values, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             if (type == null)
             {
@@ -203,7 +204,7 @@
                     continue;
                 }
 
-                switch (Arguments.TryFindFirstMisMatch(constructor.Parameters, values, context, out _))
+                switch (Arguments.TryFindFirstMisMatch(constructor.Parameters, values, semanticModel, cancellationToken, out _))
                 {
                     case false:
                         if (foundMatch)
