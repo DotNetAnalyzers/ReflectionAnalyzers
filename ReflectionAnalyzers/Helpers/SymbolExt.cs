@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using Microsoft.CodeAnalysis;
@@ -7,21 +7,14 @@ namespace ReflectionAnalyzers
     {
         internal static bool IsGenericDefinition(this ISymbol symbol)
         {
-            switch (symbol)
+            return symbol switch
             {
-                case INamedTypeSymbol type:
-                    if (type.ContainingType is INamedTypeSymbol containingType)
-                    {
-                        return IsGenericDefinition(containingType) ||
-                               IsGenericDefinition(type.TypeArguments);
-                    }
-
-                    return IsGenericDefinition(type.TypeArguments);
-                case IMethodSymbol method:
-                    return IsGenericDefinition(method.TypeArguments);
-                default:
-                    return false;
-            }
+                INamedTypeSymbol { ContainingType: { } containingType } type => IsGenericDefinition(containingType) ||
+                                                                                IsGenericDefinition(type.TypeArguments),
+                INamedTypeSymbol type => IsGenericDefinition(type.TypeArguments),
+                IMethodSymbol method => IsGenericDefinition(method.TypeArguments),
+                _ => false,
+            };
         }
 
         internal static bool IsGenericDefinition(this INamedTypeSymbol symbol)
@@ -31,7 +24,7 @@ namespace ReflectionAnalyzers
                 return false;
             }
 
-            if (symbol.ContainingType is INamedTypeSymbol containingType)
+            if (symbol.ContainingType is { } containingType)
             {
                 return IsGenericDefinition(containingType) ||
                        IsGenericDefinition(symbol.TypeArguments);
