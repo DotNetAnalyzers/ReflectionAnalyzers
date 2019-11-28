@@ -4,10 +4,8 @@
 
     public static class REFL017DontUseNameofWrongMember
     {
-        public const string DiagnosticId = "REFL017";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL017",
             title: "Don't use name of wrong member.",
             messageFormat: "Don't use name of wrong member. Expected: {0}",
             category: AnalyzerCategory.SystemReflection,

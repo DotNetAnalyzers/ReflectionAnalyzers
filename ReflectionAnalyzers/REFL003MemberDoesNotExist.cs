@@ -1,13 +1,11 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
     public static class REFL003MemberDoesNotExist
     {
-        public const string DiagnosticId = "REFL003";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL003",
             title: "The member does not exist.",
             messageFormat: "The type {0} does not have a member named {1}.",
             category: AnalyzerCategory.SystemReflection,

@@ -14,7 +14,7 @@
     internal class CallMakeGenericMethodFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL035DontInvokeGenericDefinition.DiagnosticId);
+            "REFL035");
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

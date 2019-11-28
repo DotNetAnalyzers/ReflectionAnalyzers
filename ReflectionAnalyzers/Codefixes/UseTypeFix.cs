@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers
     internal class UseTypeFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL041CreateDelegateType.DiagnosticId);
+            "REFL041");
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

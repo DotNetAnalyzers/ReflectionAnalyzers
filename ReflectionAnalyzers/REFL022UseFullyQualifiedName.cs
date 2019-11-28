@@ -4,10 +4,8 @@
 
     public static class REFL022UseFullyQualifiedName
     {
-        public const string DiagnosticId = "REFL022";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL022",
             title: "Use fully qualified name.",
             messageFormat: "Use fully qualified name.",
             category: AnalyzerCategory.SystemReflection,

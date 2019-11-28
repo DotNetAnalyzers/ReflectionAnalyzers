@@ -4,10 +4,8 @@
 
     public static class REFL045InsufficientFlags
     {
-        public const string DiagnosticId = "REFL045";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL045",
             title: "These flags are insufficient to match any members.",
             messageFormat: "These flags are insufficient to match any members.",
             category: AnalyzerCategory.SystemReflection,

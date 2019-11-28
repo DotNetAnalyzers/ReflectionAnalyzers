@@ -4,10 +4,8 @@
 
     public static class REFL012PreferIsDefined
     {
-        public const string DiagnosticId = "REFL012";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL012",
             title: "Prefer Attribute.IsDefined().",
             messageFormat: "Prefer Attribute.IsDefined().",
             category: AnalyzerCategory.SystemReflection,

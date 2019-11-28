@@ -1,13 +1,11 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
 
     public static class REFL002DiscardReturnValue
     {
-        public const string DiagnosticId = "REFL002";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL002",
             title: "Discard the return value.",
             messageFormat: "Discard the return value.",
             category: AnalyzerCategory.SystemReflection,

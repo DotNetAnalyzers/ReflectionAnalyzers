@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers
     internal class PreferNullFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL024PreferNullOverEmptyArray.DiagnosticId);
+            "REFL024");
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

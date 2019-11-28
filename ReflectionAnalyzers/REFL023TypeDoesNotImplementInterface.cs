@@ -4,10 +4,8 @@
 
     public static class REFL023TypeDoesNotImplementInterface
     {
-        public const string DiagnosticId = "REFL023";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL023",
             title: "The type does not implement the interface.",
             messageFormat: "The type does not implement the interface.",
             category: AnalyzerCategory.SystemReflection,

@@ -4,10 +4,8 @@
 
     public static class REFL020AmbiguousMatchInterface
     {
-        public const string DiagnosticId = "REFL020";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL020",
             title: "More than one interface is matching the name.",
             messageFormat: "More than one interface is matching the name.",
             category: AnalyzerCategory.SystemReflection,

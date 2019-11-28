@@ -4,10 +4,8 @@
 
     public static class REFL034DontMakeGeneric
     {
-        public const string DiagnosticId = "REFL034";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL034",
             title: "Don't call MakeGeneric when not a generic definition.",
             messageFormat: "{0}",
             category: AnalyzerCategory.SystemReflection,

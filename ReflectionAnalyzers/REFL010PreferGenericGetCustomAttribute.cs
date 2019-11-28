@@ -4,10 +4,8 @@
 
     public static class REFL010PreferGenericGetCustomAttribute
     {
-        public const string DiagnosticId = "REFL010";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL010",
             title: "Prefer the generic extension method GetCustomAttribute<T>.",
             messageFormat: "Prefer the generic extension method GetCustomAttribute<{0}>.",
             category: AnalyzerCategory.SystemReflection,

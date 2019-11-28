@@ -4,10 +4,8 @@
 
     public static class REFL007BindingFlagsOrder
     {
-        public const string DiagnosticId = "REFL007";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL007",
             title: "The binding flags are not in the expected order.",
             messageFormat: "The binding flags are not in the expected order.{0}",
             category: AnalyzerCategory.SystemReflection,

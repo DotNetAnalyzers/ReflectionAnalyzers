@@ -4,10 +4,8 @@
 
     public static class REFL025ArgumentsDontMatchParameters
     {
-        public const string DiagnosticId = "REFL025";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL025",
             title: "Use correct arguments.",
             messageFormat: "Use correct arguments.",
             category: AnalyzerCategory.SystemReflection,

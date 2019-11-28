@@ -4,10 +4,8 @@
 
     public static class REFL027PreferEmptyTypes
     {
-        public const string DiagnosticId = "REFL027";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL027",
             title: "Prefer Type.EmptyTypes.",
             messageFormat: "Prefer Type.EmptyTypes.",
             category: AnalyzerCategory.SystemReflection,

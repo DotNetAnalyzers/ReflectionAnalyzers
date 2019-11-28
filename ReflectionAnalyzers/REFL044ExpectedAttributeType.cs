@@ -4,10 +4,8 @@
 
     public static class REFL044ExpectedAttributeType
     {
-        public const string DiagnosticId = "REFL044";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL044",
             title: "Expected attribute type.",
             messageFormat: "Expected attribute type.",
             category: AnalyzerCategory.SystemReflection,

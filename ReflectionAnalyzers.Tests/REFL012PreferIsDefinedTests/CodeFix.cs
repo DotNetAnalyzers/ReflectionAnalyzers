@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
         private static readonly CodeFixProvider Fix = new UseIsDefinedFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL012PreferIsDefined.DiagnosticId);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL012");
 
         [Test]
         public static void AttributeGetCustomAttributeEqualsNull()

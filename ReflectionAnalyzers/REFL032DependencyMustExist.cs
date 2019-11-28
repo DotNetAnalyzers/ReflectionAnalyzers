@@ -4,10 +4,8 @@
 
     public static class REFL032DependencyMustExist
     {
-        public const string DiagnosticId = "REFL032";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL032",
             title: "The dependency does not exist.",
             messageFormat: "The dependency does not exist.",
             category: AnalyzerCategory.SystemReflection,

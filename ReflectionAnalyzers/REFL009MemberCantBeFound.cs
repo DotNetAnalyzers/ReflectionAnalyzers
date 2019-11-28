@@ -4,10 +4,8 @@
 
     public static class REFL009MemberCantBeFound
     {
-        public const string DiagnosticId = "REFL009";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL009",
             title: "The referenced member is not known to exist.",
             messageFormat: "The referenced member {0} is not known to exist in {1}.",
             category: AnalyzerCategory.SystemReflection,

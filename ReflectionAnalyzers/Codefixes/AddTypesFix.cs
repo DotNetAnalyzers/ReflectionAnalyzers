@@ -20,7 +20,7 @@
                                                                            .WithAdditionalAnnotations(Formatter.Annotation);
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL029MissingTypes.DiagnosticId);
+            "REFL029");
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

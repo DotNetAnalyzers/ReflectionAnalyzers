@@ -4,10 +4,8 @@
 
     public static class REFL021TypeDoesNotExist
     {
-        public const string DiagnosticId = "REFL021";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL021",
             title: "The type does not exist.",
             messageFormat: "The type does not exist.",
             category: AnalyzerCategory.SystemReflection,

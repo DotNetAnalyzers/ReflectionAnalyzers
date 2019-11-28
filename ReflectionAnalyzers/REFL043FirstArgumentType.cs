@@ -4,10 +4,8 @@
 
     public static class REFL043FirstArgumentType
     {
-        public const string DiagnosticId = "REFL043";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL043",
             title: "First argument must match type.",
             messageFormat: "First argument must be of type {0}.",
             category: AnalyzerCategory.SystemReflection,

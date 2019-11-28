@@ -4,10 +4,8 @@
 
     public static class REFL005WrongBindingFlags
     {
-        public const string DiagnosticId = "REFL005";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL005",
             title: "There is no member matching the filter.",
             messageFormat: "There is no member matching the filter.{0}",
             category: AnalyzerCategory.SystemReflection,

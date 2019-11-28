@@ -4,10 +4,8 @@
 
     public static class REFL028CastReturnValueToCorrectType
     {
-        public const string DiagnosticId = "REFL028";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL028",
             title: "Cast return value to correct type.",
             messageFormat: "Cast return value to {0}.",
             category: AnalyzerCategory.SystemReflection,

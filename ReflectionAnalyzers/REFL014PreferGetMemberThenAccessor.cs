@@ -4,10 +4,8 @@
 
     public static class REFL014PreferGetMemberThenAccessor
     {
-        public const string DiagnosticId = "REFL014";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL014",
             title: "Prefer GetMember().AccessorMethod.",
             messageFormat: "Prefer {0}.",
             category: AnalyzerCategory.SystemReflection,

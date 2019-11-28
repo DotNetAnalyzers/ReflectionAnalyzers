@@ -4,10 +4,8 @@
 
     public static class REFL038PreferRunClassConstructor
     {
-        public const string DiagnosticId = "REFL038";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL038",
             title: "Prefer RuntimeHelpers.RunClassConstructor.",
             messageFormat: "Prefer RuntimeHelpers.RunClassConstructor.",
             category: AnalyzerCategory.SystemReflection,

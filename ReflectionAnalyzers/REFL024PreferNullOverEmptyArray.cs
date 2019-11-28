@@ -4,10 +4,8 @@
 
     public static class REFL024PreferNullOverEmptyArray
     {
-        public const string DiagnosticId = "REFL024";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL024",
             title: "Prefer null over empty array.",
             messageFormat: "Prefer null over empty array.",
             category: AnalyzerCategory.SystemReflection,

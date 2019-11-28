@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers
         private static readonly UsingDirectiveSyntax SystemRuntimeCompilerServices = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Runtime.CompilerServices"));
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL038PreferRunClassConstructor.DiagnosticId);
+            "REFL038");
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

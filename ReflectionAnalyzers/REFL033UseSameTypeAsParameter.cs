@@ -4,10 +4,8 @@
 
     public static class REFL033UseSameTypeAsParameter
     {
-        public const string DiagnosticId = "REFL033";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL033",
             title: "Use the same type as the parameter.",
             messageFormat: "Use the same type as the parameter. Expected: {0}.",
             category: AnalyzerCategory.SystemReflection,

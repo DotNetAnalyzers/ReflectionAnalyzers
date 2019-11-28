@@ -4,10 +4,8 @@
 
     public static class REFL046DefaultMemberMustExist
     {
-        public const string DiagnosticId = "REFL046";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL046",
             title: "The specified default member does not exist.",
             messageFormat: "The specified default member does not exist.",
             category: AnalyzerCategory.SystemReflection,

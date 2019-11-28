@@ -4,10 +4,8 @@
 
     public static class REFL042FirstArgumentIsReferenceType
     {
-        public const string DiagnosticId = "REFL042";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL042",
             title: "First argument must be reference type.",
             messageFormat: "First argument must be reference type.",
             category: AnalyzerCategory.SystemReflection,

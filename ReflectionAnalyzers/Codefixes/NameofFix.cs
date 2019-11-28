@@ -15,8 +15,8 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL016UseNameof.DiagnosticId,
-            REFL017DontUseNameofWrongMember.DiagnosticId);
+            "REFL016",
+            "REFL017");
 
         /// <inheritdoc/>
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)

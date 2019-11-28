@@ -4,10 +4,8 @@
 
     public static class REFL030UseCorrectObj
     {
-        public const string DiagnosticId = "REFL030";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL030",
             title: "Use correct obj parameter.",
             messageFormat: "{0}",
             category: AnalyzerCategory.SystemReflection,

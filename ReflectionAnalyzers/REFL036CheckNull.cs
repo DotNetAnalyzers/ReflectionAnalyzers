@@ -4,10 +4,8 @@
 
     public static class REFL036CheckNull
     {
-        public const string DiagnosticId = "REFL036";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL036",
             title: "Pass 'throwOnError: true' or check if null.",
             messageFormat: "Pass 'throwOnError: true' or check if null.",
             category: AnalyzerCategory.SystemReflection,

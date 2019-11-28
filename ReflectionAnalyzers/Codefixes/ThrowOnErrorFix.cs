@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers
     internal class ThrowOnErrorFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL036CheckNull.DiagnosticId);
+            "REFL036");
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

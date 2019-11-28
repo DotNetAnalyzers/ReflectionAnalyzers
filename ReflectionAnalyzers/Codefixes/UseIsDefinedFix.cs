@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers
     internal class UseIsDefinedFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            REFL012PreferIsDefined.DiagnosticId);
+            "REFL012");
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

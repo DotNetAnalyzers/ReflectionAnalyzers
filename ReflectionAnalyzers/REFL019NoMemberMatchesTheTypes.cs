@@ -4,10 +4,8 @@
 
     public static class REFL019NoMemberMatchesTheTypes
     {
-        public const string DiagnosticId = "REFL019";
-
         public static readonly DiagnosticDescriptor Descriptor = Descriptors.Create(
-            id: DiagnosticId,
+            id: "REFL019",
             title: "No member matches the types.",
             messageFormat: "No member matches the types.",
             category: AnalyzerCategory.SystemReflection,

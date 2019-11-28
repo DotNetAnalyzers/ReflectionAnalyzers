@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
         public static class GetCustomAttribute
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL044ExpectedAttributeType.DiagnosticId);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL044");
 
             [Test]
             public static void AttributeGetCustomAttribute()
