@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -10,9 +10,9 @@ namespace ReflectionAnalyzers
     internal struct GenericTypeArgument
     {
         internal readonly string MetadataName;
-        internal readonly IReadOnlyList<GenericTypeArgument> TypeArguments;
+        internal readonly IReadOnlyList<GenericTypeArgument>? TypeArguments;
 
-        private GenericTypeArgument(string metadataName, IReadOnlyList<GenericTypeArgument> typeArguments)
+        private GenericTypeArgument(string metadataName, IReadOnlyList<GenericTypeArgument>? typeArguments)
         {
             this.MetadataName = metadataName;
             this.TypeArguments = typeArguments;

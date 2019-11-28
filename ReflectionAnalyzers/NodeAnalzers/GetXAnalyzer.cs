@@ -490,13 +490,14 @@
                     }
                 }
                 else if (member.Match == FilterMatch.PotentiallyInvisible &&
+                         member.ReflectedType is { } &&
                          types.Argument == null &&
                          flags.Explicit.HasFlagFast(BindingFlags.NonPublic))
                 {
                     if (TryGetInvisibleMemberName("get_", out var memberName) ||
                         TryGetInvisibleMemberName("set_", out memberName))
                     {
-                        return TryGetPropertyAccessor(memberName, flags.Explicit, null, out callText);
+                        return TryGetPropertyAccessor(memberName, flags.Explicit, member.ReflectedType, out callText);
                     }
 
                     if (TryGetInvisibleMemberName("add_", out memberName) ||
@@ -592,7 +593,7 @@
                     : $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)})";
             }
 
-            bool TryGetInvisibleMemberName(string prefix, out string memberName)
+            bool TryGetInvisibleMemberName(string prefix, out string? memberName)
             {
                 if (name.MetadataName is { } metadataName &&
                     metadataName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
