@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.Helpers.Reflection
+﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System.Threading;
     using Gu.Roslyn.Asserts;
@@ -66,8 +66,7 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindExpression(expression);
-            var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true, Type.TryGet(node, context, out var type, out var source));
+            Assert.AreEqual(true, Type.TryGet(node, semanticModel, CancellationToken.None, out var type, out var source));
             Assert.AreEqual(expected, type.ToDisplayString());
             Assert.AreEqual(expectedSource, source.ToString());
         }
@@ -105,8 +104,7 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = ((MemberAccessExpressionSyntax)syntaxTree.FindInvocation("ToString()").Expression).Expression;
-            var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true, Type.TryGet(node, context, out var type, out var source));
+            Assert.AreEqual(true, Type.TryGet(node, semanticModel, CancellationToken.None, out var type, out var source));
             Assert.AreEqual("int", type.ToDisplayString());
             Assert.AreEqual("typeof(int)", source.ToString());
         }
@@ -144,8 +142,7 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindExpression(expression);
-            var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(false, Type.TryGet(node, context, out _, out _));
+            Assert.AreEqual(false, Type.TryGet(node, semanticModel, CancellationToken.None, out _, out _));
         }
     }
 }

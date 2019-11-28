@@ -262,12 +262,12 @@
             name = default;
             if (context.Node is InvocationExpressionSyntax candidate)
             {
-                return GetX.TryMatchGetConstructor(candidate, context, out member, out flags, out types) ||
-                       GetX.TryMatchGetEvent(candidate, context, out member, out name, out flags) ||
-                       GetX.TryMatchGetField(candidate, context, out member, out name, out flags) ||
-                       GetX.TryMatchGetMethod(candidate, context, out member, out name, out flags, out types) ||
-                       GetX.TryMatchGetNestedType(candidate, context, out member, out name, out flags) ||
-                       GetX.TryMatchGetProperty(candidate, context, out member, out name, out flags, out types);
+                return GetX.TryMatchGetConstructor(candidate, context.SemanticModel, context.CancellationToken, out member, out flags, out types) ||
+                       GetX.TryMatchGetEvent(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags) ||
+                       GetX.TryMatchGetField(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags) ||
+                       GetX.TryMatchGetMethod(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags, out types) ||
+                       GetX.TryMatchGetNestedType(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags) ||
+                       GetX.TryMatchGetProperty(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags, out types);
             }
 
             member = default;

@@ -1,6 +1,7 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -12,10 +13,10 @@
     /// </summary>
     internal static class GetX
     {
-        internal static bool TryGetConstructorInfo(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IMethodSymbol? constructor)
+        internal static bool TryGetConstructorInfo(MemberAccessExpressionSyntax memberAccess, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out IMethodSymbol? constructor)
         {
-            if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetConstructor, context, out var invocation) &&
-                TryMatchGetConstructor(invocation, context, out var member, out _, out _) &&
+            if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetConstructor, semanticModel, cancellationToken, out var invocation) &&
+                TryMatchGetConstructor(invocation, semanticModel, cancellationToken, out var member, out _, out _) &&
                 member is { Match: FilterMatch.Single, Symbol: IMethodSymbol match })
             {
                 constructor = match;
@@ -26,10 +27,10 @@
             return false;
         }
 
-        internal static bool TryGetMethodInfo(MemberAccessExpressionSyntax memberAccess, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IMethodSymbol? method)
+        internal static bool TryGetMethodInfo(MemberAccessExpressionSyntax memberAccess, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out IMethodSymbol? method)
         {
-            if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetMethod, context, out var invocation) &&
-                TryMatchGetMethod(invocation, context, out var member, out _, out _, out _) &&
+            if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetMethod, semanticModel, cancellationToken, out var invocation) &&
+                TryMatchGetMethod(invocation, semanticModel, cancellationToken, out var member, out _, out _, out _) &&
                 member is { Match: FilterMatch.Single, Symbol: IMethodSymbol match })
             {
                 method = match;
@@ -40,11 +41,11 @@
             return false;
         }
 
-        internal static bool TryGetNestedType(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out INamedTypeSymbol? type)
+        internal static bool TryGetNestedType(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out INamedTypeSymbol? type)
         {
             if (expression is MemberAccessExpressionSyntax memberAccess &&
-                TryFindInvocation(memberAccess, KnownSymbol.Type.GetNestedType, context, out var invocation) &&
-                TryMatchGetNestedType(invocation, context, out var nestedType, out _, out _) &&
+                TryFindInvocation(memberAccess, KnownSymbol.Type.GetNestedType, semanticModel, cancellationToken, out var invocation) &&
+                TryMatchGetNestedType(invocation, semanticModel, cancellationToken, out var nestedType, out _, out _) &&
                 nestedType is { Match: FilterMatch.Single, Symbol: INamedTypeSymbol namedNested })
             {
                 type = namedNested;
@@ -58,24 +59,24 @@
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
         /// </summary>
-        internal static bool TryMatchGetConstructor(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Flags flags, out Types types)
+        internal static bool TryMatchGetConstructor(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Flags flags, out Types types)
         {
             if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, context.SemanticModel, context.CancellationToken, out var getX))
+                invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, semanticModel, cancellationToken, out var getX))
             {
-                if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
+                if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
-                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
-                    Types.TryCreate(invocation, getX, context, out types))
+                    Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
+                    Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types))
                 {
-                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, context.Compilation, out member);
+                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, semanticModel.Compilation, out member);
                 }
 
-                if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
+                if (Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
                     flags.AreInSufficient)
                 {
                     member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
-                    _ = Types.TryCreate(invocation, getX, context, out types);
+                    _ = Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types);
                     return true;
                 }
             }
@@ -89,41 +90,41 @@
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetEvent.
         /// </summary>
-        internal static bool TryMatchGetEvent(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
+        internal static bool TryMatchGetEvent(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags)
         {
-            return TryMatchGetX(invocation, KnownSymbol.Type.GetEvent, context, out member, out name, out flags);
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetEvent, semanticModel, cancellationToken, out member, out name, out flags);
         }
 
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetField.
         /// </summary>
-        internal static bool TryMatchGetField(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
+        internal static bool TryMatchGetField(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags)
         {
-            return TryMatchGetX(invocation, KnownSymbol.Type.GetField, context, out member, out name, out flags);
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetField, semanticModel, cancellationToken, out member, out name, out flags);
         }
 
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
         /// </summary>
-        internal static bool TryMatchGetMethod(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
+        internal static bool TryMatchGetMethod(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
             if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetMethod, context.SemanticModel, context.CancellationToken, out var getX))
+                invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, cancellationToken, out var getX))
             {
-                if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
+                if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
-                    Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name) &&
-                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
-                    Types.TryCreate(invocation, getX, context, out types))
+                    Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name) &&
+                    Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
+                    Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types))
                 {
-                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context.Compilation, out member);
+                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, semanticModel.Compilation, out member);
                 }
 
-                if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
+                if (Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
                     flags.AreInSufficient)
                 {
-                    _ = Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name);
-                    _ = Types.TryCreate(invocation, getX, context, out types);
+                    _ = Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name);
+                    _ = Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types);
                     member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
                     return true;
                 }
@@ -139,33 +140,33 @@
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetNestedType.
         /// </summary>
-        internal static bool TryMatchGetNestedType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
+        internal static bool TryMatchGetNestedType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags)
         {
-            return TryMatchGetX(invocation, KnownSymbol.Type.GetNestedType, context, out member, out name, out flags);
+            return TryMatchGetX(invocation, KnownSymbol.Type.GetNestedType, semanticModel, cancellationToken, out member, out name, out flags);
         }
 
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetProperty.
         /// </summary>
-        internal static bool TryMatchGetProperty(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags, out Types types)
+        internal static bool TryMatchGetProperty(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
             if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetProperty, context.SemanticModel, context.CancellationToken, out var getX))
+                invocation.TryGetTarget(KnownSymbol.Type.GetProperty, semanticModel, cancellationToken, out var getX))
             {
-                if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
+                if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
-                    Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name) &&
-                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
-                    Types.TryCreate(invocation, getX, context, out types))
+                    Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name) &&
+                    Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
+                    Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types))
                 {
-                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context.Compilation, out member);
+                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, semanticModel.Compilation, out member);
                 }
 
-                if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
+                if (Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
                     flags.AreInSufficient)
                 {
-                    _ = Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name);
-                    _ = Types.TryCreate(invocation, getX, context, out types);
+                    _ = Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name);
+                    _ = Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types);
                     member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
                     return true;
                 }
@@ -178,17 +179,19 @@
             return false;
         }
 
-        private static bool TryFindInvocation(MemberAccessExpressionSyntax memberAccess, QualifiedMethod expected, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out InvocationExpressionSyntax? invocation)
+        private static bool TryFindInvocation(MemberAccessExpressionSyntax memberAccess, QualifiedMethod expected, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out InvocationExpressionSyntax? invocation)
         {
             switch (memberAccess.Expression)
             {
-                case InvocationExpressionSyntax candidate when candidate.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out _):
+                case InvocationExpressionSyntax candidate
+                    when candidate.TryGetTarget(expected, semanticModel, cancellationToken, out _):
                     invocation = candidate;
                     return true;
-                case IdentifierNameSyntax identifierName when context.SemanticModel.TryGetSymbol(identifierName, context.CancellationToken, out ILocalSymbol? local) &&
-                                                              AssignedValue.TryGetSingle(local, context.SemanticModel, context.CancellationToken, out var expression) &&
-                                                              expression is InvocationExpressionSyntax candidate &&
-                                                              candidate.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out _):
+                case IdentifierNameSyntax identifierName
+                    when semanticModel.TryGetSymbol(identifierName, cancellationToken, out ILocalSymbol? local) &&
+                         AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var expression) &&
+                         expression is InvocationExpressionSyntax candidate &&
+                         candidate.TryGetTarget(expected, semanticModel, cancellationToken, out _):
                     invocation = candidate;
                     return true;
             }
@@ -236,24 +239,24 @@
         /// <summary>
         /// Handles GetField, GetEvent, GetMember, GetMethod...
         /// </summary>
-        private static bool TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SyntaxNodeAnalysisContext context, out ReflectedMember member, out Name name, out Flags flags)
+        private static bool TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags)
         {
             if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(getXMethod, context.SemanticModel, context.CancellationToken, out var getX))
+                invocation.TryGetTarget(getXMethod, semanticModel, cancellationToken, out var getX))
             {
-                if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
-                    Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name) &&
-                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
-                    ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, Types.Any, context.Compilation, out member))
+                if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
+                    Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name) &&
+                    Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
+                    ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, Types.Any, semanticModel.Compilation, out member))
                 {
                     return true;
                 }
 
                 if (getXMethod.Name != "GetNestedType" &&
-                    Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
+                    Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
                     flags.AreInSufficient)
                 {
-                    _ = Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name);
+                    _ = Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name);
                     member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
                     return true;
                 }

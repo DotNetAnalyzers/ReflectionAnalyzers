@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.Helpers.Reflection
+﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System;
     using System.Threading;
@@ -36,8 +36,7 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation(call);
-            var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true, ReflectedMember.TryGetType(node, context, out var type, out var source));
+            Assert.AreEqual(true, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out var type, out var source));
             Assert.AreEqual(expected, type.MetadataName);
             Assert.AreEqual(expectedSource, source.ToString());
         }
@@ -70,8 +69,7 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
-            var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true, ReflectedMember.TryGetType(node, context, out var type, out var instance));
+            Assert.AreEqual(true, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out var type, out var instance));
             Assert.AreEqual(expected, type.MetadataName);
             Assert.AreEqual(typeExpression, instance.ToString());
         }
@@ -98,8 +96,7 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindInvocation("GetMethod");
-            var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(false, ReflectedMember.TryGetType(node, context, out _, out _));
+            Assert.AreEqual(false, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out _, out _));
         }
 
         [Test]

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                TypeArguments.TryCreate(invocation, context, out var typeArguments))
+                TypeArguments.TryCreate(invocation, context.SemanticModel, context.CancellationToken, out var typeArguments))
             {
                 if (typeArguments.Symbol.IsGenericDefinition() &&
                     typeArguments.Parameters.Length != typeArguments.Arguments.Length)
@@ -38,7 +38,7 @@ namespace ReflectionAnalyzers
                             invocation.ArgumentList.GetLocation(),
                             $"The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has {typeArguments.Parameters.Length} parameter{PluralS(typeArguments.Parameters.Length)} but {typeArguments.Arguments.Length} argument{PluralS(typeArguments.Arguments.Length)} are passed in."));
                 }
-                else if (typeArguments.TryFindConstraintViolation(context, out var argument, out var parameter))
+                else if (typeArguments.TryFindConstraintViolation(context.SemanticModel, context.CancellationToken, out var argument, out var parameter))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(

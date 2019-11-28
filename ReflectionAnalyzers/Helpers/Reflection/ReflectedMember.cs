@@ -1,6 +1,7 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -51,12 +52,12 @@
         /// <param name="result">The type.</param>
         /// <param name="typeSource">The expression the type was ultimately produced from.</param>
         /// <returns>True if the type could be determined.</returns>
-        internal static bool TryGetType(InvocationExpressionSyntax getX, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out INamedTypeSymbol? result, [NotNullWhen(true)] out ExpressionSyntax? typeSource)
+        internal static bool TryGetType(InvocationExpressionSyntax getX, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out INamedTypeSymbol? result, [NotNullWhen(true)] out ExpressionSyntax? typeSource)
         {
             result = null;
             typeSource = null;
             if (getX.Expression is MemberAccessExpressionSyntax memberAccess &&
-                Type.TryGet(memberAccess.Expression, context, out var type, out typeSource))
+                Type.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out var type, out typeSource))
             {
                 result = type as INamedTypeSymbol;
             }

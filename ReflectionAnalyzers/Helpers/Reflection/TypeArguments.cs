@@ -8,7 +8,6 @@
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     internal struct TypeArguments
     {
@@ -23,14 +22,14 @@
             this.Arguments = arguments;
         }
 
-        internal static bool TryCreate(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeArguments typeArguments)
+        internal static bool TryCreate(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out TypeArguments typeArguments)
         {
             if (invocation?.ArgumentList is { } argumentList &&
-                (TryGetTypeParameters(invocation, context, out var symbol, out var parameters) ||
-                 TryGetMethodParameters(invocation, context, out symbol, out parameters)))
+                (TryGetTypeParameters(invocation, semanticModel, cancellationToken, out var symbol, out var parameters) ||
+                 TryGetMethodParameters(invocation, semanticModel, cancellationToken, out symbol, out parameters)))
             {
                 if (argumentList.Arguments.TrySingle(out var argument) &&
-                    Array.TryGetValues(argument.Expression, context.SemanticModel, context.CancellationToken, out var arrayExpressions))
+                    Array.TryGetValues(argument.Expression, semanticModel, cancellationToken, out var arrayExpressions))
                 {
                     typeArguments = new TypeArguments(symbol, parameters, arrayExpressions);
                     return true;
@@ -61,16 +60,16 @@
             {
                 return argumentList.Arguments.TrySingle(out var single) &&
                        single.Expression is IdentifierNameSyntax identifierName &&
-                       context.SemanticModel.TryGetType(identifierName, context.CancellationToken, out var type) &&
+                       semanticModel.TryGetType(identifierName, cancellationToken, out var type) &&
                        type is IArrayTypeSymbol;
             }
         }
 
-        internal bool TryFindConstraintViolation(SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ExpressionSyntax? argument, [NotNullWhen(true)] out ITypeParameterSymbol? parameter)
+        internal bool TryFindConstraintViolation(SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ExpressionSyntax? argument, [NotNullWhen(true)] out ITypeParameterSymbol? parameter)
         {
             for (var i = 0; i < this.Parameters.Length; i++)
             {
-                if (!this.SatisfiesConstraints(this.Arguments[i], this.Parameters[i], context))
+                if (!this.SatisfiesConstraints(this.Arguments[i], this.Parameters[i], semanticModel, cancellationToken))
                 {
                     argument = this.Arguments[i];
                     parameter = this.Parameters[i];
@@ -83,7 +82,7 @@
             return false;
         }
 
-        internal bool TryGetArgumentsTypes(SyntaxNodeAnalysisContext context, out ITypeSymbol[] types)
+        internal bool TryGetArgumentsTypes(SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol[] types)
         {
             if (this.Arguments.Length == 0)
             {
@@ -95,7 +94,7 @@
             for (var i = 0; i < this.Arguments.Length; i++)
             {
                 var argument = this.Arguments[i];
-                if (Type.TryGet(argument, context, out var type, out _))
+                if (Type.TryGet(argument, semanticModel, cancellationToken, out var type, out _))
                 {
                     types[i] = type;
                 }
@@ -109,12 +108,12 @@
             return true;
         }
 
-        private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
+        private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
-            if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context.SemanticModel, context.CancellationToken) &&
+            if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, semanticModel, cancellationToken) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                if (Type.TryGet(memberAccess.Expression, context, out var type, out _) &&
+                if (Type.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out var type, out _) &&
                     type is INamedTypeSymbol namedType)
                 {
                     symbol = type;
@@ -134,12 +133,12 @@
             return false;
         }
 
-        private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
+        private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
-            if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context.SemanticModel, context.CancellationToken) &&
+            if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, semanticModel, cancellationToken) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
             {
-                if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
+                if (GetX.TryGetMethodInfo(memberAccess, semanticModel, cancellationToken, out var method))
                 {
                     symbol = method;
                     parameters = method.TypeParameters;
@@ -160,9 +159,9 @@
                    arrayType.ElementType == KnownSymbol.Type;
         }
 
-        private bool SatisfiesConstraints(ExpressionSyntax expression, ITypeParameterSymbol typeParameter, SyntaxNodeAnalysisContext context)
+        private bool SatisfiesConstraints(ExpressionSyntax expression, ITypeParameterSymbol typeParameter, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            if (Type.TryGet(expression, context, out var type, out _))
+            if (Type.TryGet(expression, semanticModel, cancellationToken, out var type, out _))
             {
                 if (typeParameter.HasConstructorConstraint)
                 {
@@ -205,7 +204,7 @@
                 {
                     switch (constraintType)
                     {
-                        case ITypeParameterSymbol parameter when this.TryFindArgumentType(parameter, context, out var argumentType):
+                        case ITypeParameterSymbol parameter when this.TryFindArgumentType(parameter, semanticModel, cancellationToken, out var argumentType):
                             if (!IsAssignableTo(type, argumentType))
                             {
                                 return false;
@@ -296,18 +295,18 @@
 
             bool IsAssignableTo(ITypeSymbol source, ITypeSymbol destination)
             {
-                var conversion = context.Compilation.ClassifyConversion(source, destination);
+                var conversion = semanticModel.Compilation.ClassifyConversion(source, destination);
                 return conversion.IsIdentity ||
                        conversion.IsImplicit;
             }
         }
 
-        private bool TryFindArgumentType(ITypeParameterSymbol parameter, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ITypeSymbol? type)
+        private bool TryFindArgumentType(ITypeParameterSymbol parameter, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ITypeSymbol? type)
         {
             var i = this.Parameters.IndexOf(parameter);
             if (i >= 0)
             {
-                return Type.TryGet(this.Arguments[i], context, out type, out _);
+                return Type.TryGet(this.Arguments[i], semanticModel, cancellationToken, out type, out _);
             }
 
             type = null;

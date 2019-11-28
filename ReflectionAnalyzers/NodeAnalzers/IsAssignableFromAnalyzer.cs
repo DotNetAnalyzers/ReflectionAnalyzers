@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
@@ -40,7 +40,7 @@ namespace ReflectionAnalyzers
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
                 invocation.TryGetTarget(KnownSymbol.Type.IsAssignableFrom, QualifiedParameter.Create(KnownSymbol.Type), context.SemanticModel, context.CancellationToken, out _, out var arg) &&
-                Type.TryGet(arg.Expression, context, out _, out var source) &&
+                Type.TryGet(arg.Expression, context.SemanticModel, context.CancellationToken, out _, out var source) &&
                 IsInstanceGetType(source, context.SemanticModel, context.CancellationToken, out var instance))
             {
                 context.ReportDiagnostic(

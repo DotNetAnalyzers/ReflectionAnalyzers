@@ -3,10 +3,10 @@
     using System.Collections.Immutable;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     [DebuggerDisplay("{this.Argument}")]
     internal struct Types
@@ -23,12 +23,12 @@
             this.Symbols = symbols;
         }
 
-        internal static bool TryCreate(InvocationExpressionSyntax invocation, IMethodSymbol getX, SyntaxNodeAnalysisContext context, out Types types)
+        internal static bool TryCreate(InvocationExpressionSyntax invocation, IMethodSymbol getX, SemanticModel semanticModel, CancellationToken cancellationToken, out Types types)
         {
             if (TryGetTypesArgument(invocation, getX, out var typesArg))
             {
-                if (Array.TryGetValues(typesArg.Expression, context.SemanticModel, context.CancellationToken, out var expressions) &&
-                    Array.TryGetTypes(typesArg.Expression, context, out var symbols))
+                if (Array.TryGetValues(typesArg.Expression, semanticModel, cancellationToken, out var expressions) &&
+                    Array.TryGetTypes(typesArg.Expression, semanticModel, cancellationToken, out var symbols))
                 {
                     types = new Types(typesArg, expressions, symbols);
                     return true;

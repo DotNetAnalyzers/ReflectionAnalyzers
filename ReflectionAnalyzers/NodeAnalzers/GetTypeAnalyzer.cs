@@ -85,7 +85,7 @@
             if (invocation.ArgumentList.Arguments.Count == 0)
             {
                 nameArgument = null;
-                return Type.TryGet(invocation, context, out type, out _);
+                return Type.TryGet(invocation, context.SemanticModel, context.CancellationToken, out type, out _);
             }
 
             if (Type.TryMatchTypeGetType(invocation, context.SemanticModel, context.CancellationToken, out var typeName, out var ignoreCase))
@@ -108,7 +108,7 @@
 
             if (Type.TryMatchAssemblyGetType(invocation, context.SemanticModel, context.CancellationToken, out typeName, out ignoreCase) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                Assembly.TryGet(memberAccess.Expression, context, out var assembly))
+                Assembly.TryGet(memberAccess.Expression, context.SemanticModel, context.CancellationToken, out var assembly))
             {
                 nameArgument = typeName.Argument;
                 if (!typeName.Value.Contains("."))

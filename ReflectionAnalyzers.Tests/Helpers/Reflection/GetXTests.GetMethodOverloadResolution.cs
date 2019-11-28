@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.Helpers.Reflection
+﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System.Threading;
     using Gu.Roslyn.Asserts;
@@ -34,8 +34,7 @@ namespace N
                 var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var invocation = syntaxTree.FindInvocation("GetMethod");
-                var context = new SyntaxNodeAnalysisContext(invocation, null, semanticModel, null, null, null, CancellationToken.None);
-                Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, context, out var reflectedMember, out _, out _, out _));
+                Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, semanticModel, CancellationToken.None, out var reflectedMember, out _, out _, out _));
                 Assert.AreEqual(FilterMatch.Single, reflectedMember.Match);
                 Assert.AreEqual(expected, reflectedMember.Symbol.ToDisplayString());
             }
@@ -63,8 +62,7 @@ namespace N
                 var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var invocation = syntaxTree.FindInvocation("GetMethod");
-                var context = new SyntaxNodeAnalysisContext(invocation, null, semanticModel, null, null, null, CancellationToken.None);
-                Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, context, out var reflectedMember, out _, out _, out _));
+                Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, semanticModel, CancellationToken.None, out var reflectedMember, out _, out _, out _));
                 Assert.AreEqual(FilterMatch.WrongTypes, reflectedMember.Match);
             }
 
@@ -114,8 +112,7 @@ namespace N
                 var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var invocation = syntaxTree.FindInvocation("GetMethod");
-                var context = new SyntaxNodeAnalysisContext(invocation, null, semanticModel, null, null, null, CancellationToken.None);
-                Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, context, out var reflectedMember, out _, out _, out _));
+                Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, semanticModel, CancellationToken.None, out var reflectedMember, out _, out _, out _));
                 Assert.AreEqual(FilterMatch.Single, reflectedMember.Match);
                 Assert.AreEqual(expected, reflectedMember.Symbol.ToDisplayString());
             }
@@ -150,8 +147,7 @@ namespace N
                 var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var invocation = syntaxTree.FindInvocation("GetMethod");
-                var context = new SyntaxNodeAnalysisContext(invocation, null, semanticModel, null, null, null, CancellationToken.None);
-                Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, context, out var reflectedMember, out _, out _, out _));
+                Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, semanticModel, CancellationToken.None, out var reflectedMember, out _, out _, out _));
                 Assert.AreEqual(FilterMatch.Single, reflectedMember.Match);
                 Assert.AreEqual(expected, reflectedMember.Symbol.ToDisplayString());
             }

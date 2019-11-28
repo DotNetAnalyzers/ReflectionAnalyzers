@@ -5,7 +5,6 @@
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     internal static class Array
     {
@@ -63,9 +62,9 @@
             return true;
         }
 
-        internal static bool TryGetTypes(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
+        internal static bool TryGetTypes(ExpressionSyntax creation, SemanticModel semanticModel, CancellationToken cancellationToken, out ImmutableArray<ITypeSymbol> types)
         {
-            if (IsCreatingEmpty(creation, context.SemanticModel, context.CancellationToken))
+            if (IsCreatingEmpty(creation, semanticModel, cancellationToken))
             {
                 types = ImmutableArray<ITypeSymbol>.Empty;
                 return true;
@@ -78,7 +77,7 @@
                 case ArrayCreationExpressionSyntax { Initializer: { } initializer }:
                     return TryGetTypesFromInitializer(initializer, out types);
                 case MemberAccessExpressionSyntax memberAccess
-                    when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol) &&
+                    when semanticModel.TryGetSymbol(memberAccess, cancellationToken, out var symbol) &&
                          symbol == KnownSymbol.Type.EmptyTypes:
                     types = ImmutableArray<ITypeSymbol>.Empty;
                     return true;
@@ -91,7 +90,7 @@
                 var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(initializer.Expressions.Count);
                 for (var i = 0; i < initializer.Expressions.Count; i++)
                 {
-                    if (Type.TryGet(initializer.Expressions[i], context, out var type, out _))
+                    if (Type.TryGet(initializer.Expressions[i], semanticModel, cancellationToken, out var type, out _))
                     {
                         builder.Add(type);
                     }

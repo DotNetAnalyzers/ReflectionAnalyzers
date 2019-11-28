@@ -87,7 +87,7 @@
 
             if (createInstance.TryFindParameter(KnownSymbol.Type, out var typeParameter) &&
                 invocation.TryFindArgument(typeParameter, out var typeArg) &&
-                Type.TryGet(typeArg.Expression, context, out createdType, out var source))
+                Type.TryGet(typeArg.Expression, context.SemanticModel, context.CancellationToken, out createdType, out var source))
             {
                 typeSource = source switch
                 {

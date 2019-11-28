@@ -49,7 +49,7 @@
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL024PreferNullOverEmptyArray, parametersArg.GetLocation()));
                 }
 
-                if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
+                if (GetX.TryGetMethodInfo(memberAccess, context.SemanticModel, context.CancellationToken, out var method))
                 {
                     if (!method.ReturnsVoid &&
                         ReturnValue.ShouldCast(invocation, method.ReturnType, context.SemanticModel))
@@ -140,7 +140,7 @@
                         }
                     }
                 }
-                else if (GetX.TryGetConstructorInfo(memberAccess, context, out var ctor))
+                else if (GetX.TryGetConstructorInfo(memberAccess, context.SemanticModel, context.CancellationToken, out var ctor))
                 {
                     if (ReturnValue.ShouldCast(invocation, ctor.ReturnType, context.SemanticModel))
                     {

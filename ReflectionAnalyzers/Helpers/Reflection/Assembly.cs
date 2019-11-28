@@ -4,9 +4,9 @@
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
+    using System.Threading;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     internal static class Assembly
     {
@@ -20,14 +20,14 @@
             return false;
         }
 
-        internal static bool TryGet(ExpressionSyntax expression, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IAssemblySymbol? assembly)
+        internal static bool TryGet(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out IAssemblySymbol? assembly)
         {
             switch (expression)
             {
                 case MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "GetType" } } } candidate:
-                    return TryGet(candidate.Expression, context, out assembly);
+                    return TryGet(candidate.Expression, semanticModel, cancellationToken, out assembly);
                 case MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "Assembly" } } } candidate
-                    when Type.TryGet(candidate.Expression, context, out var typeInAssembly, out _):
+                    when Type.TryGet(candidate.Expression, semanticModel, cancellationToken, out var typeInAssembly, out _):
                     assembly = typeInAssembly.ContainingAssembly;
                     return assembly != null;
             }

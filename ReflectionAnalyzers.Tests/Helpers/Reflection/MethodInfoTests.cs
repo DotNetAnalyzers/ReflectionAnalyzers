@@ -1,9 +1,8 @@
-namespace ReflectionAnalyzers.Tests.Helpers.Reflection
+﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System.Threading;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class MethodInfoTests
@@ -44,8 +43,7 @@ namespace N
             var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindExpression(call);
-            var context = new SyntaxNodeAnalysisContext(null, null, semanticModel, null, null, null, CancellationToken.None);
-            Assert.AreEqual(true,     MethodInfo.TryGet(node, context, out var methodInfo));
+            Assert.AreEqual(true,     MethodInfo.TryGet(node, semanticModel, CancellationToken.None, out var methodInfo));
             Assert.AreEqual(expected, methodInfo.Method.ToString());
         }
     }
