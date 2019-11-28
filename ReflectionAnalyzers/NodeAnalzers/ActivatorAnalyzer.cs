@@ -60,7 +60,7 @@
                 }
 
                 if (!createInstance.IsGenericMethod &&
-                    Type.IsCastToWrongType(invocation, createdType, context, out var typeSyntax))
+                    Type.IsCastToWrongType(invocation, createdType, context.SemanticModel, context.CancellationToken, out var typeSyntax))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(

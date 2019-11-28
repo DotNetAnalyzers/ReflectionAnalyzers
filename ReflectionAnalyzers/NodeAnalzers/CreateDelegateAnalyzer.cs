@@ -60,7 +60,7 @@
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), delegateText),
                                 delegateText));
                     }
-                    else if (Type.IsCastToWrongType(invocation, delegateType, context, out var typeSyntax))
+                    else if (Type.IsCastToWrongType(invocation, delegateType, context.SemanticModel, context.CancellationToken, out var typeSyntax))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(

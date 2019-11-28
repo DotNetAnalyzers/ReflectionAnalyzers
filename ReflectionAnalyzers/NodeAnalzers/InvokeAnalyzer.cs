@@ -82,7 +82,7 @@
                         context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters, parametersArg.GetLocation()));
                     }
 
-                    if (Type.IsCastToWrongType(invocation, method.ReturnType, context, out var castType))
+                    if (Type.IsCastToWrongType(invocation, method.ReturnType, context.SemanticModel, context.CancellationToken, out var castType))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -184,7 +184,7 @@
                     else
                     {
                         if (!ctor.IsStatic &&
-                            Type.IsCastToWrongType(invocation, ctor.ContainingType, context, out var castType))
+                            Type.IsCastToWrongType(invocation, ctor.ContainingType, context.SemanticModel, context.CancellationToken, out var castType))
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(

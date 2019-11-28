@@ -106,7 +106,7 @@
                 return null;
             }
 
-            if (Type.TryMatchAssemblyGetType(invocation, context, out typeName, out ignoreCase) &&
+            if (Type.TryMatchAssemblyGetType(invocation, context.SemanticModel, context.CancellationToken, out typeName, out ignoreCase) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
                 Assembly.TryGet(memberAccess.Expression, context, out var assembly))
             {

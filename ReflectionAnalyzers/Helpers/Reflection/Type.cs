@@ -65,14 +65,15 @@
             return !recursive || HasVisibleNonPublicMembers(type.BaseType, recursive: true);
         }
 
-        internal static bool IsCastToWrongType(InvocationExpressionSyntax invocation, ITypeSymbol expectedType, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out TypeSyntax? typeSyntax)
+        internal static bool IsCastToWrongType(InvocationExpressionSyntax invocation, ITypeSymbol expectedType, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out TypeSyntax? typeSyntax)
         {
-            if (context.SemanticModel.IsAccessible(context.Node.SpanStart, expectedType))
+            if (semanticModel.IsAccessible(invocation.SpanStart, expectedType))
             {
                 switch (invocation.Parent)
                 {
-                    case CastExpressionSyntax castExpression when context.SemanticModel.TryGetType(castExpression.Type, context.CancellationToken, out var castType) &&
-                                                                  !expectedType.IsAssignableTo(castType, context.Compilation):
+                    case CastExpressionSyntax castExpression
+                        when semanticModel.TryGetType(castExpression.Type, cancellationToken, out var castType) &&
+                             !expectedType.IsAssignableTo(castType, semanticModel.Compilation):
                         typeSyntax = castExpression.Type;
                         return true;
                 }
@@ -112,12 +113,12 @@
             return false;
         }
 
-        internal static bool TryMatchAssemblyGetType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeNameArgument typeName, out ArgumentAndValue<bool> ignoreCase)
+        internal static bool TryMatchAssemblyGetType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out TypeNameArgument typeName, out ArgumentAndValue<bool> ignoreCase)
         {
-            if (invocation.TryGetTarget(KnownSymbol.Assembly.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
+            if (invocation.TryGetTarget(KnownSymbol.Assembly.GetType, semanticModel, cancellationToken, out var target) &&
                 target.TryFindParameter("name", out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out var nameArg) &&
-                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name))
+                nameArg.TryGetStringValue(semanticModel, cancellationToken, out var name))
             {
                 typeName = new TypeNameArgument(nameArg, name);
                 switch (target.Parameters.Length)
@@ -131,7 +132,7 @@
                     case 3 when target.TryFindParameter("throwOnError", out _) &&
                                 target.TryFindParameter("ignoreCase", out var ignoreCaseParameter) &&
                                 invocation.TryFindArgument(ignoreCaseParameter, out var ignoreCaseArg) &&
-                                context.SemanticModel.TryGetConstantValue(ignoreCaseArg.Expression, context.CancellationToken, out bool ignoreNameCase):
+                                semanticModel.TryGetConstantValue(ignoreCaseArg.Expression, cancellationToken, out bool ignoreNameCase):
                         ignoreCase = new ArgumentAndValue<bool>(ignoreCaseArg, ignoreNameCase);
                         return true;
                 }
@@ -205,7 +206,7 @@
                     result = context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
                     return result != null;
                 case InvocationExpressionSyntax candidate
-                    when TryMatchAssemblyGetType(candidate, context, out var typeName, out var ignoreCase):
+                    when TryMatchAssemblyGetType(candidate, context.SemanticModel, context.CancellationToken, out var typeName, out var ignoreCase):
                     source = candidate;
                     result = Assembly.TryGet(candidate.Expression, context, out var assembly)
                         ? assembly.GetTypeByMetadataName(typeName, ignoreCase.Value)
