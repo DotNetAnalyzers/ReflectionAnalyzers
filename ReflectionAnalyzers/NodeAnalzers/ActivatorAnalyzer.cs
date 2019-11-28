@@ -35,7 +35,7 @@
                 TryGetCreatedType(createInstance, invocation, context, out var createdType, out var typeSource))
             {
                 if (!createInstance.IsGenericMethod &&
-                    ReturnValue.ShouldCast(invocation, createdType, context))
+                    ReturnValue.ShouldCast(invocation, createdType, context.SemanticModel))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(

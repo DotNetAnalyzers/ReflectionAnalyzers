@@ -52,7 +52,7 @@
                 if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
                 {
                     if (!method.ReturnsVoid &&
-                        ReturnValue.ShouldCast(invocation, method.ReturnType, context))
+                        ReturnValue.ShouldCast(invocation, method.ReturnType, context.SemanticModel))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -142,7 +142,7 @@
                 }
                 else if (GetX.TryGetConstructorInfo(memberAccess, context, out var ctor))
                 {
-                    if (ReturnValue.ShouldCast(invocation, ctor.ReturnType, context))
+                    if (ReturnValue.ShouldCast(invocation, ctor.ReturnType, context.SemanticModel))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(

@@ -36,7 +36,7 @@
                 MethodInfo.TryGet(methodArg.Expression, context, out var methodInfo) &&
                 context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType))
             {
-                if (ReturnValue.ShouldCast(invocation, delegateType, context))
+                if (ReturnValue.ShouldCast(invocation, delegateType, context.SemanticModel))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(

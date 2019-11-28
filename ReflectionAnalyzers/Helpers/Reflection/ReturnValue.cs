@@ -1,21 +1,20 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     internal static class ReturnValue
     {
-        internal static bool ShouldCast(InvocationExpressionSyntax invocation, ITypeSymbol returnType, SyntaxNodeAnalysisContext context)
+        internal static bool ShouldCast(InvocationExpressionSyntax invocation, ITypeSymbol returnType, SemanticModel semanticModel)
         {
             if (invocation != null &&
                 returnType != null &&
                 returnType != KnownSymbol.Object &&
-                context.SemanticModel.IsAccessible(context.Node.SpanStart, returnType))
+                semanticModel.IsAccessible(invocation.SpanStart, returnType))
             {
                 switch (invocation.Parent)
                 {
-                    case EqualsValueClauseSyntax equalsValueClause when equalsValueClause.Parent is VariableDeclaratorSyntax variableDeclarator:
+                    case EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax variableDeclarator }:
                         return !IsDiscardName(variableDeclarator.Identifier.ValueText);
                     default:
                         return false;
