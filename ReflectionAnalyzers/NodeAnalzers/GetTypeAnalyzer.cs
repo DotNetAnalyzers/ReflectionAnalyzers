@@ -88,7 +88,7 @@
                 return Type.TryGet(invocation, context, out type, out _);
             }
 
-            if (Type.TryMatchTypeGetType(invocation, context, out var typeName, out var ignoreCase))
+            if (Type.TryMatchTypeGetType(invocation, context.SemanticModel, context.CancellationToken, out var typeName, out var ignoreCase))
             {
                 nameArgument = typeName.Argument;
                 if (!typeName.Value.Contains("."))

@@ -1,6 +1,7 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -81,12 +82,12 @@
             return false;
         }
 
-        internal static bool TryMatchTypeGetType(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out TypeNameArgument typeName, out ArgumentAndValue<bool> ignoreCase)
+        internal static bool TryMatchTypeGetType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out TypeNameArgument typeName, out ArgumentAndValue<bool> ignoreCase)
         {
-            if (invocation.TryGetTarget(KnownSymbol.Type.GetType, context.SemanticModel, context.CancellationToken, out var target) &&
+            if (invocation.TryGetTarget(KnownSymbol.Type.GetType, semanticModel, cancellationToken, out var target) &&
                 target.TryFindParameter("typeName", out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out var nameArg) &&
-                nameArg.TryGetStringValue(context.SemanticModel, context.CancellationToken, out var name))
+                nameArg.TryGetStringValue(semanticModel, cancellationToken, out var name))
             {
                 typeName = new TypeNameArgument(nameArg, name);
                 switch (target.Parameters.Length)
@@ -100,7 +101,7 @@
                     case 3 when target.TryFindParameter("throwOnError", out _) &&
                                 target.TryFindParameter("ignoreCase", out var ignoreCaseParameter) &&
                                 invocation.TryFindArgument(ignoreCaseParameter, out var ignoreCaseArg) &&
-                                context.SemanticModel.TryGetConstantValue(ignoreCaseArg.Expression, context.CancellationToken, out bool ignoreNameCase):
+                                semanticModel.TryGetConstantValue(ignoreCaseArg.Expression, cancellationToken, out bool ignoreNameCase):
                         ignoreCase = new ArgumentAndValue<bool>(ignoreCaseArg, ignoreNameCase);
                         return true;
                 }
@@ -199,7 +200,7 @@
 
                     break;
                 case InvocationExpressionSyntax candidate
-                    when TryMatchTypeGetType(candidate, context, out var typeName, out var ignoreCase):
+                    when TryMatchTypeGetType(candidate, context.SemanticModel, context.CancellationToken, out var typeName, out var ignoreCase):
                     source = candidate;
                     result = context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
                     return result != null;

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
@@ -21,8 +21,9 @@ namespace ReflectionAnalyzers
         {
             switch (expression)
             {
-                case InvocationExpressionSyntax invocation when GetX.TryMatchGetProperty(invocation, context, out var member, out _, out _, out _) &&
-                                                                member.Symbol is IPropertySymbol property:
+                case InvocationExpressionSyntax invocation
+                    when GetX.TryMatchGetProperty(invocation, context, out var member, out _, out _, out _) &&
+                         member.Symbol is IPropertySymbol property:
                     propertyInfo = new PropertyInfo(member.ReflectedType, property);
                     return true;
             }
