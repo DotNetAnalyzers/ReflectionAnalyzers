@@ -38,7 +38,7 @@
 
         internal static bool TryCreate(IMethodSymbol getX, InvocationExpressionSyntax invocation, INamedTypeSymbol type, ExpressionSyntax typeSource, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ReflectedMember member)
         {
-            var match = TryGetMember(getX, type, name, flags, types, context, out var memberSymbol);
+            var match = TryGetMember(getX, type, name, flags, types, context.Compilation, out var memberSymbol);
             member = new ReflectedMember(type, typeSource, memberSymbol, getX, invocation, match);
             return true;
         }
@@ -64,26 +64,26 @@
             return result != null;
         }
 
-        private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ISymbol? member)
+        private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, Compilation compliation, [NotNullWhen(true)] out ISymbol? member)
         {
             member = null;
             if (type is ITypeParameterSymbol typeParameter)
             {
                 if (typeParameter.ConstraintTypes.Length == 0)
                 {
-                    return TryGetMember(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, flags, types, context, out member);
+                    return TryGetMember(getX, compliation.GetSpecialType(SpecialType.System_Object), name, flags, types, compliation, out member);
                 }
 
                 foreach (var constraintType in typeParameter.ConstraintTypes)
                 {
-                    var result = TryGetMember(getX, constraintType, name, flags, types, context, out member);
+                    var result = TryGetMember(getX, constraintType, name, flags, types, compliation, out member);
                     if (result != FilterMatch.NoMatch)
                     {
                         return result;
                     }
                 }
 
-                return TryGetMember(getX, context.Compilation.GetSpecialType(SpecialType.System_Object), name, flags, types, context, out member);
+                return TryGetMember(getX, compliation.GetSpecialType(SpecialType.System_Object), name, flags, types, compliation, out member);
             }
 
             var isAmbiguous = false;
