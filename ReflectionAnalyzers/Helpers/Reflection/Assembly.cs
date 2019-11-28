@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
@@ -24,12 +24,10 @@ namespace ReflectionAnalyzers
         {
             switch (expression)
             {
-                case MemberAccessExpressionSyntax candidate when candidate.Name is IdentifierNameSyntax identifierName &&
-                                                                 identifierName.Identifier.ValueText == "GetType":
+                case MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "GetType" } } } candidate:
                     return TryGet(candidate.Expression, context, out assembly);
-                case MemberAccessExpressionSyntax candidate when candidate.Name is IdentifierNameSyntax identifierName &&
-                                                                 identifierName.Identifier.ValueText == "Assembly" &&
-                                                                 Type.TryGet(candidate.Expression, context, out var typeInAssembly, out _):
+                case MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "Assembly" } } } candidate
+                    when Type.TryGet(candidate.Expression, context, out var typeInAssembly, out _):
                     assembly = typeInAssembly.ContainingAssembly;
                     return assembly != null;
             }
@@ -73,7 +71,7 @@ namespace ReflectionAnalyzers
 
                     foreach (var nested in ns.GetNamespaceMembers())
                     {
-                        if (GetTypeByMetadataNameIgnoreCase(nested) is INamedTypeSymbol match)
+                        if (GetTypeByMetadataNameIgnoreCase(nested) is { } match)
                         {
                             return match;
                         }
