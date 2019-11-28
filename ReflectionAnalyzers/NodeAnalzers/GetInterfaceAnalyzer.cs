@@ -13,9 +13,9 @@
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL020AmbiguousMatchInterface.Descriptor,
-            REFL022UseFullyQualifiedName.Descriptor,
-            REFL023TypeDoesNotImplementInterface.Descriptor);
+            Descriptors.REFL020AmbiguousMatchInterface,
+            Descriptors.REFL022UseFullyQualifiedName,
+            Descriptors.REFL023TypeDoesNotImplementInterface);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -39,7 +39,7 @@
 
                 if (count > 1)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL020AmbiguousMatchInterface.Descriptor, nameArg.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL020AmbiguousMatchInterface, nameArg.GetLocation()));
                 }
 
                 if (count == 1 &&
@@ -50,7 +50,7 @@
                         case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.StringLiteralExpression):
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
-                                    REFL022UseFullyQualifiedName.Descriptor,
+                                    Descriptors.REFL022UseFullyQualifiedName,
                                     literal.GetLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(
                                         nameof(SyntaxKind.StringLiteralExpression),
@@ -61,7 +61,7 @@
                             {
                                 context.ReportDiagnostic(
                                     Diagnostic.Create(
-                                        REFL022UseFullyQualifiedName.Descriptor,
+                                        Descriptors.REFL022UseFullyQualifiedName,
                                         maybeNameSyntax.Value.Identifier.GetLocation(),
                                         ImmutableDictionary<string, string>.Empty.Add(
                                             nameof(SimpleNameSyntax),
@@ -69,7 +69,7 @@
                             }
                             else
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL022UseFullyQualifiedName.Descriptor, nameArg.GetLocation()));
+                                context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL022UseFullyQualifiedName, nameArg.GetLocation()));
                             }
 
                             break;
@@ -78,7 +78,7 @@
 
                 if (count == 0)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL023TypeDoesNotImplementInterface.Descriptor, nameArg.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL023TypeDoesNotImplementInterface, nameArg.GetLocation()));
                 }
             }
         }

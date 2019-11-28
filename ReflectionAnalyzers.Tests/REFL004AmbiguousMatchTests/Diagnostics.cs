@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
     public static partial class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL004AmbiguousMatch.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL004AmbiguousMatch);
 
         [TestCase("GetProperty↓(\"Item\")")]
         [TestCase("GetProperty↓(\"Item\", BindingFlags.Public | BindingFlags.Instance)")]

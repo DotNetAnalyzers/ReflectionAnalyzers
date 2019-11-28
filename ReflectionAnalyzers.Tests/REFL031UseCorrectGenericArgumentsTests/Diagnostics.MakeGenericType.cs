@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
         public static class MakeGenericType
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL031UseCorrectGenericArguments.Descriptor);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL031UseCorrectGenericArguments);
 
             [Test]
             public static void SingleUnconstrained()

@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
     public static partial class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL003MemberDoesNotExist.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL003MemberDoesNotExist);
 
         [Test]
         public static void GetPropertyAnonymousType()

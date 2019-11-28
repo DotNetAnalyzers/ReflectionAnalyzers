@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL020AmbiguousMatchInterface.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL020AmbiguousMatchInterface);
 
         [TestCase("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("GetInterface(↓\"IEnumerable`1\")")]

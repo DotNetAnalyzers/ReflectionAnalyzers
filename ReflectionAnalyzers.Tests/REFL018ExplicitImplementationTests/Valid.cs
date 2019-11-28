@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL018ExplicitImplementation.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL018ExplicitImplementation;
 
         [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]

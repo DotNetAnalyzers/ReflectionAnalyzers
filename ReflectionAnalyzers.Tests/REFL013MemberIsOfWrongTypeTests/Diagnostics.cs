@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL013MemberIsOfWrongType.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL013MemberIsOfWrongType);
 
         [TestCase("GetEvent(nameof(this.P))")]
         [TestCase("GetEvent(nameof(this.P), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]

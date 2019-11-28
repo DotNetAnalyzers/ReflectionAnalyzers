@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL045InsufficientFlags.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL045InsufficientFlags);
 
         [TestCase("GetField(\"F\", ↓BindingFlags.Instance)")]
         [TestCase("GetConstructor(↓BindingFlags.Static, null, Type.EmptyTypes, null)")]

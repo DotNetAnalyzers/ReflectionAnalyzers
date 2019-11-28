@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL023TypeDoesNotImplementInterfaceTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL023TypeDoesNotImplementInterface.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL023TypeDoesNotImplementInterface);
 
         [TestCase("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("GetInterface(↓\"IEnumerable`1\")")]

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
+namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
         public static class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL025ArgumentsDontMatchParameters.Descriptor;
+            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL025ArgumentsDoNotMatchParameters;
 
             [TestCase("Activator.CreateInstance(typeof(C))")]
             [TestCase("Activator.CreateInstance(this.GetType())")]

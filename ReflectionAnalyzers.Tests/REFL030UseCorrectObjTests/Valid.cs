@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
         public static class ConstructorInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL030UseCorrectObj.Descriptor;
+            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL030UseCorrectObj;
 
             [TestCase("GetConstructor(Type.EmptyTypes).Invoke(null)")]
             [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]

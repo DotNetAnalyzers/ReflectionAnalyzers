@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
         public static class MethodInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL030UseCorrectObj.Descriptor);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL030UseCorrectObj);
 
             [Test]
             public static void Static()

@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL036CheckNull.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL036CheckNull);
 
         [TestCase("Get() => Type.GetType(\"C\").Assembly")]
         [TestCase("Get() => Type.GetType(\"C\", throwOnError: false).Assembly")]

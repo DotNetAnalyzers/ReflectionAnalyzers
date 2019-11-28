@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL026NoDefaultConstructor.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL026NoDefaultConstructor;
 
         [TestCase("Activator.CreateInstance(typeof(C))")]
         [TestCase("Activator.CreateInstance(typeof(C), true)")]

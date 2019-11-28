@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly CodeFixProvider Fix = new CastReturnValueFix();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL001CastReturnValue.Descriptor);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
 
             [Test]
             public static void AssigningLocal()

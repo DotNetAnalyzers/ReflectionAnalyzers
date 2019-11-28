@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL013MemberIsOfWrongType.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL013MemberIsOfWrongType;
 
         [Test]
         public static void PassingArrayToMakeGenericType()

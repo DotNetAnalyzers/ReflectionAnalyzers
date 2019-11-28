@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new BindingFlagsFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL006RedundantBindingFlags.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL006RedundantBindingFlags);
 
         [TestCase("Static",           "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Instance",               "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
         [TestCase("Static",           "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic",              "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]

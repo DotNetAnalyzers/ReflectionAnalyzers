@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DefaultMemberAttributeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL046DefaultMemberMustExist.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL046DefaultMemberMustExist;
 
         /// <summary>
         /// Verify properties are considered valid targets.

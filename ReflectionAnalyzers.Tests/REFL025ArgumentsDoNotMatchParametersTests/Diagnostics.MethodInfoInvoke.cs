@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
+namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDontMatchParametersTests
         public static class MethodInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters);
 
             [TestCase("GetMethod(nameof(this.M)).Invoke(null, new object[] { ↓1.2 })")]
             [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1, 2 })")]

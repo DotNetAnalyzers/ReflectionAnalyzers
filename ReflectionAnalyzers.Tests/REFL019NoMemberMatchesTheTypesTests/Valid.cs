@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL019NoMemberMatchesTheTypes.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL019NoMemberMatchesTypes;
 
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]

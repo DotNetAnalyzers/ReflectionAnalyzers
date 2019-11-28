@@ -13,10 +13,10 @@
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL001CastReturnValue.Descriptor,
-            REFL025ArgumentsDontMatchParameters.Descriptor,
-            REFL026NoDefaultConstructor.Descriptor,
-            REFL028CastReturnValueToCorrectType.Descriptor);
+            Descriptors.REFL001CastReturnValue,
+            Descriptors.REFL025ArgumentsDoNotMatchParameters,
+            Descriptors.REFL026NoDefaultConstructor,
+            Descriptors.REFL028CastReturnValueToCorrectType);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -38,7 +38,7 @@
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL001CastReturnValue.Descriptor,
+                            Descriptors.REFL001CastReturnValue,
                             invocation.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(TypeSyntax),
@@ -50,11 +50,11 @@
                 {
                     if (IsMissingDefaultConstructor(createInstance, invocation, namedType))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL026NoDefaultConstructor.Descriptor, typeSource.GetLocation(), createdType.ToDisplayString()));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL026NoDefaultConstructor, typeSource.GetLocation(), createdType.ToDisplayString()));
                     }
                     else if (IsArgumentMisMatch(createInstance, invocation, namedType, context))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, invocation.ArgumentList.Arguments[1].GetLocation()));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters, invocation.ArgumentList.Arguments[1].GetLocation()));
                     }
                 }
 
@@ -63,7 +63,7 @@
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL028CastReturnValueToCorrectType.Descriptor,
+                            Descriptors.REFL028CastReturnValueToCorrectType,
                             typeSyntax.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(TypeSyntax),

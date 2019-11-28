@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new AddTypesFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL029MissingTypes.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL029MissingTypes);
 
         [Test]
         public static void GetMethodNoParameter()

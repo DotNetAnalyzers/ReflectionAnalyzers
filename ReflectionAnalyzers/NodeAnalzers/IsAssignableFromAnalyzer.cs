@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers
     internal class IsAssignableFromAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL040PreferIsInstanceOfType.Descriptor);
+            Descriptors.REFL040PreferIsInstanceOfType);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -45,7 +45,7 @@ namespace ReflectionAnalyzers
             {
                 context.ReportDiagnostic(
                     Diagnostic.Create(
-                        REFL040PreferIsInstanceOfType.Descriptor,
+                        Descriptors.REFL040PreferIsInstanceOfType,
                         invocation.GetLocation(),
                         invocation.Expression,
                         instance));

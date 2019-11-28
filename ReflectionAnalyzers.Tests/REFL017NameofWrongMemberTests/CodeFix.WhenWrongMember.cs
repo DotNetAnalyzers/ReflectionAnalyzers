@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
+namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
             private static readonly CodeFixProvider Fix = new NameofFix();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL017DontUseNameofWrongMember.Descriptor);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL017NameofWrongMember);
 
             [Test]
             public static void TypeOfDictionaryGetMethodNameOfStaticAdd()

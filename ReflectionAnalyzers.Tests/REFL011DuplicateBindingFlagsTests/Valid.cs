@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL011DuplicateBindingFlags.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL011DuplicateBindingFlags;
 
         [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]

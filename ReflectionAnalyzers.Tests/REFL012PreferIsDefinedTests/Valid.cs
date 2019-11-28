@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL012PreferIsDefined.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL012PreferIsDefined;
 
         [Test]
         public static void WhenUsingGeneric()

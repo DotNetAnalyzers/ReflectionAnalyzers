@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
         public static class IsDefined
         {
             private static readonly DiagnosticAnalyzer Analyzer = new IsDefinedAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL044ExpectedAttributeType.Descriptor;
+            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL044ExpectedAttributeType;
 
             [TestCase("Attribute")]
             [TestCase("ObsoleteAttribute")]

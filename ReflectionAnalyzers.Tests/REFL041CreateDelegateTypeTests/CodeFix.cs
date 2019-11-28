@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
         private static readonly CodeFixProvider Fix = new UseTypeFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL041CreateDelegateType.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL041CreateDelegateType);
 
         [TestCase("typeof(Func<string>)")]
         [TestCase("typeof(Func<string, string>)")]

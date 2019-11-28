@@ -12,7 +12,7 @@
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL003MemberDoesNotExist.Descriptor);
+            Descriptors.REFL003MemberDoesNotExist);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -32,13 +32,13 @@
                     PropertyInfo.TryGet(propertyInfoAccess.Expression, context, out var propertyInfo) &&
                     propertyInfo.Property.GetMethod == null)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, invocation.GetNameLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, invocation.GetNameLocation()));
                 }
                 else if (invocation.TryGetTarget(KnownSymbol.PropertyInfo.GetSetMethod, context.SemanticModel, context.CancellationToken, out _) &&
                          PropertyInfo.TryGet(propertyInfoAccess.Expression, context, out propertyInfo) &&
                          propertyInfo.Property.SetMethod == null)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, invocation.GetNameLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, invocation.GetNameLocation()));
                 }
             }
         }
@@ -52,13 +52,13 @@
                     PropertyInfo.TryGet(invocation, context, out var propertyInfo) &&
                     propertyInfo.Property.GetMethod == null)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, memberAccess.Name.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, memberAccess.Name.GetLocation()));
                 }
                 else if (IsProperty(memberAccess, KnownSymbol.PropertyInfo.SetMethod, context) &&
                          PropertyInfo.TryGet(invocation, context, out propertyInfo) &&
                          propertyInfo.Property.SetMethod == null)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, memberAccess.Name.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, memberAccess.Name.GetLocation()));
                 }
             }
         }

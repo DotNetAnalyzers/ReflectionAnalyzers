@@ -14,7 +14,7 @@ namespace ReflectionAnalyzers
     internal class DefaultMemberAttributeAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL046DefaultMemberMustExist.Descriptor);
+            Descriptors.REFL046DefaultMemberMustExist);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -42,7 +42,7 @@ namespace ReflectionAnalyzers
 
             if (!IsInvokableMember(symbol, memberName))
             {
-                context.ReportDiagnostic(Diagnostic.Create(REFL046DefaultMemberMustExist.Descriptor, location));
+                context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL046DefaultMemberMustExist, location));
             }
         }
 

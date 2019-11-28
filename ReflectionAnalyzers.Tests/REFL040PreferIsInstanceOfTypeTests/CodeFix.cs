@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL040PreferIsInstanceOfTypeTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new IsAssignableFromAnalyzer();
         private static readonly CodeFixProvider Fix = new UseIsInstanceOfTypeFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL040PreferIsInstanceOfType.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL040PreferIsInstanceOfType);
 
         [Test]
         public static void IsAssignableFromInstanceGetType()

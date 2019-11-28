@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL029MissingTypes.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL029MissingTypes;
 
         [Test]
         public static void GetMethodNoParameter()

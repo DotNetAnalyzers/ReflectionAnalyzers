@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL022UseFullyQualifiedName.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL022UseFullyQualifiedName;
 
         [TestCase("GetInterface(\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("GetInterface(typeof(IEnumerable).FullName)")]

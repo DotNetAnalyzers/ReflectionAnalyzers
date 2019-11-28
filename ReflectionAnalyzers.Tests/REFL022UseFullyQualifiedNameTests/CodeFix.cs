@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
         private static readonly CodeFixProvider Fix = new UseFullyQualifiedFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL022UseFullyQualifiedName.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL022UseFullyQualifiedName);
 
         [TestCase("GetInterface(↓\"IEnumerable`1\")", "GetInterface(\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("GetInterface(typeof(IEnumerable<>).↓Name)", "GetInterface(typeof(IEnumerable<>).FullName)")]

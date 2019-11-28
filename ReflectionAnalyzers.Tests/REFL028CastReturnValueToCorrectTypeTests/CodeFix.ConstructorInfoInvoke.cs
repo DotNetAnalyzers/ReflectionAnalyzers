@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
             private static readonly CodeFixProvider Fix = new CastReturnValueFix();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL028CastReturnValueToCorrectType.Descriptor);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL028CastReturnValueToCorrectType);
 
             [Test]
             public static void WhenCastingToWrongType()

@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
             private static readonly CodeFixProvider Fix = new DisambiguateFix();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL004AmbiguousMatch.Descriptor);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL004AmbiguousMatch);
 
             [Test]
             public static void PublicOverloads()

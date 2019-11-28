@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL043FirstArgumentTypeTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL043FirstArgumentType.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL043FirstArgumentType;
 
         [TestCase("null")]
         [TestCase("string.Empty")]

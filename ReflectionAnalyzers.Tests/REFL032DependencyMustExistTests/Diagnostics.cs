@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL032DependencyMustExistTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DependencyAttributeAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL032DependencyMustExist.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL032DependencyMustExist);
 
         [Test]
         public static void GetMethodNoParameter()

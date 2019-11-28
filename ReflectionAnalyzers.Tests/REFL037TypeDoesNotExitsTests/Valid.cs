@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL037TypeDoesNotExits.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL037TypeDoesNotExits;
 
         [TestCase("Missing.Missing")]
         [TestCase("Missing.Missing.Missing")]

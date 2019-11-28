@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL039PreferTypeof.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL039PreferTypeof;
 
         [Test]
         public static void AnonymousType()

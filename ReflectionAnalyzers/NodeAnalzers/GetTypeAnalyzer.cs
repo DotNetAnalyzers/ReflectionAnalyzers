@@ -13,9 +13,9 @@
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL036CheckNull.Descriptor,
-            REFL037TypeDoesNotExits.Descriptor,
-            REFL039PreferTypeof.Descriptor);
+            Descriptors.REFL036CheckNull,
+            Descriptors.REFL037TypeDoesNotExits,
+            Descriptors.REFL039PreferTypeof);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -34,7 +34,7 @@
                 if (ShouldCheckNull(invocation, target) &&
                     invocation.Parent is MemberAccessExpressionSyntax)
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL036CheckNull.Descriptor, invocation.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL036CheckNull, invocation.GetLocation()));
                 }
 
                 switch (TypeExists(invocation, context, out var type, out var nameArgument))
@@ -45,7 +45,7 @@
                                    context.SemanticModel.IsAccessible(invocation.SpanStart, type):
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL039PreferTypeof.Descriptor,
+                                Descriptors.REFL039PreferTypeof,
                                 invocation.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),
@@ -53,7 +53,7 @@
                                 type.ToString(context)));
                         break;
                     case false when nameArgument != null:
-                        context.ReportDiagnostic(Diagnostic.Create(REFL037TypeDoesNotExits.Descriptor, nameArgument.GetLocation()));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL037TypeDoesNotExits, nameArgument.GetLocation()));
                         break;
                 }
             }

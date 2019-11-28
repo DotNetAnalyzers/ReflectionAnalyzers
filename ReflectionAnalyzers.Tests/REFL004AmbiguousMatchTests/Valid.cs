@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
     public static partial class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL004AmbiguousMatch.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL004AmbiguousMatch;
 
         [TestCase("GetMethod(nameof(ReferenceEquals), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("GetMethod(nameof(this.ToString))")]

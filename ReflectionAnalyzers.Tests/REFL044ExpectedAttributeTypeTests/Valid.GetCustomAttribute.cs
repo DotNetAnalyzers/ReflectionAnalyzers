@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
         public static class GetCustomAttribute
         {
             private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL044ExpectedAttributeType.Descriptor;
+            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL044ExpectedAttributeType;
 
             [Test]
             public static void WhenUsingGeneric()

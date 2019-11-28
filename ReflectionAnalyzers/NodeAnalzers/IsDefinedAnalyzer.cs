@@ -13,7 +13,7 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL044ExpectedAttributeType.Descriptor);
+            Descriptors.REFL044ExpectedAttributeType);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -33,7 +33,7 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL044ExpectedAttributeType.Descriptor,
+                            Descriptors.REFL044ExpectedAttributeType,
                             attributeType.Argument.GetLocation()));
                 }
             }

@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
     public static partial class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL003MemberDoesNotExist.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL003MemberDoesNotExist;
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]

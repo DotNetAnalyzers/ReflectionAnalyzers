@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL036CheckNull.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL036CheckNull;
 
         [Test]
         public static void TypeGetTypeElvisAssembly()

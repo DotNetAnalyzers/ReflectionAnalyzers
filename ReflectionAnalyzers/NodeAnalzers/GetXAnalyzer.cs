@@ -17,22 +17,22 @@
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL003MemberDoesNotExist.Descriptor,
-            REFL004AmbiguousMatch.Descriptor,
-            REFL005WrongBindingFlags.Descriptor,
-            REFL006RedundantBindingFlags.Descriptor,
-            REFL008MissingBindingFlags.Descriptor,
-            REFL009MemberCantBeFound.Descriptor,
-            REFL013MemberIsOfWrongType.Descriptor,
-            REFL014PreferGetMemberThenAccessor.Descriptor,
-            REFL015UseContainingType.Descriptor,
-            REFL016UseNameof.Descriptor,
-            REFL017DontUseNameofWrongMember.Descriptor,
-            REFL018ExplicitImplementation.Descriptor,
-            REFL019NoMemberMatchesTheTypes.Descriptor,
-            REFL029MissingTypes.Descriptor,
-            REFL033UseSameTypeAsParameter.Descriptor,
-            REFL045InsufficientFlags.Descriptor);
+            Descriptors.REFL003MemberDoesNotExist,
+            Descriptors.REFL004AmbiguousMatch,
+            Descriptors.REFL005WrongBindingFlags,
+            Descriptors.REFL006RedundantBindingFlags,
+            Descriptors.REFL008MissingBindingFlags,
+            Descriptors.REFL009MemberCannotBeFound,
+            Descriptors.REFL013MemberIsOfWrongType,
+            Descriptors.REFL014PreferGetMemberThenAccessor,
+            Descriptors.REFL015UseContainingType,
+            Descriptors.REFL016UseNameof,
+            Descriptors.REFL017NameofWrongMember,
+            Descriptors.REFL018ExplicitImplementation,
+            Descriptors.REFL019NoMemberMatchesTypes,
+            Descriptors.REFL029MissingTypes,
+            Descriptors.REFL033UseSameTypeAsParameter,
+            Descriptors.REFL045InsufficientFlags);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -59,11 +59,11 @@
                             member.GetX == KnownSymbol.Type.GetConstructor ||
                             member.TypeSource is TypeOfExpressionSyntax)
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(REFL003MemberDoesNotExist.Descriptor, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
+                            context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, name.Argument.GetLocation(), member.ReflectedType, name.MetadataName));
                         }
                         else if (!IsNullCheckedAfter(invocation))
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(REFL009MemberCantBeFound.Descriptor, name.Argument.GetLocation(), name.MetadataName, member.ReflectedType));
+                            context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL009MemberCannotBeFound, name.Argument.GetLocation(), name.MetadataName, member.ReflectedType));
                         }
                     }
 
@@ -72,7 +72,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL004AmbiguousMatch.Descriptor,
+                                Descriptors.REFL004AmbiguousMatch,
                                 argumentList.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(INamedTypeSymbol),
@@ -83,7 +83,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL005WrongBindingFlags.Descriptor,
+                                Descriptors.REFL005WrongBindingFlags,
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
                                 $" Expected: {flagsText}."));
@@ -94,7 +94,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL006RedundantBindingFlags.Descriptor,
+                                Descriptors.REFL006RedundantBindingFlags,
                                 flags.Argument.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
                                 $" Expected: {flagsText}."));
@@ -104,7 +104,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL008MissingBindingFlags.Descriptor,
+                                Descriptors.REFL008MissingBindingFlags,
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
                                 $" Expected: {flagsText}."));
@@ -115,7 +115,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL013MemberIsOfWrongType.Descriptor,
+                                Descriptors.REFL013MemberIsOfWrongType,
                                 invocation.GetNameLocation(),
                                 member.ReflectedType,
                                 member.Symbol.Kind.ToString().ToLower(CultureInfo.InvariantCulture),
@@ -126,7 +126,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL014PreferGetMemberThenAccessor.Descriptor,
+                                Descriptors.REFL014PreferGetMemberThenAccessor,
                                 invocation.GetNameLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(ExpressionSyntax),
@@ -139,7 +139,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL015UseContainingType.Descriptor,
+                                Descriptors.REFL015UseContainingType,
                                 TargetTypeLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
@@ -151,7 +151,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL016UseNameof.Descriptor,
+                                Descriptors.REFL016UseNameof,
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(NameSyntax), nameText)));
                     }
@@ -160,7 +160,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL017DontUseNameofWrongMember.Descriptor,
+                                Descriptors.REFL017NameofWrongMember,
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), nameText),
                                 nameText));
@@ -171,7 +171,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL018ExplicitImplementation.Descriptor,
+                                Descriptors.REFL018ExplicitImplementation,
                                 TargetTypeLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
@@ -183,7 +183,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL019NoMemberMatchesTheTypes.Descriptor,
+                                Descriptors.REFL019NoMemberMatchesTypes,
                                 types.Argument?.GetLocation() ?? invocation.GetNameLocation()));
                     }
 
@@ -191,7 +191,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL029MissingTypes.Descriptor,
+                                Descriptors.REFL029MissingTypes,
                                 argumentList.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayText)));
                     }
@@ -200,7 +200,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL033UseSameTypeAsParameter.Descriptor,
+                                Descriptors.REFL033UseSameTypeAsParameter,
                                 location,
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeText),
                                 typeText));
@@ -210,7 +210,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL045InsufficientFlags.Descriptor,
+                                Descriptors.REFL045InsufficientFlags,
                                 flags.Argument?.GetLocation() ?? invocation.GetNameLocation()));
                     }
                 }

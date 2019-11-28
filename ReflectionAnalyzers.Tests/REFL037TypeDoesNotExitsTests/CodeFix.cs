@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly CodeFixProvider Fix = new SuggestTypeFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL037TypeDoesNotExits.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL037TypeDoesNotExits);
 
         [TestCase("Type.GetType(↓\"Int32\")",              "Type.GetType(\"System.Int32\")")]
         [TestCase("Type.GetType(↓\"Int32\", true)",        "Type.GetType(\"System.Int32\", true)")]

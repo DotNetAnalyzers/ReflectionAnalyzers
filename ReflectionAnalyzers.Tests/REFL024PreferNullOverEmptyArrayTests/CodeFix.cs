@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL024PreferNullOverEmptyArrayTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
         private static readonly CodeFixProvider Fix = new PreferNullFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL024PreferNullOverEmptyArray);
 
         [TestCase("Array.Empty<object>()")]
         [TestCase("new object[0]")]

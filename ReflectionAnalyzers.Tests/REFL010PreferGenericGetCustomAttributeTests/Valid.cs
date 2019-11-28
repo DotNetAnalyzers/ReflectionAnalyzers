@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL010PreferGenericGetCustomAttributeTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL010PreferGenericGetCustomAttribute.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL010PreferGenericGetCustomAttribute;
 
         [Test]
         public static void WhenUsingGeneric()

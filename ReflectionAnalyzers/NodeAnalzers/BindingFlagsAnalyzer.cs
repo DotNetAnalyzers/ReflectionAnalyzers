@@ -13,8 +13,8 @@
     internal class BindingFlagsAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL007BindingFlagsOrder.Descriptor,
-            REFL011DuplicateBindingFlags.Descriptor);
+            Descriptors.REFL007BindingFlagsOrder,
+            Descriptors.REFL011DuplicateBindingFlags);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -32,7 +32,7 @@
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL007BindingFlagsOrder.Descriptor,
+                            Descriptors.REFL007BindingFlagsOrder,
                             flags.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags),
                             $" Expected: {expectedFlags}."));
@@ -42,7 +42,7 @@
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL011DuplicateBindingFlags.Descriptor,
+                            Descriptors.REFL011DuplicateBindingFlags,
                             dupe.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags),
                             $" Expected: {expectedFlags}."));

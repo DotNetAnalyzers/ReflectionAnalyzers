@@ -11,7 +11,7 @@ namespace ReflectionAnalyzers
     internal class DependencyAttributeAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL032DependencyMustExist.Descriptor);
+            Descriptors.REFL032DependencyMustExist);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -34,7 +34,7 @@ namespace ReflectionAnalyzers
                 context.SemanticModel.TryGetConstantValue(argument.Expression, context.CancellationToken, out string? assemblyName) &&
                 !context.Compilation.ReferencedAssemblyNames.TryFirst(x => x.Name == assemblyName, out _))
             {
-                context.ReportDiagnostic(Diagnostic.Create(REFL032DependencyMustExist.Descriptor, argument.GetLocation()));
+                context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL032DependencyMustExist, argument.GetLocation()));
             }
         }
     }

@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
         private static readonly CodeFixProvider Fix = new UseContainingTypeFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL018ExplicitImplementation.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL018ExplicitImplementation);
 
         [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
         [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.Public | BindingFlags.Instance)")]

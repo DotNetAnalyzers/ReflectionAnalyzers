@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL042FirstArgumentIsReferenceType.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL042FirstArgumentIsReferenceType);
 
         [Test]
         public static void StaticStringVoidFirstArg()

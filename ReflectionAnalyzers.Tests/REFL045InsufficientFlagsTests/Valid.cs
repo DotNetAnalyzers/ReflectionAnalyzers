@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL045InsufficientFlags.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL045InsufficientFlags;
 
         [TestCase("GetField(\"F\", BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null)")]

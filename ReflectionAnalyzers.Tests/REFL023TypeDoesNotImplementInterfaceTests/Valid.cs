@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL023TypeDoesNotImplementInterfaceTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL023TypeDoesNotImplementInterface.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL023TypeDoesNotImplementInterface;
 
         [TestCase("GetInterface(\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("GetInterface(\"IEnumerable`1\")")]

@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DefaultMemberAttributeAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL046DefaultMemberMustExist.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL046DefaultMemberMustExist);
 
         /// <summary>
         /// Verify diagnostic is present when no such member exists.

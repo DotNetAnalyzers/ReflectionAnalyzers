@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL008MissingBindingFlags.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL008MissingBindingFlags;
 
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]

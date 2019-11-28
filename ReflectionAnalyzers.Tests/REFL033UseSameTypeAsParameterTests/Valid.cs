@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL033UseSameTypeAsParameter.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL033UseSameTypeAsParameter;
 
         [Test]
         public static void ExactInterfaceParameter()

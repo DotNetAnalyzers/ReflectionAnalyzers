@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL015UseContainingType.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL015UseContainingType;
 
         [TestCase("typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
         [TestCase("typeof(C).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]

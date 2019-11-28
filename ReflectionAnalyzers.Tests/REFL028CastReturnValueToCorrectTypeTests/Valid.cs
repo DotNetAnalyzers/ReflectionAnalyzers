@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
         public static class ActivatorCreateInstance
         {
             private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL028CastReturnValueToCorrectType.Descriptor;
+            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL028CastReturnValueToCorrectType;
 
             [TestCase("(C)")]
             [TestCase("(IDisposable)")]

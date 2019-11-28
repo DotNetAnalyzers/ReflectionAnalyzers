@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL042FirstArgumentIsReferenceType.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL042FirstArgumentIsReferenceType;
 
         [Test]
         public static void StaticStringIntWithFirstArg()

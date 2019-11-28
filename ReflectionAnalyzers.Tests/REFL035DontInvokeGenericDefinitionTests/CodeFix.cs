@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL035DontInvokeGenericDefinitionTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
         private static readonly CodeFixProvider Fix = new CallMakeGenericMethodFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL035DontInvokeGenericDefinition.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL035DoNotInvokeGenericDefinition);
 
         [Test]
         public static void ParameterlessGeneric()

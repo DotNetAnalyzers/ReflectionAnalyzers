@@ -13,11 +13,11 @@
     internal class CreateDelegateAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL001CastReturnValue.Descriptor,
-            REFL028CastReturnValueToCorrectType.Descriptor,
-            REFL041CreateDelegateType.Descriptor,
-            REFL042FirstArgumentIsReferenceType.Descriptor,
-            REFL043FirstArgumentType.Descriptor);
+            Descriptors.REFL001CastReturnValue,
+            Descriptors.REFL028CastReturnValueToCorrectType,
+            Descriptors.REFL041CreateDelegateType,
+            Descriptors.REFL042FirstArgumentIsReferenceType,
+            Descriptors.REFL043FirstArgumentType);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -40,7 +40,7 @@
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL001CastReturnValue.Descriptor,
+                            Descriptors.REFL001CastReturnValue,
                             invocation.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(TypeSyntax),
@@ -55,7 +55,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL041CreateDelegateType.Descriptor,
+                                Descriptors.REFL041CreateDelegateType,
                                 typeOf.Type.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), delegateText),
                                 delegateText));
@@ -64,7 +64,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL028CastReturnValueToCorrectType.Descriptor,
+                                Descriptors.REFL028CastReturnValueToCorrectType,
                                 typeSyntax.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),
@@ -79,7 +79,7 @@
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
-                                    REFL042FirstArgumentIsReferenceType.Descriptor,
+                                    Descriptors.REFL042FirstArgumentIsReferenceType,
                                     firstArg.GetLocation()));
                         }
 
@@ -88,7 +88,7 @@
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
-                                    REFL043FirstArgumentType.Descriptor,
+                                    Descriptors.REFL043FirstArgumentType,
                                     firstArg.GetLocation(),
                                     firstArgType));
                         }

@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
         public static class MakeGenericMethod
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL031UseCorrectGenericArguments.Descriptor;
+            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL031UseCorrectGenericArguments;
 
             [Test]
             public static void SingleUnconstrained()

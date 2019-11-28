@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL020AmbiguousMatchInterface.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL020AmbiguousMatchInterface;
 
         [TestCase("GetInterface(\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("GetInterface(\"IEnumerable`1\")")]

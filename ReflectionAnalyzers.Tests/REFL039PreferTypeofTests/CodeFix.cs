@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
         private static readonly CodeFixProvider Fix = new UseTypeOfFix();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL039PreferTypeof.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL039PreferTypeof);
 
         [TestCase("string", "string")]
         [TestCase("int", "int")]

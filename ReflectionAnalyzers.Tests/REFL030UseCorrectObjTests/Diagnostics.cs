@@ -9,7 +9,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
         public static class ConstructorInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL030UseCorrectObj.Descriptor);
+            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL030UseCorrectObj);
 
             [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })")]
             public static void PassingNullAsObj(string call)

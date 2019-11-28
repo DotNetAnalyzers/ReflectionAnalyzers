@@ -12,8 +12,8 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL031UseCorrectGenericArguments.Descriptor,
-            REFL034DontMakeGeneric.Descriptor);
+            Descriptors.REFL031UseCorrectGenericArguments,
+            Descriptors.REFL034DoNotMakeGeneric);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -34,7 +34,7 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL031UseCorrectGenericArguments.Descriptor,
+                            Descriptors.REFL031UseCorrectGenericArguments,
                             invocation.ArgumentList.GetLocation(),
                             $"The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has {typeArguments.Parameters.Length} parameter{PluralS(typeArguments.Parameters.Length)} but {typeArguments.Arguments.Length} argument{PluralS(typeArguments.Arguments.Length)} are passed in."));
                 }
@@ -42,7 +42,7 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL031UseCorrectGenericArguments.Descriptor,
+                            Descriptors.REFL031UseCorrectGenericArguments,
                             argument.GetLocation(),
                             $"The argument {argument}, on '{typeArguments.Symbol}' violates the constraint of type '{parameter}'."));
                 }
@@ -50,7 +50,7 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL034DontMakeGeneric.Descriptor,
+                            Descriptors.REFL034DoNotMakeGeneric,
                             invocation.GetNameLocation(),
                             typeArguments.Symbol is ITypeSymbol
                                 ? $"{typeArguments.Symbol} is not a GenericTypeDefinition. MakeGenericType may only be called on a type for which Type.IsGenericTypeDefinition is true."

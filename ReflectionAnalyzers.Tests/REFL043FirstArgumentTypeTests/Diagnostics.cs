@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL043FirstArgumentTypeTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL043FirstArgumentType.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL043FirstArgumentType);
 
         [Test]
         public static void StaticStringVoidFirstArg()

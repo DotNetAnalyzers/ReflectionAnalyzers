@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
         public static class MakeGenericType
         {
             private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL034DontMakeGeneric.Descriptor;
+            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL034DoNotMakeGeneric;
 
             [Test]
             public static void Vanilla()

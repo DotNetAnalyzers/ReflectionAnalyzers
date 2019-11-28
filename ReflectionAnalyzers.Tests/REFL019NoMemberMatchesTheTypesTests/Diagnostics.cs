@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL019NoMemberMatchesTheTypes.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL019NoMemberMatchesTypes);
 
         [TestCase("GetConstructor(↓Type.EmptyTypes)")]
         [TestCase("GetConstructor(↓Array.Empty<Type>())")]

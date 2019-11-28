@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL016UseNameof.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL016UseNameof;
 
         [Test]
         public static void TypeofDictionaryGetMethodAdd()

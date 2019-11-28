@@ -10,7 +10,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
         public static class MethodInfoInvoke
         {
             private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-            private static readonly DiagnosticDescriptor Descriptor = REFL001CastReturnValue.Descriptor;
+            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL001CastReturnValue;
 
             [TestCase("_ = ")]
             [TestCase("var _ = ")]

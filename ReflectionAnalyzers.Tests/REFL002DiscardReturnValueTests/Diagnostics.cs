@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL002DiscardReturnValue.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL002DiscardReturnValue);
 
         [Test]
         public static void AssigningLocal()

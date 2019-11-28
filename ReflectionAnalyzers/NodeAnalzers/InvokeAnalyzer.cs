@@ -13,14 +13,14 @@
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL001CastReturnValue.Descriptor,
-            REFL002DiscardReturnValue.Descriptor,
-            REFL024PreferNullOverEmptyArray.Descriptor,
-            REFL025ArgumentsDontMatchParameters.Descriptor,
-            REFL028CastReturnValueToCorrectType.Descriptor,
-            REFL030UseCorrectObj.Descriptor,
-            REFL035DontInvokeGenericDefinition.Descriptor,
-            REFL038PreferRunClassConstructor.Descriptor);
+            Descriptors.REFL001CastReturnValue,
+            Descriptors.REFL002DiscardReturnValue,
+            Descriptors.REFL024PreferNullOverEmptyArray,
+            Descriptors.REFL025ArgumentsDoNotMatchParameters,
+            Descriptors.REFL028CastReturnValueToCorrectType,
+            Descriptors.REFL030UseCorrectObj,
+            Descriptors.REFL035DoNotInvokeGenericDefinition,
+            Descriptors.REFL038PreferRunClassConstructor);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -46,7 +46,7 @@
                     arrayType.ElementType == KnownSymbol.Object &&
                     Array.IsCreatingEmpty(parametersArg.Expression, context.SemanticModel, context.CancellationToken))
                 {
-                    context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, parametersArg.GetLocation()));
+                    context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL024PreferNullOverEmptyArray, parametersArg.GetLocation()));
                 }
 
                 if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
@@ -56,7 +56,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL001CastReturnValue.Descriptor,
+                                Descriptors.REFL001CastReturnValue,
                                 invocation.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),
@@ -67,26 +67,26 @@
                     if (method.ReturnsVoid &&
                         !IsResultDiscarded(invocation, context))
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL002DiscardReturnValue, invocation.GetLocation()));
                     }
 
                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
                         Arguments.TryFindFirstMisMatch(method.Parameters, values, context, out var misMatch) == true)
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }
 
                     if (parametersArg.Expression.IsKind(SyntaxKind.NullLiteralExpression) &&
                         method.Parameters.Length > 0)
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, parametersArg.GetLocation()));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters, parametersArg.GetLocation()));
                     }
 
                     if (Type.IsCastToWrongType(invocation, method.ReturnType, context, out var castType))
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL028CastReturnValueToCorrectType.Descriptor,
+                                Descriptors.REFL028CastReturnValueToCorrectType,
                                 castType.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),
@@ -101,21 +101,21 @@
                         if (method.IsStatic &&
                             objArg.Expression.IsKind(SyntaxKind.NullLiteralExpression) == false)
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is static and null should be passed as obj."));
+                            context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL030UseCorrectObj, objArg.GetLocation(), $"The method {method} is static and null should be passed as obj."));
                         }
 
                         if (!method.IsStatic)
                         {
                             if (objArg.Expression.IsKind(SyntaxKind.NullLiteralExpression) == true)
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is an instance method and the instance should be passed as obj."));
+                                context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL030UseCorrectObj, objArg.GetLocation(), $"The method {method} is an instance method and the instance should be passed as obj."));
                             }
 
                             if (context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var objType) &&
                                 objType != KnownSymbol.Object &&
                                 !objType.IsAssignableTo(method.ContainingType, context.Compilation))
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Expected an argument of type {method.ContainingType}."));
+                                context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL030UseCorrectObj, objArg.GetLocation(), $"Expected an argument of type {method.ContainingType}."));
                             }
                         }
                     }
@@ -128,7 +128,7 @@
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
-                                    REFL035DontInvokeGenericDefinition.Descriptor,
+                                    Descriptors.REFL035DoNotInvokeGenericDefinition,
                                     invocation.GetNameLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(
                                         nameof(TypeSyntax),
@@ -136,7 +136,7 @@
                         }
                         else
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(REFL035DontInvokeGenericDefinition.Descriptor, invocation.GetNameLocation()));
+                            context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL035DoNotInvokeGenericDefinition, invocation.GetNameLocation()));
                         }
                     }
                 }
@@ -146,7 +146,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL001CastReturnValue.Descriptor,
+                                Descriptors.REFL001CastReturnValue,
                                 invocation.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),
@@ -157,7 +157,7 @@
                     if (Array.TryGetValues(parametersArg.Expression, context, out var values) &&
                         Arguments.TryFindFirstMisMatch(ctor.Parameters, values, context, out var misMatch) == true)
                     {
-                        context.ReportDiagnostic(Diagnostic.Create(REFL025ArgumentsDontMatchParameters.Descriptor, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
+                        context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters, misMatch?.GetLocation() ?? parametersArg.GetLocation()));
                     }
 
                     if (invoke.TryFindParameter("obj", out var objParameter) &&
@@ -165,19 +165,19 @@
                     {
                         if (objArg.Expression.IsKind(SyntaxKind.NullLiteralExpression))
                         {
-                            context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), "Use overload of Invoke without obj parameter."));
+                            context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL030UseCorrectObj, objArg.GetLocation(), "Use overload of Invoke without obj parameter."));
                         }
                         else
                         {
                             if (!IsResultDiscarded(invocation, context))
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL002DiscardReturnValue.Descriptor, invocation.GetLocation()));
+                                context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL002DiscardReturnValue, invocation.GetLocation()));
                             }
 
                             if (!context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var instanceType) ||
                                 (instanceType != KnownSymbol.Object && !instanceType.Equals(ctor.ContainingType)))
                             {
-                                context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"Use an instance of type {ctor.ContainingType}."));
+                                context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL030UseCorrectObj, objArg.GetLocation(), $"Use an instance of type {ctor.ContainingType}."));
                             }
                         }
                     }
@@ -188,7 +188,7 @@
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(
-                                    REFL028CastReturnValueToCorrectType.Descriptor,
+                                    Descriptors.REFL028CastReturnValueToCorrectType,
                                     castType.GetLocation(),
                                     ImmutableDictionary<string, string>.Empty.Add(
                                         nameof(TypeSyntax),
@@ -201,7 +201,7 @@
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
-                                REFL038PreferRunClassConstructor.Descriptor,
+                                Descriptors.REFL038PreferRunClassConstructor,
                                 invocation.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(TypeSyntax),

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
+namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL017DontUseNameofWrongMemberTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL017DontUseNameofWrongMember.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL017NameofWrongMember;
 
         [TestCase("Class")]
         [TestCase("Enum")]

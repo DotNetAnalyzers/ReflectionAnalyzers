@@ -7,7 +7,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
     public static class Diagnostics
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(REFL009MemberCantBeFound.Descriptor);
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL009MemberCannotBeFound);
 
         [TestCase("c.GetType().GetMethod(↓\"MISSING\")")]
         [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]

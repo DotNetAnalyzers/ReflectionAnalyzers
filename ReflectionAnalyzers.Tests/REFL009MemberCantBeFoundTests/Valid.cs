@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
     public static partial class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL009MemberCantBeFound.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL009MemberCannotBeFound;
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]

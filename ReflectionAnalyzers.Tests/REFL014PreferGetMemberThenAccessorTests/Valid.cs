@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL014PreferGetMemberThenAccessor.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL014PreferGetMemberThenAccessor;
 
         [Test]
         public static void GetPropertyGetMethod()

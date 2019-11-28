@@ -13,9 +13,9 @@ namespace ReflectionAnalyzers
     {
         /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
-            REFL010PreferGenericGetCustomAttribute.Descriptor,
-            REFL012PreferIsDefined.Descriptor,
-            REFL044ExpectedAttributeType.Descriptor);
+            Descriptors.REFL010PreferGenericGetCustomAttribute,
+            Descriptors.REFL012PreferIsDefined,
+            Descriptors.REFL044ExpectedAttributeType);
 
         /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
@@ -35,7 +35,7 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL010PreferGenericGetCustomAttribute.Descriptor,
+                            Descriptors.REFL010PreferGenericGetCustomAttribute,
                             invocation.GetLocation(),
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(InvocationExpressionSyntax),
@@ -47,7 +47,7 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL012PreferIsDefined.Descriptor,
+                            Descriptors.REFL012PreferIsDefined,
                             location,
                             ImmutableDictionary<string, string>.Empty.Add(
                                 nameof(InvocationExpressionSyntax),
@@ -58,7 +58,7 @@ namespace ReflectionAnalyzers
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
-                            REFL044ExpectedAttributeType.Descriptor,
+                            Descriptors.REFL044ExpectedAttributeType,
                             attributeType.Argument.GetLocation()));
                 }
             }

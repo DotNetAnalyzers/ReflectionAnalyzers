@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL040PreferIsInstanceOfTypeTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new IsAssignableFromAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL040PreferIsInstanceOfType.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL040PreferIsInstanceOfType;
 
         [Test]
         public static void UnknownTypesIsAssignableFrom()

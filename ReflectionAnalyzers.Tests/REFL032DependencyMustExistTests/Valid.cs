@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL032DependencyMustExistTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new DependencyAttributeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL032DependencyMustExist.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL032DependencyMustExist;
 
         [Test]
         public static void GetMethodNoParameter()

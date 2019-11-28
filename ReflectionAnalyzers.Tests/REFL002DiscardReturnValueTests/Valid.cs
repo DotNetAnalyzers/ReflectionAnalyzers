@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL002DiscardReturnValue.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL002DiscardReturnValue;
 
         [TestCase("_ = ")]
         [TestCase("var _ = ")]

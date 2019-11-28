@@ -8,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
     public static class Valid
     {
         private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
-        private static readonly DiagnosticDescriptor Descriptor = REFL041CreateDelegateType.Descriptor;
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL041CreateDelegateType;
 
         [Test]
         public static void CreateDelegateParameterExpressionMake()
