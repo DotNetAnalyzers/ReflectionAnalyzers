@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers
                 case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Array.Empty, context.SemanticModel, context.CancellationToken, out _):
                     return true;
                 case ArrayCreationExpressionSyntax arrayCreation:
-                    if (arrayCreation.Type is ArrayTypeSyntax arrayType)
+                    if (arrayCreation.Type is { } arrayType)
                     {
                         foreach (var rankSpecifier in arrayType.RankSpecifiers)
                         {
@@ -71,12 +71,13 @@ namespace ReflectionAnalyzers
 
             switch (creation)
             {
-                case ImplicitArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
+                case ImplicitArrayCreationExpressionSyntax { Initializer: { } initializer }:
                     return TryGetTypesFromInitializer(initializer, out types);
-                case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
+                case ArrayCreationExpressionSyntax { Initializer: { } initializer }:
                     return TryGetTypesFromInitializer(initializer, out types);
-                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol) &&
-                                                                    symbol == KnownSymbol.Type.EmptyTypes:
+                case MemberAccessExpressionSyntax memberAccess
+                    when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol) &&
+                         symbol == KnownSymbol.Type.EmptyTypes:
                     types = ImmutableArray<ITypeSymbol>.Empty;
                     return true;
             }
@@ -115,14 +116,15 @@ namespace ReflectionAnalyzers
 
             switch (creation)
             {
-                case ImplicitArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
+                case ImplicitArrayCreationExpressionSyntax { Initializer: { } initializer }:
                     values = ImmutableArray.CreateRange(initializer.Expressions);
                     return true;
-                case ArrayCreationExpressionSyntax arrayCreation when arrayCreation.Initializer is InitializerExpressionSyntax initializer:
+                case ArrayCreationExpressionSyntax { Initializer: { } initializer }:
                     values = ImmutableArray.CreateRange(initializer.Expressions);
                     return true;
-                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol) &&
-                                                                    symbol == KnownSymbol.Type.EmptyTypes:
+                case MemberAccessExpressionSyntax memberAccess
+                    when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol) &&
+                         symbol == KnownSymbol.Type.EmptyTypes:
                     values = ImmutableArray<ExpressionSyntax>.Empty;
                     return true;
             }
