@@ -23,6 +23,7 @@
             {
                 case InvocationExpressionSyntax invocation
                     when GetX.TryMatchGetProperty(invocation, semanticModel, cancellationToken, out var member, out _, out _, out _) &&
+                         member.ReflectedType is { } &&
                          member.Symbol is IPropertySymbol property:
                     propertyInfo = new PropertyInfo(member.ReflectedType, property);
                     return true;

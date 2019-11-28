@@ -23,6 +23,7 @@
             {
                 case InvocationExpressionSyntax invocation
                     when GetX.TryMatchGetEvent(invocation, semanticModel, cancellationToken, out var member, out _, out _) &&
+                         member.ReflectedType is { } &&
                          member.Symbol is IEventSymbol @event:
                     eventInfo = new EventInfo(member.ReflectedType, @event);
                     return true;

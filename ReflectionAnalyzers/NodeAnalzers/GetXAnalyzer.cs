@@ -279,6 +279,7 @@
         private static bool HasMissingFlags(ReflectedMember member, Flags flags, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? flagsText)
         {
             if (member.Symbol is { } symbol &&
+                member.ReflectedType is { } &&
                 Flags.TryGetExpectedBindingFlags(member.ReflectedType, symbol, out var correctFlags) &&
                 member.Invocation?.ArgumentList is { } argumentList &&
                 (member.Match == FilterMatch.Single || member.Match == FilterMatch.WrongFlags))
@@ -327,6 +328,7 @@
         {
             if (member.Match == FilterMatch.WrongFlags &&
                 member.Symbol is { } &&
+                member.ReflectedType is { } &&
                 Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags))
             {
                 flagText = correctFlags.ToDisplayString(flags.Argument);
@@ -353,6 +355,7 @@
         private static bool HasRedundantFlag(ReflectedMember member, Flags flags, [NotNullWhen(true)] out string? flagsText)
         {
             if (member.Match != FilterMatch.Single ||
+                member.ReflectedType is null ||
                 !member.ReflectedType.Locations.Any(x => x.IsInSource))
             {
                 flagsText = null;
@@ -593,7 +596,7 @@
                     : $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)})";
             }
 
-            bool TryGetInvisibleMemberName(string prefix, out string? memberName)
+            bool TryGetInvisibleMemberName(string prefix, out string memberName)
             {
                 if (name.MetadataName is { } metadataName &&
                     metadataName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
