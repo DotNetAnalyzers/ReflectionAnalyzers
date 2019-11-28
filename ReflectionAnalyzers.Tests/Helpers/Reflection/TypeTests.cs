@@ -74,7 +74,7 @@ namespace N
         [TestCase("field")]
         [TestCase("this.field")]
         [TestCase("local")]
-        // [TestCase("CalculatedProperty")]
+        //[TestCase("CalculatedProperty")]
         [TestCase("GetOnlyProperty")]
         [TestCase("this.GetOnlyProperty")]
         // [TestCase("Method()")]

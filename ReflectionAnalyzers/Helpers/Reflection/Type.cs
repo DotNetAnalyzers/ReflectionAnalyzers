@@ -24,7 +24,17 @@
 
         internal static bool TryGet(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ITypeSymbol? result, [NotNullWhen(true)] out ExpressionSyntax? source)
         {
-            return TryGet(expression, semanticModel, cancellationToken, null, out result, out source);
+            if (expression.TryFirstAncestor(out TypeDeclarationSyntax? containingType) &&
+                semanticModel.TryGetNamedType(containingType, cancellationToken, out var type))
+            {
+                using var recursion = Recursion.Borrow(type, semanticModel, cancellationToken);
+                return TryGet(expression, recursion, out result, out source);
+
+            }
+
+            result = null;
+            source = null;
+            return false;
         }
 
         internal static bool HasVisibleMembers(ITypeSymbol type, BindingFlags flags)
@@ -143,26 +153,26 @@
             return false;
         }
 
-        private static bool TryGet(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, PooledSet<ExpressionSyntax>? visited, [NotNullWhen(true)] out ITypeSymbol? result, [NotNullWhen(true)] out ExpressionSyntax? source)
+        private static bool TryGet(ExpressionSyntax expression, Recursion recursion, [NotNullWhen(true)] out ITypeSymbol? result, [NotNullWhen(true)] out ExpressionSyntax? source)
         {
             switch (expression)
             {
                 case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "ReturnType" } } } memberAccess
-                    when GetX.TryMatchGetMethod(invocation, semanticModel, cancellationToken, out var reflectedMember, out _, out _, out _) &&
+                    when GetX.TryMatchGetMethod(invocation, recursion.SemanticModel, recursion.CancellationToken, out var reflectedMember, out _, out _, out _) &&
                          reflectedMember.Match == FilterMatch.Single &&
                          reflectedMember.Symbol is IMethodSymbol method:
                     source = memberAccess;
                     result = method.ReturnType;
                     return true;
                 case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "FieldType" } } } memberAccess
-                    when GetX.TryMatchGetField(invocation, semanticModel, cancellationToken, out var reflectedMember, out _, out _) &&
+                    when GetX.TryMatchGetField(invocation, recursion.SemanticModel, recursion.CancellationToken, out var reflectedMember, out _, out _) &&
                          reflectedMember.Match == FilterMatch.Single &&
                          reflectedMember.Symbol is IFieldSymbol field:
                     source = memberAccess;
                     result = field.Type;
                     return true;
                 case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "PropertyType" } } } memberAccess
-                    when GetX.TryMatchGetProperty(invocation, semanticModel, cancellationToken, out var reflectedMember, out _, out _, out _) &&
+                    when GetX.TryMatchGetProperty(invocation, recursion.SemanticModel, recursion.CancellationToken, out var reflectedMember, out _, out _, out _) &&
                          reflectedMember.Match == FilterMatch.Single &&
                          reflectedMember.Symbol is IPropertySymbol field:
                     source = memberAccess;
@@ -170,7 +180,7 @@
                     return true;
                 case TypeOfExpressionSyntax typeOf:
                     source = typeOf;
-                    return semanticModel.TryGetType(typeOf.Type, cancellationToken, out result);
+                    return recursion.SemanticModel.TryGetType(typeOf.Type, recursion.CancellationToken, out result);
                 case InvocationExpressionSyntax { ArgumentList: ArgumentListSyntax { Arguments: { Count: 0 } } } invocation
                     when invocation.TryGetMethodName(out var name) &&
                          name == "GetType":
@@ -178,12 +188,11 @@
                     {
                         case MemberAccessExpressionSyntax typeAccess:
                             source = invocation;
-                            if (semanticModel.TryGetType(typeAccess.Expression, cancellationToken, out result))
+                            if (recursion.SemanticModel.TryGetType(typeAccess.Expression, recursion.CancellationToken, out result))
                             {
-                                if (result is INamedTypeSymbol namedType &&
-                                    namedType.ConstructedFrom?.SpecialType == SpecialType.System_Nullable_T)
+                                if (result is INamedTypeSymbol { TypeArguments: { Length: 1 } typeArguments, ConstructedFrom: { SpecialType: SpecialType.System_Nullable_T } })
                                 {
-                                    result = namedType.TypeArguments[0];
+                                    result = typeArguments[0];
                                 }
 
                                 return true;
@@ -193,79 +202,67 @@
                         case IdentifierNameSyntax _
                             when expression.TryFirstAncestor(out TypeDeclarationSyntax? containingType):
                             source = invocation;
-                            return semanticModel.TryGetSymbol(containingType, cancellationToken, out result);
+                            return recursion.SemanticModel.TryGetSymbol(containingType, recursion.CancellationToken, out result);
                         case MemberBindingExpressionSyntax { Parent: { Parent: ConditionalAccessExpressionSyntax { Expression: { } } conditionalAccess } }:
                             source = invocation;
-                            return semanticModel.TryGetType(conditionalAccess.Expression, cancellationToken, out result);
+                            return recursion.SemanticModel.TryGetType(conditionalAccess.Expression, recursion.CancellationToken, out result);
                     }
 
                     break;
                 case InvocationExpressionSyntax candidate
-                    when TryMatchTypeGetType(candidate, semanticModel, cancellationToken, out var typeName, out var ignoreCase):
+                    when TryMatchTypeGetType(candidate, recursion.SemanticModel, recursion.CancellationToken, out var typeName, out var ignoreCase):
                     source = candidate;
-                    result = semanticModel.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
+                    result = recursion.SemanticModel.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
                     return result != null;
                 case InvocationExpressionSyntax candidate
-                    when TryMatchAssemblyGetType(candidate, semanticModel, cancellationToken, out var typeName, out var ignoreCase):
+                    when TryMatchAssemblyGetType(candidate, recursion.SemanticModel, recursion.CancellationToken, out var typeName, out var ignoreCase):
                     source = candidate;
-                    result = Assembly.TryGet(candidate.Expression, semanticModel, cancellationToken, out var assembly)
+                    result = Assembly.TryGet(candidate.Expression, recursion.SemanticModel, recursion.CancellationToken, out var assembly)
                         ? assembly.GetTypeByMetadataName(typeName, ignoreCase.Value)
                         : null;
                     return result != null;
                 case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
-                    when invocation.TryGetTarget(KnownSymbol.Type.GetGenericTypeDefinition, semanticModel, cancellationToken, out _) &&
-                         TryGet(memberAccess.Expression, semanticModel, cancellationToken, visited, out var definingType, out _) &&
-                         definingType is INamedTypeSymbol namedType:
+                    when invocation.TryGetTarget(KnownSymbol.Type.GetGenericTypeDefinition, recursion.SemanticModel, recursion.CancellationToken, out _) &&
+                         TryGet(memberAccess.Expression, recursion, out var definingType, out _) &&
+                         definingType is INamedTypeSymbol { ConstructedFrom: { } constructedFrom }:
                     source = invocation;
-                    result = namedType.ConstructedFrom;
+                    result = constructedFrom;
                     return true;
 
                 case InvocationExpressionSyntax invocation
-                    when GetX.TryMatchGetNestedType(invocation, semanticModel, cancellationToken, out var reflectedMember, out _, out _):
+                    when GetX.TryMatchGetNestedType(invocation, recursion.SemanticModel, recursion.CancellationToken, out var reflectedMember, out _, out _):
                     source = invocation;
                     result = reflectedMember.Symbol as ITypeSymbol;
                     return result != null && reflectedMember.Match == FilterMatch.Single;
                 case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
-                    when invocation.TryGetTarget(KnownSymbol.Type.MakeGenericType, semanticModel, cancellationToken, out _) &&
-                         TypeArguments.TryCreate(invocation, semanticModel, cancellationToken, out var typeArguments) &&
-                         typeArguments.TryGetArgumentsTypes(semanticModel, cancellationToken, out var types):
-#pragma warning disable IDISP003 // Dispose previous before re-assigning.
-                    using (visited = visited.IncrementUsage())
-#pragma warning restore IDISP003 // Dispose previous before re-assigning.
+                    when invocation.TryGetTarget(KnownSymbol.Type.MakeGenericType, recursion.SemanticModel, recursion.CancellationToken, out _) &&
+                         TypeArguments.TryCreate(invocation, recursion.SemanticModel, recursion.CancellationToken, out var typeArguments) &&
+                         typeArguments.TryGetArgumentsTypes(recursion.SemanticModel, recursion.CancellationToken, out var types):
+                    source = invocation;
+                    if (TryGet(memberAccess.Expression, recursion, out var definition, out _) &&
+                        definition is INamedTypeSymbol namedType &&
+                        ReferenceEquals(namedType, namedType.ConstructedFrom) &&
+                        namedType.Arity == types.Length)
                     {
-                        source = invocation;
-                        if (visited.Add(invocation) &&
-                            TryGet(memberAccess.Expression, semanticModel, cancellationToken, visited, out var definition, out _) &&
-                            definition is INamedTypeSymbol namedType &&
-                            ReferenceEquals(namedType, namedType.ConstructedFrom) &&
-                            namedType.Arity == types.Length)
-                        {
-                            result = namedType.Construct(types);
-                            return result != null;
-                        }
-
-                        result = null;
-                        return false;
+                        result = namedType.Construct(types);
+                        return result != null;
                     }
+
+                    result = null;
+                    return false;
 
                 case ConditionalAccessExpressionSyntax conditionalAccess:
                     source = conditionalAccess;
-                    return TryGet(conditionalAccess.WhenNotNull, semanticModel, cancellationToken, out result, out _);
+                    return TryGet(conditionalAccess.WhenNotNull, recursion, out result, out _);
             }
 
             if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                semanticModel.TryGetSymbol(expression, cancellationToken, out var local))
+                recursion.SemanticModel.TryGetSymbol(expression, recursion.CancellationToken, out var local))
             {
-#pragma warning disable IDISP003 // Dispose previous before re-assigning.
-                using (visited = visited.IncrementUsage())
-#pragma warning restore IDISP003 // Dispose previous before re-assigning.
-                {
-                    source = null;
-                    result = null;
-                    return AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue) &&
-                           visited.Add(assignedValue) &&
-                           TryGet(assignedValue, semanticModel, cancellationToken, visited, out result, out source);
-                }
+                source = null;
+                result = null;
+                return AssignedValue.TryGetSingle(local, recursion.SemanticModel, recursion.CancellationToken, out var assignedValue) &&
+                       TryGet(assignedValue, recursion, out result, out source);
             }
 
             source = null;
