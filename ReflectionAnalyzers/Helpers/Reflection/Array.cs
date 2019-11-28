@@ -1,6 +1,7 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+    using System.Threading;
     using Gu.Roslyn.AnalyzerExtensions;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -8,11 +9,12 @@
 
     internal static class Array
     {
-        internal static bool IsCreatingEmpty(ExpressionSyntax creation, SyntaxNodeAnalysisContext context)
+        internal static bool IsCreatingEmpty(ExpressionSyntax creation, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             switch (creation)
             {
-                case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Array.Empty, context.SemanticModel, context.CancellationToken, out _):
+                case InvocationExpressionSyntax invocation
+                    when invocation.TryGetTarget(KnownSymbol.Array.Empty, semanticModel, cancellationToken, out _):
                     return true;
                 case ArrayCreationExpressionSyntax arrayCreation:
                     if (arrayCreation.Type is { } arrayType)
@@ -63,7 +65,7 @@
 
         internal static bool TryGetTypes(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
         {
-            if (IsCreatingEmpty(creation, context))
+            if (IsCreatingEmpty(creation, context.SemanticModel, context.CancellationToken))
             {
                 types = ImmutableArray<ITypeSymbol>.Empty;
                 return true;
@@ -108,7 +110,7 @@
         internal static bool TryGetValues(ExpressionSyntax creation, SyntaxNodeAnalysisContext context, out ImmutableArray<ExpressionSyntax> values)
         {
             values = default;
-            if (IsCreatingEmpty(creation, context))
+            if (IsCreatingEmpty(creation, context.SemanticModel, context.CancellationToken))
             {
                 values = ImmutableArray<ExpressionSyntax>.Empty;
                 return true;

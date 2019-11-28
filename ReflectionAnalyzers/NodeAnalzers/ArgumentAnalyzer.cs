@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is ArgumentSyntax { Expression: { } expression } argument &&
                 ShouldCheck(expression) &&
-                Array.IsCreatingEmpty(expression, context) &&
+                Array.IsCreatingEmpty(expression, context.SemanticModel, context.CancellationToken) &&
                 context.SemanticModel.TryGetType(expression, context.CancellationToken, out var type) &&
                 type is IArrayTypeSymbol { ElementType: { } elementType } &&
                 elementType == KnownSymbol.Type)

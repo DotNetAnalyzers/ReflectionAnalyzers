@@ -44,7 +44,7 @@
                 if (context.SemanticModel.TryGetType(parametersArg.Expression, context.CancellationToken, out var type) &&
                     type is IArrayTypeSymbol arrayType &&
                     arrayType.ElementType == KnownSymbol.Object &&
-                    Array.IsCreatingEmpty(parametersArg.Expression, context))
+                    Array.IsCreatingEmpty(parametersArg.Expression, context.SemanticModel, context.CancellationToken))
                 {
                     context.ReportDiagnostic(Diagnostic.Create(REFL024PreferNullOverEmptyArray.Descriptor, parametersArg.GetLocation()));
                 }
