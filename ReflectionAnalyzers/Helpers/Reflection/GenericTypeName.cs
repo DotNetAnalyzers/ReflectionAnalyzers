@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System;
     using System.Collections.Immutable;
@@ -39,7 +39,7 @@ namespace ReflectionAnalyzers
             return metadataName.IndexOf('`') is var i &&
                    i > 0 &&
                    i < metadataName.Length - 1 &&
-                   metadataName.Substring(i + 1) is string substring &&
+                   metadataName.Substring(i + 1) is { } substring &&
                    !substring.EndsWith(" ", StringComparison.OrdinalIgnoreCase) &&
                    int.TryParse(metadataName.Substring(i + 1), out result);
         }

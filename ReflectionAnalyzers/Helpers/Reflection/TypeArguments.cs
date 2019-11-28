@@ -111,7 +111,7 @@
 
         private static bool TryGetTypeParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
-            if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context) &&
+            if (IsMakeGeneric(invocation, KnownSymbol.Type.MakeGenericType, context.SemanticModel, context.CancellationToken) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 if (Type.TryGet(memberAccess.Expression, context, out var type, out _) &&
@@ -136,7 +136,7 @@
 
         private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
-            if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context) &&
+            if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, context.SemanticModel, context.CancellationToken) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess)
             {
                 if (GetX.TryGetMethodInfo(memberAccess, context, out var method))
@@ -151,9 +151,9 @@
             return false;
         }
 
-        private static bool IsMakeGeneric(InvocationExpressionSyntax invocation, QualifiedMethod expected, SyntaxNodeAnalysisContext context)
+        private static bool IsMakeGeneric(InvocationExpressionSyntax invocation, QualifiedMethod expected, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            return invocation.TryGetTarget(expected, context.SemanticModel, context.CancellationToken, out var makeGeneric) &&
+            return invocation.TryGetTarget(expected, semanticModel, cancellationToken, out var makeGeneric) &&
                    makeGeneric.Parameters.TrySingle(out var parameter) &&
                    parameter.IsParams &&
                    parameter.Type is IArrayTypeSymbol arrayType &&

@@ -32,12 +32,14 @@
                          propertyInfo.Property.GetMethod is { } getMethod:
                     methodInfo = new MethodInfo(propertyInfo.ReflectedType, getMethod);
                     return true;
-                case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation when context.SemanticModel.TryGetSymbol(invocation, KnownSymbol.PropertyInfo.GetSetMethod, context.CancellationToken, out _) &&
+                case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
+                    when context.SemanticModel.TryGetSymbol(invocation, KnownSymbol.PropertyInfo.GetSetMethod, context.CancellationToken, out _) &&
                      PropertyInfo.TryGet(memberAccess.Expression, context, out var propertyInfo) &&
                      propertyInfo.Property.SetMethod is { } setMethod:
                     methodInfo = new MethodInfo(propertyInfo.ReflectedType, setMethod);
                     return true;
-                case MemberAccessExpressionSyntax memberAccess when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol):
+                case MemberAccessExpressionSyntax memberAccess
+                    when context.SemanticModel.TryGetSymbol(memberAccess, context.CancellationToken, out var symbol):
                     if (symbol == KnownSymbol.PropertyInfo.GetMethod &&
                         PropertyInfo.TryGet(memberAccess.Expression, context, out var property))
                     {
