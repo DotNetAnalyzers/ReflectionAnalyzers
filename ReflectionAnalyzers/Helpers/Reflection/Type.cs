@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -145,37 +145,33 @@ namespace ReflectionAnalyzers
         {
             switch (expression)
             {
-                case MemberAccessExpressionSyntax memberAccess when memberAccess.Name.Identifier.ValueText == "ReturnType" &&
-                                                                    memberAccess.Expression is InvocationExpressionSyntax invocation &&
-                                                                    GetX.TryMatchGetMethod(invocation, context, out var reflectedMember, out _, out _, out _) &&
-                                                                    reflectedMember.Match == FilterMatch.Single &&
-                                                                    reflectedMember.Symbol is IMethodSymbol method:
+                case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "ReturnType" } } } memberAccess
+                    when GetX.TryMatchGetMethod(invocation, context, out var reflectedMember, out _, out _, out _) &&
+                         reflectedMember.Match == FilterMatch.Single &&
+                         reflectedMember.Symbol is IMethodSymbol method:
                     source = memberAccess;
                     result = method.ReturnType;
                     return true;
-                case MemberAccessExpressionSyntax memberAccess when memberAccess.Name.Identifier.ValueText == "FieldType" &&
-                                                                    memberAccess.Expression is InvocationExpressionSyntax invocation &&
-                                                                    GetX.TryMatchGetField(invocation, context, out var reflectedMember, out _, out _) &&
-                                                                    reflectedMember.Match == FilterMatch.Single &&
-                                                                    reflectedMember.Symbol is IFieldSymbol field:
+                case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "FieldType" } } } memberAccess
+                    when GetX.TryMatchGetField(invocation, context, out var reflectedMember, out _, out _) &&
+                         reflectedMember.Match == FilterMatch.Single &&
+                         reflectedMember.Symbol is IFieldSymbol field:
                     source = memberAccess;
                     result = field.Type;
                     return true;
-                case MemberAccessExpressionSyntax memberAccess when memberAccess.Name.Identifier.ValueText == "PropertyType" &&
-                                                                    memberAccess.Expression is InvocationExpressionSyntax invocation &&
-                                                                    GetX.TryMatchGetProperty(invocation, context, out var reflectedMember, out _, out _, out _) &&
-                                                                    reflectedMember.Match == FilterMatch.Single &&
-                                                                    reflectedMember.Symbol is IPropertySymbol field:
+                case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "PropertyType" } } } memberAccess
+                    when GetX.TryMatchGetProperty(invocation, context, out var reflectedMember, out _, out _, out _) &&
+                         reflectedMember.Match == FilterMatch.Single &&
+                         reflectedMember.Symbol is IPropertySymbol field:
                     source = memberAccess;
                     result = field.Type;
                     return true;
                 case TypeOfExpressionSyntax typeOf:
                     source = typeOf;
                     return context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out result);
-                case InvocationExpressionSyntax invocation when invocation.ArgumentList is ArgumentListSyntax args &&
-                                                                args.Arguments.Count == 0 &&
-                                                                invocation.TryGetMethodName(out var name) &&
-                                                                name == "GetType":
+                case InvocationExpressionSyntax { ArgumentList: ArgumentListSyntax { Arguments: { Count: 0 } } } invocation
+                    when invocation.TryGetMethodName(out var name) &&
+                         name == "GetType":
                     switch (invocation.Expression)
                     {
                         case MemberAccessExpressionSyntax typeAccess:
@@ -192,41 +188,45 @@ namespace ReflectionAnalyzers
                             }
 
                             return false;
-                        case IdentifierNameSyntax _ when expression.TryFirstAncestor(out TypeDeclarationSyntax? containingType):
+                        case IdentifierNameSyntax _
+                            when expression.TryFirstAncestor(out TypeDeclarationSyntax? containingType):
                             source = invocation;
                             return context.SemanticModel.TryGetSymbol(containingType, context.CancellationToken, out result);
-                        case MemberBindingExpressionSyntax memberBinding when memberBinding.Parent?.Parent is ConditionalAccessExpressionSyntax conditionalAccess:
+                        case MemberBindingExpressionSyntax { Parent: { Parent: ConditionalAccessExpressionSyntax { Expression: { } } conditionalAccess } }:
                             source = invocation;
                             return context.SemanticModel.TryGetType(conditionalAccess.Expression, context.CancellationToken, out result);
                     }
 
                     break;
-                case InvocationExpressionSyntax candidate when TryMatchTypeGetType(candidate, context, out var typeName, out var ignoreCase):
+                case InvocationExpressionSyntax candidate
+                    when TryMatchTypeGetType(candidate, context, out var typeName, out var ignoreCase):
                     source = candidate;
                     result = context.Compilation.GetTypeByMetadataName(typeName, ignoreCase.Value);
                     return result != null;
-                case InvocationExpressionSyntax candidate when TryMatchAssemblyGetType(candidate, context, out var typeName, out var ignoreCase):
+                case InvocationExpressionSyntax candidate
+                    when TryMatchAssemblyGetType(candidate, context, out var typeName, out var ignoreCase):
                     source = candidate;
                     result = Assembly.TryGet(candidate.Expression, context, out var assembly)
                         ? assembly.GetTypeByMetadataName(typeName, ignoreCase.Value)
                         : null;
                     return result != null;
-                case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.GetGenericTypeDefinition, context.SemanticModel, context.CancellationToken, out _) &&
-                                                                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                                                                TryGet(memberAccess.Expression, context, visited, out var definingType, out _) &&
-                                                                definingType is INamedTypeSymbol namedType:
+                case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
+                    when invocation.TryGetTarget(KnownSymbol.Type.GetGenericTypeDefinition, context.SemanticModel, context.CancellationToken, out _) &&
+                         TryGet(memberAccess.Expression, context, visited, out var definingType, out _) &&
+                         definingType is INamedTypeSymbol namedType:
                     source = invocation;
                     result = namedType.ConstructedFrom;
                     return true;
 
-                case InvocationExpressionSyntax invocation when GetX.TryMatchGetNestedType(invocation, context, out var reflectedMember, out _, out _):
+                case InvocationExpressionSyntax invocation
+                    when GetX.TryMatchGetNestedType(invocation, context, out var reflectedMember, out _, out _):
                     source = invocation;
                     result = reflectedMember.Symbol as ITypeSymbol;
                     return result != null && reflectedMember.Match == FilterMatch.Single;
-                case InvocationExpressionSyntax invocation when invocation.TryGetTarget(KnownSymbol.Type.MakeGenericType, context.SemanticModel, context.CancellationToken, out _) &&
-                                                                invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                                                                TypeArguments.TryCreate(invocation, context, out var typeArguments) &&
-                                                                typeArguments.TryGetArgumentsTypes(context, out var types):
+                case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
+                    when invocation.TryGetTarget(KnownSymbol.Type.MakeGenericType, context.SemanticModel, context.CancellationToken, out _) &&
+                         TypeArguments.TryCreate(invocation, context, out var typeArguments) &&
+                         typeArguments.TryGetArgumentsTypes(context, out var types):
 #pragma warning disable IDISP003 // Dispose previous before re-assigning.
                     using (visited = visited.IncrementUsage())
 #pragma warning restore IDISP003 // Dispose previous before re-assigning.
