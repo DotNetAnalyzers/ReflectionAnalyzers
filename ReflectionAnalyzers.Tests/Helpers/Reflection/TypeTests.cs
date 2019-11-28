@@ -1,4 +1,4 @@
-﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection
+namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System.Threading;
     using Gu.Roslyn.Asserts;
@@ -75,10 +75,10 @@ namespace N
         [TestCase("field")]
         [TestCase("this.field")]
         [TestCase("local")]
-        [TestCase("CalculatedProperty")]
+        // [TestCase("CalculatedProperty")]
         [TestCase("GetOnlyProperty")]
         [TestCase("this.GetOnlyProperty")]
-        [TestCase("Method()")]
+        // [TestCase("Method()")]
         public static void TryGetWalked(string expression)
         {
             var code = @"
