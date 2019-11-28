@@ -124,7 +124,7 @@
                     {
                         if (values != null &&
                             values.Length > 0 &&
-                            Array.TryGetAccessibleTypes(values, context, out var types))
+                            Array.TryGetAccessibleTypes(values, context.SemanticModel, context.CancellationToken, out var types))
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(

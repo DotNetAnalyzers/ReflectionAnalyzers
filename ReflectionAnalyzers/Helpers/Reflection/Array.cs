@@ -42,13 +42,13 @@
             }
         }
 
-        internal static bool TryGetAccessibleTypes(ImmutableArray<ExpressionSyntax> values, SyntaxNodeAnalysisContext context, out ImmutableArray<ITypeSymbol> types)
+        internal static bool TryGetAccessibleTypes(ImmutableArray<ExpressionSyntax> values, SemanticModel semanticModel, CancellationToken cancellationToken, out ImmutableArray<ITypeSymbol> types)
         {
             var builder = ImmutableArray.CreateBuilder<ITypeSymbol>(values.Length);
             foreach (var value in values)
             {
-                if (context.SemanticModel.TryGetType(value, context.CancellationToken, out var type) &&
-                    context.SemanticModel.IsAccessible(context.Node.SpanStart, type))
+                if (semanticModel.TryGetType(value, cancellationToken, out var type) &&
+                    semanticModel.IsAccessible(value.SpanStart, type))
                 {
                     builder.Add(type);
                 }
