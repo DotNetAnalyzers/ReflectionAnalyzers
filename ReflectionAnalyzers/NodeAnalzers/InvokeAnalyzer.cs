@@ -95,17 +95,18 @@
                     }
 
                     if (invoke.TryFindParameter("obj", out var objParameter) &&
-                        invocation.TryFindArgument(objParameter, out var objArg))
+                        invocation.TryFindArgument(objParameter, out var objArg) &&
+                        objArg.Expression is { })
                     {
                         if (method.IsStatic &&
-                            objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == false)
+                            objArg.Expression.IsKind(SyntaxKind.NullLiteralExpression) == false)
                         {
                             context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is static and null should be passed as obj."));
                         }
 
                         if (!method.IsStatic)
                         {
-                            if (objArg.Expression?.IsKind(SyntaxKind.NullLiteralExpression) == true)
+                            if (objArg.Expression.IsKind(SyntaxKind.NullLiteralExpression) == true)
                             {
                                 context.ReportDiagnostic(Diagnostic.Create(REFL030UseCorrectObj.Descriptor, objArg.GetLocation(), $"The method {method} is an instance method and the instance should be passed as obj."));
                             }

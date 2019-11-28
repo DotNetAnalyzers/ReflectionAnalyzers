@@ -49,7 +49,8 @@
             {
                 if (TryGetX(context, out var member, out var name, out var flags, out var types))
                 {
-                    if (member.Match == FilterMatch.NoMatch)
+                    if (member.Match == FilterMatch.NoMatch &&
+                        name.Argument is { })
                     {
                         if (member.ReflectedType?.IsSealed == true ||
                             member.ReflectedType?.IsStatic == true ||
@@ -66,7 +67,8 @@
                         }
                     }
 
-                    if (member.Match == FilterMatch.Ambiguous)
+                    if (member.Match == FilterMatch.Ambiguous &&
+                        member.ReflectedType is { })
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -74,7 +76,7 @@
                                 argumentList.GetLocation(),
                                 ImmutableDictionary<string, string>.Empty.Add(
                                     nameof(INamedTypeSymbol),
-                                    member.ReflectedType?.QualifiedMetadataName())));
+                                    member.ReflectedType.QualifiedMetadataName())));
                     }
 
                     if (HasWrongFlags(member, flags, out var location, out var flagsText))
@@ -87,7 +89,8 @@
                                 $" Expected: {flagsText}."));
                     }
 
-                    if (HasRedundantFlag(member, flags, out flagsText))
+                    if (HasRedundantFlag(member, flags, out flagsText) &&
+                        flags.Argument is { })
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -107,7 +110,8 @@
                                 $" Expected: {flagsText}."));
                     }
 
-                    if (member.Match == FilterMatch.WrongMemberType)
+                    if (member.Match == FilterMatch.WrongMemberType &&
+                        member.Symbol is { })
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -130,7 +134,8 @@
                                 callText));
                     }
 
-                    if (member.Match == FilterMatch.UseContainingType)
+                    if (member.Match == FilterMatch.UseContainingType &&
+                        member.Symbol is { })
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -161,7 +166,8 @@
                                 nameText));
                     }
 
-                    if (member.Match == FilterMatch.ExplicitImplementation)
+                    if (member.Match == FilterMatch.ExplicitImplementation &&
+                        member.Symbol is { })
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
@@ -238,14 +244,13 @@
             {
                 return expression switch
                 {
-                    BinaryExpressionSyntax binary => binary.IsEither(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression) &&
-                                                     binary.Right.IsKind(SyntaxKind.NullLiteralExpression) &&
-                                                     binary.Left is IdentifierNameSyntax left &&
-                                                     left.Identifier.ValueText == name,
-                    IsPatternExpressionSyntax isPattern => isPattern.Expression is IdentifierNameSyntax identifier &&
-                                                           identifier.Identifier.ValueText == name &&
-                                                           isPattern.Pattern is ConstantPatternSyntax constant &&
-                                                           constant.Expression.IsKind(SyntaxKind.NullLiteralExpression),
+                    BinaryExpressionSyntax { Left: IdentifierNameSyntax left, Right: LiteralExpressionSyntax right } binary
+                    => binary.IsEither(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression) &&
+                       right.IsKind(SyntaxKind.NullLiteralExpression) &&
+                       left.Identifier.ValueText == name,
+                    IsPatternExpressionSyntax { Expression: IdentifierNameSyntax identifier, Pattern: ConstantPatternSyntax { Expression: LiteralExpressionSyntax constant } }
+                    => identifier.Identifier.ValueText == name &&
+                       constant.IsKind(SyntaxKind.NullLiteralExpression),
 
                     _ => false,
                 };
@@ -273,7 +278,8 @@
 
         private static bool HasMissingFlags(ReflectedMember member, Flags flags, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? flagsText)
         {
-            if (Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags) &&
+            if (member.Symbol is { } symbol &&
+                Flags.TryGetExpectedBindingFlags(member.ReflectedType, symbol, out var correctFlags) &&
                 member.Invocation?.ArgumentList is { } argumentList &&
                 (member.Match == FilterMatch.Single || member.Match == FilterMatch.WrongFlags))
             {
@@ -299,13 +305,13 @@
 
             bool HasMissingFlag()
             {
-                if (member.Symbol is ITypeSymbol ||
-                    member.Symbol is IMethodSymbol { MethodKind: MethodKind.Constructor })
+                if (symbol is ITypeSymbol ||
+                    symbol is IMethodSymbol { MethodKind: MethodKind.Constructor })
                 {
                     return false;
                 }
 
-                return Equals(member.Symbol.ContainingType, member.ReflectedType) &&
+                return Equals(symbol.ContainingType, member.ReflectedType) &&
                        !flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly);
             }
 
@@ -320,6 +326,7 @@
         private static bool HasWrongFlags(ReflectedMember member, Flags flags, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? flagText)
         {
             if (member.Match == FilterMatch.WrongFlags &&
+                member.Symbol is { } &&
                 Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags))
             {
                 flagText = correctFlags.ToDisplayString(flags.Argument);
@@ -352,7 +359,8 @@
                 return false;
             }
 
-            if (flags.Argument is { } argument &&
+            if (member.Symbol is { } &&
+                flags.Argument is { } argument &&
                 Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var expectedFlags))
             {
                 if (member.Symbol is IMethodSymbol { MethodKind: MethodKind.Constructor } &&
@@ -401,6 +409,7 @@
         private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? nameText)
         {
             if (name.Argument is { } argument &&
+                member.Symbol is { } &&
                 NameOf.CanUseFor(member.Symbol) &&
                 (member.Match == FilterMatch.Single ||
                  member.Match == FilterMatch.Ambiguous ||
@@ -502,7 +511,7 @@
             callText = null;
             return false;
 
-            bool TryGetPropertyAccessor(string propertyName, BindingFlags bindingFlags, ITypeSymbol? type, out string result)
+            bool TryGetPropertyAccessor(string propertyName, BindingFlags bindingFlags, ITypeSymbol type, out string result)
             {
                 if (name.MetadataName.StartsWith("get_", StringComparison.Ordinal))
                 {
@@ -605,7 +614,7 @@
 
                 if (Equals(context.ContainingSymbol.ContainingType, associatedSymbol.ContainingType))
                 {
-                    if (member.Symbol.IsStatic)
+                    if (associatedSymbol.IsStatic)
                     {
                         return $"nameof({associatedSymbol.Name})";
                     }

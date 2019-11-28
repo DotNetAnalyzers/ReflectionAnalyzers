@@ -105,7 +105,8 @@
                     return true;
                 }
 
-                return name.IsParts(candidate.ContainingNamespace.ToString(), ".", candidate.MetadataName);
+                return candidate.ContainingNamespace.ToString() is { } ns &&
+                       name.IsParts(ns, ".", candidate.MetadataName);
             }
         }
 
