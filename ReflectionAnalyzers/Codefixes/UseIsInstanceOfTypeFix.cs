@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -27,7 +27,7 @@ namespace ReflectionAnalyzers
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (syntaxRoot.TryFindNode(diagnostic, out InvocationExpressionSyntax? invocation) &&
-                    invocation.ArgumentList is ArgumentListSyntax argumentList &&
+                    invocation.ArgumentList is { } argumentList &&
                     argumentList.Arguments.TrySingle(out var arg) &&
                     IsAssignableFromAnalyzer.IsInstanceGetType(arg.Expression, semanticModel, context.CancellationToken, out var instance))
                 {

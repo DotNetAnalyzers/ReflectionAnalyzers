@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
@@ -8,7 +8,6 @@ namespace ReflectionAnalyzers
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
-    using Attribute = Gu.Roslyn.AnalyzerExtensions.Attribute;
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class DefaultMemberAttributeAnalyzer : DiagnosticAnalyzer

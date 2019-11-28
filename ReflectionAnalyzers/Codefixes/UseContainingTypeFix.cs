@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -37,7 +37,7 @@ namespace ReflectionAnalyzers
                             diagnostic);
                     }
                     else if (syntaxRoot.TryFindNode(diagnostic, out MemberAccessExpressionSyntax? memberAccess) &&
-                             memberAccess.Expression is ExpressionSyntax expression)
+                             memberAccess.Expression is { } expression)
                     {
                         context.RegisterCodeFix(
                             $"Use containing type: {typeName}.",

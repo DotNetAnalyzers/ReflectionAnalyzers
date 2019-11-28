@@ -6,7 +6,6 @@
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Microsoft.CodeAnalysis.Diagnostics;
 
     /// <summary>
     /// Helper for Type.GetField, Type.GetEvent, Type.GetMember, Type.GetMethod...

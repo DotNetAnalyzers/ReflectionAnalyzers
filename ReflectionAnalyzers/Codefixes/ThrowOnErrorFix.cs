@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -25,9 +25,9 @@ namespace ReflectionAnalyzers
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
-                    invocation.ArgumentList is ArgumentListSyntax argumentList)
+                    invocation.ArgumentList is { Arguments: { } arguments } argumentList)
                 {
-                    if (argumentList.Arguments.Count == 1)
+                    if (arguments.Count == 1)
                     {
                         context.RegisterCodeFix(
                             "Throw on error.",
@@ -37,8 +37,8 @@ namespace ReflectionAnalyzers
                             "Throw on error.",
                             diagnostic);
                     }
-                    else if (argumentList.Arguments.Count == 2 &&
-                             argumentList.Arguments.TrySingle(x => x.Expression.IsKind(SyntaxKind.FalseLiteralExpression), out var argument))
+                    else if (arguments.Count == 2 &&
+                             arguments.TrySingle(x => x.Expression.IsKind(SyntaxKind.FalseLiteralExpression), out var argument))
                     {
                         context.RegisterCodeFix(
                             "Throw on error.",
