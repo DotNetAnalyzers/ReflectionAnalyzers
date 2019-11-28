@@ -68,7 +68,7 @@
                     Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     Types.TryCreate(invocation, getX, context, out types))
                 {
-                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, context, out member);
+                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, context.Compilation, out member);
                 }
 
                 if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
@@ -116,7 +116,7 @@
                     Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     Types.TryCreate(invocation, getX, context, out types))
                 {
-                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context, out member);
+                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context.Compilation, out member);
                 }
 
                 if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
@@ -158,7 +158,7 @@
                     Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
                     Types.TryCreate(invocation, getX, context, out types))
                 {
-                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context, out member);
+                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, context.Compilation, out member);
                 }
 
                 if (Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
@@ -244,7 +244,7 @@
                 if (ReflectedMember.TryGetType(invocation, context, out var type, out var typeSource) &&
                     Name.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out name) &&
                     Flags.TryCreate(invocation, getX, context.SemanticModel, context.CancellationToken, out flags) &&
-                    ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, Types.Any, context, out member))
+                    ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, Types.Any, context.Compilation, out member))
                 {
                     return true;
                 }

@@ -36,9 +36,9 @@
             this.Match = match;
         }
 
-        internal static bool TryCreate(IMethodSymbol getX, InvocationExpressionSyntax invocation, INamedTypeSymbol type, ExpressionSyntax typeSource, Name name, BindingFlags flags, Types types, SyntaxNodeAnalysisContext context, out ReflectedMember member)
+        internal static bool TryCreate(IMethodSymbol getX, InvocationExpressionSyntax invocation, INamedTypeSymbol type, ExpressionSyntax typeSource, Name name, BindingFlags flags, Types types, Compilation compilation, out ReflectedMember member)
         {
-            var match = TryGetMember(getX, type, name, flags, types, context.Compilation, out var memberSymbol);
+            var match = TryGetMember(getX, type, name, flags, types, compilation, out var memberSymbol);
             member = new ReflectedMember(type, typeSource, memberSymbol, getX, invocation, match);
             return true;
         }
