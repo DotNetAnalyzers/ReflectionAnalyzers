@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -282,6 +282,52 @@ namespace N
         }
     }
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly)", call);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
+
+        [Test]
+        public static void GetFieldEventBacking()
+        {
+            var code = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+
+    public class C1
+    {
+        public event EventHandler E;
+    }
+
+    public class C
+    {
+        public static object M(C1 sender) => sender.GetType()
+                                                   .GetField(nameof(sender.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+    }
+}";
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
+
+        [Test]
+        public static void GetEvent()
+        {
+            var code = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+
+    public class C1
+    {
+        public event EventHandler E;
+    }
+
+    public class C
+    {
+        public static object M(C1 sender) => sender.GetType()
+                                                   .GetEvent(nameof(sender.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+    }
+}";
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
