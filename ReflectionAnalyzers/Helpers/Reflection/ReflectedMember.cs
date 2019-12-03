@@ -349,37 +349,24 @@
                 }
             }
 
-            if (candidate is IFieldSymbol { CorrespondingTupleField: IFieldSymbol tupleField } field &&
-                tupleField.Name != field.Name)
+            switch (candidate)
             {
-                return false;
-            }
-
-            if (candidate.DeclaredAccessibility == Accessibility.Public &&
-                !flags.HasFlagFast(BindingFlags.Public))
-            {
-                return false;
+                case IFieldSymbol { CorrespondingTupleField: IFieldSymbol tupleField } field when tupleField.Name != field.Name:
+                case { DeclaredAccessibility: Accessibility.Public }
+                    when !flags.HasFlagFast(BindingFlags.Public):
+                case { IsStatic: true }
+                    when IsMember() &&
+                         !flags.HasFlagFast(BindingFlags.Static):
+                case { IsStatic: false }
+                    when IsMember() &&
+                         !flags.HasFlagFast(BindingFlags.Instance):
+                    return false;
             }
 
             if (candidate.DeclaredAccessibility != Accessibility.Public &&
                 !flags.HasFlagFast(BindingFlags.NonPublic))
             {
                 return false;
-            }
-
-            if (!(candidate is ITypeSymbol))
-            {
-                if (candidate.IsStatic &&
-                    !flags.HasFlagFast(BindingFlags.Static))
-                {
-                    return false;
-                }
-
-                if (!candidate.IsStatic &&
-                    !flags.HasFlagFast(BindingFlags.Instance))
-                {
-                    return false;
-                }
             }
 
             if (types.Argument != null)
@@ -392,6 +379,20 @@
             }
 
             return true;
+
+            bool IsMember()
+            {
+                switch (candidate.Kind)
+                {
+                    case SymbolKind.Event:
+                    case SymbolKind.Field:
+                    case SymbolKind.Property:
+                    case SymbolKind.Method:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
         }
     }
 }
