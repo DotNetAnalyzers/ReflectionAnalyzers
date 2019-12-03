@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
+﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -498,6 +498,26 @@ namespace N
     }
 }";
             RoslynAssert.Valid(Analyzer, code);
+        }
+
+        [Test]
+        public static void GenericMethodOnGenericType()
+        {
+            var code = @"
+namespace N
+{
+    using System.Reflection;
+
+    class C<T1>
+    {
+        private void M<T2>()
+        {
+        }
+
+        public object P => typeof(C<>).GetMethod(nameof(M), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+    }
+}";
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -252,6 +252,26 @@ namespace N
         }
 
         public T Id<T>(T value) => value;
+    }
+}";
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
+            }
+
+            [Test]
+            public static void GenericMethodOnGenericType()
+            {
+                var code = @"
+namespace N
+{
+    using System.Reflection;
+
+    class C<T1>
+    {
+        private void M<T2>()
+        {
+        }
+
+        public object P => typeof(C<>).GetMethod(nameof(M), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
