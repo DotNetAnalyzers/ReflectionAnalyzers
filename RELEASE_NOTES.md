@@ -1,3 +1,7 @@
+#### 0.1.21
+* FEATURE Walk a bit more, smarter analyzers in places.
+* BUGFIX Handle nameof when open generic type.
+
 #### 0.1.20
 * BUGFIX REFL031: conditional expression.
 * BUGFIX REFL031: if statement.

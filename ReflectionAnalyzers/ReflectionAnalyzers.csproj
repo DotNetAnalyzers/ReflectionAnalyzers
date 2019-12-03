@@ -27,7 +27,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.20-dev</Version>
+    <Version>0.1.21-dev</Version>
     <DevelopmentDependency>true</DevelopmentDependency>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -35,8 +35,8 @@
     <RepositoryUrl>https://github.com/DotNetAnalyzers/ReflectionAnalyzers</RepositoryUrl>
     <PackageTags>Reflection Roslyn Diagnostic Analyzer DotnetAnalyzers</PackageTags>
     <PackageReleaseNotes>
-      BUGFIX REFL031: conditional expression.
-      BUGFIX REFL031: if statement.
+      FEATURE Walk a bit more, smarter analyzers in places.
+      BUGFIX Handle nameof when open generic type.
     </PackageReleaseNotes>
   </PropertyGroup>
 
