@@ -1,6 +1,3 @@
-# EditorConfig is awesome: https://EditorConfig.org
-
-# top-most EditorConfig file
 root = true
 
 # Don't use tabs for indentation.
@@ -200,3 +197,7 @@ csharp_space_between_square_brackets = false
 csharp_prefer_braces = true:silent
 csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = true
+
+dotnet_diagnostic.CA1303.severity = none # Do not pass literals as localized parameters
+dotnet_diagnostic.IDE0009.severity = none # Add 'this', bug in the analyzer when using patterns.
+dotnet_diagnostic.IDE1006.severity = none # _, bug in the analyzer when discarding many.
