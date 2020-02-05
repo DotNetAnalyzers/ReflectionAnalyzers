@@ -98,7 +98,7 @@
 
             ArgumentSyntax? FindArgument(string name)
             {
-                return createDelegate.TryFindParameter(name, out var parameter) &&
+                return createDelegate!.TryFindParameter(name, out var parameter) &&
                        invocation.TryFindArgument(parameter, out var argument)
                     ? argument
                     : null;

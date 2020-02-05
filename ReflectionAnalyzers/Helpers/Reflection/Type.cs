@@ -269,7 +269,7 @@
                                        TryGet(value, recursion, out result, out source);
                             case IPropertySymbol property
                                 when !property.IsAutoProperty() &&
-                                     target.TargetNode is { } declaration:
+                                     target.Declaration is { } declaration:
                                 result = null;
                                 source = null;
                                 return ReturnValueWalker.TrySingle(declaration, out value) &&
@@ -280,7 +280,7 @@
                                 return AssignedValue.TryGetSingle(property, recursion.SemanticModel, recursion.CancellationToken, out value) &&
                                        TryGet(value, recursion, out result, out source);
                             case IMethodSymbol _
-                                when target.TargetNode is { } declaration:
+                                when target.Declaration is { } declaration:
                                 result = null;
                                 source = null;
                                 return ReturnValueWalker.TrySingle(declaration, out value) &&
