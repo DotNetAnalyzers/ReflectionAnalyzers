@@ -27,7 +27,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>0.1.21-dev</Version>
     <DevelopmentDependency>true</DevelopmentDependency>
     <Description>Analyzers for System.Reflection</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
