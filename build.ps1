@@ -4,11 +4,6 @@ $visualStudioInstallation = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\
 $configuration = 'Release'
 $artifactsDir = Join-Path $PSScriptRoot 'artifacts'
 
-. 'build\VersionHandling.ps1'
-Set-VsixVersionFromCsprojVersion `
-    'ReflectionAnalyzers\ReflectionAnalyzers.csproj' `
-    'ReflectionAnalyzers.Vsix\source.extension.vsixmanifest'
-
 $msbuild = Join-Path $visualStudioInstallation 'MSBuild\Current\Bin\MSBuild.exe'
 & $msbuild /t:Build /restore /v:minimal /p:Configuration=$configuration
 & $msbuild ReflectionAnalyzers /t:Pack /p:NoBuild=true /p:PackageOutputPath="$artifactsDir" /v:minimal /p:Configuration=$configuration

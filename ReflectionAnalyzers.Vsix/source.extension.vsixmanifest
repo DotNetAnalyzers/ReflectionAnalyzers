@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="ReflectionAnalyzers.891942ac-38e5-4220-b8d7-a96617a1bd07" Version="0.1.20" Language="en-US" Publisher="Johan Larsson" />
+    <Identity Id="ReflectionAnalyzers.891942ac-38e5-4220-b8d7-a96617a1bd07" Version="|%CurrentProject%;GetVsixVersion|" Language="en-US" Publisher="Johan Larsson" />
     <DisplayName>ReflectionAnalyzers</DisplayName>
     <Description>ReflectionAnalyzers</Description>
   </Metadata>
