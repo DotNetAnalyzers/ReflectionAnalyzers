@@ -17,12 +17,14 @@
             targetName = null;
             if (member.Symbol is null ||
                 !member.Symbol.CanBeReferencedByName ||
+                !context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol) ||
+                member.Symbol is INamedTypeSymbol { IsGenericType: true } ||
                 (member.Symbol is IMethodSymbol method && method.MethodKind != MethodKind.Ordinary))
             {
                 return false;
             }
 
-            if (member.Symbol.ContainingType.IsAnonymousType)
+            if (member.Symbol is { ContainingType: { IsAnonymousType: true } })
             {
                 if (member.TypeSource is InvocationExpressionSyntax getType &&
                     getType.TryGetTarget(KnownSymbol.Object.GetType, context.SemanticModel, context.CancellationToken, out _) &&
@@ -35,11 +37,12 @@
                 return false;
             }
 
-            if (!context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol) ||
-                member.Symbol is INamedTypeSymbol { IsGenericType: true } ||
-                member.Symbol is IMethodSymbol { AssociatedSymbol: { } })
+            if (member.Symbol is { ContainingType: { TupleUnderlyingType: { } tupleType } })
             {
-                return false;
+                targetName = member.Symbol is IFieldSymbol { CorrespondingTupleField: { } tupleField }
+                    ? $"{TypeOfString(tupleType)}.{tupleField.Name}"
+                    : $"{TypeOfString(tupleType)}.{member.Symbol.Name}";
+                return true;
             }
 
             if (context.ContainingSymbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.Compilation))
@@ -51,14 +54,6 @@
                     : context.SemanticModel.UnderscoreFields() == CodeStyleResult.Yes
                         ? $"{member.Symbol.Name}"
                         : $"this.{member.Symbol.Name}";
-                return true;
-            }
-
-            if (member.Symbol.ContainingType.TupleUnderlyingType is { } tupleType)
-            {
-                targetName = member.Symbol is IFieldSymbol { CorrespondingTupleField: { } tupleField }
-                    ? $"{TypeOfString(tupleType)}.{tupleField.Name}"
-                    : $"{TypeOfString(tupleType)}.{member.Symbol.Name}";
                 return true;
             }
 
