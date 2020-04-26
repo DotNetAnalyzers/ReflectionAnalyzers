@@ -475,7 +475,7 @@ namespace N
         }
 
         [Test]
-        public static void InNestedType()
+        public static void InNestedTypeWhenPublicInherited()
         {
             var @base = @"
 namespace N
@@ -523,6 +523,46 @@ namespace N
 }";
 
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
+        }
+
+        [Test]
+        public static void InNestedType()
+        {
+            var before = @"
+namespace N
+{
+    class C
+    {
+        protected void M1() { }
+
+        class Nested
+        {
+            void M2()
+            {
+                typeof(C).GetMethod(↓""M1"");
+            }
+        }
+    }
+}";
+
+            var after = @"
+namespace N
+{
+    class C
+    {
+        protected void M1() { }
+
+        class Nested
+        {
+            void M2()
+            {
+                typeof(C).GetMethod(nameof(C.M1));
+            }
+        }
+    }
+}";
+
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }
