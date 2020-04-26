@@ -62,9 +62,7 @@
                 return true;
             }
 
-            targetName = context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol)
-                ? $"{TypeOfString(member.Symbol.ContainingType)}.{member.Symbol.Name}"
-                : $"\"{member.Symbol.Name}\"";
+            targetName = $"{TypeOfString(member.Symbol.ContainingType)}.{member.Symbol.Name}";
             return true;
 
             string TypeOfString(ITypeSymbol t)

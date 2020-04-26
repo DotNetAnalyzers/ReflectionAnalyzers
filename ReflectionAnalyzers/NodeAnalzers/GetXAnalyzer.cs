@@ -413,8 +413,7 @@
                 literal.IsKind(SyntaxKind.StringLiteralExpression) &&
                 member.Symbol is { } &&
                 IsMatch() &&
-                NameOf.TryGetExpressionText(member, context, out var expressionText) &&
-                !expressionText.StartsWith("\"", StringComparison.OrdinalIgnoreCase))
+                NameOf.TryGetExpressionText(member, context, out var expressionText))
             {
                 nameText = $"nameof({expressionText})";
                 location = literal.GetLocation();
