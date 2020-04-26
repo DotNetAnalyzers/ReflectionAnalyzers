@@ -473,5 +473,56 @@ namespace N
 
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseClass, before }, after);
         }
+
+        [Test]
+        public static void InNestedType()
+        {
+            var @base = @"
+namespace N
+{
+    class Base
+    {
+        public void M1() { }
+    }
+}";
+
+            var before = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+
+    class C : Base
+    {
+        class Nested
+        {
+            void M2()
+            {
+                typeof(Base).GetMethod(↓""M1"");
+            }
+        }
+    }
+}";
+
+            var after = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+
+    class C : Base
+    {
+        class Nested
+        {
+            void M2()
+            {
+                typeof(Base).GetMethod(nameof(Base.M1));
+            }
+        }
+    }
+}";
+
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
+        }
     }
 }
