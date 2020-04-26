@@ -15,7 +15,9 @@
         internal static bool TryGetExpressionText(ReflectedMember member, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? targetName)
         {
             targetName = null;
-            if (member.Symbol is null)
+            if (member.Symbol is null ||
+                !member.Symbol.CanBeReferencedByName ||
+                (member.Symbol is IMethodSymbol method && method.MethodKind != MethodKind.Ordinary))
             {
                 return false;
             }
@@ -88,21 +90,6 @@
 
             expression = null;
             return false;
-        }
-
-        internal static bool CanUseFor(ISymbol symbol)
-        {
-            if (symbol == null ||
-                !symbol.CanBeReferencedByName)
-            {
-                return false;
-            }
-
-            return symbol switch
-            {
-                IMethodSymbol method => method.MethodKind == MethodKind.Ordinary,
-                _ => true,
-            };
         }
     }
 }

@@ -409,29 +409,39 @@
 
         private static bool ShouldUseNameof(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? nameText)
         {
-            if (name.Argument is { } argument &&
+            if (name.Argument is { Expression: LiteralExpressionSyntax literal } &&
+                literal.IsKind(SyntaxKind.StringLiteralExpression) &&
                 member.Symbol is { } &&
-                NameOf.CanUseFor(member.Symbol) &&
-                (member.Match == FilterMatch.Single ||
-                 member.Match == FilterMatch.Ambiguous ||
-                 member.Match == FilterMatch.WrongFlags ||
-                 member.Match == FilterMatch.WrongTypes ||
-                 (member.Match == FilterMatch.PotentiallyInvisible && member.Symbol is IMethodSymbol)))
+                IsMatch() &&
+                NameOf.TryGetExpressionText(member, context, out var expressionText) &&
+                !expressionText.StartsWith("\"", StringComparison.OrdinalIgnoreCase))
             {
-                if (argument.Expression is LiteralExpressionSyntax literal &&
-                    literal.IsKind(SyntaxKind.StringLiteralExpression) &&
-                    NameOf.TryGetExpressionText(member, context, out var expressionText) &&
-                    !expressionText.StartsWith("\"", StringComparison.OrdinalIgnoreCase))
-                {
-                    nameText = $"nameof({expressionText})";
-                    location = literal.GetLocation();
-                    return true;
-                }
+                nameText = $"nameof({expressionText})";
+                location = literal.GetLocation();
+                return true;
             }
 
             location = null;
             nameText = null;
             return false;
+
+            bool IsMatch()
+            {
+                return member.Match switch
+                {
+                    FilterMatch.Single => true,
+                    FilterMatch.NoMatch => false,
+                    FilterMatch.ExplicitImplementation => false,
+                    FilterMatch.Ambiguous => true,
+                    FilterMatch.WrongFlags => true,
+                    FilterMatch.InSufficientFlags => true,
+                    FilterMatch.WrongTypes => true,
+                    FilterMatch.WrongMemberType => false,
+                    FilterMatch.UseContainingType => false,
+                    FilterMatch.PotentiallyInvisible => false,
+                    _ => false,
+                };
+            }
         }
 
         private static bool UsesNameOfWrongMember(ReflectedMember member, Name name, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? nameText)
