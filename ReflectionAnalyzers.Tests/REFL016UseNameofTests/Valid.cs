@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
+﻿namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -279,25 +279,6 @@ namespace N
         }
 
         [Test]
-        public static void SystemWindowsFormsControlCreateControl()
-        {
-            var code = @"
-namespace N
-{
-    using System;
-    using System.Reflection;
-    using System.Windows.Forms;
-
-    class C
-    {
-        public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
-    }
-}";
-
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
-
-        [Test]
         public static void WhenThrowingArgumentException()
         {
             var code = @"
@@ -566,6 +547,44 @@ namespace N
 }".AssertReplace("typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
             RoslynAssert.Valid(Analyzer, Descriptor, cBase, code);
+        }
+
+        [Test]
+        public static void SystemWindowsFormsControlCreateControl()
+        {
+            var code = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+    using System.Windows.Forms;
+
+    class C
+    {
+        public object Get => typeof(Control).GetMethod(""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+    }
+}";
+
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
+
+        [Test]
+        public static void SystemWindowsFormsControlCreateControlWhenSubclass()
+        {
+            var code = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+    using System.Windows.Forms;
+
+    class C : Control
+    {
+        public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+    }
+}";
+
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

@@ -324,17 +324,17 @@ namespace N
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
+        [Ignore("No fix when we don't know if it is visible due to ref assemblies.")]
         [Test]
         public static void SystemWindowsFormsControlCreateControl()
         {
             var before = @"
 namespace N
 {
-    using System;
     using System.Reflection;
     using System.Windows.Forms;
 
-    class C
+    class C : Control
     {
         public object Get => typeof(Control).GetMethod(↓""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
@@ -343,11 +343,10 @@ namespace N
             var after = @"
 namespace N
 {
-    using System;
     using System.Reflection;
     using System.Windows.Forms;
 
-    class C
+    class C : Control
     {
         public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
