@@ -15,11 +15,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <GenerateNullableAttributes>true</GenerateNullableAttributes>
-    <AnnotatedReferenceAssemblyVersion>3.0.0</AnnotatedReferenceAssemblyVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <IncludeBuildOutput>false</IncludeBuildOutput>
@@ -45,9 +40,12 @@
     <PackageReference Include="IDisposableAnalyzers" Version="3.3.7" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="2.3.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0-beta3.final" PrivateAssets="all" />
-    <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[$(AnnotatedReferenceAssemblyVersion)]" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.164" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="TunnelVisionLabs.ReferenceAssemblyAnnotator" Version="1.0.0-alpha.154" PrivateAssets="all" />
+    <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[3.1.0]" />
   </ItemGroup>
 
   <ItemGroup>
