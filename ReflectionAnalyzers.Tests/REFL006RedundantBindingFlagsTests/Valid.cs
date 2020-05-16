@@ -79,7 +79,7 @@ namespace N
         [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance)")]
         [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)")]
         [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)")]
-        public static void DontWarnWhenTypeIsNotInSln(string call)
+        public static void DoNotWarnWhenTypeIsNotInSln(string call)
         {
             var code = @"
 namespace N
