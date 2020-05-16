@@ -17,7 +17,7 @@
             targetName = null;
             if (member.Symbol is null ||
                 !member.Symbol.CanBeReferencedByName ||
-                !IsAccessible() ||
+                !context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol) ||
                 member.Symbol is INamedTypeSymbol { IsGenericType: true } ||
                 (member.Symbol is IMethodSymbol method && method.MethodKind != MethodKind.Ordinary))
             {
@@ -59,27 +59,6 @@
 
             targetName = $"{TypeOfString(member.Symbol.ContainingType)}.{member.Symbol.Name}";
             return true;
-
-            bool IsAccessible()
-            {
-                // Working around https://github.com/dotnet/roslyn/issues/43696
-                if (context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol))
-                {
-                    if (member.Symbol.DeclaredAccessibility.IsEither(Accessibility.Public, Accessibility.Internal))
-                    {
-                        return true;
-                    }
-
-                    if (context.Node.FirstAncestor<TypeDeclarationSyntax>() is { } containingType)
-                    {
-                        return containingType.Identifier.ValueText == member.Symbol.ContainingType.MetadataName;
-                    }
-
-                    return true;
-                }
-
-                return false;
-            }
 
             string TypeOfString(ITypeSymbol t)
             {

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
+﻿namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -566,3 +566,4 @@ namespace N
         }
     }
 }
+
