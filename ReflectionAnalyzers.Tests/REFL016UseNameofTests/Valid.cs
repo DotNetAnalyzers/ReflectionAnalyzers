@@ -586,5 +586,38 @@ namespace N
 
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
+
+        [TestCase("GetMethod(\"M1\")")]
+        [TestCase("GetMethod(\"M1\", BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null)")]
+        public static void InNestedTypeInheritance(string expression)
+        {
+            var @base = @"
+namespace N
+{
+    class Base
+    {
+        protected void M1() { }
+    }
+}";
+
+            var code = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+
+    class C : Base
+    {
+        class Nested
+        {
+            void M2()
+            {
+                typeof(Base).GetMethod(""M1"");
+            }
+        }
+    }
+}".AssertReplace("GetMethod(\"M1\")", expression);
+            RoslynAssert.Valid(Analyzer, Descriptor, @base, code);
+        }
     }
 }
