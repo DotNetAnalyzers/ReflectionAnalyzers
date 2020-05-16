@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -16,7 +16,11 @@ namespace ReflectionAnalyzers
     [Shared]
     internal class BindingFlagsFix : DocumentEditorCodeFixProvider
     {
-        private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(SyntaxFactory.ParseName("System.Reflection"));
+        private static readonly UsingDirectiveSyntax SystemReflection = SyntaxFactory.UsingDirective(
+            SyntaxFactory.QualifiedName(
+                SyntaxFactory.IdentifierName("System"),
+                SyntaxFactory.IdentifierName("Reflection")));
+
         private static readonly ArgumentSyntax NullArgument = SyntaxFactory.Argument(SyntaxFactory.LiteralExpression(SyntaxKind.NullLiteralExpression))
                                                                            .WithAdditionalAnnotations(Formatter.Annotation);
 
