@@ -1,4 +1,4 @@
-// ReSharper disable ReturnValueOfPureMethodIsNotUsed
+﻿// ReSharper disable ReturnValueOfPureMethodIsNotUsed
 // ReSharper disable All
 namespace ValidCode
 {
@@ -51,5 +51,14 @@ namespace ValidCode
         private int PrivateInstanceMethod() => 0;
 
         private static int PublicPrivateStaticMethod(int i) => i;
+
+        class Nested
+        {
+            object ProtectedInstanceMethod => typeof(Base).GetMethod(nameof(GetMethod.ProtectedInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+
+            object ProtectedStaticMethod1 => typeof(Base).GetMethod(nameof(GetMethod.ProtectedStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+
+            object ProtectedStaticMethod2 => typeof(Base).GetMethod(nameof(Base.ProtectedStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+        }
     }
 }
