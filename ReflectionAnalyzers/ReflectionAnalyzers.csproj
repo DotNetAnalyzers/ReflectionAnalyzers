@@ -20,6 +20,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <Version>0.1.22-dev</Version>
     <DevelopmentDependency>true</DevelopmentDependency>
     <Description>Analyzers for System.Reflection</Description>
     <NeutralLanguage>en-US</NeutralLanguage>
