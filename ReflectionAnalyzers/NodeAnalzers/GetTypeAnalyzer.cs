@@ -11,13 +11,11 @@
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class GetTypeAnalyzer : DiagnosticAnalyzer
     {
-        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             Descriptors.REFL036CheckNull,
             Descriptors.REFL037TypeDoesNotExits,
             Descriptors.REFL039PreferTypeof);
 
-        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

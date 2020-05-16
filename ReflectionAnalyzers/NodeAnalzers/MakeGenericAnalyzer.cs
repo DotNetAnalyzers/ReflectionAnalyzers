@@ -10,12 +10,10 @@
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class MakeGenericAnalyzer : DiagnosticAnalyzer
     {
-        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             Descriptors.REFL031UseCorrectGenericArguments,
             Descriptors.REFL034DoNotMakeGeneric);
 
-        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

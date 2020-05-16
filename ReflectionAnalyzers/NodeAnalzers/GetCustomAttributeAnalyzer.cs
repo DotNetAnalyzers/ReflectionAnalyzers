@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
@@ -11,13 +11,11 @@ namespace ReflectionAnalyzers
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class GetCustomAttributeAnalyzer : DiagnosticAnalyzer
     {
-        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             Descriptors.REFL010PreferGenericGetCustomAttribute,
             Descriptors.REFL012PreferIsDefined,
             Descriptors.REFL044ExpectedAttributeType);
 
-        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

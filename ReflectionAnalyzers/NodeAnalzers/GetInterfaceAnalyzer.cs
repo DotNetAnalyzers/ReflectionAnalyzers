@@ -11,13 +11,11 @@
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class GetInterfaceAnalyzer : DiagnosticAnalyzer
     {
-        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             Descriptors.REFL020AmbiguousMatchInterface,
             Descriptors.REFL022UseFullyQualifiedName,
             Descriptors.REFL023TypeDoesNotImplementInterface);
 
-        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

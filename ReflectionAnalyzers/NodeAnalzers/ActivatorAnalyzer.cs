@@ -12,14 +12,12 @@
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class ActivatorAnalyzer : DiagnosticAnalyzer
     {
-        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             Descriptors.REFL001CastReturnValue,
             Descriptors.REFL025ArgumentsDoNotMatchParameters,
             Descriptors.REFL026NoDefaultConstructor,
             Descriptors.REFL028CastReturnValueToCorrectType);
 
-        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);

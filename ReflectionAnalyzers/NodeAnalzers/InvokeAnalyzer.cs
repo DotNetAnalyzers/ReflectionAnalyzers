@@ -11,7 +11,6 @@
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     internal class InvokeAnalyzer : DiagnosticAnalyzer
     {
-        /// <inheritdoc/>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(
             Descriptors.REFL001CastReturnValue,
             Descriptors.REFL002DiscardReturnValue,
@@ -22,7 +21,6 @@
             Descriptors.REFL035DoNotInvokeGenericDefinition,
             Descriptors.REFL038PreferRunClassConstructor);
 
-        /// <inheritdoc/>
         public override void Initialize(AnalysisContext context)
         {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
