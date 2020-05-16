@@ -9,7 +9,7 @@
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    internal struct TypeArguments
+    internal readonly struct TypeArguments
     {
         internal readonly ISymbol Symbol;
         internal readonly ImmutableArray<ITypeParameterSymbol> Parameters;
@@ -62,7 +62,7 @@
                 {
                     return single.Expression switch
                     {
-                        TypeOfExpressionSyntax _  => false,
+                        TypeOfExpressionSyntax _ => false,
                         _ => true,
                     };
                 }
