@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -92,6 +92,23 @@ namespace N
     }
 }".AssertReplace("typeof(T).IsValueType", condition);
                 RoslynAssert.Valid(Analyzer, code);
+            }
+
+            [Test]
+            public static void UnknownTypeGetGenericArguments()
+            {
+                var code = @"
+namespace N
+{
+    using System;
+    using System.Collections.Generic;
+
+    public class C
+    {
+        object M(Type t) => typeof(IDictionary<,>).MakeGenericType(t.GetGenericArguments());
+    }
+}";
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
     }

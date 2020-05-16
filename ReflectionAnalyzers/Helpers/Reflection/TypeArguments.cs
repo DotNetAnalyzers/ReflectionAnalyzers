@@ -39,29 +39,35 @@
                 {
                     typeArguments = new TypeArguments(symbol, parameters, ArgumentsExpressions());
                     return true;
+
+                    ImmutableArray<ExpressionSyntax> ArgumentsExpressions()
+                    {
+                        var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>(argumentList.Arguments.Count);
+                        foreach (var arg in argumentList.Arguments)
+                        {
+                            builder.Add(arg.Expression);
+                        }
+
+                        return builder.ToImmutable();
+                    }
                 }
             }
 
             typeArguments = default;
             return false;
 
-            ImmutableArray<ExpressionSyntax> ArgumentsExpressions()
-            {
-                var builder = ImmutableArray.CreateBuilder<ExpressionSyntax>(argumentList.Arguments.Count);
-                foreach (var arg in argumentList.Arguments)
-                {
-                    builder.Add(arg.Expression);
-                }
-
-                return builder.ToImmutable();
-            }
-
             bool IsUnknownArray()
             {
-                return argumentList.Arguments.TrySingle(out var single) &&
-                       single.Expression is IdentifierNameSyntax identifierName &&
-                       semanticModel.TryGetType(identifierName, cancellationToken, out var type) &&
-                       type is IArrayTypeSymbol;
+                if (argumentList.Arguments.TrySingle(out var single))
+                {
+                    return single.Expression switch
+                    {
+                        TypeOfExpressionSyntax _  => false,
+                        _ => true,
+                    };
+                }
+
+                return false;
             }
         }
 
