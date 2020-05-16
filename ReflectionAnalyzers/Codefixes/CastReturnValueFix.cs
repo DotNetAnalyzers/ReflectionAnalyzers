@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
     using System.Composition;
@@ -14,8 +14,8 @@ namespace ReflectionAnalyzers
     internal class CastReturnValueFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            "REFL001",
-            "REFL028");
+            Descriptors.REFL001CastReturnValue.Id,
+            Descriptors.REFL028CastReturnValueToCorrectType.Id);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

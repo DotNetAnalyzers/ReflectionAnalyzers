@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Generic;
     using System.Collections.Immutable;
@@ -16,7 +16,7 @@ namespace ReflectionAnalyzers
     internal class SuggestTypeFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            "REFL037");
+            Descriptors.REFL037TypeDoesNotExits.Id);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

@@ -25,11 +25,11 @@
                                                                            .WithAdditionalAnnotations(Formatter.Annotation);
 
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            "REFL005",
-            "REFL006",
-            "REFL007",
-            "REFL008",
-            "REFL011");
+            Descriptors.REFL005WrongBindingFlags.Id,
+            Descriptors.REFL006RedundantBindingFlags.Id,
+            Descriptors.REFL007BindingFlagsOrder.Id,
+            Descriptors.REFL008MissingBindingFlags.Id,
+            Descriptors.REFL011DuplicateBindingFlags.Id);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

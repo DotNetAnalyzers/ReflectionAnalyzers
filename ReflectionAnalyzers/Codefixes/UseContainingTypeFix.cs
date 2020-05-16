@@ -14,8 +14,8 @@
     internal class UseContainingTypeFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            "REFL015",
-            "REFL018");
+            Descriptors.REFL015UseContainingType.Id,
+            Descriptors.REFL018ExplicitImplementation.Id);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {

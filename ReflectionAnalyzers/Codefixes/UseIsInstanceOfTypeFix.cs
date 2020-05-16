@@ -15,7 +15,7 @@
     internal class UseIsInstanceOfTypeFix : DocumentEditorCodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            "REFL040");
+            Descriptors.REFL040PreferIsInstanceOfType.Id);
 
         protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
         {
