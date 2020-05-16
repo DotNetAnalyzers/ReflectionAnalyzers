@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
+﻿namespace ReflectionAnalyzers.Tests.REFL014PreferGetMemberThenAccessorTests
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -641,6 +641,87 @@ namespace N.BinaryReferencedAssembly
 
             var message = @"Prefer typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, after);
+        }
+
+        [Test]
+        public static void InNestedType()
+        {
+            var before = @"
+namespace N
+{
+    using System.Reflection;
+
+    class C
+    {
+        protected bool P { get; }
+
+        class Nested
+        {
+            object Get => typeof(C).↓GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        }
+    }
+}";
+
+            var after = @"
+namespace N
+{
+    using System.Reflection;
+
+    class C
+    {
+        protected bool P { get; }
+
+        class Nested
+        {
+            object Get => typeof(C).GetProperty(nameof(C.P), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
+        }
+    }
+}";
+
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
+
+        [Test]
+        public static void InNestedTypeWhenInheritance()
+        {
+            var @base = @"
+namespace N
+{
+    class Base
+    {
+        protected bool P { get; }
+    }
+}";
+
+            var before = @"
+namespace N
+{
+    using System.Reflection;
+
+    class C : Base
+    {
+        class Nested
+        {
+            object Get => typeof(C).↓GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance);
+        }
+    }
+}";
+
+            var after = @"
+namespace N
+{
+    using System.Reflection;
+
+    class C : Base
+    {
+        class Nested
+        {
+            object Get => typeof(C).GetProperty(nameof(C.P), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
+        }
+    }
+}";
+
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
         }
     }
 }

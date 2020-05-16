@@ -483,7 +483,7 @@
 
         private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, Name name, Flags flags, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? callText)
         {
-            if (member.Invocation?.Expression is MemberAccessExpressionSyntax memberAccess)
+            if (member is { ReflectedType: { }, Invocation: { Expression: MemberAccessExpressionSyntax memberAccess } })
             {
                 if (member is { Match: FilterMatch.Single, Symbol: IMethodSymbol method })
                 {
@@ -634,7 +634,7 @@
                 }
 
                 return context.SemanticModel.IsAccessible(context.Node.SpanStart, associatedSymbol)
-                    ? $"nameof({associatedSymbol.ContainingType.ToString(context)}.{associatedSymbol.Name})"
+                    ? $"nameof({member.ReflectedType.ToString(context)}.{associatedSymbol.Name})"
                     : $"\"{associatedSymbol.Name}\"";
             }
         }
