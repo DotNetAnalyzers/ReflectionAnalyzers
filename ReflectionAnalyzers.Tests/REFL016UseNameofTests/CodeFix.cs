@@ -316,7 +316,7 @@ namespace N
     {
         public C()
         {
-            var member = typeof(AggregateException).GetProperty(nameof(Exception.Message), BindingFlags.Public | BindingFlags.Instance);
+            var member = typeof(AggregateException).GetProperty(nameof(AggregateException.Message), BindingFlags.Public | BindingFlags.Instance);
         }
     }
 }";
@@ -537,10 +537,7 @@ namespace N
 
         class Nested
         {
-            void M2()
-            {
-                typeof(C).GetMethod(↓""M1"");
-            }
+            object P => typeof(C).GetMethod(↓""M1"");
         }
     }
 }";
@@ -554,16 +551,51 @@ namespace N
 
         class Nested
         {
-            void M2()
-            {
-                typeof(C).GetMethod(nameof(C.M1));
-            }
+            object P => typeof(C).GetMethod(nameof(C.M1));
         }
     }
 }";
 
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
+
+        [Test]
+        public static void InNestedTypeWhenInheritance()
+        {
+            var @base = @"
+namespace N
+{
+    class Base
+    {
+        protected void M1() { }
+    }
+}";
+
+            var before = @"
+namespace N
+{
+    class C : Base
+    {
+        class Nested
+        {
+            object P => typeof(C).GetMethod(↓""M1"");
+        }
+    }
+}";
+
+            var after = @"
+namespace N
+{
+    class C : Base
+    {
+        class Nested
+        {
+            object P => typeof(C).GetMethod(nameof(C.M1));
+        }
+    }
+}";
+
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
+        }
     }
 }
-

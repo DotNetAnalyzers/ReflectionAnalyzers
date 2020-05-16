@@ -16,6 +16,7 @@
         {
             targetName = null;
             if (member.Symbol is null ||
+                member.ReflectedType is null ||
                 !member.Symbol.CanBeReferencedByName ||
                 !context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol) ||
                 member.Symbol is INamedTypeSymbol { IsGenericType: true } ||
@@ -57,7 +58,7 @@
                 return true;
             }
 
-            targetName = $"{TypeOfString(member.Symbol.ContainingType)}.{member.Symbol.Name}";
+            targetName = $"{TypeOfString(member.ReflectedType)}.{member.Symbol.Name}";
             return true;
 
             string TypeOfString(ITypeSymbol t)
