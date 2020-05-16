@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -203,6 +203,43 @@ namespace N
         {
             var member = typeof(C).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
         }
+    }
+}";
+            var message = "The binding flags can be more precise. Expected: BindingFlags.Public | BindingFlags.Instance.";
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+        }
+
+        [Test]
+        public static void InvalidOperationExceptionGetConstructor()
+        {
+            var before = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        object P => typeof(InvalidOperationException).GetConstructor(
+            ↓BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
+            null,
+            Type.EmptyTypes,
+            null);
+    }
+}";
+            var after = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        object P => typeof(InvalidOperationException).GetConstructor(
+            BindingFlags.Public | BindingFlags.Instance,
+            null,
+            Type.EmptyTypes,
+            null);
     }
 }";
             var message = "The binding flags can be more precise. Expected: BindingFlags.Public | BindingFlags.Instance.";

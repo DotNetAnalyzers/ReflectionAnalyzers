@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL006RedundantBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -74,12 +74,8 @@ namespace N
         [TestCase("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
         [TestCase("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)")]
         [TestCase("typeof(string).GetMethod(nameof(string.EndsWith), BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("typeof(string).GetMethod(nameof(string.EndsWith), BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)")]
-        [TestCase("typeof(string).GetMethod(nameof(string.EndsWith), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)")]
         [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)")]
-        [TestCase("typeof(string).GetProperty(nameof(string.Length), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)")]
-        public static void DoNotWarnWhenTypeIsNotInSln(string call)
+        public static void WhenTypeIsNotInSln(string call)
         {
             var code = @"
 namespace N

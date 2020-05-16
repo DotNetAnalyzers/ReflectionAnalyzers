@@ -353,8 +353,7 @@
         private static bool HasRedundantFlag(ReflectedMember member, Flags flags, [NotNullWhen(true)] out string? flagsText)
         {
             if (member.Match != FilterMatch.Single ||
-                member.ReflectedType is null ||
-                !member.ReflectedType.Locations.Any(x => x.IsInSource))
+                member.ReflectedType is null)
             {
                 flagsText = null;
                 return false;
