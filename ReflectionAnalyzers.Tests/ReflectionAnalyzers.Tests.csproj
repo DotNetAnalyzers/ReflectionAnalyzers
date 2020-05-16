@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <CodeAnalysisRuleSet>ReflectionAnalyzers.Tests.ruleset</CodeAnalysisRuleSet>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>Enable</Nullable>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <CodeAnalysisRuleSet>ReflectionAnalyzers.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <PropertyGroup>
