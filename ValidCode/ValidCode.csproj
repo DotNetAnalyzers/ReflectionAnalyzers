@@ -5,8 +5,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>Enable</Nullable>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <CodeAnalysisRuleSet>ValidCode.ruleset</CodeAnalysisRuleSet>
-    <NoWarn>IDE0051,IDE0052,IDE0058,IDE0059,IDE0060,IDE0067,IDE0068,IDE0069</NoWarn>
+    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>
   </PropertyGroup>
   
   <ItemGroup>
