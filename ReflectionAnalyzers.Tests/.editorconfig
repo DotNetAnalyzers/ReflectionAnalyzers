@@ -1,0 +1,21 @@
+[*.cs]
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.DocumentationRules'
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity = none
+
+# SA0001: XML comment analysis is disabled due to project configuration
+dotnet_diagnostic.SA0001.severity = none
+
+# SA1203: Constant fields should appear before non-constant fields
+dotnet_diagnostic.SA1203.severity = none
+
+# CA1034: Do not nest type CodeFile. Alternatively, change its accessibility so that it is not externally visible.
+dotnet_diagnostic.CA1034.severity = none
+
+# CA1062: In externally visible method 'void DocumentationTests.Description(DescriptorInfo descriptorInfo)', validate parameter 'descriptorInfo' is non-null before using it. If appropriate, throw an ArgumentNullException when the argument is null or add a Code Contract precondition asserting non-null argument.
+dotnet_diagnostic.CA1062.severity = none
+
+# CA1720: Identifier 'String' contains type name
+dotnet_diagnostic.CA1720.severity = none
+
+
