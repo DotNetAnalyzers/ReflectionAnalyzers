@@ -1,0 +1,13 @@
+[*.cs]
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.DocumentationRules'
+dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity = none
+
+# SA0001: XML comment analysis is disabled due to project configuration
+dotnet_diagnostic.SA0001.severity = none
+
+# SA1401: Fields should be private
+dotnet_diagnostic.SA1401.severity = none
+
+# CA1308: In method 'M', replace the call to 'ToLowerInvariant' with 'ToUpperInvariant'.
+dotnet_diagnostic.CA1308.severity = none
