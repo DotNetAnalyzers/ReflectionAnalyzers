@@ -1,4 +1,4 @@
-#pragma warning disable CA1055 // Uri return values should not be strings
+﻿#pragma warning disable CA1055 // Uri return values should not be strings
 #pragma warning disable CA1056 // Uri properties should not be strings
 #pragma warning disable CA1721 // Property names should not match get methods
 namespace ReflectionAnalyzers.Test
@@ -24,7 +24,7 @@ namespace ReflectionAnalyzers.Test
                                                                               .GetTypes()
                                                                               .Where(t => typeof(DiagnosticAnalyzer).IsAssignableFrom(t))
                                                                               .OrderBy(x => x.Name)
-                                                                              .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t))
+                                                                              .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t)!)
                                                                               .ToArray();
 
         private static readonly IReadOnlyList<DescriptorInfo> DescriptorInfos = Analyzers
