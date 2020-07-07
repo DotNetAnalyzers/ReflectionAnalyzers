@@ -75,7 +75,7 @@
                     }
 
                     if (parametersArg.Expression.IsKind(SyntaxKind.NullLiteralExpression) &&
-                        method.Parameters.Length > 0)
+                        !method.Parameters.IsEmpty)
                     {
                         context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters, parametersArg.GetLocation()));
                     }
@@ -121,7 +121,7 @@
                     if (method.IsGenericDefinition())
                     {
                         if (values != null &&
-                            values.Length > 0 &&
+                            !values.IsEmpty &&
                             Array.TryGetAccessibleTypes(values, context.SemanticModel, context.CancellationToken, out var types))
                         {
                             context.ReportDiagnostic(

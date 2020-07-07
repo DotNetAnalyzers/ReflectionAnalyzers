@@ -38,7 +38,7 @@
                 switch (TypeExists(invocation, context, out var type, out var nameArgument))
                 {
                     case true when type is { IsSealed: true, IsAnonymousType: false } &&
-                                   target.Parameters.Length == 0 &&
+                                   target.Parameters.IsEmpty &&
                                    target == KnownSymbol.Object.GetType &&
                                    context.SemanticModel.IsAccessible(invocation.SpanStart, type):
                         context.ReportDiagnostic(

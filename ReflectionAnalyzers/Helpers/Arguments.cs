@@ -11,8 +11,8 @@
     {
         internal static bool? TryFindFirstMisMatch(ImmutableArray<IParameterSymbol> parameters, ImmutableArray<ExpressionSyntax> values, SemanticModel semanticModel, CancellationToken cancellationToken, out ExpressionSyntax? expression)
         {
-            if (parameters.Length == 0 &&
-                values.Length > 0)
+            if (parameters.IsEmpty &&
+                !values.IsEmpty)
             {
                 expression = null;
                 return true;

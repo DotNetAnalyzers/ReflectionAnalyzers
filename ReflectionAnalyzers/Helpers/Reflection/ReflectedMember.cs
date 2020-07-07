@@ -75,7 +75,7 @@
             member = null;
             if (type is ITypeParameterSymbol typeParameter)
             {
-                if (typeParameter.ConstraintTypes.Length == 0)
+                if (typeParameter.ConstraintTypes.IsEmpty)
                 {
                     return TryGetMember(getX, compilation.GetSpecialType(SpecialType.System_Object), name, flags, types, compilation, out member);
                 }

@@ -44,7 +44,7 @@
 
         internal static bool TryGetTypesArrayText(ImmutableArray<IParameterSymbol> parameters, SemanticModel semanticModel, int position, [NotNullWhen(true)] out string? typesArrayText)
         {
-            if (parameters.Length == 0)
+            if (parameters.IsEmpty)
             {
                 typesArrayText = "Type.EmptyTypes";
                 return true;
@@ -110,7 +110,7 @@
                 return true;
             }
 
-            if (this.Expressions.Length == 0)
+            if (this.Expressions.IsEmpty)
             {
                 unique = null;
                 return false;

@@ -90,7 +90,7 @@
 
         internal bool TryGetArgumentsTypes(SemanticModel semanticModel, CancellationToken cancellationToken, out ITypeSymbol[] types)
         {
-            if (this.Arguments.Length == 0)
+            if (this.Arguments.IsEmpty)
             {
                 types = System.Array.Empty<ITypeSymbol>();
                 return false;
@@ -174,7 +174,7 @@
                     switch (type)
                     {
                         case INamedTypeSymbol namedType
-                            when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.Length == 0, out _):
+                            when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.IsEmpty, out _):
                         case ITypeParameterSymbol { HasConstructorConstraint: false }:
                             return false;
                     }

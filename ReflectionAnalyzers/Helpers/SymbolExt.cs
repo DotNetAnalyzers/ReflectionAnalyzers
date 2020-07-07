@@ -40,7 +40,7 @@
 
         private static bool IsGenericDefinition(ImmutableArray<ITypeSymbol> arguments)
         {
-            if (arguments.Length == 0)
+            if (arguments.IsEmpty)
             {
                 return false;
             }
