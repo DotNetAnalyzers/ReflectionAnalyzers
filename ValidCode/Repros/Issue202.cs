@@ -1,4 +1,4 @@
-// ReSharper disable All
+﻿// ReSharper disable All
 namespace ValidCode
 {
     using System;
@@ -69,9 +69,9 @@ namespace ValidCode
     internal class Updating<TSource, TResult> : IMapper<TSource, TResult>
     {
         private Func<TSource, int, TResult> selector;
-        private Func<TResult, int, TResult> updater;
+        private Func<TResult, int, TResult>? updater;
 
-        public Updating(Func<TSource, int, TResult> selector, Func<TResult, int, TResult> updater)
+        public Updating(Func<TSource, int, TResult> selector, Func<TResult, int, TResult>? updater)
         {
             this.selector = selector;
             this.updater = updater;

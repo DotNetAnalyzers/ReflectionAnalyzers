@@ -303,9 +303,9 @@ Or put this at the top of the file to disable all instances.
 
             public bool Exists => File.Exists(this.Name);
 
-            public string AllText { get; }
+            public string? AllText { get; }
 
-            public IReadOnlyList<string> AllLines { get; }
+            public IReadOnlyList<string>? AllLines { get; }
         }
 
         public class CodeFile

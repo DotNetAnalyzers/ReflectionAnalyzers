@@ -22,3 +22,4 @@ dotnet_diagnostic.CA1720.severity = none
 dotnet_diagnostic.CA1724.severity = none
 
 dotnet_diagnostic.CS8602.severity = none
+dotnet_diagnostic.CS8604.severity = none

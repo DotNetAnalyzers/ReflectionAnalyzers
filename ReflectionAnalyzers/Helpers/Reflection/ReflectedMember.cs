@@ -62,7 +62,7 @@
                 result = type as INamedTypeSymbol;
             }
 
-            return result != null;
+            return result != null && typeSource != null;
         }
 
         private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, Compilation compilation, out ISymbol? member)
