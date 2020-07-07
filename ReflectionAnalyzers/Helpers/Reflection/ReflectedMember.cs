@@ -6,7 +6,7 @@
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    internal struct ReflectedMember
+    internal readonly struct ReflectedMember
     {
         /// <summary>
         /// The type that was used to obtain <see cref="Symbol"/>.
@@ -65,7 +65,7 @@
             return result != null;
         }
 
-        private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, Compilation compilation, [NotNullWhen(true)] out ISymbol? member)
+        private static FilterMatch TryGetMember(IMethodSymbol getX, ITypeSymbol type, Name name, BindingFlags flags, Types types, Compilation compilation, out ISymbol? member)
         {
             if (type is INamedTypeSymbol { IsUnboundGenericType: true })
             {

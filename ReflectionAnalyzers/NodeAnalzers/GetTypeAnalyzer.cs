@@ -78,7 +78,7 @@
             return false;
         }
 
-        private static bool? TypeExists(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ITypeSymbol? type, [NotNullWhen(true)] out ArgumentSyntax? nameArgument)
+        private static bool? TypeExists(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, out ITypeSymbol? type, out ArgumentSyntax? nameArgument)
         {
             if (invocation.ArgumentList.Arguments.Count == 0)
             {

@@ -107,7 +107,9 @@
             if (ByNull(x, y, out unique) ||
                 ByNull(y, x, out unique))
             {
+#pragma warning disable CS8762 // Parameter must have a non-null value when exiting in some condition.
                 return true;
+#pragma warning restore CS8762 // Parameter must have a non-null value when exiting in some condition.
             }
 
             if (this.Expressions.IsEmpty)
@@ -152,7 +154,9 @@
             if (TryExact(this.Symbols, x, out unique) ||
                 TryExact(this.Symbols, y, out unique))
             {
+#pragma warning disable CS8762 // Parameter must have a non-null value when exiting in some condition.
                 return true;
+#pragma warning restore CS8762 // Parameter must have a non-null value when exiting in some condition.
             }
 
             if (this.Matches(x.Parameters) &&
