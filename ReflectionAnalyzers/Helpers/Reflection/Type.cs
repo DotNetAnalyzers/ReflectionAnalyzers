@@ -179,7 +179,7 @@
                 case TypeOfExpressionSyntax typeOf:
                     source = typeOf;
                     return recursion.SemanticModel.TryGetType(typeOf.Type, recursion.CancellationToken, out result);
-                case InvocationExpressionSyntax { ArgumentList: ArgumentListSyntax { Arguments: { Count: 0 } } } invocation
+                case InvocationExpressionSyntax { ArgumentList: { Arguments: { Count: 0 } } } invocation
                     when invocation.TryGetMethodName(out var name) &&
                          name == "GetType":
                     switch (invocation.Expression)
