@@ -1,16 +1,23 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics.CodeAnalysis;
+
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
     internal static class NameOf
     {
-        private static readonly SymbolDisplayFormat Format = SymbolDisplayFormat.MinimallyQualifiedFormat.WithMiscellaneousOptions(
-            SymbolDisplayFormat.MinimallyQualifiedFormat.MiscellaneousOptions | SymbolDisplayMiscellaneousOptions.ExpandNullable);
+        private static readonly SymbolDisplayFormat Format = new SymbolDisplayFormat(
+            globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
+            genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+            miscellaneousOptions:
+                SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
+                SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
+                SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
         internal static bool TryGetExpressionText(ReflectedMember member, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? targetName)
         {
@@ -38,39 +45,19 @@
                 return false;
             }
 
-            if (member.Symbol is { ContainingType: { TupleUnderlyingType: { } tupleType } })
-            {
-                targetName = member.Symbol is IFieldSymbol { CorrespondingTupleField: { } tupleField }
-                    ? $"{TypeOfString(tupleType)}.{tupleField.Name}"
-                    : $"{TypeOfString(tupleType)}.{member.Symbol.Name}";
-                return true;
-            }
-
-            if (context.ContainingSymbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.Compilation))
+            if (context.ContainingSymbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.SemanticModel.Compilation))
             {
                 targetName = member.Symbol.IsStatic ||
                              member.Symbol is ITypeSymbol ||
-                             context.Node.IsInStaticContext()
+                             context.Node.IsInStaticContext() ||
+                             context.SemanticModel.UnderscoreFields() == CodeStyleResult.Yes
                     ? $"{member.Symbol.Name}"
-                    : context.SemanticModel.UnderscoreFields() == CodeStyleResult.Yes
-                        ? $"{member.Symbol.Name}"
-                        : $"this.{member.Symbol.Name}";
+                    : $"this.{member.Symbol.Name}";
                 return true;
             }
 
-            targetName = $"{TypeOfString(member.ReflectedType)}.{member.Symbol.Name}";
+            targetName = $"{member.ReflectedType.ToMinimalDisplayString(context.SemanticModel, member.Invocation.SpanStart, Format)}.{member.Symbol.Name}";
             return true;
-
-            string TypeOfString(ITypeSymbol t)
-            {
-                if (t is INamedTypeSymbol { TupleUnderlyingType: { } utt } namedType &&
-                    !TypeSymbolComparer.Equal(utt, namedType))
-                {
-                    return TypeOfString(utt);
-                }
-
-                return t.ToMinimalDisplayString(context.SemanticModel, context.Node.SpanStart, Format);
-            }
         }
 
         internal static bool IsNameOf(ArgumentSyntax argument, [NotNullWhen(true)] out ExpressionSyntax? expression)
