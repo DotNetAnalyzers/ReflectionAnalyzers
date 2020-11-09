@@ -288,7 +288,7 @@ namespace BinaryReferencedAssembly
         private int P { get; set; }
     }
 }";
-            var binaryReference = TestHelper.CompileBinaryReference(binaryReferencedCode);
+            var binaryReference = BinaryReference.Compile(binaryReferencedCode);
 
             var solution = CodeFactory.CreateSolution(
                 code,
@@ -600,7 +600,7 @@ namespace N
     }
 }";
 
-            var binaryReference = TestHelper.CompileBinaryReference(@"
+            var binaryReference = BinaryReference.Compile(@"
 namespace N.BinaryReferencedAssembly
 {
     using System;
@@ -633,10 +633,9 @@ namespace N.BinaryReferencedAssembly
             var compilation = await solution.Projects.Single()
                                             .GetCompilationAsync()
                                             .ConfigureAwait(true);
-            var fooType = compilation.GetTypeByMetadataName("N.BinaryReferencedAssembly.C1");
-            Assert.That(fooType.GetMembers(), Has.None.With.Property("Name")
-                                                 .EqualTo("Bar"));
+            var type = compilation.GetTypeByMetadataName("N.BinaryReferencedAssembly.C1");
 
+            CollectionAssert.IsEmpty(type.GetMembers("E"));
             var message = @"Prefer typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, after);
         }

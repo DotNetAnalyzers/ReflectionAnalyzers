@@ -6,9 +6,9 @@ namespace ReflectionAnalyzers.Tests
     using Microsoft.CodeAnalysis.CSharp;
     using NUnit.Framework;
 
-    public static class TestHelper
+    public static class BinaryReference
     {
-        public static MetadataReference CompileBinaryReference(string code)
+        public static MetadataReference Compile(string code)
         {
             var binaryReferencedCompilation = CSharpCompilation.Create(
                 "BinaryReferencedAssembly",
