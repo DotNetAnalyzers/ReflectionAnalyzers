@@ -2,7 +2,9 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -147,7 +149,7 @@
                             }
 
                             if (candidate.IsStatic &&
-                                !current.Equals(type) &&
+                                !TypeSymbolComparer.Equal(current, type) &&
                                 !flags.HasFlagFast(BindingFlags.FlattenHierarchy))
                             {
                                 return FilterMatch.WrongFlags;
@@ -268,13 +270,13 @@
                     switch (symbol)
                     {
                         case IEventSymbol eventSymbol:
-                            return Equals(eventSymbol.OverriddenEvent, candidateBase) ||
+                            return SymbolComparer.Equal(eventSymbol.OverriddenEvent, candidateBase) ||
                                    IsOverriding(eventSymbol.OverriddenEvent, candidateBase);
                         case IMethodSymbol method:
-                            return Equals(method.OverriddenMethod, candidateBase) ||
+                            return SymbolComparer.Equal(method.OverriddenMethod, candidateBase) ||
                                    IsOverriding(method.OverriddenMethod, candidateBase);
                         case IPropertySymbol property:
-                            return Equals(property.OverriddenProperty, candidateBase) ||
+                            return SymbolComparer.Equal(property.OverriddenProperty, candidateBase) ||
                                    IsOverriding(property.OverriddenProperty, candidateBase);
                     }
                 }
@@ -284,7 +286,7 @@
 
             bool IsUseContainingType(ISymbol symbol)
             {
-                if (type.Equals(symbol.ContainingType))
+                if (TypeSymbolComparer.Equal(type, symbol.ContainingType))
                 {
                     return false;
                 }
@@ -301,7 +303,7 @@
                     return true;
                 }
 
-                if (!symbol.ContainingType.Equals(type) &&
+                if (!TypeSymbolComparer.Equal(symbol.ContainingType, type) &&
                     (symbol.IsStatic ||
                      flags.HasFlagFast(BindingFlags.DeclaredOnly)))
                 {

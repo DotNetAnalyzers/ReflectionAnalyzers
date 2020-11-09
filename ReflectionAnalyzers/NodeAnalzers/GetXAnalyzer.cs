@@ -310,7 +310,7 @@
                     return false;
                 }
 
-                return Equals(symbol.ContainingType, member.ReflectedType) &&
+                return TypeSymbolComparer.Equal(symbol.ContainingType, member.ReflectedType) &&
                        !flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly);
             }
 
@@ -391,9 +391,9 @@
                      flags.Explicit.HasFlagFast(BindingFlags.Static)) ||
                     (!member.Symbol.IsStatic &&
                      flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
-                    (Equals(member.Symbol.ContainingType, member.ReflectedType) &&
+                    (TypeSymbolComparer.Equal(member.Symbol.ContainingType, member.ReflectedType) &&
                      flags.Explicit.HasFlagFast(BindingFlags.FlattenHierarchy)) ||
-                    (!Equals(member.Symbol.ContainingType, member.ReflectedType) &&
+                    (!TypeSymbolComparer.Equal(member.Symbol.ContainingType, member.ReflectedType) &&
                      flags.Explicit.HasFlagFast(BindingFlags.DeclaredOnly)) ||
                     flags.Explicit.HasFlagFast(BindingFlags.IgnoreCase))
                 {
@@ -622,7 +622,7 @@
                     return $"\"{associatedSymbol.MetadataName}\"";
                 }
 
-                if (Equals(context.ContainingSymbol.ContainingType, associatedSymbol.ContainingType))
+                if (TypeSymbolComparer.Equal(context.ContainingSymbol.ContainingType, associatedSymbol.ContainingType))
                 {
                     if (associatedSymbol.IsStatic)
                     {
@@ -671,7 +671,7 @@
 
                 for (var i = 0; i < method.Parameters.Length; i++)
                 {
-                    if (!types.Symbols[i].Equals(method.Parameters[i].Type) &&
+                    if (!TypeSymbolComparer.Equal(types.Symbols[i], method.Parameters[i].Type) &&
                         context.SemanticModel.IsAccessible(context.Node.SpanStart, method.Parameters[i].Type))
                     {
                         typeText = method.Parameters[i].Type.ToString(context);

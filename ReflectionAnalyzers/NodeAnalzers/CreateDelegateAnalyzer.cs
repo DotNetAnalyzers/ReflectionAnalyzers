@@ -135,7 +135,7 @@
 
         private static bool IsCorrectDelegateType(MethodTypes methodTypes, IMethodSymbol delegateMethod, SyntaxNodeAnalysisContext context, [NotNullWhen(false)] out string? delegateText)
         {
-            if (!methodTypes.ReturnType.Equals(delegateMethod.ReturnType))
+            if (!TypeSymbolComparer.Equal(methodTypes.ReturnType, delegateMethod.ReturnType))
             {
                 delegateText = DelegateText();
                 return false;

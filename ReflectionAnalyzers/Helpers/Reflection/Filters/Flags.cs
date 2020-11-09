@@ -99,7 +99,7 @@
 
                 if (!(member is IMethodSymbol { MethodKind: MethodKind.Constructor }))
                 {
-                    if (Equals(member.ContainingType, reflectedType))
+                    if (TypeSymbolComparer.Equal(member.ContainingType, reflectedType))
                     {
                         flags |= BindingFlags.DeclaredOnly;
                     }

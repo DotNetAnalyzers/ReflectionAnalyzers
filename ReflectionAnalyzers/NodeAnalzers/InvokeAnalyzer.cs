@@ -173,7 +173,7 @@
                             }
 
                             if (!context.SemanticModel.TryGetType(objArg.Expression, context.CancellationToken, out var instanceType) ||
-                                (instanceType != KnownSymbol.Object && !instanceType.Equals(ctor.ContainingType)))
+                                (instanceType != KnownSymbol.Object && !TypeSymbolComparer.Equal(instanceType, ctor.ContainingType)))
                             {
                                 context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL030UseCorrectObj, objArg.GetLocation(), $"Use an instance of type {ctor.ContainingType}."));
                             }

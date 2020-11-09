@@ -64,7 +64,7 @@
             string TypeOfString(ITypeSymbol t)
             {
                 if (t is INamedTypeSymbol { TupleUnderlyingType: { } utt } namedType &&
-                    !Equals(utt, namedType))
+                    !TypeSymbolComparer.Equal(utt, namedType))
                 {
                     return TypeOfString(utt);
                 }

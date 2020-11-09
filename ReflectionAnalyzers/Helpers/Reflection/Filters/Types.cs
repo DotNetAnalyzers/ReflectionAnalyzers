@@ -203,7 +203,7 @@
 
                 for (var i = 0; i < method.Parameters.Length; i++)
                 {
-                    if (!symbols[i].Equals(method.Parameters[i].Type))
+                    if (!TypeSymbolComparer.Equal(symbols[i], method.Parameters[i].Type))
                     {
                         result = null;
                         return false;
@@ -218,17 +218,17 @@
             {
                 var xt = x!.Parameters[index].Type;
                 var yt = y!.Parameters[index].Type;
-                if (xt.Equals(yt))
+                if (TypeSymbolComparer.Equal(xt, yt))
                 {
                     return 0;
                 }
 
-                if (xt.Equals(symbols[index]))
+                if (TypeSymbolComparer.Equal(xt, symbols[index]))
                 {
                     return -1;
                 }
 
-                if (yt.Equals(symbols[index]))
+                if (TypeSymbolComparer.Equal(yt, symbols[index]))
                 {
                     return 1;
                 }
