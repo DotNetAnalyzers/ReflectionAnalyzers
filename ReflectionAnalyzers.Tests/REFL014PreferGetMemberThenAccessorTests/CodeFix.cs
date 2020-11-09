@@ -300,10 +300,8 @@ namespace BinaryReferencedAssembly
             var compilation = await solution.Projects.Single()
                                             .GetCompilationAsync()
                                             .ConfigureAwait(true);
-            var fooType = compilation.GetTypeByMetadataName("BinaryReferencedAssembly.C");
-            Assert.That(fooType.GetMembers(), Has.None.With.Property("Name")
-                                                 .EqualTo("P"));
-
+            var type = compilation.GetTypeByMetadataName("BinaryReferencedAssembly.C");
+            CollectionAssert.IsEmpty(type.GetMembers("P"));
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, solution, after);
         }
 
