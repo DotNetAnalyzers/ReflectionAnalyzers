@@ -7,18 +7,15 @@
     {
         internal static bool ShouldCast(InvocationExpressionSyntax invocation, ITypeSymbol returnType, SemanticModel semanticModel)
         {
-            if (invocation != null &&
-                returnType != null &&
-                returnType != KnownSymbol.Object &&
+            if (returnType != KnownSymbol.Object &&
                 semanticModel.IsAccessible(invocation.SpanStart, returnType))
             {
-                switch (invocation.Parent)
+                return invocation.Parent switch
                 {
-                    case EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax variableDeclarator }:
-                        return !IsDiscardName(variableDeclarator.Identifier.ValueText);
-                    default:
-                        return false;
-                }
+                    EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax variableDeclarator }
+                        => !IsDiscardName(variableDeclarator.Identifier.ValueText),
+                    _ => false,
+                };
             }
 
             return false;
