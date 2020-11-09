@@ -1,10 +1,10 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System.Diagnostics;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     [DebuggerDisplay("{this.Value}")]
-    internal struct TypeNameArgument
+    internal readonly struct TypeNameArgument
     {
         internal readonly ArgumentSyntax Argument;
 
@@ -16,9 +16,9 @@ namespace ReflectionAnalyzers
             this.Value = value;
         }
 
-        internal bool TryGetGeneric(out GenericTypeName genericTypeName)
+        internal GenericTypeName? TryGetGeneric()
         {
-            return GenericTypeName.TryParse(this.Value, out genericTypeName);
+            return GenericTypeName.TryParse(this.Value);
         }
     }
 }

@@ -4,6 +4,7 @@
     using System.Collections.Immutable;
     using System.Linq;
     using System.Threading;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -34,7 +35,7 @@
 
         internal static INamedTypeSymbol? GetTypeByMetadataName(this IAssemblySymbol assembly, TypeNameArgument typeName, bool ignoreCase)
         {
-            if (typeName.TryGetGeneric(out var generic))
+            if (typeName.TryGetGeneric() is { } generic)
             {
                 return GetTypeByMetadataName(assembly, generic, ignoreCase);
             }

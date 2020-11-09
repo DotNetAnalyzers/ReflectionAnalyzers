@@ -1,3 +1,4 @@
+﻿#pragma warning disable CS8629 // Nullable value type may be null.
 namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System.Linq;
@@ -12,7 +13,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("System.Collections.Generic.KeyValuePair`2 [System.Int32,System.String]")]
         public static void TryGetGenericWhenFalse(string name)
         {
-            Assert.AreEqual(false, GenericTypeName.TryParse(name, out _));
+            Assert.AreEqual(null, GenericTypeName.TryParse(name));
         }
 
         [TestCase("System.Nullable`1[System.Int32]", "System.Int32")]
@@ -20,7 +21,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("System.Nullable`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", "System.Int32")]
         public static void TryGetGenericWhenNullable(string name, string arg)
         {
-            Assert.AreEqual(true, GenericTypeName.TryParse(name, out var generic));
+            var generic = GenericTypeName.TryParse(name).Value;
             Assert.AreEqual("System.Nullable`1", generic.MetadataName);
             var typeArgument = generic.TypeArguments.Single();
             Assert.AreEqual(arg, typeArgument.MetadataName);
@@ -38,7 +39,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("System.Collections.Generic.KeyValuePair`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", "System.Int32", "System.String")]
         public static void TryGetGenericWhenKeyValuePair(string name, string arg0, string arg1)
         {
-            Assert.AreEqual(true, GenericTypeName.TryParse(name, out var generic));
+            var generic = GenericTypeName.TryParse(name).Value;
             Assert.AreEqual("System.Collections.Generic.KeyValuePair`2", generic.MetadataName);
             var typeArguments = generic.TypeArguments;
             Assert.AreEqual(2, typeArguments.Length);
@@ -52,7 +53,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCase("System.Nullable`1[[System.Collections.Generic.KeyValuePair`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]", "System.Int32", "System.String")]
         public static void TryGetGenericWhenNullableKeyValuePair(string name, string arg0, string arg1)
         {
-            Assert.AreEqual(true, GenericTypeName.TryParse(name, out var generic));
+            var generic = GenericTypeName.TryParse(name).Value;
             Assert.AreEqual("System.Nullable`1", generic.MetadataName);
             var typeArgument = generic.TypeArguments.Single();
             Assert.AreEqual("System.Collections.Generic.KeyValuePair`2", typeArgument.MetadataName);

@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Immutable;
 
-    internal struct GenericTypeName
+    internal readonly struct GenericTypeName
     {
         internal readonly string MetadataName;
         internal readonly ImmutableArray<GenericTypeArgument> TypeArguments;
@@ -14,7 +14,7 @@
             this.TypeArguments = typeArguments;
         }
 
-        internal static bool TryParse(string text, out GenericTypeName genericTypeName)
+        internal static GenericTypeName? TryParse(string text)
         {
             if (text.IndexOf('[') is var index &&
                 index > 0)
@@ -24,13 +24,11 @@
                     GenericTypeArgument.TryParseBracketedList(text, index, arity, out var typeArguments) &&
                     arity == typeArguments.Length)
                 {
-                    genericTypeName = new GenericTypeName(metadataName, typeArguments);
-                    return true;
+                    return new GenericTypeName(metadataName, typeArguments);
                 }
             }
 
-            genericTypeName = default;
-            return false;
+            return null;
         }
 
         private static bool TryParseArity(string metadataName, out int result)

@@ -2,13 +2,14 @@
 {
     using System.Collections.Immutable;
     using System.Linq;
+
     using Microsoft.CodeAnalysis;
 
     internal static class CompilationExt
     {
         internal static INamedTypeSymbol? GetTypeByMetadataName(this Compilation compilation, TypeNameArgument typeName, bool ignoreCase)
         {
-            if (typeName.TryGetGeneric(out var generic))
+            if (typeName.TryGetGeneric() is { } generic)
             {
                 return GetTypeByMetadataName(compilation, generic, ignoreCase);
             }
