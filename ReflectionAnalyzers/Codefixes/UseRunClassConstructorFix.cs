@@ -26,7 +26,7 @@
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText))
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out InvocationExpressionSyntax? invocation))
+                    if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is InvocationExpressionSyntax invocation)
                     {
                         context.RegisterCodeFix(
                             $"Change to: RuntimeHelpers.RunClassConstructor(typeof({typeText}).TypeHandle).",

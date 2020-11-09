@@ -27,7 +27,7 @@
                 context.Node is InvocationExpressionSyntax invocation &&
                 TryGetArgs(invocation, context, out _, out _, out var attributeType, out _))
             {
-                if (!attributeType.Value.IsAssignableTo(context.Compilation.GetTypeByMetadataName("System.Attribute"), context.Compilation))
+                if (!attributeType.Value.IsAssignableTo(KnownSymbol.Attribute, context.Compilation))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -37,7 +37,7 @@
             }
         }
 
-        private static bool TryGetArgs(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IMethodSymbol? target, [NotNullWhen(true)] out ExpressionSyntax? member, out ArgumentAndValue<ITypeSymbol> attributeType, [NotNullWhen(true)] out ArgumentSyntax? inheritsArg)
+        private static bool TryGetArgs(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IMethodSymbol? target, [NotNullWhen(true)] out ExpressionSyntax? member, out ArgumentAndValue<ITypeSymbol> attributeType, out ArgumentSyntax? inheritsArg)
         {
             if ((invocation.TryGetTarget(KnownSymbol.Attribute.IsDefined,                 context.SemanticModel, context.CancellationToken, out target) ||
                  invocation.TryGetTarget(KnownSymbol.CustomAttributeExtensions.IsDefined, context.SemanticModel, context.CancellationToken, out target)) &&

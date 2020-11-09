@@ -38,8 +38,7 @@
                             nameof(UseContainingTypeFix),
                             diagnostic);
                     }
-                    else if (syntaxRoot.TryFindNode(diagnostic, out MemberAccessExpressionSyntax? memberAccess) &&
-                             memberAccess.Expression is { } expression)
+                    else if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is MemberAccessExpressionSyntax { Expression: { } expression })
                     {
                         context.RegisterCodeFix(
                             $"Use containing type: {typeName}.",
