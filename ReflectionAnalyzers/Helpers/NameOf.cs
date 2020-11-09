@@ -47,6 +47,11 @@
                 return false;
             }
 
+            if (member.ReflectedType.IsTupleType)
+            {
+                return false;
+            }
+
             if (context.ContainingSymbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.SemanticModel.Compilation))
             {
                 targetName = member.Symbol.IsStatic ||
