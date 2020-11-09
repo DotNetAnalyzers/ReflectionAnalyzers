@@ -1,12 +1,14 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    internal struct FieldInfo
+    internal readonly struct FieldInfo
     {
         internal readonly INamedTypeSymbol ReflectedType;
         internal readonly IFieldSymbol Field;
@@ -17,26 +19,30 @@
             this.Field = field;
         }
 
-        internal static bool TryGet(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, out FieldInfo fieldInfo)
+        internal static FieldInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            switch (expression)
+            return expression switch
             {
-                case InvocationExpressionSyntax invocation when GetX.TryMatchGetField(invocation, semanticModel, cancellationToken, out var member, out _, out _) &&
-                                                                member is { ReflectedType: { } reflectedType, Symbol: IFieldSymbol field }:
-                    fieldInfo = new FieldInfo(reflectedType, field);
-                    return true;
-            }
+                InvocationExpressionSyntax invocation
+                    when GetX.TryMatchGetField(invocation, semanticModel, cancellationToken, out var member, out _, out _) &&
+                         member is { ReflectedType: { } reflectedType, Symbol: IFieldSymbol field }
+                    => new FieldInfo(reflectedType, field),
+                IdentifierNameSyntax identifierName => FindAssigned(identifierName),
+                MemberAccessExpressionSyntax memberAccess => FindAssigned(memberAccess),
+                _ => null,
+            };
 
-            if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                semanticModel.TryGetSymbol(expression, cancellationToken, out var local))
+            FieldInfo? FindAssigned(ExpressionSyntax member)
             {
-                fieldInfo = default;
-                return AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue) &&
-                       TryGet(assignedValue, semanticModel, cancellationToken, out fieldInfo);
-            }
+                if (member.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
+                    semanticModel.TryGetSymbol(member, cancellationToken, out var local) &&
+                    AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue))
+                {
+                    return Find(assignedValue, semanticModel, cancellationToken);
+                }
 
-            fieldInfo = default;
-            return false;
+                return null;
+            }
         }
     }
 }

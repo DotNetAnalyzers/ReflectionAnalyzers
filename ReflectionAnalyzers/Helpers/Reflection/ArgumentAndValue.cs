@@ -1,8 +1,8 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    internal struct ArgumentAndValue<T>
+    internal readonly struct ArgumentAndValue<T>
     {
         internal readonly ArgumentSyntax Argument;
 

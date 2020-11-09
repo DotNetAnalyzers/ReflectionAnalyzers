@@ -1,7 +1,9 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -17,28 +19,31 @@
             this.Event = @event;
         }
 
-        internal static bool TryGet(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, out EventInfo eventInfo)
+        internal static EventInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            switch (expression)
+            return expression switch
             {
-                case InvocationExpressionSyntax invocation
+                InvocationExpressionSyntax invocation
                     when GetX.TryMatchGetEvent(invocation, semanticModel, cancellationToken, out var member, out _, out _) &&
                          member.ReflectedType is { } &&
-                         member.Symbol is IEventSymbol @event:
-                    eventInfo = new EventInfo(member.ReflectedType, @event);
-                    return true;
-            }
+                         member.Symbol is IEventSymbol @event
+                    => new EventInfo(member.ReflectedType, @event),
+                IdentifierNameSyntax identifierName => FindAssigned(identifierName),
+                MemberAccessExpressionSyntax memberAccess => FindAssigned(memberAccess),
+                _ => null,
+            };
 
-            if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                semanticModel.TryGetSymbol(expression, cancellationToken, out var local))
+            EventInfo? FindAssigned(ExpressionSyntax member)
             {
-                eventInfo = default;
-                return AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue) &&
-                       TryGet(assignedValue, semanticModel, cancellationToken, out eventInfo);
-            }
+                if (member.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
+                    semanticModel.TryGetSymbol(member, cancellationToken, out var local) &&
+                    AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue))
+                {
+                    return Find(assignedValue, semanticModel, cancellationToken);
+                }
 
-            eventInfo = default;
-            return false;
+                return null;
+            }
         }
     }
 }
