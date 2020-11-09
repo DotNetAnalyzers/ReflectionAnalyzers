@@ -4,7 +4,9 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -22,7 +24,7 @@
             this.Arguments = arguments;
         }
 
-        internal static bool TryCreate(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out TypeArguments typeArguments)
+        internal static TypeArguments? Find(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
             if (invocation?.ArgumentList is { } argumentList &&
                 (TryGetTypeParameters(invocation, semanticModel, cancellationToken, out var symbol, out var parameters) ||
@@ -31,14 +33,12 @@
                 if (argumentList.Arguments.TrySingle(out var argument) &&
                     Array.TryGetValues(argument.Expression, semanticModel, cancellationToken, out var arrayExpressions))
                 {
-                    typeArguments = new TypeArguments(symbol, parameters, arrayExpressions);
-                    return true;
+                    return new TypeArguments(symbol, parameters, arrayExpressions);
                 }
 
                 if (!IsUnknownArray())
                 {
-                    typeArguments = new TypeArguments(symbol, parameters, ArgumentsExpressions());
-                    return true;
+                    return new TypeArguments(symbol, parameters, ArgumentsExpressions());
 
                     ImmutableArray<ExpressionSyntax> ArgumentsExpressions()
                     {
@@ -53,8 +53,7 @@
                 }
             }
 
-            typeArguments = default;
-            return false;
+            return null;
 
             bool IsUnknownArray()
             {

@@ -19,13 +19,9 @@
         /// The expression the type was determined from when walking. Example foo.GetType() or typeof(Foo).
         /// </summary>
         internal readonly ExpressionSyntax? TypeSource;
-
         internal readonly ISymbol? Symbol;
-
         internal readonly IMethodSymbol GetX;
-
         internal readonly InvocationExpressionSyntax Invocation;
-
         internal readonly FilterMatch Match;
 
         internal ReflectedMember(INamedTypeSymbol? reflectedType, ExpressionSyntax? typeSource, ISymbol? symbol, IMethodSymbol getX, InvocationExpressionSyntax invocation, FilterMatch match)

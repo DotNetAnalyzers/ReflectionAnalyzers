@@ -1,7 +1,9 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,7 +27,7 @@
         {
             if (!context.IsExcludedFromAnalysis() &&
                 context.Node is InvocationExpressionSyntax invocation &&
-                TypeArguments.TryCreate(invocation, context.SemanticModel, context.CancellationToken, out var typeArguments))
+                TypeArguments.Find(invocation, context.SemanticModel, context.CancellationToken) is { } typeArguments)
             {
                 if (typeArguments.Symbol.IsGenericDefinition() &&
                     typeArguments.Parameters.Length != typeArguments.Arguments.Length)

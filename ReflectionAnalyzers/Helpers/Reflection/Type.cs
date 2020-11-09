@@ -239,7 +239,7 @@
                     return result != null && reflectedMember.Match == FilterMatch.Single;
                 case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
                     when invocation.TryGetTarget(KnownSymbol.Type.MakeGenericType, recursion.SemanticModel, recursion.CancellationToken, out _) &&
-                         TypeArguments.TryCreate(invocation, recursion.SemanticModel, recursion.CancellationToken, out var typeArguments) &&
+                         TypeArguments.Find(invocation, recursion.SemanticModel, recursion.CancellationToken) is { } typeArguments &&
                          typeArguments.TryGetArgumentsTypes(recursion.SemanticModel, recursion.CancellationToken, out var types):
                     source = invocation;
                     if (TryGet(memberAccess.Expression, recursion, out var definition, out _) &&
