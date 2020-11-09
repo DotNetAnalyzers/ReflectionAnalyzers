@@ -258,39 +258,28 @@
                     source = conditionalAccess;
                     return TryGet(whenNotNull, recursion, out result, out _);
                 default:
-                    if (recursion.Target(expression) is { } target)
+                    switch (recursion.Target(expression))
                     {
-                        switch (target.Symbol)
-                        {
-                            case ILocalSymbol local:
-                                result = null;
-                                source = null;
-                                return AssignedValue.TryGetSingle(local, recursion.SemanticModel, recursion.CancellationToken, out var value) &&
-                                       TryGet(value, recursion, out result, out source);
-                            case IFieldSymbol field:
-                                result = null;
-                                source = null;
-                                return AssignedValue.TryGetSingle(field, recursion.SemanticModel, recursion.CancellationToken, out value) &&
-                                       TryGet(value, recursion, out result, out source);
-                            case IPropertySymbol property
-                                when !property.IsAutoProperty() &&
-                                     target.Declaration is { } declaration:
-                                result = null;
-                                source = null;
-                                return ReturnValueWalker.TrySingle(declaration, out value) &&
-                                       TryGet(value, recursion, out result, out source);
-                            case IPropertySymbol property:
-                                result = null;
-                                source = null;
-                                return AssignedValue.TryGetSingle(property, recursion.SemanticModel, recursion.CancellationToken, out value) &&
-                                       TryGet(value, recursion, out result, out source);
-                            case IMethodSymbol _
-                                when target.Declaration is { } declaration:
-                                result = null;
-                                source = null;
-                                return ReturnValueWalker.TrySingle(declaration, out value) &&
-                                       TryGet(value, recursion, out result, out source);
-                        }
+                        case { Symbol: ILocalSymbol local }
+                            when AssignedValue.FindSingle(local, recursion.SemanticModel, recursion.CancellationToken) is { } value:
+                            return TryGet(value, recursion, out result, out source);
+                        case { Symbol: IFieldSymbol field }
+                            when AssignedValue.FindSingle(field, recursion.SemanticModel, recursion.CancellationToken) is { } value:
+                            return TryGet(value, recursion, out result, out source);
+                        case { Declaration: { } declaration, Symbol: IPropertySymbol property }
+                            when !property.IsAutoProperty():
+                            result = null;
+                            source = null;
+                            return ReturnValueWalker.TrySingle(declaration, out var returnValue) &&
+                                   TryGet(returnValue, recursion, out result, out source);
+                        case { Symbol: IPropertySymbol property }
+                            when AssignedValue.FindSingle(property, recursion.SemanticModel, recursion.CancellationToken) is { } value:
+                            return TryGet(value, recursion, out result, out source);
+                        case { Declaration: { } declaration, Symbol: IMethodSymbol _ }:
+                            result = null;
+                            source = null;
+                            return ReturnValueWalker.TrySingle(declaration, out returnValue) &&
+                                   TryGet(returnValue, recursion, out result, out source);
                     }
 
                     break;

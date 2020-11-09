@@ -47,14 +47,14 @@
                              { } when symbol == KnownSymbol.PropertyInfo.SetMethod &&
                                       PropertyInfo.Find(memberAccess.Expression, semanticModel, cancellationToken) is { ReflectedType: { } reflectedType, Property: { SetMethod: { } setMethod } }
                                  => new MethodInfo(reflectedType, setMethod),
-                             { } when AssignedValue.TryGetSingle(symbol, semanticModel, cancellationToken, out var assignedValue)
+                             { } when AssignedValue.FindSingle(symbol, semanticModel, cancellationToken) is { } assignedValue
                                  => Find(assignedValue, semanticModel, cancellationToken),
                              _ => null,
                          },
 
                 IdentifierNameSyntax identifierName
                     when semanticModel.TryGetSymbol(identifierName, cancellationToken, out var local) &&
-                         AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue)
+                         AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } assignedValue
                          => Find(assignedValue, semanticModel, cancellationToken),
                 _ => null,
             };

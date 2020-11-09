@@ -185,8 +185,7 @@
                     return true;
                 case IdentifierNameSyntax identifierName
                     when semanticModel.TryGetSymbol(identifierName, cancellationToken, out ILocalSymbol? local) &&
-                         AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var expression) &&
-                         expression is InvocationExpressionSyntax candidate &&
+                         AssignedValue.FindSingle(local, semanticModel, cancellationToken) is InvocationExpressionSyntax candidate &&
                          candidate.TryGetTarget(expected, semanticModel, cancellationToken, out _):
                     invocation = candidate;
                     return true;

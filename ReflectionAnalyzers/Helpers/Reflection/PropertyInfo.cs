@@ -30,7 +30,7 @@
 
             if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
                 semanticModel.TryGetSymbol(expression, cancellationToken, out var local) &&
-                AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue))
+                AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } assignedValue)
             {
                 return Find(assignedValue, semanticModel, cancellationToken);
             }
