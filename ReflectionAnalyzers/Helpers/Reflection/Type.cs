@@ -60,6 +60,7 @@
         internal static bool HasVisibleNonPublicMembers(ITypeSymbol type, bool recursive)
         {
             if (type.TypeKind == TypeKind.Interface ||
+                type.BaseType is null ||
                 type == KnownSymbol.Object)
             {
                 return true;
@@ -245,7 +246,7 @@
                         namedType.Arity == types.Length)
                     {
                         result = namedType.Construct(types);
-                        return result != null;
+                        return true;
                     }
 
                     result = null;
