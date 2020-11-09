@@ -2,7 +2,9 @@
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -52,7 +54,7 @@
                                 invocationText)));
                 }
 
-                if (!attributeType.Value.IsAssignableTo(context.Compilation.GetTypeByMetadataName("System.Attribute"), context.Compilation))
+                if (!attributeType.Value.IsAssignableTo(KnownSymbol.Attribute, context.Compilation))
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -62,7 +64,7 @@
             }
         }
 
-        private static bool TryGetArgs(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IMethodSymbol? target, [NotNullWhen(true)] out ExpressionSyntax? member, out ArgumentAndValue<ITypeSymbol> attributeType, [NotNullWhen(true)] out ArgumentSyntax? inheritsArg)
+        private static bool TryGetArgs(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out IMethodSymbol? target, [NotNullWhen(true)] out ExpressionSyntax? member, out ArgumentAndValue<ITypeSymbol> attributeType, out ArgumentSyntax? inheritsArg)
         {
             if ((invocation.TryGetTarget(KnownSymbol.Attribute.GetCustomAttribute, context.SemanticModel, context.CancellationToken, out target) ||
                  invocation.TryGetTarget(KnownSymbol.CustomAttributeExtensions.GetCustomAttribute, context.SemanticModel, context.CancellationToken, out target)) &&
@@ -99,7 +101,7 @@
             return false;
         }
 
-        private static bool PreferIsDefined(InvocationExpressionSyntax invocation, IMethodSymbol target, ExpressionSyntax member, ArgumentAndValue<ITypeSymbol> attributeType, ArgumentSyntax inherits, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? invocationText)
+        private static bool PreferIsDefined(InvocationExpressionSyntax invocation, IMethodSymbol target, ExpressionSyntax member, ArgumentAndValue<ITypeSymbol> attributeType, ArgumentSyntax? inherits, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? invocationText)
         {
             switch (invocation.Parent)
             {
@@ -119,8 +121,8 @@
                     }
 
                     break;
-                case IsPatternExpressionSyntax isPattern when isPattern.Pattern is ConstantPatternSyntax constantPattern &&
-                                                              constantPattern.Expression.IsKind(SyntaxKind.NullLiteralExpression):
+                case IsPatternExpressionSyntax { Pattern: ConstantPatternSyntax constantPattern } isPattern
+                    when constantPattern.Expression.IsKind(SyntaxKind.NullLiteralExpression):
                     location = isPattern.GetLocation();
                     invocationText = "!" + GetText();
                     return true;

@@ -92,6 +92,11 @@
                 return false;
             }
 
+            if (workingMemberName is null)
+            {
+                return false;
+            }
+
             memberName = workingMemberName;
             location = argument.GetLocation();
             typeSymbol = workingTypeSymbol;
