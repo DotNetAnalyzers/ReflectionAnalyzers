@@ -1,7 +1,9 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Collections.Immutable;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,14 +29,12 @@
                 context.Node is InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax propertyInfoAccess } invocation)
             {
                 if (invocation.TryGetTarget(KnownSymbol.PropertyInfo.GetGetMethod, context.SemanticModel, context.CancellationToken, out _) &&
-                    PropertyInfo.TryGet(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken, out var propertyInfo) &&
-                    propertyInfo.Property.GetMethod is null)
+                    PropertyInfo.Find(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken) is { Property: { GetMethod: null } })
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, invocation.GetNameLocation()));
                 }
                 else if (invocation.TryGetTarget(KnownSymbol.PropertyInfo.GetSetMethod, context.SemanticModel, context.CancellationToken, out _) &&
-                         PropertyInfo.TryGet(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken, out propertyInfo) &&
-                         propertyInfo.Property.SetMethod is null)
+                         PropertyInfo.Find(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken) is { Property: { SetMethod: null } })
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, invocation.GetNameLocation()));
                 }
@@ -47,14 +47,12 @@
                 context.Node is MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation } memberAccess)
             {
                 if (IsProperty(memberAccess, KnownSymbol.PropertyInfo.GetMethod, context) &&
-                    PropertyInfo.TryGet(invocation, context.SemanticModel, context.CancellationToken, out var propertyInfo) &&
-                    propertyInfo.Property.GetMethod is null)
+                    PropertyInfo.Find(invocation, context.SemanticModel, context.CancellationToken) is { Property: { GetMethod: null } })
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, memberAccess.Name.GetLocation()));
                 }
                 else if (IsProperty(memberAccess, KnownSymbol.PropertyInfo.SetMethod, context) &&
-                         PropertyInfo.TryGet(invocation, context.SemanticModel, context.CancellationToken, out propertyInfo) &&
-                         propertyInfo.Property.SetMethod is null)
+                         PropertyInfo.Find(invocation, context.SemanticModel, context.CancellationToken) is { Property: { SetMethod: null } })
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, memberAccess.Name.GetLocation()));
                 }

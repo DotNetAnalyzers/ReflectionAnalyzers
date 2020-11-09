@@ -5,7 +5,6 @@
     using Gu.Roslyn.AnalyzerExtensions;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     internal readonly struct MethodInfo
@@ -21,49 +20,46 @@
 
         internal static MethodInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            switch (expression)
+            return expression switch
             {
-                case InvocationExpressionSyntax invocation
+                InvocationExpressionSyntax invocation
                     when GetX.TryMatchGetMethod(invocation, semanticModel, cancellationToken, out var member, out _, out _, out _) &&
-                         member is { ReflectedType: { }, Symbol: IMethodSymbol method }:
-                    return new MethodInfo(member.ReflectedType, method);
-                case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
+                         member is { ReflectedType: { }, Symbol: IMethodSymbol method }
+                    => new MethodInfo(member.ReflectedType, method),
+
+                InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
                     when semanticModel.TryGetSymbol(invocation, KnownSymbol.PropertyInfo.GetGetMethod, cancellationToken, out _) &&
-                         PropertyInfo.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out var propertyInfo) &&
-                         propertyInfo.Property.GetMethod is { } getMethod:
-                    return new MethodInfo(propertyInfo.ReflectedType, getMethod);
-                case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
+                         PropertyInfo.Find(memberAccess.Expression, semanticModel, cancellationToken) is { ReflectedType: { } reflectedType, Property: { GetMethod: { } getMethod } }
+                    => new MethodInfo(reflectedType, getMethod),
+
+                InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
                     when semanticModel.TryGetSymbol(invocation, KnownSymbol.PropertyInfo.GetSetMethod, cancellationToken, out _) &&
-                     PropertyInfo.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out var propertyInfo) &&
-                     propertyInfo.Property.SetMethod is { } setMethod:
-                    return new MethodInfo(propertyInfo.ReflectedType, setMethod);
-                case MemberAccessExpressionSyntax memberAccess
-                    when semanticModel.TryGetSymbol(memberAccess, cancellationToken, out var symbol):
-                    if (symbol == KnownSymbol.PropertyInfo.GetMethod &&
-                        PropertyInfo.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out var property) &&
-                        property is { Property: { GetMethod: { } } })
-                    {
-                        return new MethodInfo(property.ReflectedType, property.Property.GetMethod);
-                    }
+                         PropertyInfo.Find(memberAccess.Expression, semanticModel, cancellationToken) is { ReflectedType: { } reflectedType, Property: { SetMethod: { } setMethod } }
+                    => new MethodInfo(reflectedType, setMethod),
 
-                    if (symbol == KnownSymbol.PropertyInfo.SetMethod &&
-                        PropertyInfo.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out property) &&
-                        property is { Property: { SetMethod: { } } })
-                    {
-                        return new MethodInfo(property.ReflectedType, property.Property.SetMethod);
-                    }
+                MemberAccessExpressionSyntax memberAccess
+                         when semanticModel.TryGetSymbol(memberAccess, cancellationToken, out var symbol)
+                         => symbol switch
+                         {
+                             { } when symbol == KnownSymbol.PropertyInfo.GetMethod &&
+                                      PropertyInfo.Find(memberAccess.Expression, semanticModel, cancellationToken) is { ReflectedType: { } reflectedType, Property: { GetMethod: { } getMethod } }
+                                 => new MethodInfo(reflectedType, getMethod),
 
-                    break;
-            }
+                             { } when symbol == KnownSymbol.PropertyInfo.SetMethod &&
+                                      PropertyInfo.Find(memberAccess.Expression, semanticModel, cancellationToken) is { ReflectedType: { } reflectedType, Property: { SetMethod: { } setMethod } }
+                                 => new MethodInfo(reflectedType, setMethod),
 
-            if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                semanticModel.TryGetSymbol(expression, cancellationToken, out var local) &&
-                AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue))
-            {
-                return Find(assignedValue, semanticModel, cancellationToken);
-            }
+                             { } when AssignedValue.TryGetSingle(symbol, semanticModel, cancellationToken, out var assignedValue)
+                                 => Find(assignedValue, semanticModel, cancellationToken),
+                             _ => null,
+                         },
 
-            return null;
+                IdentifierNameSyntax identifierName
+                    when semanticModel.TryGetSymbol(identifierName, cancellationToken, out var local) &&
+                         AssignedValue.TryGetSingle(local, semanticModel, cancellationToken, out var assignedValue)
+                         => Find(assignedValue, semanticModel, cancellationToken),
+                _ => null,
+            };
         }
     }
 }
