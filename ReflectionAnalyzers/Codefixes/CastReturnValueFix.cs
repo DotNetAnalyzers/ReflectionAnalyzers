@@ -3,7 +3,9 @@
     using System.Collections.Immutable;
     using System.Composition;
     using System.Threading.Tasks;
+
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
@@ -25,7 +27,7 @@
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeString))
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax? typeSyntax))
+                    if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is TypeSyntax typeSyntax)
                     {
                         context.RegisterCodeFix(
                             $"Cast to {typeString}.",
@@ -35,7 +37,7 @@
                             nameof(CastReturnValueFix),
                             diagnostic);
                     }
-                    else if (syntaxRoot.TryFindNode(diagnostic, out InvocationExpressionSyntax? invocation))
+                    else if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is InvocationExpressionSyntax invocation)
                     {
                         context.RegisterCodeFix(
                             $"Cast to {typeString}.",

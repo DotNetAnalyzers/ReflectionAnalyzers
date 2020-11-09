@@ -24,7 +24,7 @@
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax? argument))
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ArgumentSyntax argument)
                 {
                     context.RegisterCodeFix(
                         "Prefer Type.EmptyTypes.",

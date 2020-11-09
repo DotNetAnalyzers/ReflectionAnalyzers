@@ -3,8 +3,10 @@
     using System.Collections.Immutable;
     using System.Composition;
     using System.Threading.Tasks;
+
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
@@ -31,8 +33,9 @@
                                              .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax? argumentList) &&
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ArgumentListSyntax argumentList &&
                     argumentList.Arguments.TrySingle(out var arg) &&
+                    semanticModel is { } &&
                     arg.TryGetStringValue(semanticModel, context.CancellationToken, out var memberName) &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
                     diagnostic.Properties.TryGetValue(nameof(INamedTypeSymbol), out var typeName) &&

@@ -3,7 +3,9 @@
     using System.Collections.Immutable;
     using System.Composition;
     using System.Threading.Tasks;
+
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
@@ -22,7 +24,7 @@
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax? argument))
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ArgumentSyntax argument)
                 {
                     context.RegisterCodeFix(
                         "Prefer null.",
