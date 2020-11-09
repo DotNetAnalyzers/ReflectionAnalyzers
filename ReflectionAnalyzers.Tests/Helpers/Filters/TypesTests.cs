@@ -37,7 +37,7 @@ namespace N
             var m1 = semanticModel.GetDeclaredSymbol(syntaxTree.FindMethodDeclaration(signature1), CancellationToken.None);
             var m2 = semanticModel.GetDeclaredSymbol(syntaxTree.FindMethodDeclaration(signature2), CancellationToken.None);
             var invocation = syntaxTree.FindInvocation("GetMethod");
-            Assert.AreEqual(true, Types.TryCreate(invocation, (IMethodSymbol)semanticModel.GetSymbolInfo(invocation).Symbol, semanticModel, CancellationToken.None, out var types));
+            Assert.AreEqual(true, Types.TryCreate(invocation, (IMethodSymbol?)semanticModel.GetSymbolInfo(invocation).Symbol, semanticModel, CancellationToken.None, out var types));
             Assert.AreEqual(true, types.TryMostSpecific(m1, m2, out var match));
             Assert.AreEqual(m1, match);
             Assert.AreEqual(true, types.TryMostSpecific(m2, m1, out match));
@@ -70,7 +70,7 @@ namespace N
             var m1 = semanticModel.GetDeclaredSymbol(syntaxTree.FindMethodDeclaration(signature1), CancellationToken.None);
             var m2 = semanticModel.GetDeclaredSymbol(syntaxTree.FindMethodDeclaration(signature2), CancellationToken.None);
             var invocation = syntaxTree.FindInvocation("GetMethod");
-            Assert.AreEqual(true, Types.TryCreate(invocation, (IMethodSymbol)semanticModel.GetSymbolInfo(invocation).Symbol, semanticModel, CancellationToken.None, out var types));
+            Assert.AreEqual(true, Types.TryCreate(invocation, (IMethodSymbol?)semanticModel.GetSymbolInfo(invocation).Symbol, semanticModel, CancellationToken.None, out var types));
             Assert.AreEqual(false, types.TryMostSpecific(m1, m2, out _));
         }
     }

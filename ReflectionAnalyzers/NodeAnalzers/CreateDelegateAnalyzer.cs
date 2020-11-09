@@ -145,7 +145,7 @@
             {
                 for (var i = 0; i < delegateMethod.Parameters.Length; i++)
                 {
-                    if (!methodTypes[i].Equals(delegateMethod.Parameters[i].Type))
+                    if (!TypeSymbolComparer.Equal(methodTypes[i], delegateMethod.Parameters[i].Type))
                     {
                         delegateText = DelegateText();
                         return false;

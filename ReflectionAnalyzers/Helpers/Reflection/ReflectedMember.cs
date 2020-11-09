@@ -353,7 +353,7 @@
 
             switch (candidate)
             {
-                case IFieldSymbol { CorrespondingTupleField: IFieldSymbol tupleField } field when tupleField.Name != field.Name:
+                case IFieldSymbol { CorrespondingTupleField: { } tupleField } field when tupleField.Name != field.Name:
                 case { DeclaredAccessibility: Accessibility.Public }
                     when !flags.HasFlagFast(BindingFlags.Public):
                 case { IsStatic: true }
@@ -384,16 +384,14 @@
 
             bool IsMember()
             {
-                switch (candidate.Kind)
+                return candidate.Kind switch
                 {
-                    case SymbolKind.Event:
-                    case SymbolKind.Field:
-                    case SymbolKind.Property:
-                    case SymbolKind.Method:
-                        return true;
-                    default:
-                        return false;
-                }
+                    SymbolKind.Event => true,
+                    SymbolKind.Field => true,
+                    SymbolKind.Property => true,
+                    SymbolKind.Method => true,
+                    _ => false,
+                };
             }
         }
     }

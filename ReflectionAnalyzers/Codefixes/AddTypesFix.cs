@@ -28,7 +28,7 @@
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentListSyntax? argumentListSyntax) &&
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ArgumentListSyntax argumentListSyntax &&
                     diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeArrayString))
                 {
                     if (argumentListSyntax.Arguments.Count == 1)
@@ -50,7 +50,8 @@
                     else if (argumentListSyntax.Parent is InvocationExpressionSyntax invocation)
                     {
                         var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
-                        if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out var getMethod) &&
+                        if (semanticModel is { } &&
+                            invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out var getMethod) &&
                             getMethod.Parameters.Length == 2 &&
                             getMethod.TryFindParameter("name", out _) &&
                             getMethod.TryFindParameter("bindingAttr", out _))

@@ -24,7 +24,7 @@
 
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNode(diagnostic, out ArgumentSyntax? argument))
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ArgumentSyntax argument)
                 {
                     if (diagnostic.Properties.TryGetValue(nameof(NameSyntax), out var nameText))
                     {

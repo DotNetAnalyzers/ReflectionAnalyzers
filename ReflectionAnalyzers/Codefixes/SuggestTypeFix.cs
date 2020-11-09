@@ -26,7 +26,8 @@
                                              .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true) is LiteralExpressionSyntax literal &&
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true) is LiteralExpressionSyntax literal &&
+                    semanticModel is { } &&
                     literal.IsKind(SyntaxKind.StringLiteralExpression) &&
                     TryGetNameAndArity(literal, out var typeName, out var arity))
                 {

@@ -4,9 +4,10 @@
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
-    using System.Linq;
+
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -43,7 +44,7 @@
         private static void Handle(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is InvocationExpressionSyntax { ArgumentList: ArgumentListSyntax argumentList } invocation)
+                context.Node is InvocationExpressionSyntax { ArgumentList: { } argumentList } invocation)
             {
                 if (TryGetX(context, out var member, out var name, out var flags, out var types))
                 {
