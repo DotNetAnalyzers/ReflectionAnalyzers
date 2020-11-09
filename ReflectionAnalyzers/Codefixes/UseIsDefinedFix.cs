@@ -3,8 +3,10 @@
     using System.Collections.Immutable;
     using System.Composition;
     using System.Threading.Tasks;
+
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
@@ -38,14 +40,14 @@
 
                 bool TryFindExpression(out ExpressionSyntax result)
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out BinaryExpressionSyntax? binary) &&
+                    if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is BinaryExpressionSyntax binary &&
                         binary.IsEither(SyntaxKind.EqualsExpression, SyntaxKind.NotEqualsExpression))
                     {
                         result = binary;
                         return true;
                     }
 
-                    if (syntaxRoot.TryFindNode(diagnostic, out IsPatternExpressionSyntax? isPattern))
+                    if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is IsPatternExpressionSyntax isPattern)
                     {
                         result = isPattern;
                         return true;

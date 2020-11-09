@@ -22,7 +22,7 @@
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.FindNode(diagnostic.Location.SourceSpan, findInsideTrivia: false, getInnermostNodeForTie: true) is LiteralExpressionSyntax literal &&
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan, findInsideTrivia: false, getInnermostNodeForTie: true) is LiteralExpressionSyntax literal &&
                     diagnostic.Properties.TryGetValue(nameof(SyntaxKind.StringLiteralExpression), out var text))
                 {
                     context.RegisterCodeFix(
@@ -34,7 +34,7 @@
                         diagnostic);
                 }
 
-                if (syntaxRoot.FindNode(diagnostic.Location.SourceSpan, findInsideTrivia: false, getInnermostNodeForTie: true) is IdentifierNameSyntax identifierName &&
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan, findInsideTrivia: false, getInnermostNodeForTie: true) is IdentifierNameSyntax identifierName &&
                     diagnostic.Properties.TryGetValue(nameof(SimpleNameSyntax), out var name))
                 {
                     context.RegisterCodeFix(

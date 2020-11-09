@@ -33,11 +33,10 @@
                                              .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ArgumentListSyntax argumentList &&
+                if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ArgumentListSyntax { Parent: InvocationExpressionSyntax invocation } argumentList &&
                     argumentList.Arguments.TrySingle(out var arg) &&
                     semanticModel is { } &&
                     arg.TryGetStringValue(semanticModel, context.CancellationToken, out var memberName) &&
-                    argumentList.Parent is InvocationExpressionSyntax invocation &&
                     diagnostic.Properties.TryGetValue(nameof(INamedTypeSymbol), out var typeName) &&
                     semanticModel.Compilation.GetTypeByMetadataName(typeName) is { } type)
                 {

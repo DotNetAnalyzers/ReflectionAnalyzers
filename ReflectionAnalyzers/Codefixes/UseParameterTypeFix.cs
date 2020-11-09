@@ -3,7 +3,9 @@
     using System.Collections.Immutable;
     using System.Composition;
     using System.Threading.Tasks;
+
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
@@ -24,8 +26,7 @@
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText))
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax? typeSyntax) &&
-                        typeSyntax.Parent is TypeOfExpressionSyntax)
+                    if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is TypeSyntax { Parent: TypeOfExpressionSyntax _ } typeSyntax)
                     {
                         context.RegisterCodeFix(
                             $"Change to: {typeText}.",
@@ -36,7 +37,7 @@
                             nameof(UseParameterTypeFix),
                             diagnostic);
                     }
-                    else if (syntaxRoot.TryFindNode(diagnostic, out ExpressionSyntax? expression))
+                    else if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ExpressionSyntax expression)
                     {
                         context.RegisterCodeFix(
                             $"Change to: typeof({typeText}).",

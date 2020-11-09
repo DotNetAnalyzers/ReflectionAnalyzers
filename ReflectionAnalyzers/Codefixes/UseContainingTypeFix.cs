@@ -3,7 +3,9 @@
     using System.Collections.Immutable;
     using System.Composition;
     using System.Threading.Tasks;
+
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
@@ -25,7 +27,7 @@
             {
                 if (diagnostic.Properties.TryGetValue(nameof(ITypeSymbol.ContainingType), out var typeName))
                 {
-                    if (syntaxRoot.TryFindNode(diagnostic, out TypeSyntax? type))
+                    if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is TypeSyntax type)
                     {
                         context.RegisterCodeFix(
                             $"Use containing type: {typeName}.",

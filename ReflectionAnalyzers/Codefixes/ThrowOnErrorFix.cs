@@ -24,7 +24,8 @@
 
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
+                if (syntaxRoot is { } &&
+                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
                     invocation.ArgumentList is { Arguments: { } arguments } argumentList)
                 {
                     if (arguments.Count == 1)

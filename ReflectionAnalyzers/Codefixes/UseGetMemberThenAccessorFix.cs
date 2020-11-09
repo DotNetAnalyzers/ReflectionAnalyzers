@@ -25,6 +25,7 @@
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (diagnostic.Properties.TryGetValue(nameof(ExpressionSyntax), out var expressionString) &&
+                    syntaxRoot is { } &&
                     syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? old))
                 {
                     context.RegisterCodeFix(
