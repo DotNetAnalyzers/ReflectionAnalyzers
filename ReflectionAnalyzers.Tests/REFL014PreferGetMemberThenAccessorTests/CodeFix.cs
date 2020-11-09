@@ -633,9 +633,8 @@ namespace N.BinaryReferencedAssembly
             var compilation = await solution.Projects.Single()
                                             .GetCompilationAsync()
                                             .ConfigureAwait(true);
-            var type = compilation.GetTypeByMetadataName("N.BinaryReferencedAssembly.C1");
 
-            CollectionAssert.IsEmpty(type.GetMembers("E"));
+            CollectionAssert.IsEmpty(compilation.GetTypeByMetadataName("N.BinaryReferencedAssembly.C1").GetMembers("E"));
             var message = @"Prefer typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, after);
         }
