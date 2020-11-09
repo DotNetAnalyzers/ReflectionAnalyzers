@@ -33,7 +33,7 @@
                 invocation.TryGetTarget(KnownSymbol.Delegate.CreateDelegate, context.SemanticModel, context.CancellationToken, out var createDelegate) &&
                 FindArgument("type") is { Expression: TypeOfExpressionSyntax typeOf } &&
                 FindArgument("method") is { Expression: { } } methodArg &&
-                MethodInfo.TryGet(methodArg.Expression, context.SemanticModel, context.CancellationToken, out var methodInfo) &&
+                MethodInfo.Find(methodArg.Expression, context.SemanticModel, context.CancellationToken) is { } methodInfo &&
                 context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType))
             {
                 if (ReturnValue.ShouldCast(invocation, delegateType, context.SemanticModel))
