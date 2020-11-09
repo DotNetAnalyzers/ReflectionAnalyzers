@@ -6,7 +6,7 @@
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    internal struct EventInfo
+    internal readonly struct EventInfo
     {
         internal readonly INamedTypeSymbol ReflectedType;
         internal readonly IEventSymbol Event;

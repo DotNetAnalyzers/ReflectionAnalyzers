@@ -60,8 +60,7 @@
         /// </summary>
         internal static bool TryMatchGetConstructor(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Flags flags, out Types types)
         {
-            if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, semanticModel, cancellationToken, out var getX))
+            if (invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, semanticModel, cancellationToken, out var getX))
             {
                 if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
@@ -107,8 +106,7 @@
         /// </summary>
         internal static bool TryMatchGetMethod(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
-            if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, cancellationToken, out var getX))
+            if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, cancellationToken, out var getX))
             {
                 if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
@@ -149,8 +147,7 @@
         /// </summary>
         internal static bool TryMatchGetProperty(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags, out Types types)
         {
-            if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(KnownSymbol.Type.GetProperty, semanticModel, cancellationToken, out var getX))
+            if (invocation.TryGetTarget(KnownSymbol.Type.GetProperty, semanticModel, cancellationToken, out var getX))
             {
                 if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
                     IsKnownSignature(invocation, getX) &&
@@ -240,8 +237,7 @@
         /// </summary>
         private static bool TryMatchGetX(InvocationExpressionSyntax invocation, QualifiedMethod getXMethod, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags)
         {
-            if (invocation.ArgumentList != null &&
-                invocation.TryGetTarget(getXMethod, semanticModel, cancellationToken, out var getX))
+            if (invocation.TryGetTarget(getXMethod, semanticModel, cancellationToken, out var getX))
             {
                 if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
                     Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name) &&
