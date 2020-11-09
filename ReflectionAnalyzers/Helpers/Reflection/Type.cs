@@ -58,7 +58,7 @@
 
         internal static bool HasVisibleNonPublicMembers(ITypeSymbol type, bool recursive)
         {
-            if (type == null ||
+            if (type is null ||
                 type.TypeKind == TypeKind.Interface ||
                 type == KnownSymbol.Object)
             {

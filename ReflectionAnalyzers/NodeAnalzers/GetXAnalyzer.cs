@@ -282,7 +282,7 @@
                 member.Invocation?.ArgumentList is { } argumentList &&
                 (member.Match == FilterMatch.Single || member.Match == FilterMatch.WrongFlags))
             {
-                if (flags.Argument == null)
+                if (flags.Argument is null)
                 {
                     location = MissingFlagsLocation();
                     flagsText = correctFlags.ToDisplayString(member.Invocation);
@@ -500,7 +500,7 @@
                 }
                 else if (member.Match == FilterMatch.PotentiallyInvisible &&
                          member.ReflectedType is { } &&
-                         types.Argument == null &&
+                         types.Argument is null &&
                          flags.Explicit.HasFlagFast(BindingFlags.NonPublic))
                 {
                     if (TryGetInvisibleMemberName("get_", out var memberName) ||
@@ -540,12 +540,12 @@
 
                 string GetProperty()
                 {
-                    if (flags.Argument == null)
+                    if (flags.Argument is null)
                     {
                         return $"{memberAccess.Expression}.GetProperty({propertyName})";
                     }
 
-                    if (types.Argument == null)
+                    if (types.Argument is null)
                     {
                         return $"{memberAccess.Expression}.GetProperty({propertyName}, {bindingFlags.ToDisplayString(memberAccess)})";
                     }
@@ -597,7 +597,7 @@
                 result = null!;
                 return false;
 
-                string GetEvent() => flags.Argument == null
+                string GetEvent() => flags.Argument is null
                     ? $"{memberAccess.Expression}.GetEvent({eventName})"
                     : $"{memberAccess.Expression}.GetEvent({eventName}, {bindingFlags.ToDisplayString(memberAccess)})";
             }
@@ -646,7 +646,7 @@
                 return false;
             }
 
-            if (types.Argument == null &&
+            if (types.Argument is null &&
                 member is { Match: FilterMatch.Single, Symbol: IMethodSymbol { IsGenericMethod: false } method } &&
                 member.GetX == KnownSymbol.Type.GetMethod)
             {

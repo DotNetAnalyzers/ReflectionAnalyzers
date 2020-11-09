@@ -80,7 +80,7 @@
                                   !(memberAccess.Parent is MemberAccessExpressionSyntax) &&
                                   memberAccess.Name == identifierName) ||
                                  identifierName.Parent is BinaryExpressionSyntax:
-                            if (this.duplicate == null &&
+                            if (this.duplicate is null &&
                                 this.flags.TryFirst(x => x.Identifier.ValueText == identifierName.Identifier.ValueText, out _))
                             {
                                 this.duplicate = identifierName;
@@ -101,7 +101,7 @@
             internal static bool HasWrongOrder(BinaryExpressionSyntax flags, [NotNullWhen(true)] out string? inExpectedOrder)
             {
                 inExpectedOrder = null;
-                if (flags == null)
+                if (flags is null)
                 {
                     return false;
                 }
@@ -149,7 +149,7 @@
             {
                 expectedFlags = null;
                 dupe = null;
-                if (flags == null)
+                if (flags is null)
                 {
                     return false;
                 }

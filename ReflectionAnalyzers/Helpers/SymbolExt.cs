@@ -19,7 +19,7 @@
 
         internal static bool IsGenericDefinition(this INamedTypeSymbol symbol)
         {
-            if (symbol == null)
+            if (symbol is null)
             {
                 return false;
             }

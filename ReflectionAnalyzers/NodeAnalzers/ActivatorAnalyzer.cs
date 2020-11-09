@@ -189,7 +189,7 @@
 
         private static bool? TryFindConstructor(INamedTypeSymbol type, ImmutableArray<ExpressionSyntax> values, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            if (type == null)
+            if (type is null)
             {
                 return null;
             }

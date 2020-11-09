@@ -40,7 +40,7 @@
         {
             get
             {
-                if (this.Argument == null)
+                if (this.Argument is null)
                 {
                     return false;
                 }

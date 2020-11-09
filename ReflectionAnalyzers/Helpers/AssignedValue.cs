@@ -38,7 +38,7 @@
                     return expression != null;
                 }
 
-                if (variable.Initializer == null &&
+                if (variable.Initializer is null &&
                     walker.TrySingle(out var node) &&
                     node.Parent is AssignmentExpressionSyntax assignment)
                 {
@@ -65,7 +65,7 @@
                     return expression != null;
                 }
 
-                if (declaration.Initializer == null &&
+                if (declaration.Initializer is null &&
                     walker.TrySingle(out var node) &&
                     node.Parent is AssignmentExpressionSyntax assignment)
                 {
@@ -92,7 +92,7 @@
                     return expression != null;
                 }
 
-                if (variable.Initializer == null &&
+                if (variable.Initializer is null &&
                    walker.TrySingle(out var node) &&
                    node.Parent is AssignmentExpressionSyntax assignment)
                 {

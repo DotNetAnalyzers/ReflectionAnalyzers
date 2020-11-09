@@ -28,13 +28,13 @@
             {
                 if (invocation.TryGetTarget(KnownSymbol.PropertyInfo.GetGetMethod, context.SemanticModel, context.CancellationToken, out _) &&
                     PropertyInfo.TryGet(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken, out var propertyInfo) &&
-                    propertyInfo.Property.GetMethod == null)
+                    propertyInfo.Property.GetMethod is null)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, invocation.GetNameLocation()));
                 }
                 else if (invocation.TryGetTarget(KnownSymbol.PropertyInfo.GetSetMethod, context.SemanticModel, context.CancellationToken, out _) &&
                          PropertyInfo.TryGet(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken, out propertyInfo) &&
-                         propertyInfo.Property.SetMethod == null)
+                         propertyInfo.Property.SetMethod is null)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, invocation.GetNameLocation()));
                 }
@@ -48,13 +48,13 @@
             {
                 if (IsProperty(memberAccess, KnownSymbol.PropertyInfo.GetMethod, context) &&
                     PropertyInfo.TryGet(invocation, context.SemanticModel, context.CancellationToken, out var propertyInfo) &&
-                    propertyInfo.Property.GetMethod == null)
+                    propertyInfo.Property.GetMethod is null)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, memberAccess.Name.GetLocation()));
                 }
                 else if (IsProperty(memberAccess, KnownSymbol.PropertyInfo.SetMethod, context) &&
                          PropertyInfo.TryGet(invocation, context.SemanticModel, context.CancellationToken, out propertyInfo) &&
-                         propertyInfo.Property.SetMethod == null)
+                         propertyInfo.Property.SetMethod is null)
                 {
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, memberAccess.Name.GetLocation()));
                 }

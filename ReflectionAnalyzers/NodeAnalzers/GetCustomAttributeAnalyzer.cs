@@ -132,7 +132,7 @@
 
             string GetText()
             {
-                var inheritsText = inherits == null ? string.Empty : $", {inherits}";
+                var inheritsText = inherits is null ? string.Empty : $", {inherits}";
                 return target.IsExtensionMethod
                     ? $"{member}.IsDefined({attributeType.Argument}{inheritsText})"
                     : $"Attribute.IsDefined({member}, {attributeType.Argument}{inheritsText})";

@@ -97,10 +97,10 @@
                 for (var i = 0; i < genericTypeName.TypeArguments.Length; i++)
                 {
                     var argument = genericTypeName.TypeArguments[i];
-                    if (argument.TypeArguments == null)
+                    if (argument.TypeArguments is null)
                     {
                         var type = GetTypeByMetadataName(assembly, argument.MetadataName, ignoreCase);
-                        if (type == null)
+                        if (type is null)
                         {
                             return false;
                         }
@@ -110,7 +110,7 @@
                     else
                     {
                         var type = GetTypeByMetadataName(assembly, new GenericTypeName(argument.MetadataName, argument.TypeArguments.ToImmutableArray()), ignoreCase);
-                        if (type == null)
+                        if (type is null)
                         {
                             return false;
                         }

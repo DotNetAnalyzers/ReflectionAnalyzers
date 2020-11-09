@@ -17,7 +17,7 @@
 
         public override void Initialize(AnalysisContext context)
         {
-            if (context == null)
+            if (context is null)
             {
                 throw new System.ArgumentNullException(nameof(context));
             }
@@ -143,7 +143,7 @@
                 return true;
             }
 
-            if (symbol.BaseType == null)
+            if (symbol.BaseType is null)
             {
                 return false;
             }

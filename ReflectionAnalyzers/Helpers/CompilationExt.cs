@@ -48,7 +48,7 @@
                     if (argument.TypeArguments is { } typeArguments)
                     {
                         var type = GetTypeByMetadataName(compilation, new GenericTypeName(argument.MetadataName, typeArguments.ToImmutableArray()), ignoreCase);
-                        if (type == null)
+                        if (type is null)
                         {
                             return false;
                         }
@@ -58,7 +58,7 @@
                     else
                     {
                         var type = GetTypeByMetadataName(compilation, argument.MetadataName, ignoreCase);
-                        if (type == null)
+                        if (type is null)
                         {
                             return false;
                         }

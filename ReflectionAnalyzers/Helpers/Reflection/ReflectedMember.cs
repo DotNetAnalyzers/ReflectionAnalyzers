@@ -260,7 +260,7 @@
 
             static bool IsOverriding(ISymbol? symbol, ISymbol candidateBase)
             {
-                if (symbol == null)
+                if (symbol is null)
                 {
                     return false;
                 }
@@ -315,7 +315,7 @@
 
             bool IsWrongTypes(ISymbol symbol)
             {
-                if (types.Argument == null)
+                if (types.Argument is null)
                 {
                     return false;
                 }

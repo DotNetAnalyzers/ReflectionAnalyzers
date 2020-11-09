@@ -31,7 +31,7 @@
                         }
 
                         var initializer = arrayCreation.Initializer;
-                        return initializer == null ||
+                        return initializer is null ||
                                initializer.Expressions.Count == 0;
                     }
 

@@ -44,7 +44,7 @@
             for (var i = 0; i < values.Length; i++)
             {
                 expression = values[i];
-                if (lastParameter == null ||
+                if (lastParameter is null ||
                     !lastParameter.IsParams)
                 {
                     if (!parameters.TryElementAt(i, out lastParameter))
