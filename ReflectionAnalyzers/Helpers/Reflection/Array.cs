@@ -2,7 +2,9 @@
 {
     using System.Collections.Immutable;
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -15,27 +17,22 @@
                 case InvocationExpressionSyntax invocation
                     when invocation.TryGetTarget(KnownSymbol.Array.Empty, semanticModel, cancellationToken, out _):
                     return true;
-                case ArrayCreationExpressionSyntax arrayCreation:
-                    if (arrayCreation.Type is { } arrayType)
+                case ArrayCreationExpressionSyntax { Type: { } arrayType } arrayCreation:
+                    foreach (var rankSpecifier in arrayType.RankSpecifiers)
                     {
-                        foreach (var rankSpecifier in arrayType.RankSpecifiers)
+                        foreach (var size in rankSpecifier.Sizes)
                         {
-                            foreach (var size in rankSpecifier.Sizes)
+                            if (size is LiteralExpressionSyntax literal &&
+                                literal.Token.ValueText != "0")
                             {
-                                if (size is LiteralExpressionSyntax literal &&
-                                    literal.Token.ValueText != "0")
-                                {
-                                    return false;
-                                }
+                                return false;
                             }
                         }
-
-                        var initializer = arrayCreation.Initializer;
-                        return initializer is null ||
-                               initializer.Expressions.Count == 0;
                     }
 
-                    return false;
+                    var initializer = arrayCreation.Initializer;
+                    return initializer is null ||
+                           initializer.Expressions.Count == 0;
                 default:
                     return false;
             }

@@ -8,7 +8,7 @@
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     [DebuggerDisplay("{this.Effective}")]
-    internal struct Flags
+    internal readonly struct Flags
     {
         internal static readonly Flags MatchAll = new Flags(null, BindingFlags.Default, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
 
