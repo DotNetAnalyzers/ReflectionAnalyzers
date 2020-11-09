@@ -23,6 +23,7 @@
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typesText) &&
+                    syntaxRoot is { } &&
                     syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
                     invocation.Expression is MemberAccessExpressionSyntax { Expression: { } expression })
                 {

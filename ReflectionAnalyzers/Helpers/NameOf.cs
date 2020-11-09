@@ -14,10 +14,12 @@
         private static readonly SymbolDisplayFormat Format = new SymbolDisplayFormat(
             globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+#pragma warning disable SA1118 // Parameter should not span multiple lines
             miscellaneousOptions:
                 SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
                 SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
                 SymbolDisplayMiscellaneousOptions.ExpandNullable);
+#pragma warning restore SA1118 // Parameter should not span multiple lines
 
         internal static bool TryGetExpressionText(ReflectedMember member, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? targetName)
         {

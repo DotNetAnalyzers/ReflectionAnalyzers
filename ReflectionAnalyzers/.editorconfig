@@ -11,3 +11,6 @@ dotnet_diagnostic.SA1401.severity = none
 
 # CA1308: In method 'M', replace the call to 'ToLowerInvariant' with 'ToUpperInvariant'.
 dotnet_diagnostic.CA1308.severity = none
+
+# RS2008: Enable analyzer release tracking
+dotnet_diagnostic.RS2008.severity = none

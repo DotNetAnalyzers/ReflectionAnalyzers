@@ -4,8 +4,10 @@
     using System.Composition;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
+
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.CodeFixExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CodeFixes;
     using Microsoft.CodeAnalysis.CSharp;
@@ -38,7 +40,9 @@
             var semanticModel = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (TryFindArgumentList(syntaxRoot, diagnostic, out var argumentList) &&
+                if (syntaxRoot is { } &&
+                    semanticModel is { } &&
+                    TryFindArgumentList(syntaxRoot, diagnostic, out var argumentList) &&
                     argumentList.Parent is InvocationExpressionSyntax invocation &&
                     diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var argumentString))
                 {
@@ -52,7 +56,7 @@
                         {
                             context.RegisterCodeFix(
                             $"Add argument: {argumentString}.",
-                            (editor, __) =>
+                            editor =>
                             {
                                 if (argumentString.Contains("BindingFlags"))
                                 {
@@ -70,7 +74,7 @@
                         {
                             context.RegisterCodeFix(
                                 $"Add argument: {argumentString}.",
-                                (editor, __) =>
+                                editor =>
                                 {
                                     if (argumentString.Contains("BindingFlags"))
                                     {
@@ -96,7 +100,7 @@
                     {
                         context.RegisterCodeFix(
                             $"Add argument: {argumentString}.",
-                            (editor, __) =>
+                            editor =>
                             {
                                 if (argumentString.Contains("BindingFlags"))
                                 {
@@ -115,6 +119,7 @@
                     }
                 }
                 else if (diagnostic.Properties.TryGetValue(nameof(ArgumentSyntax), out var expressionString) &&
+                         syntaxRoot is { } &&
                          syntaxRoot.TryFindNodeOrAncestor(diagnostic, out ArgumentSyntax? argument))
                 {
                     context.RegisterCodeFix(
@@ -136,9 +141,8 @@
             }
 
             if (diagnostic.Location.SourceSpan.Length == 1 &&
-                syntaxRoot.FindToken(diagnostic.Location.SourceSpan.Start) is SyntaxToken token &&
-                token.IsEither(SyntaxKind.OpenParenToken, SyntaxKind.CloseParenToken) &&
-                token.Parent is ArgumentListSyntax list)
+                syntaxRoot.FindToken(diagnostic.Location.SourceSpan.Start) is { Parent: ArgumentListSyntax list } token &&
+                token.IsEither(SyntaxKind.OpenParenToken, SyntaxKind.CloseParenToken))
             {
                 argumentList = list;
                 return true;
