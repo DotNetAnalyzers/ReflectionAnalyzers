@@ -25,7 +25,8 @@
                                           .ConfigureAwait(false);
             foreach (var diagnostic in context.Diagnostics)
             {
-                if (syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
+                if (syntaxRoot is { } &&
+                    syntaxRoot.TryFindNodeOrAncestor(diagnostic, out InvocationExpressionSyntax? invocation) &&
                     diagnostic.Properties.TryGetValue(nameof(InvocationExpressionSyntax), out var call) &&
                     invocation.Parent is ExpressionSyntax cast &&
                     cast.IsEither(SyntaxKind.CastExpression, SyntaxKind.AsExpression))

@@ -13,7 +13,8 @@
 
         internal static string ToString(this ITypeSymbol type, SemanticModel semanticModel, int position)
         {
-            if (semanticModel.IsAccessible(position, type))
+            if (semanticModel.IsAccessible(position, type) ||
+                type.BaseType is null)
             {
                 return type.ToMinimalDisplayString(semanticModel, position);
             }
@@ -58,8 +59,7 @@
 
         internal static bool HasVisibleNonPublicMembers(ITypeSymbol type, bool recursive)
         {
-            if (type is null ||
-                type.TypeKind == TypeKind.Interface ||
+            if (type.TypeKind == TypeKind.Interface ||
                 type == KnownSymbol.Object)
             {
                 return true;
@@ -96,7 +96,8 @@
             if (invocation.TryGetTarget(KnownSymbol.Type.GetType, semanticModel, cancellationToken, out var target) &&
                 target.TryFindParameter("typeName", out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out var nameArg) &&
-                nameArg.TryGetStringValue(semanticModel, cancellationToken, out var name))
+                nameArg.TryGetStringValue(semanticModel, cancellationToken, out var name) &&
+                name is { })
             {
                 typeName = new TypeNameArgument(nameArg, name);
                 switch (target.Parameters.Length)
@@ -126,7 +127,8 @@
             if (invocation.TryGetTarget(KnownSymbol.Assembly.GetType, semanticModel, cancellationToken, out var target) &&
                 target.TryFindParameter("name", out var nameParameter) &&
                 invocation.TryFindArgument(nameParameter, out var nameArg) &&
-                nameArg.TryGetStringValue(semanticModel, cancellationToken, out var name))
+                nameArg.TryGetStringValue(semanticModel, cancellationToken, out var name) &&
+                name is { })
             {
                 typeName = new TypeNameArgument(nameArg, name);
                 switch (target.Parameters.Length)

@@ -1,12 +1,14 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-    internal struct MethodInfo
+    internal readonly struct MethodInfo
     {
         internal readonly INamedTypeSymbol ReflectedType;
         internal readonly IMethodSymbol Method;
@@ -41,14 +43,16 @@
                 case MemberAccessExpressionSyntax memberAccess
                     when semanticModel.TryGetSymbol(memberAccess, cancellationToken, out var symbol):
                     if (symbol == KnownSymbol.PropertyInfo.GetMethod &&
-                        PropertyInfo.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out var property))
+                        PropertyInfo.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out var property) &&
+                        property is { Property: { GetMethod: { } } })
                     {
                         methodInfo = new MethodInfo(property.ReflectedType, property.Property.GetMethod);
                         return true;
                     }
 
                     if (symbol == KnownSymbol.PropertyInfo.SetMethod &&
-                        PropertyInfo.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out property))
+                        PropertyInfo.TryGet(memberAccess.Expression, semanticModel, cancellationToken, out property) &&
+                        property is { Property: { SetMethod: { } } })
                     {
                         methodInfo = new MethodInfo(property.ReflectedType, property.Property.SetMethod);
                         return true;

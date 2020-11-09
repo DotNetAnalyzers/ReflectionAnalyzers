@@ -23,7 +23,7 @@
             foreach (var diagnostic in context.Diagnostics)
             {
                 if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText) &&
-                    syntaxRoot.TryFindNode(diagnostic, out TypeSyntax? type))
+                    syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is TypeSyntax type)
                 {
                     context.RegisterCodeFix(
                         $"Change to: {typeText}.",

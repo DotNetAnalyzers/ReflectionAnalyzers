@@ -2,7 +2,9 @@
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -113,9 +115,8 @@
             nameSyntax = default;
             switch (nameArg.Expression)
             {
-                case MemberAccessExpressionSyntax memberAccess:
-                    if (memberAccess.Expression is TypeOfExpressionSyntax typeOf &&
-                        context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var type))
+                case MemberAccessExpressionSyntax { Expression: TypeOfExpressionSyntax typeOf } memberAccess:
+                    if (context.SemanticModel.GetType(typeOf.Type, context.CancellationToken) is { } type)
                     {
                         if (memberAccess.Name.Identifier.ValueText == "Name")
                         {
@@ -134,8 +135,13 @@
 
                     name = null;
                     return false;
+                case { } expression
+                    when context.SemanticModel.TryGetConstantValue(expression, context.CancellationToken, out name) &&
+                         name is { }:
+                    return true;
                 default:
-                    return context.SemanticModel.TryGetConstantValue(nameArg.Expression, context.CancellationToken, out name);
+                    name = null;
+                    return false;
             }
         }
     }
