@@ -44,11 +44,9 @@
                              { } when symbol == KnownSymbol.PropertyInfo.GetMethod &&
                                       PropertyInfo.Find(memberAccess.Expression, semanticModel, cancellationToken) is { ReflectedType: { } reflectedType, Property: { GetMethod: { } getMethod } }
                                  => new MethodInfo(reflectedType, getMethod),
-
                              { } when symbol == KnownSymbol.PropertyInfo.SetMethod &&
                                       PropertyInfo.Find(memberAccess.Expression, semanticModel, cancellationToken) is { ReflectedType: { } reflectedType, Property: { SetMethod: { } setMethod } }
                                  => new MethodInfo(reflectedType, setMethod),
-
                              { } when AssignedValue.TryGetSingle(symbol, semanticModel, cancellationToken, out var assignedValue)
                                  => Find(assignedValue, semanticModel, cancellationToken),
                              _ => null,

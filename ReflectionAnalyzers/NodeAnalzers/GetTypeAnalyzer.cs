@@ -2,7 +2,9 @@
 {
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -106,7 +108,7 @@
 
             if (Type.TryMatchAssemblyGetType(invocation, context.SemanticModel, context.CancellationToken, out typeName, out ignoreCase) &&
                 invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
-                Assembly.TryGet(memberAccess.Expression, context.SemanticModel, context.CancellationToken, out var assembly))
+                Assembly.Find(memberAccess.Expression, context.SemanticModel, context.CancellationToken) is { } assembly)
             {
                 nameArgument = typeName.Argument;
                 if (!typeName.Value.Contains("."))

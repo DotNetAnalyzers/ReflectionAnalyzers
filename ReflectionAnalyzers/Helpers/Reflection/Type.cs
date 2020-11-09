@@ -2,7 +2,9 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -218,7 +220,7 @@
                 case InvocationExpressionSyntax candidate
                     when TryMatchAssemblyGetType(candidate, recursion.SemanticModel, recursion.CancellationToken, out var typeName, out var ignoreCase):
                     source = candidate;
-                    result = Assembly.TryGet(candidate.Expression, recursion.SemanticModel, recursion.CancellationToken, out var assembly)
+                    result = Assembly.Find(candidate.Expression, recursion.SemanticModel, recursion.CancellationToken) is { } assembly
                         ? assembly.GetTypeByMetadataName(typeName, ignoreCase.Value)
                         : null;
                     return result != null;

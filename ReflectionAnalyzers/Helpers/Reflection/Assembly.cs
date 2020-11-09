@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Immutable;
-    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading;
     using Microsoft.CodeAnalysis;
@@ -20,20 +19,17 @@
             return false;
         }
 
-        internal static bool TryGet(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out IAssemblySymbol? assembly)
+        internal static IAssemblySymbol? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            switch (expression)
+            return expression switch
             {
-                case MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "GetType" } } } candidate:
-                    return TryGet(candidate.Expression, semanticModel, cancellationToken, out assembly);
-                case MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "Assembly" } } } candidate
-                    when Type.TryGet(candidate.Expression, semanticModel, cancellationToken, out var typeInAssembly, out _):
-                    assembly = typeInAssembly.ContainingAssembly;
-                    return assembly != null;
-            }
-
-            assembly = null;
-            return false;
+                MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "GetType" } } } candidate
+                    => Find(candidate.Expression, semanticModel, cancellationToken),
+                MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "Assembly" } } } candidate
+                    when Type.TryGet(candidate.Expression, semanticModel, cancellationToken, out var typeInAssembly, out _)
+                    => typeInAssembly.ContainingAssembly,
+                _ => null,
+            };
         }
 
         internal static INamedTypeSymbol? GetTypeByMetadataName(this IAssemblySymbol assembly, TypeNameArgument typeName, bool ignoreCase)
