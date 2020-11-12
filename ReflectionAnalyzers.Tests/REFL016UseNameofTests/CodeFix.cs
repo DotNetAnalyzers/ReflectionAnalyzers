@@ -541,5 +541,61 @@ namespace N
 
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
         }
+
+        [Test]
+        public static void ValueTupleGetFieldItem1()
+        {
+            var before = @"
+namespace N
+{
+    using System;
+
+    class C
+    {
+        public object Get => typeof((int, double)).GetField(↓""Item1"");
+    }
+}";
+
+            var after = @"
+namespace N
+{
+    using System;
+
+    class C
+    {
+        public object Get => typeof((int, double)).GetField(nameof(ValueTuple<int, double>.Item1));
+    }
+}";
+
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
+
+        [Test]
+        public static void ValueTupleGetFieldRest()
+        {
+            var before = @"
+namespace N
+{
+    using System;
+
+    class C
+    {
+        public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(↓""Rest"");
+    }
+}";
+
+            var after = @"
+namespace N
+{
+    using System;
+
+    class C
+    {
+        public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(nameof(ValueTuple<int, int, int, int, int, int, int, ValueTuple<int>>.Rest));
+    }
+}";
+
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
     }
 }

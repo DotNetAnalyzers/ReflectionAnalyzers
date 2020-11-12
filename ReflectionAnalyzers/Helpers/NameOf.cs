@@ -6,6 +6,7 @@
     using Gu.Roslyn.CodeFixExtensions;
 
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -49,7 +50,22 @@
 
             if (member.ReflectedType.IsTupleType)
             {
-                return false;
+                var builder = StringBuilderPool.Borrow();
+                builder.Append(member.ReflectedType.Name)
+                       .Append("<");
+                for (var i = 0; i < member.ReflectedType.TypeArguments.Length; i++)
+                {
+                    builder.Append(member.ReflectedType.TypeArguments[i].ToMinimalDisplayString(context.SemanticModel, member.Invocation.SpanStart, Format));
+                    if (i < member.ReflectedType.TypeArguments.Length - 1)
+                    {
+                        builder.Append(", ");
+                    }
+                }
+
+                builder.Append(">.")
+                       .Append(member.Symbol.Name);
+                targetName = builder.Return();
+                return true;
             }
 
             if (context.ContainingSymbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.SemanticModel.Compilation))
