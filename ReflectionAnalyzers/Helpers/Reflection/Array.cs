@@ -80,6 +80,7 @@
                     return true;
             }
 
+            types = default;
             return false;
 
             bool TryGetTypesFromInitializer(InitializerExpressionSyntax initializer, out ImmutableArray<ITypeSymbol> result)

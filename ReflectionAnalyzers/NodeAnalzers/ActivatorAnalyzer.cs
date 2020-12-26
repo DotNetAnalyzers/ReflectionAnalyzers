@@ -172,6 +172,7 @@
             switch (arguments[startIndex].Expression)
             {
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.NullLiteralExpression):
+                    values = default;
                     return false;
                 case { } expression when semanticModel.TryGetType(expression, cancellationToken, out var type) &&
                                          type is IArrayTypeSymbol { ElementType: { SpecialType: SpecialType.System_Object } }:

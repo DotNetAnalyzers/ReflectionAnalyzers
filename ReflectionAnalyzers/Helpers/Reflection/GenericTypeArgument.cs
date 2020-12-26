@@ -39,6 +39,7 @@
                 }
             }
 
+            result = default;
             return false;
         }
 
