@@ -26,7 +26,7 @@
 
         internal static TypeArguments? Find(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            if (invocation?.ArgumentList is { } argumentList &&
+            if (invocation.ArgumentList is { } argumentList &&
                 (TryGetTypeParameters(invocation, semanticModel, cancellationToken, out var symbol, out var parameters) ||
                  TryGetMethodParameters(invocation, semanticModel, cancellationToken, out symbol, out parameters)))
             {
@@ -135,6 +135,7 @@
             }
 
             symbol = null;
+            parameters = default;
             return false;
         }
 
@@ -152,6 +153,7 @@
             }
 
             symbol = null;
+            parameters = default;
             return false;
         }
 

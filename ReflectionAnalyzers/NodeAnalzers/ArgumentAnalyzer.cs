@@ -36,15 +36,11 @@
 
         private static bool ShouldCheck(ExpressionSyntax argument)
         {
-            switch (argument.Kind())
+            return argument.Kind() switch
             {
-                case SyntaxKind.InvocationExpression:
-                case SyntaxKind.ArrayCreationExpression:
-                case SyntaxKind.ImplicitArrayCreationExpression:
-                    return true;
-                default:
-                    return false;
-            }
+                SyntaxKind.InvocationExpression or SyntaxKind.ArrayCreationExpression or SyntaxKind.ImplicitArrayCreationExpression => true,
+                _ => false,
+            };
         }
     }
 }

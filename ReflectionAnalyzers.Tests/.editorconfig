@@ -21,3 +21,6 @@ dotnet_analyzer_diagnostic.category-StyleCop.CSharp.DocumentationRules.severity 
 dotnet_diagnostic.SA0001.severity = none
 # SA1203: Constant fields should appear before non-constant fields
 dotnet_diagnostic.SA1203.severity = none
+
+# CA1711: Identifiers should not have incorrect suffix
+dotnet_diagnostic.CA1711.severity = none
