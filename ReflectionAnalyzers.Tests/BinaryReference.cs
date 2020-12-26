@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests
+﻿namespace ReflectionAnalyzers.Tests
 {
     using System.IO;
     using Gu.Roslyn.Asserts;
@@ -16,14 +16,12 @@ namespace ReflectionAnalyzers.Tests
                 MetadataReferences.FromAttributes(),
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            using (var binaryReferencedContent = new MemoryStream())
-            {
-                var binaryEmitResult = binaryReferencedCompilation.Emit(binaryReferencedContent);
-                Assert.That(binaryEmitResult.Diagnostics, Is.Empty);
+            using var binaryReferencedContent = new MemoryStream();
+            var binaryEmitResult = binaryReferencedCompilation.Emit(binaryReferencedContent);
+            Assert.That(binaryEmitResult.Diagnostics, Is.Empty);
 
-                binaryReferencedContent.Position = 0;
-                return MetadataReference.CreateFromStream(binaryReferencedContent);
-            }
+            binaryReferencedContent.Position = 0;
+            return MetadataReference.CreateFromStream(binaryReferencedContent);
         }
     }
 }
