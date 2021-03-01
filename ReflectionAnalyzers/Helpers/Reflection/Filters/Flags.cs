@@ -97,7 +97,9 @@
                     flags |= BindingFlags.Instance;
                 }
 
+#pragma warning disable CA1508 // Avoid dead conditional code analyzer wrong.
                 if (!(member is IMethodSymbol { MethodKind: MethodKind.Constructor }))
+#pragma warning restore CA1508 // Avoid dead conditional code
                 {
                     if (TypeSymbolComparer.Equal(member.ContainingType, reflectedType))
                     {

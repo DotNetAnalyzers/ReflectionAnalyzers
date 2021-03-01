@@ -1,5 +1,4 @@
-﻿#pragma warning disable GURA04,GURA06
-namespace ReflectionAnalyzers.Tests
+﻿namespace ReflectionAnalyzers.Tests
 {
     using System;
     using System.Collections.Generic;

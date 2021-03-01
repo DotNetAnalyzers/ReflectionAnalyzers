@@ -6,7 +6,6 @@
     using Gu.Roslyn.CodeFixExtensions;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -29,8 +28,10 @@
                 member.ReflectedType is null ||
                 !member.Symbol.CanBeReferencedByName ||
                 !context.SemanticModel.IsAccessible(context.Node.SpanStart, member.Symbol) ||
+#pragma warning disable CA1508 // Avoid dead conditional code, analyzer wrong
                 member.Symbol is INamedTypeSymbol { IsGenericType: true } ||
-                (member.Symbol is IMethodSymbol method && method.MethodKind != MethodKind.Ordinary))
+#pragma warning restore CA1508 // Avoid dead conditional code
+                member.Symbol is IMethodSymbol { MethodKind: not MethodKind.Ordinary })
             {
                 return false;
             }

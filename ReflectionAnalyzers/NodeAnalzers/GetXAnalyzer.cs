@@ -232,8 +232,8 @@
                          next is IfStatementSyntax ifStatement:
 
                     return IsNullCheck(ifStatement.Condition, declarator.Identifier.ValueText);
-                case IsPatternExpressionSyntax _:
-                case ConditionalAccessExpressionSyntax _:
+                case IsPatternExpressionSyntax:
+                case ConditionalAccessExpressionSyntax:
                     return true;
             }
 
