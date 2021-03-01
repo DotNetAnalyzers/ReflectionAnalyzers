@@ -98,10 +98,10 @@ namespace ReflectionAnalyzers.Test
         [TestCaseSource(nameof(DescriptorsWithDocs))]
         public static void Table(DescriptorInfo descriptorInfo)
         {
-            const string HeaderRow = "| Topic    | Value";
-            var expected = GetTable(descriptorInfo.Stub, HeaderRow);
+            const string headerRow = "| Topic    | Value";
+            var expected = GetTable(descriptorInfo.Stub, headerRow);
             DumpIfDebug(expected);
-            var actual = GetTable(descriptorInfo.DocumentationFile.AllText, HeaderRow);
+            var actual = GetTable(descriptorInfo.DocumentationFile.AllText, headerRow);
             CodeAssert.AreEqual(expected, actual);
         }
 
@@ -130,8 +130,8 @@ namespace ReflectionAnalyzers.Test
         public static void Index()
         {
             var builder = new StringBuilder();
-            const string HeaderRow = "| Id       | Title";
-            builder.AppendLine(HeaderRow)
+            const string headerRow = "| Id       | Title";
+            builder.AppendLine(headerRow)
                    .AppendLine("| :--      | :--");
             foreach (var descriptor in DescriptorsWithDocs.Select(x => x.Descriptor)
                                                           .Distinct()
@@ -143,7 +143,7 @@ namespace ReflectionAnalyzers.Test
 
             var expected = builder.ToString();
             DumpIfDebug(expected);
-            var actual = GetTable(File.ReadAllText(Path.Combine(SolutionDirectory.FullName, "Readme.md")), HeaderRow);
+            var actual = GetTable(File.ReadAllText(Path.Combine(SolutionDirectory.FullName, "Readme.md")), headerRow);
             CodeAssert.AreEqual(expected, actual);
         }
 
