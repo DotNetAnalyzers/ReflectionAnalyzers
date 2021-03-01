@@ -12,7 +12,7 @@
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL037TypeDoesNotExits);
 
         [TestCase("MISSING")]
-        // [TestCase("N.MISSING")]
+        //// [TestCase("N.MISSING")]
         public static void TypeGetTypeNoFix(string type)
         {
             var code = @"
