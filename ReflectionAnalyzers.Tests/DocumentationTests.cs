@@ -9,21 +9,25 @@ namespace ReflectionAnalyzers.Test
     using System.IO;
     using System.Linq;
     using System.Text;
+
     using Gu.Roslyn.AnalyzerExtensions;
     using Gu.Roslyn.Asserts;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.Diagnostics;
+
     using NUnit.Framework;
 
     public static class DocumentationTests
     {
-        private static readonly IReadOnlyList<DiagnosticAnalyzer> Analyzers = typeof(AnalyzerCategory)
-                                                                              .Assembly
-                                                                              .GetTypes()
-                                                                              .Where(t => typeof(DiagnosticAnalyzer).IsAssignableFrom(t))
-                                                                              .OrderBy(x => x.Name)
-                                                                              .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t)!)
-                                                                              .ToArray();
+        private static readonly IReadOnlyList<DiagnosticAnalyzer> Analyzers =
+            typeof(AnalyzerCategory)
+                .Assembly
+                .GetTypes()
+                .Where(t => typeof(DiagnosticAnalyzer).IsAssignableFrom(t) && !t.IsAbstract)
+                .OrderBy(x => x.Name)
+                .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t)!)
+                .ToArray();
 
         private static readonly IReadOnlyList<DescriptorInfo> DescriptorInfos = Analyzers
                                                                                 .SelectMany(DescriptorInfo.Create)
