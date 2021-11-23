@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
     <LangVersion>latest</LangVersion>
     <Nullable>Enable</Nullable>
     <NeutralLanguage>en-US</NeutralLanguage>
@@ -21,14 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ReflectionAnalyzers\ReflectionAnalyzers.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="Gu.Analyzers" Version="2.0.0" PrivateAssets="all" />
@@ -40,10 +34,5 @@
     <PackageReference Include="NUnit" Version="3.13.2" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.1.0" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354" PrivateAssets="all" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="TunnelVisionLabs.ReferenceAssemblyAnnotator" Version="1.0.0-alpha.160" PrivateAssets="all" />
-    <PackageDownload Include="Microsoft.NETCore.App.Ref" Version="[3.1.0]" />
   </ItemGroup>
 </Project>

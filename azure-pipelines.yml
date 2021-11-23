@@ -5,6 +5,10 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: UseDotNet@2
+  inputs:
+    version: 6.0.x
+
 - task: VSBuild@1
   inputs:
     configuration: '$(buildConfiguration)'
