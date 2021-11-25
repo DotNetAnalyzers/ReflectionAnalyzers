@@ -66,7 +66,7 @@ in Visual Studio 2015.
 
 ## Installation
 
-IDisposableAnalyzers can be installed using:
+ReflectionAnalyzers can be installed using:
 - [Paket](https://fsprojects.github.io/Paket/) 
 - NuGet command line
 - NuGet Package Manager in Visual Studio.
