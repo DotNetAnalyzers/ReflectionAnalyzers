@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System;
 
@@ -76,5 +76,7 @@ namespace ReflectionAnalyzers
         /// This is used in COM Interop
         /// </summary>
         IgnoreReturn = 0x01000000,
+
+        DoNotWrapExceptions = 33554432,
     }
 }

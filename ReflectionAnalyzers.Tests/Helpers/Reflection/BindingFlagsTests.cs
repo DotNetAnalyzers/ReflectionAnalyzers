@@ -1,7 +1,8 @@
-namespace ReflectionAnalyzers.Tests.Helpers.Reflection
+﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System;
     using System.Linq;
+
     using NUnit.Framework;
 
     public static class BindingFlagsTests
@@ -13,7 +14,7 @@ namespace ReflectionAnalyzers.Tests.Helpers.Reflection
         [TestCaseSource(nameof(SystemReflectionFlags))]
         public static void IsMatched(System.Reflection.BindingFlags system)
         {
-            Assert.AreEqual(true, Enum.TryParse<BindingFlags>(system.ToString("G"), out var local));
+            Assert.AreEqual(true, Enum.TryParse<ReflectionAnalyzers.BindingFlags>(system.ToString("G"), out var local));
             Assert.AreEqual(system.ToString("D"), local.ToString("D"));
         }
     }
