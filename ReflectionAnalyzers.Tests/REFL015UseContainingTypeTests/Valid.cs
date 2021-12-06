@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -48,7 +48,7 @@ namespace N
 
         internal static int InternalStaticField;
 
-        private static int PrivateStaticField;
+        private static int PrivateStaticField = 1;
 
         public static event EventHandler PublicStaticEvent;
 
@@ -56,7 +56,7 @@ namespace N
 
         private static event EventHandler PrivateStaticEvent;
 
-        public static int PublicStaticProperty { get; set; }
+        public static int PublicStaticProperty => PrivateStaticField;
 
         internal static int InternalStaticProperty { get; set; }
 
@@ -67,14 +67,18 @@ namespace N
         internal static int InternalStaticMethod() => 0;
 
         private static int PrivateStaticMethod() => 0;
+
+        public static void M()
+        {
+            PublicStaticEvent?.Invoke(null, EventArgs.Empty);
+            InternalStaticEvent?.Invoke(null, EventArgs.Empty);
+            PrivateStaticEvent?.Invoke(null, EventArgs.Empty);
+        }
     }
 
     public class C : CBase
     {
-        public C()
-        {
-            var member = typeof(C).GetEvent(nameof(CBase.PublicStaticEvent));
-        }
+        public MemberInfo Get() => typeof(C).GetEvent(nameof(CBase.PublicStaticEvent));
     }
 }".AssertReplace("typeof(C).GetEvent(nameof(CBase.PublicStaticEvent))", call);
 
@@ -89,7 +93,7 @@ namespace N
 {
     class B
     {
-        internal static readonly int field;
+        internal static readonly int field = 1;
     }
 }";
             var code = @"

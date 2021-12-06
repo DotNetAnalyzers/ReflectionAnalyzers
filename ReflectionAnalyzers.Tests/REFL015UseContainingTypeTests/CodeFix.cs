@@ -28,13 +28,15 @@ namespace N
 
     public class CBase
     {
-        private static int PrivateStaticField;
+        private static int PrivateStaticField = 1;
 
         private static event EventHandler PrivateStaticEvent;
 
-        private static int PrivateStaticProperty { get; set; }
+        private static int PrivateStaticProperty => PrivateStaticField;
 
         private static int PrivateStaticMethod() => 0;
+
+        private static void M() => PrivateStaticEvent?.Invoke(null, EventArgs.Empty);
     }
 }";
             var before = @"
@@ -85,13 +87,15 @@ namespace N
 
     public class CBase
     {
-        private static int PrivateStaticField;
+        private static int PrivateStaticField = 1;
 
         private static event EventHandler PrivateStaticEvent;
 
-        private static int PrivateStaticProperty { get; set; }
+        private static int PrivateStaticProperty => PrivateStaticField;
 
         private static int PrivateStaticMethod() => 0;
+
+        private static void M() => PrivateStaticEvent?.Invoke(null, EventArgs.Empty);
     }
 }";
             var before = @"
