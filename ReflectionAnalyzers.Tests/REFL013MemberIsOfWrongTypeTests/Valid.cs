@@ -33,30 +33,31 @@ namespace N
         public static void Issue206WhenGettingField()
         {
             var code = @"
-namespace ValidCode.Repros
+namespace N
 {
     using System;
     using System.Reflection;
-    using NUnit.Framework;
 
-    public delegate void OnModelHandler(object e);
+    public delegate void EHandler(object e);
 
-    public interface IThing
+    public interface I
     {
-        event OnModelHandler OnModel;
+        event EHandler E;
     }
 
-    public class Thing : IThing
+    public class C : I
     {
-        public event OnModelHandler OnModel;
+        public event EHandler E;
+
+        private void OnE() => this.E?.Invoke(null);
     }
 
-    public class C
+    public class C1
     {
-        public static MulticastDelegate GetOnModel(IThing sender)
+        public static MulticastDelegate GetOnModel(I sender)
         {
             return (MulticastDelegate)sender.GetType()
-                                            .GetField(""OnModel"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                                            .GetField(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                                             .GetValue(sender);
         }
     }
@@ -68,30 +69,30 @@ namespace ValidCode.Repros
         public static void Issue206WhenGettingEvent()
         {
             var code = @"
-namespace ValidCode.Repros
+namespace N
 {
-    using System;
     using System.Reflection;
-    using NUnit.Framework;
 
-    public delegate void OnModelHandler(object e);
+    public delegate void EHandler(object e);
 
-    public interface IThing
+    public interface I
     {
-        event OnModelHandler OnModel;
+        event EHandler E;
     }
 
-    public class Thing : IThing
+    public class C : I
     {
-        public event OnModelHandler OnModel;
+        public event EHandler E;
+
+        private void OnE() => this.E?.Invoke(null);
     }
 
-    public class C
+    public class C1
     {
-        public static EventInfo GetOnModel(IThing sender)
+        public static EventInfo GetOnModel(I sender)
         {
             return sender.GetType()
-                         .GetEvent(""OnModel"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                         .GetEvent(""E"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
     }
 }";

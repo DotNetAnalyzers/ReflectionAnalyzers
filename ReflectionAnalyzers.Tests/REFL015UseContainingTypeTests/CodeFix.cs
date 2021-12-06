@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -236,7 +236,9 @@ namespace N
 {
     class B
     {
-        private readonly int field;
+        private readonly int f = 1;
+
+        public int M() => this.f;
     }
 }";
             var before = @"
@@ -246,7 +248,7 @@ namespace N
 
      class C : B
     {
-        public object Get => typeof(↓C).GetField(""field"", BindingFlags.NonPublic | BindingFlags.Instance);
+        public object Get => typeof(↓C).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 }";
 
@@ -257,7 +259,7 @@ namespace N
 
      class C : B
     {
-        public object Get => typeof(B).GetField(""field"", BindingFlags.NonPublic | BindingFlags.Instance);
+        public object Get => typeof(B).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 }";
 
