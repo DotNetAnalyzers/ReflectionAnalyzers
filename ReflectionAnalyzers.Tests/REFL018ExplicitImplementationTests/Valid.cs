@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
+﻿namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -32,7 +32,7 @@ namespace N
         }
 
         [TestCase("typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(IC).GetEvent(nameof(IC.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(I).GetEvent(nameof(I.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void WhenExplicitAndExplicit(string call)
         {
             var iC = @"
@@ -40,7 +40,7 @@ namespace N
 {
     using System;
 
-    public interface IC
+    public interface I
     {
         event EventHandler E;
     }
@@ -52,20 +52,19 @@ namespace N
     using System;
     using System.Reflection;
 
-    public sealed class C : IC
+    public sealed class C : I
     {
-        public C()
-        {
-            var member = typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-        }
+        public MemberInfo Get() => typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         internal event EventHandler E;
 
-        event EventHandler IC.E
+        event EventHandler I.E
         {
             add => this.E += value;
             remove => this.E -= value;
         }
+
+        public void M() => this.E?.Invoke(this, EventArgs.Empty);
     }
 }".AssertReplace("typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
 

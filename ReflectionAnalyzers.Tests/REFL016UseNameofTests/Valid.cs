@@ -111,10 +111,7 @@ namespace N
 
     public class C
     {
-        public C()
-        {
-            _ = typeof(C).GetMethod(""op_Addition"", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null });
-        }
+        public object Get(BindingFlags unused) => typeof(C).GetMethod(""op_Addition"", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null });
 
         public static C operator +(C left, C right) => null;
 
@@ -125,6 +122,10 @@ namespace N
         public static explicit operator int(C c) => 0;
 
         public static explicit operator C(int c) => null;
+
+        public override bool Equals(object o) => false;
+
+        public override int GetHashCode() => 0;
     }
 }
 ".AssertReplace("GetMethod(\"op_Addition\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null })", call);
@@ -501,19 +502,23 @@ namespace N
     {
         public static int PublicStaticField;
 
-        private static int PrivateStaticField;
+        private static int PrivateStaticField = 1;
 
         public static event EventHandler PublicStaticEvent;
 
         private static event EventHandler PrivateStaticEvent;
 
-        public static int PublicStaticProperty { get; set; }
+        public static int PublicStaticProperty => PrivateStaticField;
 
         private static int PrivateStaticProperty { get; set; }
 
         public static int PublicStaticMethod() => 0;
 
-        private static int PrivateStaticMethod() => 0;
+        private static void PrivateStaticMethod()
+        {
+            PublicStaticEvent?.Invoke(null, EventArgs.Empty);
+            PrivateStaticEvent?.Invoke(null, EventArgs.Empty);
+        }
     }
 }";
             var code = @"

@@ -60,10 +60,7 @@ namespace N
 
     sealed class C : IDisposable
     {
-        public C()
-        {
-            var method = typeof(C).GetMethod(nameof(IDisposable.Dispose));
-        }
+        public MemberInfo Get() => typeof(C).GetMethod(nameof(IDisposable.Dispose));
 
         void IDisposable.Dispose()
         {
@@ -102,12 +99,11 @@ namespace N
 {
     using System;
     using System.Reflection;
+
     sealed class C : IDisposable
     {
-        public C()
-        {
-            var method = typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
-        }
+        public MemberInfo Get() => typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
+
         void IDisposable.Dispose()
         {
         }
@@ -157,13 +153,12 @@ namespace ValidCode
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
     using System.Windows.Forms;
 
     class C
     {
-        public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+        public MemberInfo Get() => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
 }";
 
@@ -246,19 +241,14 @@ namespace N
         }
 
         [Test]
-        public static void ThisGetTYpeGetStaticMethod()
+        public static void ThisGetTypeGetStaticMethod()
         {
             var testCode = @"
 namespace N
 {
-    using System.Collections.Generic;
-
     public class C
     {
-        public C()
-        {
-            var member = this.GetType().GetMethod(nameof(Add));
-        }
+        public object Get() => this.GetType().GetMethod(nameof(Add));
 
         private static int Add(int x, int y) => x + y;
     }
@@ -267,19 +257,14 @@ namespace N
         }
 
         [Test]
-        public static void ThisGetTYpeGetInstanceMethod()
+        public static void ThisGetTypeGetInstanceMethod()
         {
             var testCode = @"
 namespace N
 {
-    using System.Collections.Generic;
-
     public class C
     {
-        public C()
-        {
-            var member = this.GetType().GetMethod(nameof(this.Add));
-        }
+        public object Get() => this.GetType().GetMethod(nameof(this.Add));
 
         private int Add(int x, int y) => x + y;
     }
@@ -377,8 +362,6 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public C()
@@ -387,7 +370,7 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
+            RoslynAssert.Valid(Analyzer, code, Settings.Default.WithCompilationOptions(x => x.WithSuppressedDiagnostics("CS0219")));
         }
 
         [Test]

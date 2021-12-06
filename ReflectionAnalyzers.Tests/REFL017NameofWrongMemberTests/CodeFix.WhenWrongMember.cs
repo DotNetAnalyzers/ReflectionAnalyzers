@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
+﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -205,11 +205,11 @@ namespace N
                 var c1 = @"
 namespace N
 {
-    using System.Collections.Generic;
-
     public class C1
     {
-        private readonly int _f;
+        private readonly int _f = 1;
+
+        public int M() => _f;
     }
 }";
                 var before = @"
@@ -219,10 +219,7 @@ namespace N
 
     public class C
     {
-        public C()
-        {
-            var member = GetType().GetMethod(nameof(↓HashSet<string>.Add));
-        }
+        public object Get() => GetType().GetMethod(nameof(↓HashSet<string>.Add));
 
         private int Add(int x, int y) => x + y;
     }
@@ -235,10 +232,7 @@ namespace N
 
     public class C
     {
-        public C()
-        {
-            var member = GetType().GetMethod(nameof(Add));
-        }
+        public object Get() => GetType().GetMethod(nameof(Add));
 
         private int Add(int x, int y) => x + y;
     }
