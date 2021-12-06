@@ -1,16 +1,13 @@
-namespace ReflectionAnalyzers.Tests.Helpers.Reflection
+﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection
 {
     using System;
-    using System.Linq;
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CSharp;
     using NUnit.Framework;
 
     public static class BindingFlagsExtTests
     {
-        private static readonly BindingFlags[] Flags = Enum.GetValues(typeof(BindingFlags))
-                                                           .Cast<BindingFlags>()
-                                                           .ToArray();
+        private static readonly BindingFlags[] Flags = Enum.GetValues<BindingFlags>();
 
         [TestCaseSource(nameof(Flags))]
         public static void ToDisplayString(object flags)

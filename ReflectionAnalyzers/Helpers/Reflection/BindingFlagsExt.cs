@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers
 {
     using System;
     using Gu.Roslyn.AnalyzerExtensions;
@@ -48,6 +48,7 @@ namespace ReflectionAnalyzers
             AppendIf(BindingFlags.SetField);
             AppendIf(BindingFlags.SetProperty);
             AppendIf(BindingFlags.SuppressChangeType);
+            AppendIf(BindingFlags.DoNotWrapExceptions);
 
             return builder.Return();
             void AppendIf(BindingFlags flag)
@@ -117,6 +118,7 @@ namespace ReflectionAnalyzers
                 BindingFlags.SetProperty => "SetProperty",
                 BindingFlags.Static => "Static",
                 BindingFlags.SuppressChangeType => "SuppressChangeType",
+                BindingFlags.DoNotWrapExceptions => "DoNotWrapExceptions",
                 _ => throw new ArgumentOutOfRangeException(nameof(flag), flag, null),
             };
         }
