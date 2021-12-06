@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
+﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -70,19 +70,20 @@ namespace N
 
     public class CustomAggregateException : AggregateException
     {
-        private readonly int value;
+        private readonly int f = 1;
+
+        public int M() => this.f;
     }
 }";
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
     {
         public static object Get(CustomAggregateException c) => c.GetType()
-                                                                     .GetField(↓""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                                                                 .GetField(↓""MISSING"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
 
@@ -104,7 +105,7 @@ namespace N
         [IndexerName(""Bar"")]
         public int this[int i] => 0;
 
-        public static object Get(C c) => c.GetType().GetProperty(""Item"");
+        public static PropertyInfo Get(C c) => c.GetType().GetProperty(""Item"");
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 

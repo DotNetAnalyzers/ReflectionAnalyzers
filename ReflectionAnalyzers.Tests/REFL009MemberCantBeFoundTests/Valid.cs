@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
+﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -42,13 +42,14 @@ namespace N
 
     public class CustomAggregateException : AggregateException
     {
-        private readonly int value;
+        private readonly int f = 1;
+
+        public int M() => this.f;
     }
 }";
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
@@ -117,10 +118,7 @@ namespace N
 
     public class C
     {
-        public C()
-        {
-            _ = typeof(C).GetProperty(""Item"");
-        }
+        public PropertyInfo Get() => typeof(C).GetProperty(""Item"");
 
         public int this[int p1] => 0;
     }
@@ -141,10 +139,7 @@ namespace N
 
     public class C
     {
-        public C()
-        {
-            _ = typeof(C).GetProperty(""Bar"");
-        }
+        public PropertyInfo Get() => typeof(C).GetProperty(""Bar"");
 
         [IndexerName(""Bar"")]
         public int this[int p1] => 0;
