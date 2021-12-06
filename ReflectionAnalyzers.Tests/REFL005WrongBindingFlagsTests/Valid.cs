@@ -83,10 +83,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-        }
+        public MethodInfo Get() =>  typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         public new string ToString() => string.Empty;
     }
@@ -205,10 +202,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-        }
+        public PropertyInfo Get() =>  typeof(C).GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         public static int Static => 0;
 
@@ -251,10 +245,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
-        }
+        public object Get(BindingFlags unused) => typeof(C).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
 
         public static class PublicStatic
         {
