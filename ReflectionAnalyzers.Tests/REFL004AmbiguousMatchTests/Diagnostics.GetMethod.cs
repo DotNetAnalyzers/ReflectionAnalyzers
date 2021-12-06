@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
+﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -51,10 +51,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod↓(nameof(this.ToString));
-        }
+        public MethodInfo M() => typeof(C).GetMethod↓(nameof(this.ToString));
 
         public static double Static(int value) => value;
 
@@ -80,13 +77,11 @@ namespace N
 
     class C
     {
-        void M()
-        {
-            typeof(C).GetMethod↓(""op_Explicit"");
-        }
-
         public static explicit operator int(C c) => default;
+
         public static explicit operator C(int c) => default;
+
+        public MethodInfo M() => typeof(C).GetMethod↓(""op_Explicit"");
     }
 }".AssertReplace("GetMethod↓(\"op_Explicit\")", call);
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);

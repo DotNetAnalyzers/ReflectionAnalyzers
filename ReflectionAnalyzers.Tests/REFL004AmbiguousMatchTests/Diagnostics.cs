@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
+﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -28,13 +28,10 @@ namespace N
     using System.Reflection;
 
     public class C : Base
-    {
-        public C()
-        {
-            _ = typeof(C).GetProperty↓(""Item"");
-        }
-
+    {      
         public int this[int i] => 0;
+
+        public PropertyInfo M() => typeof(C).GetProperty↓(""Item"");
     }
 }".AssertReplace("GetProperty↓(\"Item\")", call);
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseCode, code);
