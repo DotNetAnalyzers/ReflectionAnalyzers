@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
+﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -64,10 +64,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(string).GetMethod(""MISSING"");
-        }
+        public MethodInfo M() => typeof(string).GetMethod(""MISSING"");
     }
 }".AssertReplace("typeof(string).GetMethod(\"MISSING\")", type);
                 RoslynAssert.Valid(Analyzer, Descriptor, code);

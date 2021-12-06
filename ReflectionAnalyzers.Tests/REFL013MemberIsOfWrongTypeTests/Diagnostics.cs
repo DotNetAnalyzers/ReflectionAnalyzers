@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -26,10 +26,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).↓GetMethod(nameof(this.P));
-        }
+        public MemberInfo Get() => typeof(C).↓GetMethod(nameof(this.P));
 
         public int P { get; }
     }
@@ -55,10 +52,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).↓GetProperty(nameof(this.M));
-        }
+        public MemberInfo Get() => typeof(C).↓GetProperty(nameof(this.M));
 
         public int M() => 0;
     }

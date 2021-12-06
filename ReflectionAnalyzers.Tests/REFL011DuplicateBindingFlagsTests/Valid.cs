@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -26,10 +26,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-        }
+        public MethodInfo Get() => typeof(C).GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
 
         public int M() => 0;
     }
@@ -54,12 +51,9 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
-        }
+        public MethodInfo Get() => typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
 
-        public int M() => 0;
+        public int M() => (int)Static;
     }
 }".AssertReplace("GetMethod(nameof(this.M), Public | Static | DeclaredOnly)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
+﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -28,10 +28,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(this.ToString));
-        }
+        public MethodInfo M() => typeof(C).GetMethod(nameof(this.ToString));
 
         public static int PublicStatic() => 0;
 
@@ -140,10 +137,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(string).GetMethod(nameof(IConvertible.ToBoolean));
-        }
+        public MethodInfo M() => typeof(string).GetMethod(nameof(IConvertible.ToBoolean));
     }
 }".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -211,6 +205,8 @@ namespace N
         }
 
         public int M1() => 0;
+
+        public Type M1(Type type) => type;
     }
 }".AssertReplace("where T : C", constraint)
       .AssertReplace("GetMethod(nameof(this.M1))", call);
