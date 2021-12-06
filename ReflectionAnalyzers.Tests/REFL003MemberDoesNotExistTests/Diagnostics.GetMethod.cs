@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -122,7 +122,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof(string).GetMethod(↓""MISSING"");
+        public MethodInfo M(Type unused) => typeof(string).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(string).GetMethod(↓\"MISSING\")", type);
                 var message = "The type string does not have a member named MISSING.";

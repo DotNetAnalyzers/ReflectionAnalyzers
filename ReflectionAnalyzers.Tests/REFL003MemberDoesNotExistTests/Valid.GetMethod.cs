@@ -28,10 +28,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(this.ToString));
-        }
+        public MethodInfo P => typeof(C).GetMethod(nameof(this.ToString));
 
         public static int PublicStatic() => 0;
 
