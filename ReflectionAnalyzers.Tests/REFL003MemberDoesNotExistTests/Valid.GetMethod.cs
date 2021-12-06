@@ -159,7 +159,7 @@ namespace N
 
     class C
     {
-        public C()
+        public C(BindingFlags unused)
         {
             var methodInfo = typeof(string).GetMethod(nameof(IConvertible.ToBoolean));
         }
@@ -230,6 +230,8 @@ namespace N
         }
 
         public int M1() => 0;
+
+        public Type M1(Type type) => type;
     }
 }".AssertReplace("where T : C", constraint)
       .AssertReplace("GetMethod(nameof(this.M1))", call);
