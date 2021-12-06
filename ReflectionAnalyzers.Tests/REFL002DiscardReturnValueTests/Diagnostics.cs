@@ -97,6 +97,10 @@ namespace N
         {
         }
 
+        public C(Type type)
+        {
+        }
+
         public static void M()
         {
             var type = typeof(C);

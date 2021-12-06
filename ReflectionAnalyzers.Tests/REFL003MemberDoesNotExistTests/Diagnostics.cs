@@ -58,13 +58,14 @@ namespace N
 
     public sealed class CustomAggregateException : AggregateException
     {
-        private readonly int value;
+        private readonly int f = 1;
+
+        public int M() => this.f;
     }
 }";
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
@@ -116,7 +117,7 @@ namespace N
 
     public sealed class C
     {
-        public C()
+        public C(BindingFlags unused)
         {
             _ = typeof(C).GetProperty(""Item"");
         }
