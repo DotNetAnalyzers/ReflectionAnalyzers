@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -15,7 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
             [TestCase("string")]
             [TestCase("int")]
             [TestCase("int?")]
-            [TestCase("Console")]
+            [TestCase("EventArgs")]
             public static void SingleUnconstrained(string type)
             {
                 var code = @"
@@ -25,10 +25,7 @@ namespace N
 
     public class C<T>
     {
-        public static void M()
-        {
-            var type = typeof(C<>).MakeGenericType(typeof(int));
-        }
+        public static void Get(Type unused) => typeof(C<>).MakeGenericType(typeof(int));
     }
 }".AssertReplace("int", type);
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -51,7 +48,7 @@ namespace N
     public class C<T>
         where T : class
     {
-        public static object Get => typeof(C<>).MakeGenericType(typeof(int));
+        public static object Get(Type unused) => typeof(C<>).MakeGenericType(typeof(int));
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);
@@ -65,8 +62,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C<T1, T2> 
         where T1 : class
         where T2 : T1
@@ -129,7 +124,7 @@ namespace N
     public class C<T> 
         where T : Enum
     {
-        public static object Get => typeof(C<>).MakeGenericType(typeof(AttributeTargets));
+        public static object Get(Type unused) => typeof(C<>).MakeGenericType(typeof(AttributeTargets));
     }
 }".AssertReplace("where T : Enum", constraint)
   .AssertReplace("AttributeTargets", arg);
@@ -143,8 +138,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public static void M1()

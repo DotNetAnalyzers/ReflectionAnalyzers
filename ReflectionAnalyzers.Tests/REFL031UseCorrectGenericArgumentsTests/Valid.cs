@@ -18,8 +18,6 @@
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public static void M<T>()
@@ -49,8 +47,9 @@ namespace N
         public static void M<T>()
             where T : class
         {
-            var method = typeof(C).GetMethod(nameof(C.M)).MakeGenericMethod(typeof(int));
         }
+
+        public object Get(Type unused) => typeof(C).GetMethod(nameof(C.M)).MakeGenericMethod(typeof(int));
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", arg);

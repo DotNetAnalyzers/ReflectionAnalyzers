@@ -17,8 +17,6 @@
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public static void M<T>()
@@ -37,8 +35,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public static void M<T>()
@@ -60,8 +56,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public static void M<T>()
@@ -77,7 +71,7 @@ namespace N
 
             [TestCase("where T : class", "typeof(int)")]
             [TestCase("where T : struct", "typeof(string)")]
-            [TestCase("where T : IComparable", "typeof(C)")]
+            [TestCase("where T : System.IComparable", "typeof(C)")]
             [TestCase("where T : new()", "typeof(C1)")]
             public static void Constraints(string constraint, string arg)
             {
@@ -94,8 +88,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public static void M<T>()

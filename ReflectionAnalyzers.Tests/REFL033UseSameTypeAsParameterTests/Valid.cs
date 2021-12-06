@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
+﻿namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -36,7 +36,6 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
     using System.Windows.Forms;
 

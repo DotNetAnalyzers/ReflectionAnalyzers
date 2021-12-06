@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -32,8 +32,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C<T>
     {
         public static object Get() => typeof(C<int>).GetGenericTypeDefinition().MakeGenericType↓(typeof(int), typeof(double));
@@ -78,7 +76,7 @@ namespace N
     public class C<T>
         where T : class
     {
-        public static object Get() => typeof(C<>).MakeGenericType(↓typeof(int));
+        public static object Get(Type unused) => typeof(C<>).MakeGenericType(↓typeof(int));
     }
 }".AssertReplace("where T : class", constraint)
   .AssertReplace("typeof(int)", $"typeof({arg})");
@@ -114,8 +112,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public static object Get() => typeof(C).GetNestedType(""M`1"").MakeGenericType↓(typeof(int), typeof(double));

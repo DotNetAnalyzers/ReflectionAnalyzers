@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
+﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -31,7 +31,7 @@ namespace N
         {
         }
 
-        public static C Create() => (C)typeof(C).GetConstructor(Type.EmptyTypes).Invoke(null);
+        public static C Get(Type unused) => (C)typeof(C).GetConstructor(Type.EmptyTypes).Invoke(null);
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(null)", call);
 
@@ -58,7 +58,7 @@ namespace N
         {
         }
 
-        public static void M()
+        public static void M(Type unused)
         {
             var type = typeof(C);
             var instance = FormatterServices.GetUninitializedObject(type);
