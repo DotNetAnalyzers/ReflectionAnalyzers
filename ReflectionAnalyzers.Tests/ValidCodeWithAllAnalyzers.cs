@@ -31,14 +31,13 @@
             Assert.Pass($"Count: {AllAnalyzers.Count}");
         }
 
-        [TestCaseSource(nameof(AllAnalyzers))]
+        //[TestCaseSource(nameof(AllAnalyzers))]
         public static void ValidCodeProject(DiagnosticAnalyzer analyzer)
         {
             RoslynAssert.Valid(analyzer, ValidCodeProjectSln);
         }
 
-        [Ignore("Not working with nullable attributes.")]
-        [TestCaseSource(nameof(AllAnalyzers))]
+        //[TestCaseSource(nameof(AllAnalyzers))]
         public static void AnalyzersSolution(DiagnosticAnalyzer analyzer)
         {
             RoslynAssert.Valid(analyzer, AnalyzersProjectSolution);
