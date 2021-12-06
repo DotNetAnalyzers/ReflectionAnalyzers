@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
+﻿namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -32,10 +32,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-        }
+        public MemberInfo Get(Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
 
         public static int Static() => 0;
 
@@ -56,7 +53,6 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
@@ -114,8 +110,9 @@ namespace N
     {
         public C(int value)
         {
-            var ctor = typeof(C).GetConstructor(new[] { typeof(int) });
         }
+
+        public MemberInfo Get(Type unused) => typeof(C).GetConstructor(new[] { typeof(int) });
     }
 }".AssertReplace("typeof(C).GetConstructor(new[] { typeof(int) })", call);
 
@@ -140,7 +137,6 @@ namespace N
     {
         public C()
         {
-            var ctor = typeof(C).GetConstructor(Type.EmptyTypes);
         }
 
         public C(int value)
@@ -150,6 +146,8 @@ namespace N
         public C(double value)
         {
         }
+
+        public MemberInfo Get(Type unused) => typeof(C).GetConstructor(Type.EmptyTypes);
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes)", call);
 

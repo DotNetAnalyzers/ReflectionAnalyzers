@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
+﻿namespace ReflectionAnalyzers.Tests.REFL019NoMemberMatchesTheTypesTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -28,8 +28,9 @@ namespace N
     {
         public C(int value)
         {
-            var ctor = typeof(C).GetConstructor(↓Type.EmptyTypes);
         }
+
+        public MemberInfo Get(Type unused) => typeof(C).GetConstructor(↓Type.EmptyTypes);
     }
 }".AssertReplace("GetConstructor(↓Type.EmptyTypes)", call);
 
@@ -44,12 +45,11 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
     {
-        public object Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(int) }, null);
+        public MemberInfo Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(int) }, null);
 
         public static int Static() => 0;
 
@@ -71,12 +71,11 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
     {
-        public object Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(double) }, null);
+        public MemberInfo Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(double) }, null);
 
         public static int Static(int i) => i;
 
@@ -102,7 +101,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) });
+        public MemberInfo Get => typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) });
     }
 }".AssertReplace("typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) })", call);
 
