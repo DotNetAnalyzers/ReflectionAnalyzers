@@ -30,19 +30,14 @@ namespace N
         }
 
         [Test]
-        public static void ThisGetTYpeGetStaticMethod()
+        public static void ThisGetTypeGetStaticMethod()
         {
             var testCode = @"
 namespace N
 {
-    using System.Collections.Generic;
-
     public class C
     {
-        public C()
-        {
-            var member = this.GetType().GetMethod(nameof(Add));
-        }
+        public object Get() => this.GetType().GetMethod(nameof(Add));
 
         private static int Add(int x, int y) => x + y;
     }
@@ -56,14 +51,11 @@ namespace N
             var testCode = @"
 namespace N
 {
-    using System.Collections.Generic;
+    using System.Reflection;
 
     public class C
     {
-        public C()
-        {
-            var member = this.GetType().GetMethod(nameof(this.Add));
-        }
+        public MemberInfo M() => this.GetType().GetMethod(nameof(this.Add));
 
         private int Add(int x, int y) => x + y;
     }
@@ -91,7 +83,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M1<T>()
+        public MethodInfo M1<T>(Type unused)
             where T : C
         {
             return typeof(T).GetMethod(nameof(this.M2));
@@ -196,7 +188,6 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
@@ -230,8 +221,8 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, testCode);
         }
 
-        [TestCase("GetMethod(\"add_Public\")")]
-        [TestCase("GetMethod(\"remove_Public\")")]
+        [TestCase("GetMethod(\"add_E\")")]
+        [TestCase("GetMethod(\"remove_E\")")]
         public static void EventAccessors(string before)
         {
             var code = @"
@@ -242,38 +233,33 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(""add_Public"");
-        }
+        public MemberInfo Get() => typeof(C).GetMethod(""add_E"");
 
-        public event EventHandler Public;
+        public event EventHandler E;
+
+        private void M() => E?.Invoke(null, EventArgs.Empty);
     }
-}".AssertReplace("GetMethod(\"add_Public\")", before);
+}".AssertReplace("GetMethod(\"add_E\")", before);
 
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("GetMethod(\"get_Public\")")]
-        [TestCase("GetMethod(\"set_Public\")")]
+        [TestCase("GetMethod(\"get_P\")")]
+        [TestCase("GetMethod(\"set_P\")")]
         public static void PropertyAccessors(string before)
         {
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(""get_Public"");
-        }
+        public MemberInfo Get() => typeof(C).GetMethod(""get_P"");
 
-        public int Public { get; set; }
+        public int P { get; set; }
     }
-}".AssertReplace("GetMethod(\"get_Public\")", before);
+}".AssertReplace("GetMethod(\"get_P\")", before);
 
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
@@ -368,8 +354,6 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public C()
@@ -378,7 +362,7 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
+            RoslynAssert.Valid(Analyzer, code, Settings.Default.WithCompilationOptions(x => x.WithSuppressedDiagnostics("CS0219")));
         }
 
         [Test]
@@ -555,13 +539,12 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
     using System.Windows.Forms;
 
     class C
     {
-        public object Get => typeof(Control).GetMethod(""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+        public MemberInfo Get => typeof(Control).GetMethod(""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
 }";
 
@@ -574,7 +557,6 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
     using System.Windows.Forms;
 

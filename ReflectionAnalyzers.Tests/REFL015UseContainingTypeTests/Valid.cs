@@ -46,9 +46,9 @@ namespace N
     {
         public int PublicStaticField;
 
-        internal static int InternalStaticField;
+        internal static int InternalStaticField = 1;
 
-        private static int PrivateStaticField = 1;
+        private static int PrivateStaticField = 2;
 
         public static event EventHandler PublicStaticEvent;
 
