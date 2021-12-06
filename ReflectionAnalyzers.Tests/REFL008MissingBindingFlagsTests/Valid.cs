@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL008MissingBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -63,14 +63,14 @@ namespace N
 
     class C
     {
-        public MethodInfo M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance);
+        public MethodInfo M<T>(Type unused) => typeof(T).GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance);
     }
 }".AssertReplace("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
-        public static void GetBarOverloaded()
+        public static void GetMethodOverloaded()
         {
             var code = @"
 namespace N
@@ -79,10 +79,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(this.M));
-        }
+        public MethodInfo Get() => typeof(C).GetMethod(nameof(this.M));
 
         public void M()
         {
@@ -94,16 +91,16 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("GetMethod(\"Bar\")")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(\"Bar\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(\"M\")")]
+        [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.FlattenHierarchy)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.Static)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod(\"M\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
         public static void GetMethodUnknownType(string call)
         {
             var code = @"
@@ -114,12 +111,9 @@ namespace N
 
     class C
     {
-        public C(Type type)
-        {
-            var methodInfo = type.GetMethod(""Bar"");
-        }
+        public MethodInfo Get(Type type) => type.GetMethod(""M"");
     }
-}".AssertReplace("GetMethod(\"Bar\")", call);
+}".AssertReplace("GetMethod(\"M\")", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
