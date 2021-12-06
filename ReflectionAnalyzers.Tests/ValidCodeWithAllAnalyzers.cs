@@ -31,13 +31,13 @@
             Assert.Pass($"Count: {AllAnalyzers.Count}");
         }
 
-        //[TestCaseSource(nameof(AllAnalyzers))]
+        [TestCaseSource(nameof(AllAnalyzers))]
         public static void ValidCodeProject(DiagnosticAnalyzer analyzer)
         {
             RoslynAssert.Valid(analyzer, ValidCodeProjectSln);
         }
 
-        //[TestCaseSource(nameof(AllAnalyzers))]
+        [TestCaseSource(nameof(AllAnalyzers))]
         public static void AnalyzersSolution(DiagnosticAnalyzer analyzer)
         {
             RoslynAssert.Valid(analyzer, AnalyzersProjectSolution);
