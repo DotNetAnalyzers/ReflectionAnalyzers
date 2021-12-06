@@ -36,8 +36,6 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
-
     public class C
     {
         public static object Get => typeof(C).Assembly.GetType(↓""MISSING"");

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -70,7 +70,7 @@ namespace N
 
     public class C
     {
-        public static object Get => typeof(int).Assembly.GetType(""System.Int32"");
+        public static Object Get() => typeof(int).Assembly.GetType(""System.Int32"");
     }
 }".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", call);
 
@@ -91,7 +91,7 @@ namespace N
 
     public class C
     {
-        public static object Get => typeof(FileDialog).Assembly.GetType(""System.Windows.Forms.FileDialog"");
+        public static Object Get => typeof(FileDialog).Assembly.GetType(""System.Windows.Forms.FileDialog"");
     }
 }".AssertReplace("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\")", call);
 

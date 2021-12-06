@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.CodeFixes;
@@ -16,8 +16,9 @@ namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
         [TestCase("Type.GetType(↓\"Int32\", true, true)",  "Type.GetType(\"System.Int32\", true, true)")]
         [TestCase("Type.GetType(↓\"Nullable`1\")",         "Type.GetType(\"System.Nullable`1\")")]
         [TestCase("Type.GetType(↓\"IComparable\")",        "Type.GetType(\"System.IComparable\")")]
-        [TestCase("Type.GetType(↓\"IEnumerable`1\")",      "Type.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
-        [TestCase("Type.GetType(↓\"AppContextSwitches\")", "Type.GetType(\"System.AppContextSwitches\")")]
+        [TestCase("Type.GetType(↓\"IComparable`1\")",      "Type.GetType(\"System.IComparable`1\")")]
+        //[TestCase("Type.GetType(↓\"IEnumerable`1\")",      "Type.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
+        //[TestCase("Type.GetType(↓\"AppContextSwitches\")", "Type.GetType(\"System.AppContextSwitches\")")]
         public static void TypeGetTypeWithFix(string type, string fixedType)
         {
             var before = @"
