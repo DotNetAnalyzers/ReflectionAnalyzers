@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -50,10 +50,7 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-        }
+        public MethodInfo M() => typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         public static int Static() => 0;
 
@@ -152,10 +149,7 @@ namespace N
 
     class C
     {
-        public C(Type type)
-        {
-            var methodInfo = type.GetMethod(""M"");
-        }
+        public MethodInfo M(Type type) => type.GetMethod(""M"");
     }
 }".AssertReplace("GetMethod(\"M\")", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -178,12 +172,9 @@ namespace N
 
     class C
     {
-        public C()
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
-        }
+        public MethodInfo Get() => typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
 
-        public int M() => 0;
+        public BindingFlags M() => Static;
     }
 }".AssertReplace("GetMethod(nameof(this.M), Public | Static | DeclaredOnly)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -301,7 +292,6 @@ namespace N
             var code = @"
 namespace N
 {
-    using System;
     using System.Reflection;
 
     class C
