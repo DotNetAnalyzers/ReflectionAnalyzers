@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -26,8 +26,8 @@ namespace N
         }
     }
 }";
-            var solution = CodeFactory.CreateSolution(code, CodeFactory.DefaultCompilationOptions(Analyzer), MetadataReferences.FromAttributes());
-            RoslynAssert.NoDiagnostics(Analyze.GetDiagnostics(Analyzer, solution));
+            var solution = CodeFactory.CreateSolution(code);
+            RoslynAssert.NoAnalyzerDiagnostics(Analyzer, solution);
         }
     }
 }
