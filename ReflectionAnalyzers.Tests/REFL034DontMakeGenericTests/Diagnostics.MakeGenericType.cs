@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
+﻿namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -47,8 +47,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     class C
     {
         public object Get => typeof(C.D).↓MakeGenericType(typeof(int));
@@ -68,8 +66,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System;
-
     class C<T>
     {
         public object Get => typeof(C<int>.D).↓MakeGenericType(typeof(int));
