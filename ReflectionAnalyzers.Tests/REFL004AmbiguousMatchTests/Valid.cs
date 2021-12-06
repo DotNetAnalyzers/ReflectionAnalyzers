@@ -69,10 +69,7 @@ namespace N
 
     class C
     {
-        public C(int i)
-        {
-            var methodInfo = typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
-        }
+        public MethodInfo M(int i, Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static double Static(int value) => value;
 
