@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -73,7 +73,7 @@ namespace N
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
 
-            [TestCase("Activator.CreateInstance(typeof(C), new object[] { Missing.Value })")]
+            [TestCase("Activator.CreateInstance(typeof(C), new object[] { System.Reflection.Missing.Value })")]
             [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
             public static void OneConstructorOptionalIntParameter(string call)
             {
@@ -81,7 +81,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     public class C
     {
@@ -205,7 +204,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Text;
 
     public class C
     {
@@ -316,7 +314,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     internal static class C
     {

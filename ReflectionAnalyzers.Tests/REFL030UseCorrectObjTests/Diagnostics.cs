@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
+﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -21,8 +21,9 @@ namespace N
     {
         public C(int value)
         {
-            var foo = typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 });
         }
+
+        public object Get() => typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 });
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })", call);
 
@@ -49,10 +50,7 @@ namespace N
         {
         }
 
-        public static void M(string text)
-        {
-            typeof(C).GetConstructor(Type.EmptyTypes).Invoke(text, null);
-        }
+        public static object Get(String text) => typeof(C).GetConstructor(Type.EmptyTypes).Invoke(text, null);
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(text, null)", call);
 

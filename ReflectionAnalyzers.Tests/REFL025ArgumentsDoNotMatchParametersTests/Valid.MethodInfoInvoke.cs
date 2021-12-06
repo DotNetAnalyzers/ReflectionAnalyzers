@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -45,7 +45,7 @@ namespace N
 
     public class C
     {
-        public static object Get => typeof(C).GetMethod(nameof(M)).Invoke(null, null);
+        public static object Get(Type unused) => typeof(C).GetMethod(nameof(M)).Invoke(null, null);
 
         public static int M() => 1;
     }
@@ -55,14 +55,12 @@ namespace N
             }
 
             [TestCase("1")]
-            [TestCase("Missing.Value")]
+            [TestCase("System.Reflection.Missing.Value")]
             public static void OptionalParameter(string value)
             {
                 var code = @"
 namespace N
 {
-    using System.Reflection;
-
     public class C
     {
         public static int Get => (int)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { Missing.Value });

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL023TypeDoesNotImplementInterfaceTests
+﻿namespace ReflectionAnalyzers.Tests.REFL023TypeDoesNotImplementInterfaceTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -11,22 +11,15 @@ namespace ReflectionAnalyzers.Tests.REFL023TypeDoesNotImplementInterfaceTests
 
         [TestCase("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")")]
         [TestCase("GetInterface(↓\"IEnumerable`1\")")]
-        [TestCase("GetInterface(typeof(IEnumerable<>).FullName)")]
+        [TestCase("GetInterface(typeof(System.Collections.Generic.IEnumerable<>).FullName)")]
         public static void GetInterface(string call)
         {
             var code = @"
 namespace N
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-
     public class C
     {
-        public C()
-        {
-            var type = typeof(C).GetInterface(↓""System.Collections.Generic.IEnumerable`1"");
-        }
+        public object Get() => typeof(C).GetInterface(↓""System.Collections.Generic.IEnumerable`1"");
     }
 }".AssertReplace("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")", call);
 

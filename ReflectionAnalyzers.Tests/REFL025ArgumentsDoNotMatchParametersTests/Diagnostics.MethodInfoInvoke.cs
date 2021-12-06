@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -83,8 +83,6 @@ namespace N
                 var code = @"
 namespace N
 {
-    using System.Reflection;
-
     public class C
     {
         public static object Get => typeof(C).GetMethod(nameof(M)).Invoke(null, new object[0]);
