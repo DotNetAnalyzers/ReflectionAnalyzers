@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -16,7 +16,6 @@ namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {

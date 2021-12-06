@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -38,7 +38,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -59,7 +58,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -81,7 +79,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -102,7 +99,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -124,7 +120,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -147,7 +142,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -170,7 +164,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -191,7 +184,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -213,7 +205,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {

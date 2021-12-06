@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
+﻿namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -65,7 +65,7 @@ namespace ValidCode
 
     class C
     {
-        object M(MulticastDelegate m) => m.GetType();
+        public object Get(MulticastDelegate m) => m.GetType();
     }
 }";
 
@@ -82,7 +82,7 @@ namespace ValidCode
 
     class C
     {
-        object M(Delegate m) => m.GetType();
+        public object Get(Delegate m) => m.GetType();
     }
 }";
 
@@ -101,7 +101,7 @@ namespace ValidCode
 
     class C
     {
-        object M(PropertyInfo pi) => pi.GetValue(null).GetType();
+        public Object Get(PropertyInfo pi) => pi.GetValue(null).GetType();
     }
 }".AssertReplace("pi.GetValue(null).GetType()", call);
 

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis.Diagnostics;
@@ -16,13 +16,15 @@ namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
         public static void DefaultMemberAbsent()
         {
             var code = @"
-using System.Reflection;
-[DefaultMember(↓""NotValue"")]
-public class C
+namespace N
 {
-    public int Value { get; set; }
-}
-";
+    using System.Reflection;
+    [DefaultMember(↓""NotValue"")]
+    public class C
+    {
+        public int Value { get; set; }
+    }
+}";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
@@ -33,15 +35,19 @@ public class C
         public static void DefaultMemberIsEvent()
         {
             var code = @"
-using System;
-using System.Reflection;
-
-[DefaultMember(↓""E"")]
-public class C
+namespace N
 {
-    public event EventHandler E;
-}
-";
+    using System;
+    using System.Reflection;
+
+    [DefaultMember(↓""E"")]
+    public class C
+    {
+        public event EventHandler E;
+
+        public void M() => this.E?.Invoke(this, EventArgs.Empty);
+    }
+}";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
 
@@ -52,19 +58,21 @@ public class C
         public static void DefaultMemberIsBaseClass()
         {
             var code = @"
-using System.Reflection;
-
-public class Base 
+namespace N
 {
-    Base() 
-    {
-        System.Console.WriteLine(""Base constructor"");
-    }
-}
+    using System.Reflection;
 
-[DefaultMember(↓""Base"")]
-public class C { }
-";
+    public class Base 
+    {
+        Base() 
+        {
+            System.Console.WriteLine(""Base constructor"");
+        }
+    }
+
+    [DefaultMember(↓""Base"")]
+    public class C { }
+}";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }

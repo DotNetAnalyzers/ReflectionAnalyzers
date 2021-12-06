@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -17,7 +17,6 @@ namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -39,7 +38,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -64,7 +62,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -87,7 +84,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -131,7 +127,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -152,7 +147,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -173,7 +167,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -195,7 +188,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -216,7 +208,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
@@ -238,7 +229,6 @@ namespace N
 namespace N
 {
     using System;
-    using System.Reflection;
 
     class C
     {
