@@ -73,7 +73,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL004AmbiguousMatch,
                                 argumentList.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(INamedTypeSymbol),
                                     member.ReflectedType.QualifiedMetadataName())));
                     }
@@ -84,7 +84,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL005WrongBindingFlags,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
+                                ImmutableDictionary<string, string?>.Empty.Add(nameof(ArgumentSyntax), flagsText),
                                 $" Expected: {flagsText}."));
                     }
 
@@ -95,7 +95,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL006RedundantBindingFlags,
                                 flags.Argument.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
+                                ImmutableDictionary<string, string?>.Empty.Add(nameof(ArgumentSyntax), flagsText),
                                 $" Expected: {flagsText}."));
                     }
 
@@ -105,7 +105,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL008MissingBindingFlags,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), flagsText),
+                                ImmutableDictionary<string, string?>.Empty.Add(nameof(ArgumentSyntax), flagsText),
                                 $" Expected: {flagsText}."));
                     }
 
@@ -127,7 +127,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL014PreferGetMemberThenAccessor,
                                 invocation.GetNameLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(ExpressionSyntax),
                                     callText),
                                 callText));
@@ -140,7 +140,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL015UseContainingType,
                                 TargetTypeLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
                                     member.Symbol.ContainingType.ToString(context)),
                                 member.Symbol.ContainingType.Name));
@@ -152,7 +152,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL016UseNameof,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(NameSyntax), nameText)));
+                                ImmutableDictionary<string, string?>.Empty.Add(nameof(NameSyntax), nameText)));
                     }
 
                     if (UsesNameOfWrongMember(member, name, context, out location, out nameText))
@@ -161,7 +161,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL017NameofWrongMember,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(ExpressionSyntax), nameText),
+                                ImmutableDictionary<string, string?>.Empty.Add(nameof(ExpressionSyntax), nameText),
                                 nameText));
                     }
 
@@ -172,7 +172,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL018ExplicitImplementation,
                                 TargetTypeLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(ISymbol.ContainingType),
                                     member.Symbol.ContainingType.ToString(context)),
                                 member.Symbol.Name));
@@ -192,7 +192,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL029MissingTypes,
                                 argumentList.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeArrayText)));
+                                ImmutableDictionary<string, string?>.Empty.Add(nameof(TypeSyntax), typeArrayText)));
                     }
 
                     if (ShouldUseSameTypeAsParameter(member, types, context, out location, out var typeText))
@@ -201,7 +201,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL033UseSameTypeAsParameter,
                                 location,
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), typeText),
+                                ImmutableDictionary<string, string?>.Empty.Add(nameof(TypeSyntax), typeText),
                                 typeText));
                     }
 

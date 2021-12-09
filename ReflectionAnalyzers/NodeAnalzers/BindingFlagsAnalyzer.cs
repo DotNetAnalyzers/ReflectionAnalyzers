@@ -34,7 +34,7 @@
                         Diagnostic.Create(
                             Descriptors.REFL007BindingFlagsOrder,
                             flags.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags),
+                            ImmutableDictionary<string, string?>.Empty.Add(nameof(ArgumentSyntax), expectedFlags),
                             $" Expected: {expectedFlags}."));
                 }
 
@@ -44,7 +44,7 @@
                         Diagnostic.Create(
                             Descriptors.REFL011DuplicateBindingFlags,
                             dupe.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(nameof(ArgumentSyntax), expectedFlags),
+                            ImmutableDictionary<string, string?>.Empty.Add(nameof(ArgumentSyntax), expectedFlags),
                             $" Expected: {expectedFlags}."));
                 }
             }

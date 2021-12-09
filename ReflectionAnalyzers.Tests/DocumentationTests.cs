@@ -1,4 +1,5 @@
 ﻿#pragma warning disable CA1056 // Uri properties should not be strings
+#pragma warning disable CA1307 // Specify StringComparison for clarity
 namespace ReflectionAnalyzers.Test
 {
     using System;
@@ -312,7 +313,7 @@ Or put this at the top of the file to disable all instances.
 
         public class CodeFile
         {
-            private static readonly ConcurrentDictionary<Type, CodeFile> Cache = new ConcurrentDictionary<Type, CodeFile>();
+            private static readonly ConcurrentDictionary<Type, CodeFile> Cache = new();
 
             public CodeFile(string name)
             {
@@ -321,7 +322,7 @@ Or put this at the top of the file to disable all instances.
 
             public string Name { get; }
 
-            public string Uri => "https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master" + this.Name.Substring(SolutionDirectory.FullName.Length)
+            public string Uri => "https://github.com/DotNetAnalyzers/ReflectionAnalyzers/blob/master" + this.Name[SolutionDirectory.FullName.Length..]
                                                                                                              .Replace("\\", "/");
 
             public static CodeFile Find(Type type)

@@ -47,7 +47,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL039PreferTypeof,
                                 invocation.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(TypeSyntax),
                                     type.ToString(context)),
                                 type.ToString(context)));

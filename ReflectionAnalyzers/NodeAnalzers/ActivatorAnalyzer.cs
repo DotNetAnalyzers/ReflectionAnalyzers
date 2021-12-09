@@ -39,7 +39,7 @@
                         Diagnostic.Create(
                             Descriptors.REFL001CastReturnValue,
                             invocation.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(
+                            ImmutableDictionary<string, string?>.Empty.Add(
                                 nameof(TypeSyntax),
                                 createdType.ToString(context)),
                             createdType.ToString(context)));
@@ -64,7 +64,7 @@
                         Diagnostic.Create(
                             Descriptors.REFL028CastReturnValueToCorrectType,
                             typeSyntax.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(
+                            ImmutableDictionary<string, string?>.Empty.Add(
                                 nameof(TypeSyntax),
                                 createdType.ToString(context)),
                             createdType.ToString(context)));

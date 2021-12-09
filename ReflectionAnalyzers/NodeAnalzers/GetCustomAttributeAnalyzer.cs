@@ -37,7 +37,7 @@
                         Diagnostic.Create(
                             Descriptors.REFL010PreferGenericGetCustomAttribute,
                             invocation.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(
+                            ImmutableDictionary<string, string?>.Empty.Add(
                                 nameof(InvocationExpressionSyntax),
                                 $"{member}.GetCustomAttribute<{attributeType.Value.ToString(context)}>({inherits})"),
                             attributeType.Value.ToString(context)));
@@ -49,7 +49,7 @@
                         Diagnostic.Create(
                             Descriptors.REFL012PreferIsDefined,
                             location,
-                            ImmutableDictionary<string, string>.Empty.Add(
+                            ImmutableDictionary<string, string?>.Empty.Add(
                                 nameof(InvocationExpressionSyntax),
                                 invocationText)));
                 }

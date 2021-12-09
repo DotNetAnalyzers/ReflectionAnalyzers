@@ -52,7 +52,7 @@
                                 Diagnostic.Create(
                                     Descriptors.REFL022UseFullyQualifiedName,
                                     literal.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(
+                                    ImmutableDictionary<string, string?>.Empty.Add(
                                         nameof(SyntaxKind.StringLiteralExpression),
                                         $"{match.ContainingNamespace}.{match.MetadataName}")));
                             break;
@@ -63,7 +63,7 @@
                                     Diagnostic.Create(
                                         Descriptors.REFL022UseFullyQualifiedName,
                                         maybeNameSyntax.Value.Identifier.GetLocation(),
-                                        ImmutableDictionary<string, string>.Empty.Add(
+                                        ImmutableDictionary<string, string?>.Empty.Add(
                                             nameof(SimpleNameSyntax),
                                             "FullName")));
                             }

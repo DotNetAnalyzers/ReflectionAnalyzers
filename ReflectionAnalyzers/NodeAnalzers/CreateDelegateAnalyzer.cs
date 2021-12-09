@@ -42,7 +42,7 @@
                         Diagnostic.Create(
                             Descriptors.REFL001CastReturnValue,
                             invocation.GetLocation(),
-                            ImmutableDictionary<string, string>.Empty.Add(
+                            ImmutableDictionary<string, string?>.Empty.Add(
                                 nameof(TypeSyntax),
                                 delegateType.ToString(context)),
                             delegateType.ToString(context)));
@@ -57,7 +57,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL041CreateDelegateType,
                                 typeOf.Type.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(nameof(TypeSyntax), delegateText),
+                                ImmutableDictionary<string, string?>.Empty.Add(nameof(TypeSyntax), delegateText),
                                 delegateText));
                     }
                     else if (Type.IsCastToWrongType(invocation, delegateType, context.SemanticModel, context.CancellationToken, out var typeSyntax))
@@ -66,7 +66,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL028CastReturnValueToCorrectType,
                                 typeSyntax.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(TypeSyntax),
                                     delegateType.ToString(context)),
                                 delegateType.ToString(context)));

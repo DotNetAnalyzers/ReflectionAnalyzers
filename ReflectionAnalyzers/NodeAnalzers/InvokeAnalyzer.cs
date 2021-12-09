@@ -56,7 +56,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL001CastReturnValue,
                                 invocation.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(TypeSyntax),
                                     method.ReturnType.ToString(context)),
                                 method.ReturnType.ToString(context)));
@@ -86,7 +86,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL028CastReturnValueToCorrectType,
                                 castType.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(TypeSyntax),
                                     method.ReturnType.ToString(context)),
                                 method.ReturnType.ToString(context)));
@@ -128,7 +128,7 @@
                                 Diagnostic.Create(
                                     Descriptors.REFL035DoNotInvokeGenericDefinition,
                                     invocation.GetNameLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(
+                                    ImmutableDictionary<string, string?>.Empty.Add(
                                         nameof(TypeSyntax),
                                         string.Join(", ", types.Select(x => $"typeof({x.ToString(context)})")))));
                         }
@@ -146,7 +146,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL001CastReturnValue,
                                 invocation.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(TypeSyntax),
                                     ctor.ContainingType.ToString(context)),
                                 ctor.ContainingType.ToString(context)));
@@ -188,7 +188,7 @@
                                 Diagnostic.Create(
                                     Descriptors.REFL028CastReturnValueToCorrectType,
                                     castType.GetLocation(),
-                                    ImmutableDictionary<string, string>.Empty.Add(
+                                    ImmutableDictionary<string, string?>.Empty.Add(
                                         nameof(TypeSyntax),
                                         ctor.ContainingType.ToString(context)),
                                     ctor.ContainingType.ToString(context)));
@@ -201,7 +201,7 @@
                             Diagnostic.Create(
                                 Descriptors.REFL038PreferRunClassConstructor,
                                 invocation.GetLocation(),
-                                ImmutableDictionary<string, string>.Empty.Add(
+                                ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(TypeSyntax),
                                     ctor.ContainingType.ToMinimalDisplayString(context.SemanticModel, invocation.SpanStart))));
                     }
