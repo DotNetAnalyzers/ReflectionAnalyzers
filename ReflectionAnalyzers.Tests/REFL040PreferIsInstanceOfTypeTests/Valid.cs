@@ -2,12 +2,11 @@ namespace ReflectionAnalyzers.Tests.REFL040PreferIsInstanceOfTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Valid
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new IsAssignableFromAnalyzer();
+        private static readonly IsAssignableFromAnalyzer Analyzer = new();
         private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL040PreferIsInstanceOfType;
 
         [Test]

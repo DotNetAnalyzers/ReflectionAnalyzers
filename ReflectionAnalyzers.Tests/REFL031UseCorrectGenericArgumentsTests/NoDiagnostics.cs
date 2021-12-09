@@ -1,12 +1,11 @@
 ﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class NoDiagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
+        private static readonly MakeGenericAnalyzer Analyzer = new();
 
         [Test]
         public static void Recursion()

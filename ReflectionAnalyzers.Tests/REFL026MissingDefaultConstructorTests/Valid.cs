@@ -2,12 +2,11 @@ namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Valid
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
+        private static readonly ActivatorAnalyzer Analyzer = new();
         private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL026NoDefaultConstructor;
 
         [TestCase("Activator.CreateInstance(typeof(C))")]

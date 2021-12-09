@@ -1,12 +1,11 @@
 ﻿namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Diagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
+        private static readonly CreateDelegateAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL042FirstArgumentIsReferenceType);
 
         [Test]

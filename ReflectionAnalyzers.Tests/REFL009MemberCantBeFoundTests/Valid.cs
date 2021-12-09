@@ -2,12 +2,11 @@
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static partial class Valid
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
+        private static readonly GetXAnalyzer Analyzer = new();
         private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL009MemberCannotBeFound;
 
         [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]

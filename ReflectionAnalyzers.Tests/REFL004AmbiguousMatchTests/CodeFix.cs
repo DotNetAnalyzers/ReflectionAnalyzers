@@ -1,16 +1,14 @@
-namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
+﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
         public static class GetMethod
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-            private static readonly CodeFixProvider Fix = new DisambiguateFix();
+            private static readonly GetXAnalyzer Analyzer = new();
+            private static readonly DisambiguateFix Fix = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL004AmbiguousMatch);
 
             [Test]

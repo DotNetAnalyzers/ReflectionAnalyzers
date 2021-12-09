@@ -1,12 +1,11 @@
 ﻿namespace ReflectionAnalyzers.Tests.REFL023TypeDoesNotImplementInterfaceTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Diagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
+        private static readonly GetInterfaceAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL023TypeDoesNotImplementInterface);
 
         [TestCase("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")")]

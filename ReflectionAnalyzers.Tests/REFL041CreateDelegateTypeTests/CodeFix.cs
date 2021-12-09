@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new CreateDelegateAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseTypeFix();
+        private static readonly CreateDelegateAnalyzer Analyzer = new();
+        private static readonly UseTypeFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL041CreateDelegateType);
 
         [TestCase("typeof(Func<string>)")]

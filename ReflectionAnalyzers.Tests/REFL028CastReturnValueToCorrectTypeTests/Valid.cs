@@ -2,14 +2,13 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Valid
     {
         public static class ActivatorCreateInstance
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
+            private static readonly ActivatorAnalyzer Analyzer = new();
             private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL028CastReturnValueToCorrectType;
 
             [TestCase("(C)")]

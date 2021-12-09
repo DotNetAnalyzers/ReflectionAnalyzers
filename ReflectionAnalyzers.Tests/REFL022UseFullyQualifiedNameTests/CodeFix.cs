@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
+﻿namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseFullyQualifiedFix();
+        private static readonly GetInterfaceAnalyzer Analyzer = new();
+        private static readonly UseFullyQualifiedFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL022UseFullyQualifiedName);
 
         [TestCase("GetInterface(↓\"IEnumerable`1\")", "GetInterface(\"System.Collections.Generic.IEnumerable`1\")")]

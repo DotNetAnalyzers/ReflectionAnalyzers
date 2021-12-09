@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL040PreferIsInstanceOfTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL040PreferIsInstanceOfTypeTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new IsAssignableFromAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseIsInstanceOfTypeFix();
+        private static readonly IsAssignableFromAnalyzer Analyzer = new();
+        private static readonly UseIsInstanceOfTypeFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL040PreferIsInstanceOfType);
 
         [Test]

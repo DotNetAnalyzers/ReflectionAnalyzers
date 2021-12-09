@@ -1,16 +1,14 @@
-namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
+﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static partial class CodeFix
     {
         public static class WhenInAccessibleMember
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-            private static readonly CodeFixProvider Fix = new NameofFix();
+            private static readonly GetXAnalyzer Analyzer = new();
+            private static readonly NameofFix Fix = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL017NameofWrongMember);
 
             [Test]

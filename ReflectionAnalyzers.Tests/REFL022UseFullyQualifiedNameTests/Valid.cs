@@ -2,12 +2,11 @@ namespace ReflectionAnalyzers.Tests.REFL022UseFullyQualifiedNameTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Valid
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetInterfaceAnalyzer();
+        private static readonly GetInterfaceAnalyzer Analyzer = new();
         private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL022UseFullyQualifiedName;
 
         [TestCase("GetInterface(\"System.Collections.Generic.IEnumerable`1\")")]

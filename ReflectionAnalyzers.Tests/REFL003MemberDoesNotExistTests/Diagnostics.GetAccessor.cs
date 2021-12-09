@@ -1,7 +1,6 @@
 namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static partial class Diagnostics
@@ -9,7 +8,7 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
         public static class GetAccessor
         {
             // ReSharper disable once MemberHidesStaticFromOuterClass
-            private static readonly DiagnosticAnalyzer Analyzer = new GetAccessorAnalyzer();
+            private static readonly GetAccessorAnalyzer Analyzer = new();
 
             [TestCase("typeof(C).GetProperty(nameof(P)).↓GetMethod")]
             [TestCase("typeof(C).GetProperty(nameof(this.P)).↓GetMethod")]

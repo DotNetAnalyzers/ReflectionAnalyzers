@@ -2,14 +2,13 @@
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Valid
     {
         public static class MakeGenericType
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
+            private static readonly MakeGenericAnalyzer Analyzer = new();
             private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL034DoNotMakeGeneric;
 
             [Test]

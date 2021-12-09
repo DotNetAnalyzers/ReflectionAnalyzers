@@ -2,12 +2,11 @@
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Valid
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
+        private static readonly GetXAnalyzer Analyzer = new();
         private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL015UseContainingType;
 
         [TestCase("typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]

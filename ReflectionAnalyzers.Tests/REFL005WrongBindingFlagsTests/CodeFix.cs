@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL005WrongBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly CodeFixProvider Fix = new BindingFlagsFix();
+        private static readonly GetXAnalyzer Analyzer = new();
+        private static readonly BindingFlagsFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL005WrongBindingFlags);
 
         [TestCase("Static", "BindingFlags.Public | BindingFlags.Instance", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]

@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
+﻿namespace ReflectionAnalyzers.Tests.REFL007BindingFlagsOrderTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
-        private static readonly CodeFixProvider Fix = new BindingFlagsFix();
+        private static readonly BindingFlagsAnalyzer Analyzer = new();
+        private static readonly BindingFlagsFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL007");
 
         [TestCase("BindingFlags.Static | BindingFlags.Public | BindingFlags.DeclaredOnly",      "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]

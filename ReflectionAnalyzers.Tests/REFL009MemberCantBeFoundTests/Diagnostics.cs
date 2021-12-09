@@ -1,12 +1,11 @@
 ﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Diagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
+        private static readonly GetXAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL009MemberCannotBeFound);
 
         [TestCase("c.GetType().GetMethod(↓\"MISSING\")")]

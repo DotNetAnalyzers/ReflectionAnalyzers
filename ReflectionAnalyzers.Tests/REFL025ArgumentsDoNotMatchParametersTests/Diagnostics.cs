@@ -1,14 +1,13 @@
-namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static partial class Diagnostics
     {
         public static class ActivatorCreateInstance
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
+            private static readonly ActivatorAnalyzer Analyzer = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters);
 
             [TestCase("Activator.CreateInstance(typeof(C), ↓new[] { 1 })")]

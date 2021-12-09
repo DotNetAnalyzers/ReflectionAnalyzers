@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new BindingFlagsAnalyzer();
-        private static readonly CodeFixProvider Fix = new BindingFlagsFix();
+        private static readonly BindingFlagsAnalyzer Analyzer = new();
+        private static readonly BindingFlagsFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL011");
 
         [TestCase("BindingFlags.Public | BindingFlags.↓Public",                                                   "BindingFlags.Public")]

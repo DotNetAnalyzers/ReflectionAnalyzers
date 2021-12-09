@@ -1,14 +1,12 @@
 ﻿namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetCustomAttributeAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseIsDefinedFix();
+        private static readonly GetCustomAttributeAnalyzer Analyzer = new();
+        private static readonly UseIsDefinedFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL012PreferIsDefined);
 
         [Test]

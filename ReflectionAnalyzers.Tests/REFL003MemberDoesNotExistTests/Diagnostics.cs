@@ -1,12 +1,11 @@
 namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static partial class Diagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
+        private static readonly GetXAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL003MemberDoesNotExist);
 
         [Test]

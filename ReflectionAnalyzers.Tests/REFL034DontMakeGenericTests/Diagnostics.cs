@@ -1,14 +1,13 @@
 namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static partial class Diagnostics
     {
         public static class MakeGenericMethod
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new MakeGenericAnalyzer();
+            private static readonly MakeGenericAnalyzer Analyzer = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL034DoNotMakeGeneric);
 
             [Test]

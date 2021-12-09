@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL035DontInvokeGenericDefinitionTests
+﻿namespace ReflectionAnalyzers.Tests.REFL035DontInvokeGenericDefinitionTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-        private static readonly CodeFixProvider Fix = new CallMakeGenericMethodFix();
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly CallMakeGenericMethodFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL035DoNotInvokeGenericDefinition);
 
         [Test]

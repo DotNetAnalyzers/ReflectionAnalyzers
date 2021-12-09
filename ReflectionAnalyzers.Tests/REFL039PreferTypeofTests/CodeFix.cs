@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
+﻿namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseTypeOfFix();
+        private static readonly GetTypeAnalyzer Analyzer = new();
+        private static readonly UseTypeOfFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL039PreferTypeof);
 
         [TestCase("string", "string")]

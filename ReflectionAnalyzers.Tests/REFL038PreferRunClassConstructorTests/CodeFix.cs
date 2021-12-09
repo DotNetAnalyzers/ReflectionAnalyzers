@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL038PreferRunClassConstructorTests
+﻿namespace ReflectionAnalyzers.Tests.REFL038PreferRunClassConstructorTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new InvokeAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseRunClassConstructorFix();
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly UseRunClassConstructorFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL038PreferRunClassConstructor);
 
         [Test]

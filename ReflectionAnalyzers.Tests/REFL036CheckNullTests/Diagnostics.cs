@@ -1,12 +1,11 @@
 ﻿namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class Diagnostics
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetTypeAnalyzer();
+        private static readonly GetTypeAnalyzer Analyzer = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL036CheckNull);
 
         [TestCase("Get() => System.Type.GetType(\"C\").Assembly")]

@@ -1,16 +1,14 @@
-namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static partial class CodeFix
     {
         public static class ActivatorCreateInstance
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new ActivatorAnalyzer();
-            private static readonly CodeFixProvider Fix = new CastReturnValueFix();
+            private static readonly ActivatorAnalyzer Analyzer = new();
+            private static readonly CastReturnValueFix Fix = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
 
             [Test]

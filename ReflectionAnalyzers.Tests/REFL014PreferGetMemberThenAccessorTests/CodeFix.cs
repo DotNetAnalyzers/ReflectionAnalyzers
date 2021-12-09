@@ -6,15 +6,12 @@
     using Gu.Roslyn.Asserts;
 
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
-
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new GetXAnalyzer();
-        private static readonly CodeFixProvider Fix = new UseGetMemberThenAccessorFix();
+        private static readonly GetXAnalyzer Analyzer = new();
+        private static readonly UseGetMemberThenAccessorFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL014");
 
         [TestCase("GetMethod(\"get_PublicGetSet\")", "GetProperty(nameof(this.PublicGetSet)).GetMethod")]

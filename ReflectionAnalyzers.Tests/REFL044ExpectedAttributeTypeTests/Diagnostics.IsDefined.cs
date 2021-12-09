@@ -1,14 +1,13 @@
 namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static partial class Diagnostics
     {
         public static class IsDefined
         {
-            private static readonly DiagnosticAnalyzer Analyzer = new IsDefinedAnalyzer();
+            private static readonly IsDefinedAnalyzer Analyzer = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL044");
 
             [Test]

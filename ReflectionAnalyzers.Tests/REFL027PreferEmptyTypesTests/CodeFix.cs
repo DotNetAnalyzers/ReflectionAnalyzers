@@ -1,14 +1,12 @@
-namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
+﻿namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
 {
     using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
     public static class CodeFix
     {
-        private static readonly DiagnosticAnalyzer Analyzer = new ArgumentAnalyzer();
-        private static readonly CodeFixProvider Fix = new PreferEmptyTypesFix();
+        private static readonly ArgumentAnalyzer Analyzer = new();
+        private static readonly PreferEmptyTypesFix Fix = new();
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL027PreferEmptyTypes);
 
         [TestCase("new Type[0]")]
