@@ -40,7 +40,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(this.M))", call);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindExpression(call);
             Assert.AreEqual(expected, MethodInfo.Find(node, semanticModel, CancellationToken.None)?.Method.ToString());

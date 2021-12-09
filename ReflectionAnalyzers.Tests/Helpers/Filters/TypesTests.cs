@@ -32,7 +32,7 @@ namespace N
   .AssertReplace("M(Type2 _)", signature2);
 
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var m1 = semanticModel.GetDeclaredSymbol(syntaxTree.FindMethodDeclaration(signature1), CancellationToken.None);
             var m2 = semanticModel.GetDeclaredSymbol(syntaxTree.FindMethodDeclaration(signature2), CancellationToken.None);
@@ -65,7 +65,7 @@ namespace N
   .AssertReplace("M(Type2 _)", signature2);
 
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var m1 = semanticModel.GetDeclaredSymbol(syntaxTree.FindMethodDeclaration(signature1), CancellationToken.None);
             var m2 = semanticModel.GetDeclaredSymbol(syntaxTree.FindMethodDeclaration(signature2), CancellationToken.None);

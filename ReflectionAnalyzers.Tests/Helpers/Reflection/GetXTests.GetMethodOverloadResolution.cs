@@ -30,7 +30,7 @@ namespace N
 }".AssertReplace("typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int) })", call);
 
                 var syntaxTree = CSharpSyntaxTree.ParseText(code);
-                var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+                var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var invocation = syntaxTree.FindInvocation("GetMethod");
                 Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, semanticModel, CancellationToken.None, out var reflectedMember, out _, out _, out _));
@@ -58,7 +58,7 @@ namespace N
 }".AssertReplace("typeof(Array).GetMethod(nameof(Array.CreateInstance), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(Type), typeof(int) }, null)", call);
 
                 var syntaxTree = CSharpSyntaxTree.ParseText(code);
-                var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+                var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var invocation = syntaxTree.FindInvocation("GetMethod");
                 Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, semanticModel, CancellationToken.None, out var reflectedMember, out _, out _, out _));
@@ -108,7 +108,7 @@ namespace N
 }".AssertReplace("typeof(C).GetMethod(nameof(M), new[] { typeof(int) })", call);
 
                 var syntaxTree = CSharpSyntaxTree.ParseText(code);
-                var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+                var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var invocation = syntaxTree.FindInvocation("GetMethod");
                 Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, semanticModel, CancellationToken.None, out var reflectedMember, out _, out _, out _));
@@ -143,7 +143,7 @@ namespace N
 }".AssertReplace("typeof(A).GetMethod(\"M\", new[] { typeof(int) })", call);
 
                 var syntaxTree = CSharpSyntaxTree.ParseText(code);
-                var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+                var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
                 var semanticModel = compilation.GetSemanticModel(syntaxTree);
                 var invocation = syntaxTree.FindInvocation("GetMethod");
                 Assert.AreEqual(true, GetX.TryMatchGetMethod(invocation, semanticModel, CancellationToken.None, out var reflectedMember, out _, out _, out _));

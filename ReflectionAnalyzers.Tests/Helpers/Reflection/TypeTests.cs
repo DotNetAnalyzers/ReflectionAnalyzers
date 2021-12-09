@@ -61,7 +61,7 @@ namespace N
     }
 }".AssertReplace("typeof(C)", expression);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindExpression(expression);
             Assert.AreEqual(true, Type.TryGet(node, semanticModel, CancellationToken.None, out var type, out var source));
@@ -99,7 +99,7 @@ namespace N
     }
 }".AssertReplace("local.ToString()", $"{expression}.ToString()");
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = ((MemberAccessExpressionSyntax)syntaxTree.FindInvocation("ToString()").Expression).Expression;
             Assert.AreEqual(true, Type.TryGet(node, semanticModel, CancellationToken.None, out var type, out var source));
@@ -137,7 +137,7 @@ namespace N
     }
 }".AssertReplace("Assembly.Load(\"mscorlib\").GetType(\"System.Int32\")", expression);
             var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, MetadataReferences.FromAttributes());
+            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
             var semanticModel = compilation.GetSemanticModel(syntaxTree);
             var node = syntaxTree.FindExpression(expression);
             Assert.AreEqual(false, Type.TryGet(node, semanticModel, CancellationToken.None, out _, out _));
