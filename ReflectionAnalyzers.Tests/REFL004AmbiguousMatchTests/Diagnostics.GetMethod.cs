@@ -32,7 +32,7 @@ namespace N
         private double Instance(double value) => value;
     }
 }".AssertReplace("GetMethod↓(nameof(this.ToString))", call);
-                var message = "More than one member is matching the criteria.";
+                var message = "More than one member is matching the criteria";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
@@ -62,7 +62,7 @@ namespace N
         public double Instance(double value) => value;
     }
 }".AssertReplace("GetMethod↓(nameof(this.ToString))", call);
-                var message = "More than one member is matching the criteria.";
+                var message = "More than one member is matching the criteria";
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             }
 
