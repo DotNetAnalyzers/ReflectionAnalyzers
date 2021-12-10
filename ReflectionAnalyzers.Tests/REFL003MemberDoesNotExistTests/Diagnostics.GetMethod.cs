@@ -7,6 +7,24 @@
     {
         public static class GetMethod
         {
+            [Test]
+            public static void Message()
+            {
+                var code = @"
+namespace N
+{
+    public struct C
+    {
+        public C(int _)
+        {
+            var methodInfo = typeof(C).GetMethod(↓""MISSING"");
+        }
+    }
+}";
+                var message = "The type N.C does not have a member named MISSING";
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+            }
+
             [TestCase("typeof(C).GetMethod(↓\"MISSING\")")]
             public static void MissingMethodWhenKnownExactType(string type)
             {
@@ -19,8 +37,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-                var message = "The type N.C does not have a member named MISSING.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [TestCase("typeof(C).GetMethod(↓\"MISSING\")")]
@@ -39,8 +56,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-                var message = "The type N.C does not have a member named MISSING.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -57,8 +73,7 @@ namespace N
         }
     }
 }";
-                var message = "The type N.C does not have a member named MISSING.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -75,8 +90,7 @@ namespace N
         }
     }
 }";
-                var message = "The type N.C does not have a member named MISSING.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -101,8 +115,7 @@ namespace N
         }
     }
 }";
-                var message = "The type N.IC does not have a member named MISSING.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), iC, code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, iC, code);
             }
 
             [TestCase("typeof(string).GetMethod(↓\"MISSING\")")]
@@ -125,8 +138,8 @@ namespace N
         public MethodInfo M(Type unused) => typeof(string).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(string).GetMethod(↓\"MISSING\")", type);
-                var message = "The type string does not have a member named MISSING.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
