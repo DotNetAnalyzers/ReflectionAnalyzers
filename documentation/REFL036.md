@@ -1,5 +1,5 @@
 # REFL036
-## Pass 'throwOnError: true' or check if null.
+## Pass 'throwOnError: true' or check if null
 
 | Topic    | Value
 | :--      | :--
@@ -38,21 +38,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL036 // Pass 'throwOnError: true' or check if null.
+#pragma warning disable REFL036 // Pass 'throwOnError: true' or check if null
 Code violating the rule here
-#pragma warning restore REFL036 // Pass 'throwOnError: true' or check if null.
+#pragma warning restore REFL036 // Pass 'throwOnError: true' or check if null
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL036 // Pass 'throwOnError: true' or check if null.
+#pragma warning disable REFL036 // Pass 'throwOnError: true' or check if null
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL036:Pass 'throwOnError: true' or check if null.", 
+    "REFL036:Pass 'throwOnError: true' or check if null", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

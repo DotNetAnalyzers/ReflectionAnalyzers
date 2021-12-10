@@ -6,8 +6,8 @@
     {
         internal static readonly DiagnosticDescriptor REFL001CastReturnValue = Create(
             id: "REFL001",
-            title: "Cast return value to the correct type.",
-            messageFormat: "Cast return value to the correct type.",
+            title: "Cast return value to the correct type",
+            messageFormat: "Cast return value to the correct type",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -15,8 +15,8 @@
 
         internal static readonly DiagnosticDescriptor REFL002DiscardReturnValue = Create(
             id: "REFL002",
-            title: "Discard the return value.",
-            messageFormat: "Discard the return value.",
+            title: "Discard the return value",
+            messageFormat: "Discard the return value",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -24,8 +24,8 @@
 
         internal static readonly DiagnosticDescriptor REFL003MemberDoesNotExist = Create(
             id: "REFL003",
-            title: "The member does not exist.",
-            messageFormat: "The type {0} does not have a member named {1}.",
+            title: "The member does not exist",
+            messageFormat: "The type {0} does not have a member named {1}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -33,8 +33,8 @@
 
         internal static readonly DiagnosticDescriptor REFL004AmbiguousMatch = Create(
             id: "REFL004",
-            title: "More than one member is matching the criteria.",
-            messageFormat: "More than one member is matching the criteria.",
+            title: "More than one member is matching the criteria",
+            messageFormat: "More than one member is matching the criteria",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -42,7 +42,7 @@
 
         internal static readonly DiagnosticDescriptor REFL005WrongBindingFlags = Create(
             id: "REFL005",
-            title: "There is no member matching the filter.",
+            title: "There is no member matching the filter",
             messageFormat: "There is no member matching the filter.{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
@@ -51,7 +51,7 @@
 
         internal static readonly DiagnosticDescriptor REFL006RedundantBindingFlags = Create(
             id: "REFL006",
-            title: "The binding flags can be more precise.",
+            title: "The binding flags can be more precise",
             messageFormat: "The binding flags can be more precise.{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
@@ -60,7 +60,7 @@
 
         internal static readonly DiagnosticDescriptor REFL007BindingFlagsOrder = Create(
             id: "REFL007",
-            title: "The binding flags are not in the expected order.",
+            title: "The binding flags are not in the expected order",
             messageFormat: "The binding flags are not in the expected order.{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Hidden,
@@ -69,7 +69,7 @@
 
         internal static readonly DiagnosticDescriptor REFL008MissingBindingFlags = Create(
             id: "REFL008",
-            title: "Specify binding flags for better performance and less fragile code.",
+            title: "Specify binding flags for better performance and less fragile code",
             messageFormat: "Specify binding flags for better performance and less fragile code.{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
@@ -78,8 +78,8 @@
 
         internal static readonly DiagnosticDescriptor REFL009MemberCannotBeFound = Create(
             id: "REFL009",
-            title: "The referenced member is not known to exist.",
-            messageFormat: "The referenced member {0} is not known to exist in {1}.",
+            title: "The referenced member is not known to exist",
+            messageFormat: "The referenced member {0} is not known to exist in {1}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -87,8 +87,8 @@
 
         internal static readonly DiagnosticDescriptor REFL010PreferGenericGetCustomAttribute = Create(
             id: "REFL010",
-            title: "Prefer the generic extension method GetCustomAttribute<T>.",
-            messageFormat: "Prefer the generic extension method GetCustomAttribute<{0}>.",
+            title: "Prefer the generic extension method GetCustomAttribute<T>",
+            messageFormat: "Prefer the generic extension method GetCustomAttribute<{0}>",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -96,8 +96,8 @@
 
         internal static readonly DiagnosticDescriptor REFL011DuplicateBindingFlags = Create(
             id: "REFL011",
-            title: "Duplicate BindingFlag.",
-            messageFormat: "Duplicate flag.",
+            title: "Duplicate BindingFlag",
+            messageFormat: "Duplicate flag",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -105,8 +105,8 @@
 
         internal static readonly DiagnosticDescriptor REFL012PreferIsDefined = Create(
             id: "REFL012",
-            title: "Prefer Attribute.IsDefined().",
-            messageFormat: "Prefer Attribute.IsDefined().",
+            title: "Prefer Attribute.IsDefined()",
+            messageFormat: "Prefer Attribute.IsDefined()",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -114,8 +114,8 @@
 
         internal static readonly DiagnosticDescriptor REFL013MemberIsOfWrongType = Create(
             id: "REFL013",
-            title: "The member is of the wrong type.",
-            messageFormat: "The type {0} has a {1} named {2}.",
+            title: "The member is of the wrong type",
+            messageFormat: "The type {0} has a {1} named {2}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -123,8 +123,8 @@
 
         internal static readonly DiagnosticDescriptor REFL014PreferGetMemberThenAccessor = Create(
             id: "REFL014",
-            title: "Prefer GetMember().AccessorMethod.",
-            messageFormat: "Prefer {0}.",
+            title: "Prefer GetMember().AccessorMethod",
+            messageFormat: "Prefer {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -132,8 +132,8 @@
 
         internal static readonly DiagnosticDescriptor REFL015UseContainingType = Create(
             id: "REFL015",
-            title: "Use the containing type.",
-            messageFormat: "Use the containing type {0}.",
+            title: "Use the containing type",
+            messageFormat: "Use the containing type {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -141,8 +141,8 @@
 
         internal static readonly DiagnosticDescriptor REFL016UseNameof = Create(
             id: "REFL016",
-            title: "Use nameof.",
-            messageFormat: "Use nameof.",
+            title: "Use nameof",
+            messageFormat: "Use nameof",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -150,8 +150,8 @@
 
         internal static readonly DiagnosticDescriptor REFL017NameofWrongMember = Create(
             id: "REFL017",
-            title: "Don't use name of wrong member.",
-            messageFormat: "Don't use name of wrong member. Expected: {0}",
+            title: "Don't use name of wrong member",
+            messageFormat: "Don't use name of wrong member. Expected: {0}.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -159,8 +159,8 @@
 
         internal static readonly DiagnosticDescriptor REFL018ExplicitImplementation = Create(
             id: "REFL018",
-            title: "The member is explicitly implemented.",
-            messageFormat: "{0} is explicitly implemented.",
+            title: "The member is explicitly implemented",
+            messageFormat: "{0} is explicitly implemented",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -168,8 +168,8 @@
 
         internal static readonly DiagnosticDescriptor REFL019NoMemberMatchesTypes = Create(
             id: "REFL019",
-            title: "No member matches the types.",
-            messageFormat: "No member matches the types.",
+            title: "No member matches the types",
+            messageFormat: "No member matches the types",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -177,8 +177,8 @@
 
         internal static readonly DiagnosticDescriptor REFL020AmbiguousMatchInterface = Create(
             id: "REFL020",
-            title: "More than one interface is matching the name.",
-            messageFormat: "More than one interface is matching the name.",
+            title: "More than one interface is matching the name",
+            messageFormat: "More than one interface is matching the name",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -186,8 +186,8 @@
 
         internal static readonly DiagnosticDescriptor REFL021TypeDoesNotExist = Create(
             id: "REFL021",
-            title: "The type does not exist.",
-            messageFormat: "The type does not exist.",
+            title: "The type does not exist",
+            messageFormat: "The type does not exist",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -195,8 +195,8 @@
 
         internal static readonly DiagnosticDescriptor REFL022UseFullyQualifiedName = Create(
             id: "REFL022",
-            title: "Use fully qualified name.",
-            messageFormat: "Use fully qualified name.",
+            title: "Use fully qualified name",
+            messageFormat: "Use fully qualified name",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -204,8 +204,8 @@
 
         internal static readonly DiagnosticDescriptor REFL023TypeDoesNotImplementInterface = Create(
             id: "REFL023",
-            title: "The type does not implement the interface.",
-            messageFormat: "The type does not implement the interface.",
+            title: "The type does not implement the interface",
+            messageFormat: "The type does not implement the interface",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -213,8 +213,8 @@
 
         internal static readonly DiagnosticDescriptor REFL024PreferNullOverEmptyArray = Create(
             id: "REFL024",
-            title: "Prefer null over empty array.",
-            messageFormat: "Prefer null over empty array.",
+            title: "Prefer null over empty array",
+            messageFormat: "Prefer null over empty array",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -222,8 +222,8 @@
 
         internal static readonly DiagnosticDescriptor REFL025ArgumentsDoNotMatchParameters = Create(
             id: "REFL025",
-            title: "Use correct arguments.",
-            messageFormat: "Use correct arguments.",
+            title: "Use correct arguments",
+            messageFormat: "Use correct arguments",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -231,8 +231,8 @@
 
         internal static readonly DiagnosticDescriptor REFL026NoDefaultConstructor = Create(
             id: "REFL026",
-            title: "No parameterless constructor defined for this object.",
-            messageFormat: "No parameterless constructor defined for {0}.",
+            title: "No parameterless constructor defined for this object",
+            messageFormat: "No parameterless constructor defined for {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -240,8 +240,8 @@
 
         internal static readonly DiagnosticDescriptor REFL027PreferEmptyTypes = Create(
             id: "REFL027",
-            title: "Prefer Type.EmptyTypes.",
-            messageFormat: "Prefer Type.EmptyTypes.",
+            title: "Prefer Type.EmptyTypes",
+            messageFormat: "Prefer Type.EmptyTypes",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -249,8 +249,8 @@
 
         internal static readonly DiagnosticDescriptor REFL028CastReturnValueToCorrectType = Create(
             id: "REFL028",
-            title: "Cast return value to correct type.",
-            messageFormat: "Cast return value to {0}.",
+            title: "Cast return value to correct type",
+            messageFormat: "Cast return value to {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -258,8 +258,8 @@
 
         internal static readonly DiagnosticDescriptor REFL029MissingTypes = Create(
             id: "REFL029",
-            title: "Specify types in case an overload is added in the future.",
-            messageFormat: "Specify types in case an overload is added in the future.",
+            title: "Specify types in case an overload is added in the future",
+            messageFormat: "Specify types in case an overload is added in the future",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -267,7 +267,7 @@
 
         internal static readonly DiagnosticDescriptor REFL030UseCorrectObj = Create(
             id: "REFL030",
-            title: "Use correct obj parameter.",
+            title: "Use correct obj parameter",
             messageFormat: "{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
@@ -276,7 +276,7 @@
 
         internal static readonly DiagnosticDescriptor REFL031UseCorrectGenericArguments = Create(
             id: "REFL031",
-            title: "Use generic arguments that satisfies the type parameters.",
+            title: "Use generic arguments that satisfies the type parameters",
             messageFormat: "{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
@@ -285,8 +285,8 @@
 
         internal static readonly DiagnosticDescriptor REFL032DependencyMustExist = Create(
             id: "REFL032",
-            title: "The dependency does not exist.",
-            messageFormat: "The dependency does not exist.",
+            title: "The dependency does not exist",
+            messageFormat: "The dependency does not exist",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -294,7 +294,7 @@
 
         internal static readonly DiagnosticDescriptor REFL033UseSameTypeAsParameter = Create(
             id: "REFL033",
-            title: "Use the same type as the parameter.",
+            title: "Use the same type as the parameter",
             messageFormat: "Use the same type as the parameter. Expected: {0}.",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
@@ -303,7 +303,7 @@
 
         internal static readonly DiagnosticDescriptor REFL034DoNotMakeGeneric = Create(
             id: "REFL034",
-            title: "Don't call MakeGeneric when not a generic definition.",
+            title: "Don't call MakeGeneric when not a generic definition",
             messageFormat: "{0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
@@ -312,8 +312,8 @@
 
         internal static readonly DiagnosticDescriptor REFL035DoNotInvokeGenericDefinition = Create(
             id: "REFL035",
-            title: "Don't call Invoke on a generic definition.",
-            messageFormat: "Late bound operations cannot be performed on types or methods for which ContainsGenericParameters is true.",
+            title: "Don't call Invoke on a generic definition",
+            messageFormat: "Late bound operations cannot be performed on types or methods for which ContainsGenericParameters is true",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -321,8 +321,8 @@
 
         internal static readonly DiagnosticDescriptor REFL036CheckNull = Create(
             id: "REFL036",
-            title: "Pass 'throwOnError: true' or check if null.",
-            messageFormat: "Pass 'throwOnError: true' or check if null.",
+            title: "Pass 'throwOnError: true' or check if null",
+            messageFormat: "Pass 'throwOnError: true' or check if null",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -330,8 +330,8 @@
 
         internal static readonly DiagnosticDescriptor REFL037TypeDoesNotExits = Create(
             id: "REFL037",
-            title: "The type does not exist.",
-            messageFormat: "The type does not exist.",
+            title: "The type does not exist",
+            messageFormat: "The type does not exist",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -339,8 +339,8 @@
 
         internal static readonly DiagnosticDescriptor REFL038PreferRunClassConstructor = Create(
             id: "REFL038",
-            title: "Prefer RuntimeHelpers.RunClassConstructor.",
-            messageFormat: "Prefer RuntimeHelpers.RunClassConstructor.",
+            title: "Prefer RuntimeHelpers.RunClassConstructor",
+            messageFormat: "Prefer RuntimeHelpers.RunClassConstructor",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -348,8 +348,8 @@
 
         internal static readonly DiagnosticDescriptor REFL039PreferTypeof = Create(
             id: "REFL039",
-            title: "Prefer typeof(...) over instance.GetType when the type is sealed.",
-            messageFormat: "Prefer typeof({0}) over instance.GetType when the type is sealed.",
+            title: "Prefer typeof(...) over instance.GetType when the type is sealed",
+            messageFormat: "Prefer typeof({0}) over instance.GetType when the type is sealed",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -357,8 +357,8 @@
 
         internal static readonly DiagnosticDescriptor REFL040PreferIsInstanceOfType = Create(
             id: "REFL040",
-            title: "Prefer type.IsInstanceOfType(...).",
-            messageFormat: "Prefer {0}.IsInstanceOfType({1}).",
+            title: "Prefer type.IsInstanceOfType(...)",
+            messageFormat: "Prefer {0}.IsInstanceOfType({1})",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -366,8 +366,8 @@
 
         internal static readonly DiagnosticDescriptor REFL041CreateDelegateType = Create(
             id: "REFL041",
-            title: "Delegate type is not matching.",
-            messageFormat: "Delegate type is not matching expected {0}.",
+            title: "Delegate type is not matching",
+            messageFormat: "Delegate type is not matching expected {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -375,8 +375,8 @@
 
         internal static readonly DiagnosticDescriptor REFL042FirstArgumentIsReferenceType = Create(
             id: "REFL042",
-            title: "First argument must be reference type.",
-            messageFormat: "First argument must be reference type.",
+            title: "First argument must be reference type",
+            messageFormat: "First argument must be reference type",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -384,8 +384,8 @@
 
         internal static readonly DiagnosticDescriptor REFL043FirstArgumentType = Create(
             id: "REFL043",
-            title: "First argument must match type.",
-            messageFormat: "First argument must be of type {0}.",
+            title: "First argument must match type",
+            messageFormat: "First argument must be of type {0}",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -393,8 +393,8 @@
 
         internal static readonly DiagnosticDescriptor REFL044ExpectedAttributeType = Create(
             id: "REFL044",
-            title: "Expected attribute type.",
-            messageFormat: "Expected attribute type.",
+            title: "Expected attribute type",
+            messageFormat: "Expected attribute type",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -402,8 +402,8 @@
 
         internal static readonly DiagnosticDescriptor REFL045InsufficientFlags = Create(
             id: "REFL045",
-            title: "These flags are insufficient to match any members.",
-            messageFormat: "These flags are insufficient to match any members.",
+            title: "These flags are insufficient to match any members",
+            messageFormat: "These flags are insufficient to match any members",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,
@@ -411,8 +411,8 @@
 
         internal static readonly DiagnosticDescriptor REFL046DefaultMemberMustExist = Create(
             id: "REFL046",
-            title: "The specified default member does not exist.",
-            messageFormat: "The specified default member does not exist.",
+            title: "The specified default member does not exist",
+            messageFormat: "The specified default member does not exist",
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,

@@ -1,5 +1,5 @@
 # REFL020
-## More than one interface is matching the name.
+## More than one interface is matching the name
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL020 // More than one interface is matching the name.
+#pragma warning disable REFL020 // More than one interface is matching the name
 Code violating the rule here
-#pragma warning restore REFL020 // More than one interface is matching the name.
+#pragma warning restore REFL020 // More than one interface is matching the name
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL020 // More than one interface is matching the name.
+#pragma warning disable REFL020 // More than one interface is matching the name
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL020:More than one interface is matching the name.", 
+    "REFL020:More than one interface is matching the name", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

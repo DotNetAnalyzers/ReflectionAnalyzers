@@ -1,5 +1,5 @@
 # REFL033
-## Use the same type as the parameter.
+## Use the same type as the parameter
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL033 // Use the same type as the parameter.
+#pragma warning disable REFL033 // Use the same type as the parameter
 Code violating the rule here
-#pragma warning restore REFL033 // Use the same type as the parameter.
+#pragma warning restore REFL033 // Use the same type as the parameter
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL033 // Use the same type as the parameter.
+#pragma warning disable REFL033 // Use the same type as the parameter
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL033:Use the same type as the parameter.", 
+    "REFL033:Use the same type as the parameter", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

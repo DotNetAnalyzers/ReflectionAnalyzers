@@ -1,5 +1,5 @@
 # REFL015
-## Use the containing type.
+## Use the containing type
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL015 // Use the containing type.
+#pragma warning disable REFL015 // Use the containing type
 Code violating the rule here
-#pragma warning restore REFL015 // Use the containing type.
+#pragma warning restore REFL015 // Use the containing type
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL015 // Use the containing type.
+#pragma warning disable REFL015 // Use the containing type
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL015:Use the containing type.", 
+    "REFL015:Use the containing type", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

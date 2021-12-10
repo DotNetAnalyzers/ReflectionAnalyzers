@@ -1,5 +1,5 @@
 # REFL013
-## The member is of the wrong type.
+## The member is of the wrong type
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL013 // The member is of the wrong type.
+#pragma warning disable REFL013 // The member is of the wrong type
 Code violating the rule here
-#pragma warning restore REFL013 // The member is of the wrong type.
+#pragma warning restore REFL013 // The member is of the wrong type
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL013 // The member is of the wrong type.
+#pragma warning disable REFL013 // The member is of the wrong type
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL013:The member is of the wrong type.", 
+    "REFL013:The member is of the wrong type", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

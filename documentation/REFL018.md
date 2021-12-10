@@ -1,5 +1,5 @@
 # REFL018
-## The member is explicitly implemented.
+## The member is explicitly implemented
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL018 // The member is explicitly implemented.
+#pragma warning disable REFL018 // The member is explicitly implemented
 Code violating the rule here
-#pragma warning restore REFL018 // The member is explicitly implemented.
+#pragma warning restore REFL018 // The member is explicitly implemented
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL018 // The member is explicitly implemented.
+#pragma warning disable REFL018 // The member is explicitly implemented
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL018:The member is explicitly implemented.", 
+    "REFL018:The member is explicitly implemented", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

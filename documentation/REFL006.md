@@ -1,5 +1,5 @@
 # REFL006
-## The binding flags can be more precise.
+## The binding flags can be more precise
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL006 // The binding flags can be more precise.
+#pragma warning disable REFL006 // The binding flags can be more precise
 Code violating the rule here
-#pragma warning restore REFL006 // The binding flags can be more precise.
+#pragma warning restore REFL006 // The binding flags can be more precise
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL006 // The binding flags can be more precise.
+#pragma warning disable REFL006 // The binding flags can be more precise
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL006:The binding flags can be more precise.", 
+    "REFL006:The binding flags can be more precise", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

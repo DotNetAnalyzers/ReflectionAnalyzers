@@ -1,5 +1,5 @@
 # REFL002
-## Discard the return value.
+## Discard the return value
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL002 // Discard the return value.
+#pragma warning disable REFL002 // Discard the return value
 Code violating the rule here
-#pragma warning restore REFL002 // Discard the return value.
+#pragma warning restore REFL002 // Discard the return value
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL002 // Discard the return value.
+#pragma warning disable REFL002 // Discard the return value
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL002:Discard the return value.", 
+    "REFL002:Discard the return value", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

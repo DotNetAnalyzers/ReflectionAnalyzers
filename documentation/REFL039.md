@@ -1,5 +1,5 @@
 # REFL039
-## Prefer typeof(...) over instance.GetType when the type is sealed.
+## Prefer typeof(...) over instance.GetType when the type is sealed
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL039 // Prefer typeof(...) over instance.GetType when the type is sealed.
+#pragma warning disable REFL039 // Prefer typeof(...) over instance.GetType when the type is sealed
 Code violating the rule here
-#pragma warning restore REFL039 // Prefer typeof(...) over instance.GetType when the type is sealed.
+#pragma warning restore REFL039 // Prefer typeof(...) over instance.GetType when the type is sealed
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL039 // Prefer typeof(...) over instance.GetType when the type is sealed.
+#pragma warning disable REFL039 // Prefer typeof(...) over instance.GetType when the type is sealed
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL039:Prefer typeof(...) over instance.GetType when the type is sealed.", 
+    "REFL039:Prefer typeof(...) over instance.GetType when the type is sealed", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

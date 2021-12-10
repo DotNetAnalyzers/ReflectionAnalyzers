@@ -1,5 +1,5 @@
 # REFL031
-## Use generic arguments that satisfies the type parameters.
+## Use generic arguments that satisfies the type parameters
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL031 // Use generic arguments that satisfies the type parameters.
+#pragma warning disable REFL031 // Use generic arguments that satisfies the type parameters
 Code violating the rule here
-#pragma warning restore REFL031 // Use generic arguments that satisfies the type parameters.
+#pragma warning restore REFL031 // Use generic arguments that satisfies the type parameters
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL031 // Use generic arguments that satisfies the type parameters.
+#pragma warning disable REFL031 // Use generic arguments that satisfies the type parameters
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL031:Use generic arguments that satisfies the type parameters.", 
+    "REFL031:Use generic arguments that satisfies the type parameters", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

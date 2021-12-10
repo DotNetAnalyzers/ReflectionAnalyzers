@@ -1,5 +1,5 @@
 # REFL030
-## Use correct obj parameter.
+## Use correct obj parameter
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL030 // Use correct obj parameter.
+#pragma warning disable REFL030 // Use correct obj parameter
 Code violating the rule here
-#pragma warning restore REFL030 // Use correct obj parameter.
+#pragma warning restore REFL030 // Use correct obj parameter
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL030 // Use correct obj parameter.
+#pragma warning disable REFL030 // Use correct obj parameter
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL030:Use correct obj parameter.", 
+    "REFL030:Use correct obj parameter", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

@@ -1,5 +1,5 @@
 # REFL019
-## No member matches the types.
+## No member matches the types
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL019 // No member matches the types.
+#pragma warning disable REFL019 // No member matches the types
 Code violating the rule here
-#pragma warning restore REFL019 // No member matches the types.
+#pragma warning restore REFL019 // No member matches the types
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL019 // No member matches the types.
+#pragma warning disable REFL019 // No member matches the types
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL019:No member matches the types.", 
+    "REFL019:No member matches the types", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

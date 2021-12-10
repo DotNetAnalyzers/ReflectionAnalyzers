@@ -1,5 +1,5 @@
 # REFL008
-## Specify binding flags for better performance and less fragile code.
+## Specify binding flags for better performance and less fragile code
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL008 // Specify binding flags for better performance and less fragile code.
+#pragma warning disable REFL008 // Specify binding flags for better performance and less fragile code
 Code violating the rule here
-#pragma warning restore REFL008 // Specify binding flags for better performance and less fragile code.
+#pragma warning restore REFL008 // Specify binding flags for better performance and less fragile code
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL008 // Specify binding flags for better performance and less fragile code.
+#pragma warning disable REFL008 // Specify binding flags for better performance and less fragile code
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL008:Specify binding flags for better performance and less fragile code.", 
+    "REFL008:Specify binding flags for better performance and less fragile code", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

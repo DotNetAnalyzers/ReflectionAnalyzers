@@ -1,5 +1,5 @@
 # REFL022
-## Use fully qualified name.
+## Use fully qualified name
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL022 // Use fully qualified name.
+#pragma warning disable REFL022 // Use fully qualified name
 Code violating the rule here
-#pragma warning restore REFL022 // Use fully qualified name.
+#pragma warning restore REFL022 // Use fully qualified name
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL022 // Use fully qualified name.
+#pragma warning disable REFL022 // Use fully qualified name
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL022:Use fully qualified name.", 
+    "REFL022:Use fully qualified name", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

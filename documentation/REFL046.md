@@ -1,5 +1,5 @@
 # REFL046
-## The specified default member does not exist.
+## The specified default member does not exist
 
 | Topic    | Value
 | :--      | :--
@@ -71,21 +71,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL046 // The specified default member does not exist.
+#pragma warning disable REFL046 // The specified default member does not exist
 Code violating the rule here
-#pragma warning restore REFL046 // The specified default member does not exist.
+#pragma warning restore REFL046 // The specified default member does not exist
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL046 // The specified default member does not exist.
+#pragma warning disable REFL046 // The specified default member does not exist
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL046:The specified default member does not exist.", 
+    "REFL046:The specified default member does not exist", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

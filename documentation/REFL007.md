@@ -1,5 +1,5 @@
 # REFL007
-## The binding flags are not in the expected order.
+## The binding flags are not in the expected order
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL007 // The binding flags are not in the expected order.
+#pragma warning disable REFL007 // The binding flags are not in the expected order
 Code violating the rule here
-#pragma warning restore REFL007 // The binding flags are not in the expected order.
+#pragma warning restore REFL007 // The binding flags are not in the expected order
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL007 // The binding flags are not in the expected order.
+#pragma warning disable REFL007 // The binding flags are not in the expected order
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL007:The binding flags are not in the expected order.", 
+    "REFL007:The binding flags are not in the expected order", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

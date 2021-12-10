@@ -1,5 +1,5 @@
 # REFL004
-## More than one member is matching the criteria.
+## More than one member is matching the criteria
 
 | Topic    | Value
 | :--      | :--
@@ -47,21 +47,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL004 // More than one member is matching the criteria.
+#pragma warning disable REFL004 // More than one member is matching the criteria
 Code violating the rule here
-#pragma warning restore REFL004 // More than one member is matching the criteria.
+#pragma warning restore REFL004 // More than one member is matching the criteria
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL004 // More than one member is matching the criteria.
+#pragma warning disable REFL004 // More than one member is matching the criteria
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL004:More than one member is matching the criteria.", 
+    "REFL004:More than one member is matching the criteria", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

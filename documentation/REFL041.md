@@ -1,5 +1,5 @@
 # REFL041
-## Delegate type is not matching.
+## Delegate type is not matching
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL041 // Delegate type is not matching.
+#pragma warning disable REFL041 // Delegate type is not matching
 Code violating the rule here
-#pragma warning restore REFL041 // Delegate type is not matching.
+#pragma warning restore REFL041 // Delegate type is not matching
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL041 // Delegate type is not matching.
+#pragma warning disable REFL041 // Delegate type is not matching
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL041:Delegate type is not matching.", 
+    "REFL041:Delegate type is not matching", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

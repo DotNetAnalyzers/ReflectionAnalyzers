@@ -1,5 +1,5 @@
 # REFL043
-## First argument must match type.
+## First argument must match type
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL043 // First argument must match type.
+#pragma warning disable REFL043 // First argument must match type
 Code violating the rule here
-#pragma warning restore REFL043 // First argument must match type.
+#pragma warning restore REFL043 // First argument must match type
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL043 // First argument must match type.
+#pragma warning disable REFL043 // First argument must match type
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL043:First argument must match type.", 
+    "REFL043:First argument must match type", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

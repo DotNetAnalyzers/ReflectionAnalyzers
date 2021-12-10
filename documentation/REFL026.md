@@ -1,5 +1,5 @@
 # REFL026
-## No parameterless constructor defined for this object.
+## No parameterless constructor defined for this object
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL026 // No parameterless constructor defined for this object.
+#pragma warning disable REFL026 // No parameterless constructor defined for this object
 Code violating the rule here
-#pragma warning restore REFL026 // No parameterless constructor defined for this object.
+#pragma warning restore REFL026 // No parameterless constructor defined for this object
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL026 // No parameterless constructor defined for this object.
+#pragma warning disable REFL026 // No parameterless constructor defined for this object
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL026:No parameterless constructor defined for this object.", 
+    "REFL026:No parameterless constructor defined for this object", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

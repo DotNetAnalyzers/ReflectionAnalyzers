@@ -1,5 +1,5 @@
 # REFL038
-## Prefer RuntimeHelpers.RunClassConstructor.
+## Prefer RuntimeHelpers.RunClassConstructor
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL038 // Prefer RuntimeHelpers.RunClassConstructor.
+#pragma warning disable REFL038 // Prefer RuntimeHelpers.RunClassConstructor
 Code violating the rule here
-#pragma warning restore REFL038 // Prefer RuntimeHelpers.RunClassConstructor.
+#pragma warning restore REFL038 // Prefer RuntimeHelpers.RunClassConstructor
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL038 // Prefer RuntimeHelpers.RunClassConstructor.
+#pragma warning disable REFL038 // Prefer RuntimeHelpers.RunClassConstructor
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL038:Prefer RuntimeHelpers.RunClassConstructor.", 
+    "REFL038:Prefer RuntimeHelpers.RunClassConstructor", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

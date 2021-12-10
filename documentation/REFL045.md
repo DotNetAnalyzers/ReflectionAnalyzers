@@ -1,5 +1,5 @@
 # REFL045
-## These flags are insufficient to match any members.
+## These flags are insufficient to match any members
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL045 // These flags are insufficient to match any members.
+#pragma warning disable REFL045 // These flags are insufficient to match any members
 Code violating the rule here
-#pragma warning restore REFL045 // These flags are insufficient to match any members.
+#pragma warning restore REFL045 // These flags are insufficient to match any members
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL045 // These flags are insufficient to match any members.
+#pragma warning disable REFL045 // These flags are insufficient to match any members
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL045:These flags are insufficient to match any members.", 
+    "REFL045:These flags are insufficient to match any members", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

@@ -1,5 +1,5 @@
 # REFL029
-## Specify types in case an overload is added in the future.
+## Specify types in case an overload is added in the future
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL029 // Specify types in case an overload is added in the future.
+#pragma warning disable REFL029 // Specify types in case an overload is added in the future
 Code violating the rule here
-#pragma warning restore REFL029 // Specify types in case an overload is added in the future.
+#pragma warning restore REFL029 // Specify types in case an overload is added in the future
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL029 // Specify types in case an overload is added in the future.
+#pragma warning disable REFL029 // Specify types in case an overload is added in the future
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL029:Specify types in case an overload is added in the future.", 
+    "REFL029:Specify types in case an overload is added in the future", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

@@ -1,5 +1,5 @@
 # REFL012
-## Prefer Attribute.IsDefined().
+## Prefer Attribute.IsDefined()
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL012 // Prefer Attribute.IsDefined().
+#pragma warning disable REFL012 // Prefer Attribute.IsDefined()
 Code violating the rule here
-#pragma warning restore REFL012 // Prefer Attribute.IsDefined().
+#pragma warning restore REFL012 // Prefer Attribute.IsDefined()
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL012 // Prefer Attribute.IsDefined().
+#pragma warning disable REFL012 // Prefer Attribute.IsDefined()
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL012:Prefer Attribute.IsDefined().", 
+    "REFL012:Prefer Attribute.IsDefined()", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

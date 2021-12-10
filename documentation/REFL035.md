@@ -1,5 +1,5 @@
 # REFL035
-## Don't call Invoke on a generic definition.
+## Don't call Invoke on a generic definition
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL035 // Don't call Invoke on a generic definition.
+#pragma warning disable REFL035 // Don't call Invoke on a generic definition
 Code violating the rule here
-#pragma warning restore REFL035 // Don't call Invoke on a generic definition.
+#pragma warning restore REFL035 // Don't call Invoke on a generic definition
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL035 // Don't call Invoke on a generic definition.
+#pragma warning disable REFL035 // Don't call Invoke on a generic definition
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL035:Don't call Invoke on a generic definition.", 
+    "REFL035:Don't call Invoke on a generic definition", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

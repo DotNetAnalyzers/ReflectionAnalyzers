@@ -1,5 +1,5 @@
 # REFL024
-## Prefer null over empty array.
+## Prefer null over empty array
 
 | Topic    | Value
 | :--      | :--
@@ -30,21 +30,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL024 // Prefer null over empty array.
+#pragma warning disable REFL024 // Prefer null over empty array
 Code violating the rule here
-#pragma warning restore REFL024 // Prefer null over empty array.
+#pragma warning restore REFL024 // Prefer null over empty array
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL024 // Prefer null over empty array.
+#pragma warning disable REFL024 // Prefer null over empty array
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL024:Prefer null over empty array.", 
+    "REFL024:Prefer null over empty array", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

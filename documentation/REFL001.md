@@ -1,5 +1,5 @@
 # REFL001
-## Cast return value to the correct type.
+## Cast return value to the correct type
 
 | Topic    | Value
 | :--      | :--
@@ -32,21 +32,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL001 // Cast return value to the correct type.
+#pragma warning disable REFL001 // Cast return value to the correct type
 Code violating the rule here
-#pragma warning restore REFL001 // Cast return value to the correct type.
+#pragma warning restore REFL001 // Cast return value to the correct type
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL001 // Cast return value to the correct type.
+#pragma warning disable REFL001 // Cast return value to the correct type
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL001:Cast return value to the correct type.", 
+    "REFL001:Cast return value to the correct type", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->

@@ -1,5 +1,5 @@
 # REFL037
-## The type does not exist.
+## The type does not exist
 
 | Topic    | Value
 | :--      | :--
@@ -38,21 +38,21 @@ Configure the severity per project, for more info see [MSDN](https://msdn.micros
 
 ### Via #pragma directive.
 ```C#
-#pragma warning disable REFL037 // The type does not exist.
+#pragma warning disable REFL037 // The type does not exist
 Code violating the rule here
-#pragma warning restore REFL037 // The type does not exist.
+#pragma warning restore REFL037 // The type does not exist
 ```
 
 Or put this at the top of the file to disable all instances.
 ```C#
-#pragma warning disable REFL037 // The type does not exist.
+#pragma warning disable REFL037 // The type does not exist
 ```
 
 ### Via attribute `[SuppressMessage]`.
 
 ```C#
 [System.Diagnostics.CodeAnalysis.SuppressMessage("ReflectionAnalyzers.SystemReflection", 
-    "REFL037:The type does not exist.", 
+    "REFL037:The type does not exist", 
     Justification = "Reason...")]
 ```
 <!-- end generated config severity -->
