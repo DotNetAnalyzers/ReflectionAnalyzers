@@ -11,7 +11,7 @@
 
     internal static class NameOf
     {
-        private static readonly SymbolDisplayFormat Format = new SymbolDisplayFormat(
+        private static readonly SymbolDisplayFormat Format = new(
             globalNamespaceStyle: SymbolDisplayGlobalNamespaceStyle.Omitted,
             genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
 #pragma warning disable SA1118 // Parameter should not span multiple lines

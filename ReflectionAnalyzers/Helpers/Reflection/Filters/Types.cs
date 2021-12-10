@@ -11,7 +11,7 @@
     [DebuggerDisplay("{this.Argument}")]
     internal struct Types
     {
-        internal static readonly Types Any = new Types(null, ImmutableArray<ExpressionSyntax>.Empty, ImmutableArray<ITypeSymbol>.Empty);
+        internal static readonly Types Any = new(null, ImmutableArray<ExpressionSyntax>.Empty, ImmutableArray<ITypeSymbol>.Empty);
         internal readonly ArgumentSyntax? Argument;
         internal readonly ImmutableArray<ExpressionSyntax> Expressions;
         internal readonly ImmutableArray<ITypeSymbol> Symbols;

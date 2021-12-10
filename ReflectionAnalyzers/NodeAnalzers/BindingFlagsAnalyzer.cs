@@ -60,7 +60,7 @@
 
         private class BindingFlagsWalker : PooledWalker<BindingFlagsWalker>
         {
-            private readonly List<IdentifierNameSyntax> flags = new List<IdentifierNameSyntax>();
+            private readonly List<IdentifierNameSyntax> flags = new();
             private IdentifierNameSyntax duplicate = null!;
             private bool isUnHandled;
 

@@ -9,7 +9,7 @@
     [DebuggerDisplay("{this.Argument}")]
     internal struct Name
     {
-        internal static Name Ctor = new Name(null, ".ctor");
+        internal static Name Ctor = new(null, ".ctor");
         internal readonly ArgumentSyntax? Argument;
         internal readonly string MetadataName;
 

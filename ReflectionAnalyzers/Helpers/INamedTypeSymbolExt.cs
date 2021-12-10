@@ -4,7 +4,7 @@
 
     internal static class INamedTypeSymbolExt
     {
-        private static readonly SymbolDisplayFormat Format = new SymbolDisplayFormat(
+        private static readonly SymbolDisplayFormat Format = new(
             SymbolDisplayGlobalNamespaceStyle.Omitted,
             SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
             miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable);
