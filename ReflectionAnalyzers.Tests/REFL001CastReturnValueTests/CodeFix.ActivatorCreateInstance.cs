@@ -41,6 +41,41 @@ namespace N
         }
     }
 }";
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.SuppressCs8600);
+            }
+
+            [Test]
+            public static void TypeofNullableDisabled()
+            {
+                var before = @"
+#nullable disable
+namespace N
+{
+    using System;
+
+    public class C
+    {
+        public static void M()
+        {
+            var c = ↓Activator.CreateInstance(typeof(C));
+        }
+    }
+}";
+
+                var after = @"
+#nullable disable
+namespace N
+{
+    using System;
+
+    public class C
+    {
+        public static void M()
+        {
+            var c = (C)Activator.CreateInstance(typeof(C));
+        }
+    }
+}";
                 RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
@@ -76,7 +111,7 @@ namespace N
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.SuppressCs8600);
             }
 
             [TestCase("Activator.CreateInstance(typeof(T))")]

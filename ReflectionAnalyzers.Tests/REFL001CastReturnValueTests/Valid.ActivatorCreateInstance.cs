@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -22,10 +22,29 @@ namespace N
 
     public class C
     {
-        public static object  M<T>() => Activator.CreateInstance<T>();
+        public static object? M<T>() => Activator.CreateInstance<T>();
     }
 }".AssertReplace("CreateInstance<T>()", call);
 
+                RoslynAssert.Valid(Analyzer, Descriptor, code);
+            }
+
+            [TestCase("Activator.CreateInstance(typeof(C))")]
+            [TestCase("Activator.CreateInstance(typeof(C))!")]
+            [TestCase("Activator.CreateInstance(typeof(C)) ?? throw new Exception()")]
+            public static void Typeof(string expression)
+            {
+                var code = @"
+namespace N
+{
+    using System;
+
+    public class C
+    {
+#pragma warning disable CS8600
+        public static object? M() => (C)Activator.CreateInstance(typeof(C));
+    }
+}".AssertReplace("Activator.CreateInstance(typeof(C))", expression);
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
             }
         }
