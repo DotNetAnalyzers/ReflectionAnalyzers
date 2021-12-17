@@ -10,6 +10,33 @@
         private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL012PreferIsDefined);
 
         [Test]
+        public static void Message()
+        {
+            var before = @"
+namespace N
+{
+    using System;
+
+    class C
+    {
+        public static bool M() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) == null;
+    }
+}";
+            var after = @"
+namespace N
+{
+    using System;
+
+    class C
+    {
+        public static bool M() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
+    }
+}";
+            var message = "Prefer Attribute.IsDefined()";
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+        }
+
+        [Test]
         public static void AttributeGetCustomAttributeEqualsNull()
         {
             var before = @"
@@ -32,8 +59,7 @@ namespace N
         public static bool M() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
-            var message = "Prefer Attribute.IsDefined().";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
@@ -59,8 +85,7 @@ namespace N
         public static bool M() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute), true);
     }
 }";
-            var message = "Prefer Attribute.IsDefined().";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [Test]
@@ -86,8 +111,7 @@ namespace N
         public static bool M() => Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
-            var message = "Prefer Attribute.IsDefined().";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
 
         [TestCase(" == null")]

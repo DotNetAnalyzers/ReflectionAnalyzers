@@ -72,7 +72,7 @@ namespace N
         private int PrivateGetSet { get; set; }
     }
 }".AssertReplace("GetProperty(nameof(this.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", afterExpression);
-            var message = $"Prefer typeof(C).{afterExpression}.";
+            var message = $"Prefer typeof(C).{afterExpression}";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
@@ -132,7 +132,7 @@ namespace N
     }
 }".AssertReplace("GetProperty(nameof(PublicGetSet), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).GetMethod", afterExpression);
 
-            var message = $"Prefer typeof(C).{afterExpression}.";
+            var message = $"Prefer typeof(C).{afterExpression}";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
@@ -191,7 +191,7 @@ namespace N
     }
 }".AssertReplace("GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", afterExpression);
 
-            var message = $"Prefer typeof(C).{afterExpression}.";
+            var message = $"Prefer typeof(C).{afterExpression}";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { c, before }, after);
         }
 
@@ -346,7 +346,7 @@ namespace N
     }
 }".AssertReplace("GetEvent(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod", afterExpression);
 
-            var message = $"Prefer typeof(C).{afterExpression}.";
+            var message = $"Prefer typeof(C).{afterExpression}";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
@@ -584,7 +584,7 @@ namespace N
 {
     using System.Reflection;
 
-    public class C
+    public class C2
     {
         public object Get => typeof(BinaryReferencedAssembly.C1).GetMethod(""add_E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
@@ -594,7 +594,7 @@ namespace N
 {
     using System.Reflection;
 
-    public class C
+    public class C2
     {
         public object Get => typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod;
     }
@@ -605,17 +605,17 @@ namespace N.BinaryReferencedAssembly
 {
     using System;
 
-    public interface IC1
+    public interface I1
     {
-        event EventHandler E;
+        event EventHandler? E;
     }
 
-    public class C1 : IC1
+    public class C1 : I1
     {
         #pragma warning disable CS0067
-        internal event EventHandler E;
+        internal event EventHandler? E;
 
-        event EventHandler IC1.E
+        event EventHandler? I1.E
         {
             add { }
             remove { }
@@ -635,7 +635,7 @@ namespace N.BinaryReferencedAssembly
                                             .ConfigureAwait(true);
 
             CollectionAssert.IsEmpty(compilation.GetTypeByMetadataName("N.BinaryReferencedAssembly.C1").GetMembers("E"));
-            var message = @"Prefer typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod.";
+            var message = @"Prefer typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), solution, after);
         }
 

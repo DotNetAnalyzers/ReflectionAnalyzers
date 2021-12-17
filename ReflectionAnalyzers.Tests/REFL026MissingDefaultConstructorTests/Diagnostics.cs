@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
+﻿namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -26,7 +26,7 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(↓C))", call);
 
-            var message = "No parameterless constructor defined for N.C.";
+            var message = "No parameterless constructor defined for N.C";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -50,7 +50,7 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
-            var message = "No parameterless constructor defined for N.C.";
+            var message = "No parameterless constructor defined for N.C";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -73,7 +73,7 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
-            var message = "No parameterless constructor defined for N.C.";
+            var message = "No parameterless constructor defined for N.C";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }

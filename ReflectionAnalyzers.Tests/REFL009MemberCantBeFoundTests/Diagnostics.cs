@@ -23,7 +23,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-            var message = "The referenced member MISSING is not known to exist in N.C.";
+            var message = "The referenced member MISSING is not known to exist in N.C";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 

@@ -8,7 +8,7 @@
     using Microsoft.CodeAnalysis.Diagnostics;
     using NUnit.Framework;
 
-    public static class ValidCodeWithAllAnalyzers
+    public static class AllAnalyzersValid
     {
         private static readonly IReadOnlyList<DiagnosticAnalyzer> AllAnalyzers =
             typeof(KnownSymbol)
@@ -18,10 +18,10 @@
                 .Select(t => (DiagnosticAnalyzer)Activator.CreateInstance(t)!)
                 .ToArray();
 
-        private static readonly Solution AnalyzersProjectSolution = CodeFactory.CreateSolution(
+        private static readonly Solution AnalyzersProject = CodeFactory.CreateSolution(
             ProjectFile.Find("ReflectionAnalyzers.csproj"));
 
-        private static readonly Solution ValidCodeProjectSln = CodeFactory.CreateSolution(
+        private static readonly Solution ValidCodeProject = CodeFactory.CreateSolution(
             ProjectFile.Find("ValidCode.csproj"));
 
         [Test]
@@ -32,15 +32,15 @@
         }
 
         [TestCaseSource(nameof(AllAnalyzers))]
-        public static void ValidCodeProject(DiagnosticAnalyzer analyzer)
+        public static void AnalyzersSolution(DiagnosticAnalyzer analyzer)
         {
-            RoslynAssert.Valid(analyzer, ValidCodeProjectSln);
+            RoslynAssert.Valid(analyzer, AnalyzersProject);
         }
 
         [TestCaseSource(nameof(AllAnalyzers))]
-        public static void AnalyzersSolution(DiagnosticAnalyzer analyzer)
+        public static void ValidCode(DiagnosticAnalyzer analyzer)
         {
-            RoslynAssert.Valid(analyzer, AnalyzersProjectSolution);
+            RoslynAssert.Valid(analyzer, ValidCodeProject);
         }
     }
 }

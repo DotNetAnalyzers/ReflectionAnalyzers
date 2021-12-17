@@ -39,7 +39,7 @@ namespace N
         }
     }
 }";
-            var message = "Prefer the generic extension method GetCustomAttribute<ObsoleteAttribute>.";
+            var message = "Prefer the generic extension method GetCustomAttribute<ObsoleteAttribute>";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 

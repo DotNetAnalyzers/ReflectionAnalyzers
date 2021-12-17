@@ -151,7 +151,9 @@
         internal static readonly DiagnosticDescriptor REFL017NameofWrongMember = Create(
             id: "REFL017",
             title: "Don't use name of wrong member",
-            messageFormat: "Don't use name of wrong member. Expected: {0}.",
+#pragma warning disable RS1032 // Define diagnostic message correctly
+            messageFormat: "Don't use name of wrong member. Expected: {0}",
+#pragma warning restore RS1032 // Define diagnostic message correctly
             category: AnalyzerCategory.SystemReflection,
             defaultSeverity: DiagnosticSeverity.Warning,
             isEnabledByDefault: true,

@@ -30,7 +30,7 @@ namespace N
         public int P { get; }
     }
 }".AssertReplace("GetMethod(nameof(this.P))", call);
-            var message = "The type N.C has a property named P.";
+            var message = "The type N.C has a property named P";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
 
@@ -56,7 +56,7 @@ namespace N
         public int M() => 0;
     }
 }".AssertReplace("GetProperty(nameof(this.M))", call);
-            var message = "The type N.C has a method named M.";
+            var message = "The type N.C has a method named M";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }

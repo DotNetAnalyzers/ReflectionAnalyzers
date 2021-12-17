@@ -53,7 +53,7 @@ namespace N
     }
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            var message = "Dispose is explicitly implemented.";
+            var message = "Dispose is explicitly implemented";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
 
@@ -93,7 +93,7 @@ namespace N
     }
 }".AssertReplace("GetMethod(\"ToBoolean\")", call);
 
-            var message = "ToBoolean is explicitly implemented.";
+            var message = "ToBoolean is explicitly implemented";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
         }
     }
