@@ -25,5 +25,32 @@ namespace ValidCode
         public static explicit operator int(Operators c) => 2;
 
         public static explicit operator Operators?(int c) => null;
+
+        protected bool Equals(Operators other)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return Equals((Operators)obj);
+        }
+
+        public override int GetHashCode() => 1;
     }
 }

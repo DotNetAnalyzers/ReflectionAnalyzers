@@ -1,4 +1,4 @@
-namespace ValidCode
+﻿namespace ValidCode
 {
     using System;
     using System.Reflection;
@@ -6,7 +6,7 @@ namespace ValidCode
 
     public interface IExplicitImplicit
     {
-        event EventHandler Bar;
+        event EventHandler? E;
     }
 
     public class ExplicitImplicit : IExplicitImplicit
@@ -15,12 +15,12 @@ namespace ValidCode
         public void Valid()
         {
             Assert.NotNull(typeof(ExplicitImplicit).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-            Assert.NotNull(typeof(IExplicitImplicit).GetEvent(nameof(IExplicitImplicit.Bar), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+            Assert.NotNull(typeof(IExplicitImplicit).GetEvent(nameof(IExplicitImplicit.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
         }
 
-        internal event EventHandler Bar;
+        internal event EventHandler? Bar;
 
-        event EventHandler IExplicitImplicit.Bar
+        event EventHandler? IExplicitImplicit.E
         {
             add => this.Bar += value;
             remove => this.Bar -= value;

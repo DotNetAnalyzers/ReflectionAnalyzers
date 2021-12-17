@@ -10,7 +10,12 @@
 
         internal static readonly Settings WindowsForms = Settings.Default.WithMetadataReferences(MetadataReferences.Transitive(typeof(System.Windows.Forms.Control)));
 
-        internal static readonly Settings NullableEnabled = Settings.Default.WithCompilationOptions(x => x.WithNullableContextOptions(NullableContextOptions.Enable));
+        internal static readonly Settings NullableEnabled = Settings.Default
+                                                                    .WithCompilationOptions(x => x.WithNullableContextOptions(NullableContextOptions.Enable));
+
+        internal static readonly Settings Roslyn = Settings.Default
+                                                           .WithCompilationOptions(x => x.WithNullableContextOptions(NullableContextOptions.Enable).WithSuppressedDiagnostics("CS1701"))
+                                                           .WithMetadataReferences(MetadataReferences.Transitive(typeof(Microsoft.CodeAnalysis.CodeFixes.CodeFixProvider)));
 
         [ModuleInitializer]
         internal static void Initialize()
