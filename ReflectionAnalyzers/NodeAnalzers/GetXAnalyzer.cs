@@ -6,7 +6,6 @@
     using System.Globalization;
 
     using Gu.Roslyn.AnalyzerExtensions;
-    using Gu.Roslyn.CodeFixExtensions;
 
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
@@ -630,7 +629,7 @@
                         return $"nameof({associatedSymbol.Name})";
                     }
 
-                    return context.SemanticModel.UnderscoreFields() == CodeStyleResult.Yes ? associatedSymbol.Name : $"nameof(this.{associatedSymbol.Name})";
+                    return $"nameof(this.{associatedSymbol.Name})";
                 }
 
                 return context.SemanticModel.IsAccessible(context.Node.SpanStart, associatedSymbol)
