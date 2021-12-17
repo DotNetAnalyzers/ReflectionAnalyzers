@@ -37,7 +37,7 @@
     <PackageReleaseNotes>
       0.3.0
       BREAKING: For VS2022+ now.
-      BUGFIX: AD0001 -> Could not load file or assembly
+      BUGFIX: AD0001 -&gt; Could not load file or assembly
       0.2.0
       FEATURE Walk a bit more, smarter analyzers in places.
       BUGFIX Handle nameof when open generic type.
@@ -49,7 +49,7 @@
     <PackageReference Include="Gu.Roslyn.Extensions.Source" Version="0.16.4" />
     <PackageReference Include="IDisposableAnalyzers" Version="4.0.1" PrivateAssets="all" /> 
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.354" PrivateAssets="all" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.376" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
