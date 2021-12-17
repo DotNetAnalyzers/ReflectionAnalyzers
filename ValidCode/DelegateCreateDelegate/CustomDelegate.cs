@@ -1,4 +1,4 @@
-// ReSharper disable All
+﻿// ReSharper disable All
 namespace ValidCode.DelegateCreateDelegate
 {
     using System;
@@ -17,42 +17,42 @@ namespace ValidCode.DelegateCreateDelegate
         {
             Assert.AreEqual(3, ((StringInt)Delegate.CreateDelegate(
                                 typeof(StringInt),
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!))
                             .Invoke("abc"));
 
-            Assert.AreEqual(3, ((StringInt)Delegate.CreateDelegate(
+            Assert.AreEqual(3, ((StringInt?)Delegate.CreateDelegate(
                                 typeof(StringInt),
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null),
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!,
                                 throwOnBindFailure: true))
-                            .Invoke("abc"));
+                            ?.Invoke("abc"));
 
             Assert.AreEqual(3, ((EmptyInt)Delegate.CreateDelegate(
                                 typeof(EmptyInt),
                                 "abc",
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!))
                             .Invoke());
 
-            Assert.AreEqual(3, ((EmptyInt)Delegate.CreateDelegate(
+            Assert.AreEqual(3, ((EmptyInt?)Delegate.CreateDelegate(
                                 typeof(EmptyInt),
                                 "abc",
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null),
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!,
                                 throwOnBindFailure: true))
-                            .Invoke());
+                            ?.Invoke());
 
             ((Void)Delegate.CreateDelegate(
                     typeof(Void),
-                    typeof(C).GetMethod(nameof(C.Void), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)))
+                    typeof(C).GetMethod(nameof(C.Void), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)!))
                 .Invoke();
 
             ((IntVoid)Delegate.CreateDelegate(
                     typeof(IntVoid),
-                    typeof(C).GetMethod(nameof(C.IntVoid), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)))
+                    typeof(C).GetMethod(nameof(C.IntVoid), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)!))
                 .Invoke(1);
 
             ((Void)Delegate.CreateDelegate(
                     typeof(Void),
                     "abc",
-                    typeof(C).GetMethod(nameof(C.StringVoid), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                    typeof(C).GetMethod(nameof(C.StringVoid), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!))
                 .Invoke();
         }
 

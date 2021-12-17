@@ -54,11 +54,11 @@ namespace ValidCode
 
         class Nested
         {
-            object ProtectedInstanceMethod => typeof(Base).GetMethod(nameof(GetMethod.ProtectedInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+            object? ProtectedInstanceMethod => typeof(Base).GetMethod(nameof(GetMethod.ProtectedInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
 
-            object ProtectedStaticMethod1 => typeof(Base).GetMethod(nameof(GetMethod.ProtectedStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+            object? ProtectedStaticMethod1 => typeof(Base).GetMethod(nameof(GetMethod.ProtectedStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
 
-            object ProtectedStaticMethod2 => typeof(Base).GetMethod(nameof(Base.ProtectedStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
+            object? ProtectedStaticMethod2 => typeof(Base).GetMethod(nameof(Base.ProtectedStatic), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null);
         }
     }
 }

@@ -12,8 +12,8 @@ namespace ValidCode
                 !typeof(TResult).IsValueType)
             {
                 return (IMapper<TSource, TResult>)Activator.CreateInstance(
-                typeof(CreatingCaching<,>).MakeGenericType(typeof(TSource), typeof(TResult)),
-                new object[] { selector });
+                typeof(CreatingCaching<,>)!.MakeGenericType(typeof(TSource), typeof(TResult)),
+                new object[] { selector })!;
             }
 
             return new Creating<TSource, TResult>(selector);
@@ -41,7 +41,7 @@ namespace ValidCode
                 binder: null,
                 types: Type.GetTypeArray(args),
                 modifiers: null);
-            return (IMapper<TSource, TResult>)constructor.Invoke(args);
+            return (IMapper<TSource, TResult>)constructor!.Invoke(args);
         }
 
         internal static IMapper<TSource, TResult> Create<TSource, TResult>(

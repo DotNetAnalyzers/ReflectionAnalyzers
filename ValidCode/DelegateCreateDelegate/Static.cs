@@ -1,4 +1,4 @@
-// ReSharper disable All
+﻿// ReSharper disable All
 namespace ValidCode.DelegateCreateDelegate
 {
     using System;
@@ -12,48 +12,48 @@ namespace ValidCode.DelegateCreateDelegate
         {
             Assert.AreEqual(3, ((Func<string, int>)Delegate.CreateDelegate(
                                 typeof(Func<string, int>),
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!))
                             .Invoke("abc"));
 
-            Assert.AreEqual(3, ((Func<string, int>)Delegate.CreateDelegate(
+            Assert.AreEqual(3, ((Func<string, int>?)Delegate.CreateDelegate(
                                 typeof(Func<string, int>),
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null),
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!,
                                 throwOnBindFailure: true))
-                            .Invoke("abc"));
+                            !.Invoke("abc"));
 
             Assert.AreEqual(3, ((Func<int>)Delegate.CreateDelegate(
                                 typeof(Func<int>),
                                 "abc",
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!))
                             .Invoke());
 
             Assert.AreEqual(-1, ((Func<int>)Delegate.CreateDelegate(
                                 typeof(Func<int>),
                                 null,
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!))
                             .Invoke());
 
-            Assert.AreEqual(3, ((Func<int>)Delegate.CreateDelegate(
+            Assert.AreEqual(3, ((Func<int>?)Delegate.CreateDelegate(
                                 typeof(Func<int>),
                                 "abc",
-                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null),
+                                typeof(C).GetMethod(nameof(C.StringInt), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!,
                                 throwOnBindFailure: true))
-                            .Invoke());
+                            !.Invoke());
 
             ((Action)Delegate.CreateDelegate(
                 typeof(Action),
-                typeof(C).GetMethod(nameof(C.Void), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)))
+                typeof(C).GetMethod(nameof(C.Void), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)!))
                 .Invoke();
 
             ((Action<int>)Delegate.CreateDelegate(
                     typeof(Action<int>),
-                    typeof(C).GetMethod(nameof(C.IntVoid), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)))
+                    typeof(C).GetMethod(nameof(C.IntVoid), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)!))
                 .Invoke(1);
 
             ((Action)Delegate.CreateDelegate(
                 typeof(Action),
                 "abc",
-                typeof(C).GetMethod(nameof(C.StringVoid), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)))
+                typeof(C).GetMethod(nameof(C.StringVoid), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(string) }, null)!))
                 .Invoke();
         }
 

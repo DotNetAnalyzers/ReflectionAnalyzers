@@ -1,4 +1,4 @@
-// ReSharper disable All
+﻿// ReSharper disable All
 namespace ValidCode
 {
     using System;
@@ -18,7 +18,7 @@ namespace ValidCode
             _ = typeof(T).GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(IFormatProvider) }, null);
         }
 
-        public MethodInfo ConstrainedToFoo<T>()
+        public MethodInfo? ConstrainedToFoo<T>()
             where T : Generic
         {
             return typeof(T).GetMethod(nameof(this.Baz), BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
