@@ -100,12 +100,12 @@
             {
                 foreach (var candidate in type.GetMembers())
                 {
-                    if (!MatchesFilter(candidate, name, flags, types))
+                    if (!MatchesFilter(candidate, compilation, name, flags, types))
                     {
                         continue;
                     }
 
-                    if (types.TryMostSpecific(member, candidate, out member))
+                    if (types.TryMostSpecific(member, candidate, compilation, out member))
                     {
                         isAmbiguous = false;
                         if (IsWrongMemberType(member))
@@ -126,7 +126,7 @@
                 {
                     foreach (var candidate in current.GetMembers())
                     {
-                        if (!MatchesFilter(candidate, name, flags, types))
+                        if (!MatchesFilter(candidate, compilation, name, flags, types))
                         {
                             continue;
                         }
@@ -136,7 +136,7 @@
                             continue;
                         }
 
-                        if (types.TryMostSpecific(member, candidate, out member))
+                        if (types.TryMostSpecific(member, candidate, compilation, out member))
                         {
                             isAmbiguous = false;
                             if (IsUseContainingType(member))
@@ -182,7 +182,7 @@
                 return FilterMatch.Single;
             }
 
-            if (type.TryFindFirstMemberRecursive(x => MatchesFilter(x, name, Flags.MatchAll.Effective, Types.Any), out member))
+            if (type.TryFindFirstMemberRecursive(x => MatchesFilter(x, compilation, name, Flags.MatchAll.Effective, Types.Any), out member))
             {
                 if (IsUseContainingType(member))
                 {
@@ -294,7 +294,7 @@
             bool IsWrongFlags(ISymbol symbol)
             {
                 if (symbol.MetadataName == name.MetadataName &&
-                    !MatchesFilter(symbol, name, flags, Types.Any))
+                    !MatchesFilter(symbol, compilation, name, flags, Types.Any))
                 {
                     return true;
                 }
@@ -318,14 +318,14 @@
 
                 const BindingFlags everything = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
                 return symbol.MetadataName == name.MetadataName &&
-                       !MatchesFilter(symbol, name, everything, types);
+                       !MatchesFilter(symbol, compilation, name, everything, types);
             }
 
             bool IsExplicitImplementation(out ISymbol result)
             {
                 foreach (var @interface in type.AllInterfaces)
                 {
-                    if (@interface.TryFindFirstMember(x => MatchesFilter(x, name, Flags.MatchAll.Effective, types), out result!))
+                    if (@interface.TryFindFirstMember(x => MatchesFilter(x, compilation, name, Flags.MatchAll.Effective, types), out result!))
                     {
                         return true;
                     }
@@ -336,7 +336,7 @@
             }
         }
 
-        private static bool MatchesFilter(ISymbol candidate, Name name, BindingFlags flags, Types types)
+        private static bool MatchesFilter(ISymbol candidate, Compilation compilation, Name name, BindingFlags flags, Types types)
         {
             if (candidate.MetadataName != name.MetadataName)
             {
@@ -371,7 +371,7 @@
             {
                 switch (candidate)
                 {
-                    case IMethodSymbol method when !types.Matches(method.Parameters):
+                    case IMethodSymbol method when !types.Matches(method.Parameters, compilation):
                         return false;
                 }
             }

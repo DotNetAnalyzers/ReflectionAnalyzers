@@ -75,7 +75,7 @@
             return true;
         }
 
-        internal bool Matches(ImmutableArray<IParameterSymbol> parameters)
+        internal bool Matches(ImmutableArray<IParameterSymbol> parameters, Compilation compilation)
         {
             if (parameters.Length != this.Expressions.Length)
             {
@@ -84,9 +84,7 @@
 
             for (var i = 0; i < parameters.Length; i++)
             {
-#pragma warning disable CS0618 // Type or member is obsolete
-                if (!this.Symbols[i].Is(parameters[i].Type))
-#pragma warning restore CS0618 // Type or member is obsolete
+                if (!this.Symbols[i].IsAssignableTo(parameters[i].Type, compilation))
                 {
                     return false;
                 }
@@ -95,7 +93,7 @@
             return true;
         }
 
-        internal bool TryMostSpecific(ISymbol? x, ISymbol? y, [NotNullWhen(true)] out ISymbol? unique)
+        internal bool TryMostSpecific(ISymbol? x, ISymbol? y, Compilation compilation, [NotNullWhen(true)] out ISymbol? unique)
         {
             if (x is null &&
                 y is null)
@@ -118,7 +116,7 @@
                 return false;
             }
 
-            return this.TryMostSpecific(x as IMethodSymbol, y as IMethodSymbol, out unique);
+            return this.TryMostSpecific(x as IMethodSymbol, y as IMethodSymbol, compilation, out unique);
 
             static bool ByNull(ISymbol? first, ISymbol? other, out ISymbol? result)
             {
@@ -141,7 +139,7 @@
                    invocation.TryFindArgument(parameter, out argument);
         }
 
-        private bool TryMostSpecific(IMethodSymbol? x, IMethodSymbol? y, [NotNullWhen(true)] out ISymbol? unique)
+        private bool TryMostSpecific(IMethodSymbol? x, IMethodSymbol? y, Compilation compilation, [NotNullWhen(true)] out ISymbol? unique)
         {
             if (this.Argument is null ||
                 x is null ||
@@ -159,8 +157,8 @@
 #pragma warning restore CS8762 // Parameter must have a non-null value when exiting in some condition.
             }
 
-            if (this.Matches(x.Parameters) &&
-                this.Matches(y.Parameters))
+            if (this.Matches(x.Parameters, compilation) &&
+                this.Matches(y.Parameters, compilation))
             {
                 var sum = 0;
                 for (var i = 0; i < this.Symbols.Length; i++)
@@ -178,13 +176,13 @@
                 return true;
             }
 
-            if (this.Matches(x.Parameters))
+            if (this.Matches(x.Parameters, compilation))
             {
                 unique = x;
                 return true;
             }
 
-            if (this.Matches(y.Parameters))
+            if (this.Matches(y.Parameters, compilation))
             {
                 unique = y;
                 return true;
