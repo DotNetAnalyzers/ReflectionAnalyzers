@@ -222,31 +222,31 @@
             bool IsWrongMemberType(ISymbol symbol)
             {
                 if (getX.ReturnType == KnownSymbol.EventInfo &&
-                    !(symbol is IEventSymbol))
+                    symbol is not IEventSymbol)
                 {
                     return true;
                 }
 
                 if (getX.ReturnType == KnownSymbol.FieldInfo &&
-                    !(symbol is IFieldSymbol))
+                    symbol is not IFieldSymbol)
                 {
                     return true;
                 }
 
                 if (getX.ReturnType == KnownSymbol.MethodInfo &&
-                    !(symbol is IMethodSymbol))
+                    symbol is not IMethodSymbol)
                 {
                     return true;
                 }
 
                 if (getX.ReturnType == KnownSymbol.PropertyInfo &&
-                    !(symbol is IPropertySymbol))
+                    symbol is not IPropertySymbol)
                 {
                     return true;
                 }
 
                 if (getX.ReturnType == KnownSymbol.Type &&
-                    !(symbol is ITypeSymbol))
+                    symbol is not ITypeSymbol)
                 {
                     return true;
                 }

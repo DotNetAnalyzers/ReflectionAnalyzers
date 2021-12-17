@@ -183,11 +183,9 @@
             }
         }
 
-        private struct MethodTypes
+        private readonly struct MethodTypes
         {
-#pragma warning disable RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer. BUG IN THE ANALYZER
             private readonly IMethodSymbol method;
-#pragma warning restore RS1008 // Avoid storing per-compilation data into the fields of a diagnostic analyzer.
             private readonly int startIndex;
 
             internal MethodTypes(MethodInfo methodInfo, bool isCurried)

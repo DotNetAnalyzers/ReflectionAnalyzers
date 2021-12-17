@@ -81,9 +81,7 @@
                             base.Visit(node);
                             break;
                         case IdentifierNameSyntax identifierName
-                            when (identifierName.Parent is MemberAccessExpressionSyntax memberAccess &&
-                                  !(memberAccess.Parent is MemberAccessExpressionSyntax) &&
-                                  memberAccess.Name == identifierName) ||
+                            when (identifierName.Parent is MemberAccessExpressionSyntax { Parent: not MemberAccessExpressionSyntax } memberAccess && memberAccess.Name == identifierName) ||
                                  identifierName.Parent is BinaryExpressionSyntax:
                             if (this.duplicate is null &&
                                 this.flags.TryFirst(x => x.Identifier.ValueText == identifierName.Identifier.ValueText, out _))

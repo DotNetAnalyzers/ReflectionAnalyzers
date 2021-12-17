@@ -123,7 +123,7 @@
             static bool ByNull(ISymbol? first, ISymbol? other, out ISymbol? result)
             {
                 if (first is null &&
-                    !(other is null))
+                    other is not null)
                 {
                     result = other;
                     return true;

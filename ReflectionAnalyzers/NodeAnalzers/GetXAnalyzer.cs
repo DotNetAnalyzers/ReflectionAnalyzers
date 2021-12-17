@@ -445,7 +445,7 @@
             {
                 if (member.Match == FilterMatch.NoMatch ||
                     (member.Match == FilterMatch.PotentiallyInvisible &&
-                     !(member.Symbol is IMethodSymbol)))
+                     member.Symbol is not IMethodSymbol))
                 {
                     nameText = $"\"{name.MetadataName}\"";
                     location = argument.GetLocation();

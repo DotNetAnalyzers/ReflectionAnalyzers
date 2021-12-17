@@ -70,7 +70,7 @@
             location = default;
             typeSymbol = default;
 
-            if (!(context.Node is AttributeSyntax attribute) ||
+            if (context.Node is not AttributeSyntax attribute ||
                 !context.SemanticModel.TryGetNamedType(attribute, KnownSymbol.DefaultMemberAttribute, context.CancellationToken, out _))
             {
                 return false;

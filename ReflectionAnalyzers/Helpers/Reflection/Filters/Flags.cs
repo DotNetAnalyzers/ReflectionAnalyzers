@@ -71,11 +71,6 @@
         internal static bool TryGetExpectedBindingFlags(ITypeSymbol reflectedType, ISymbol member, out BindingFlags flags)
         {
             flags = 0;
-            if (member is null ||
-                reflectedType is null)
-            {
-                return false;
-            }
 
             if (member.DeclaredAccessibility == Accessibility.Public)
             {
@@ -86,7 +81,7 @@
                 flags |= BindingFlags.NonPublic;
             }
 
-            if (!(member is ITypeSymbol))
+            if (member is not ITypeSymbol)
             {
                 if (member.IsStatic)
                 {
@@ -97,9 +92,7 @@
                     flags |= BindingFlags.Instance;
                 }
 
-#pragma warning disable CA1508 // Avoid dead conditional code analyzer wrong.
-                if (!(member is IMethodSymbol { MethodKind: MethodKind.Constructor }))
-#pragma warning restore CA1508 // Avoid dead conditional code
+                if (member is not IMethodSymbol { MethodKind: MethodKind.Constructor })
                 {
                     if (TypeSymbolComparer.Equal(member.ContainingType, reflectedType))
                     {
