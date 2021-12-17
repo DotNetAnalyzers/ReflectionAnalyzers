@@ -32,7 +32,7 @@
                         $"Use {call}",
                         (editor, _) => editor.ReplaceNode(
                             expression,
-                            SyntaxFactory.ParseExpression(call)
+                            SyntaxFactory.ParseExpression(call!)
                                          .WithTriviaFrom(expression)),
                         nameof(UseIsDefinedFix),
                         diagnostic);

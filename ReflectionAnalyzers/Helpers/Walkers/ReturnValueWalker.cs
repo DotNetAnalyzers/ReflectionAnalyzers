@@ -17,8 +17,13 @@
         {
         }
 
-        public override void Visit(SyntaxNode node)
+        public override void Visit(SyntaxNode? node)
         {
+            if (node is null)
+            {
+                return;
+            }
+
             switch (node.Kind())
             {
                 case SyntaxKind.SimpleLambdaExpression:
@@ -47,9 +52,7 @@
         internal static bool TrySingle(SyntaxNode scope, [NotNullWhen(true)] out ExpressionSyntax? returnValue)
         {
             using var walker = BorrowAndVisit(scope, () => new ReturnValueWalker());
-#pragma warning disable CS8762 // Parameter must have a non-null value when exiting in some condition.
             return walker.returnValues.TrySingle(out returnValue);
-#pragma warning restore CS8762 // Parameter must have a non-null value when exiting in some condition.
         }
 
         protected override void Clear()

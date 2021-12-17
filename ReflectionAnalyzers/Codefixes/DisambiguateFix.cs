@@ -38,7 +38,7 @@
                     semanticModel is { } &&
                     arg.TryGetStringValue(semanticModel, context.CancellationToken, out var memberName) &&
                     diagnostic.Properties.TryGetValue(nameof(INamedTypeSymbol), out var typeName) &&
-                    semanticModel.Compilation.GetTypeByMetadataName(typeName) is { } type)
+                    semanticModel.Compilation.GetTypeByMetadataName(typeName!) is { } type)
                 {
                     if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, context.CancellationToken, out _))
                     {

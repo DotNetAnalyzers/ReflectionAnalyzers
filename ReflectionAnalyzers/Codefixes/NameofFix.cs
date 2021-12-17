@@ -35,7 +35,7 @@
                             title,
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
-                                SyntaxFactory.ParseExpression(nameText)
+                                SyntaxFactory.ParseExpression(nameText!)
                                              .WithTriviaFrom(argument.Expression)),
                             nameof(NameofFix),
                             diagnostic);
@@ -46,7 +46,7 @@
                             $"Use {expressionText}.",
                             (editor, cancellationToken) => editor.ReplaceNode(
                                 argument.Expression,
-                                SyntaxFactory.ParseExpression(expressionText)
+                                SyntaxFactory.ParseExpression(expressionText!)
                                              .WithTriviaFrom(argument.Expression)),
                             nameof(NameofFix),
                             diagnostic);

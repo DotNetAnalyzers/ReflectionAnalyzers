@@ -224,19 +224,15 @@
 
         private static bool IsNullCheckedAfter(InvocationExpressionSyntax invocation)
         {
-            switch (invocation.Parent)
+            return invocation.Parent switch
             {
-                case EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: LocalDeclarationStatementSyntax { Parent: BlockSyntax { Statements: { } statements } } statement } } declarator }
-                    when statements.TryElementAt(statements.IndexOf(statement) + 1, out var next) &&
-                         next is IfStatementSyntax ifStatement:
-
-                    return IsNullCheck(ifStatement.Condition, declarator.Identifier.ValueText);
-                case IsPatternExpressionSyntax:
-                case ConditionalAccessExpressionSyntax:
-                    return true;
-            }
-
-            return false;
+                EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax { Parent: VariableDeclarationSyntax { Parent: LocalDeclarationStatementSyntax { Parent: BlockSyntax { Statements: { } statements } } statement } } declarator }
+                    when statements.TryElementAt(statements.IndexOf(statement) + 1, out var next) && next is IfStatementSyntax ifStatement
+                    => IsNullCheck(ifStatement.Condition, declarator.Identifier.ValueText),
+                IsPatternExpressionSyntax => true,
+                ConditionalAccessExpressionSyntax => true,
+                _ => false,
+            };
 
             static bool IsNullCheck(ExpressionSyntax expression, string name)
             {

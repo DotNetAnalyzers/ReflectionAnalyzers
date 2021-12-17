@@ -64,8 +64,13 @@
             private IdentifierNameSyntax duplicate = null!;
             private bool isUnHandled;
 
-            public override void Visit(SyntaxNode node)
+            public override void Visit(SyntaxNode? node)
             {
+                if (node is null)
+                {
+                    return;
+                }
+
                 if (!this.isUnHandled)
                 {
                     switch (node)
