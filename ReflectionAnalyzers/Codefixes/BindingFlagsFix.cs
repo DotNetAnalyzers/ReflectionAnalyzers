@@ -58,7 +58,7 @@
                             $"Add argument: {argumentString}.",
                             editor =>
                             {
-                                if (argumentString.Contains("BindingFlags"))
+                                if (argumentString!.Contains("BindingFlags"))
                                 {
                                     _ = editor.AddUsing(SystemReflection);
                                 }
@@ -76,7 +76,7 @@
                                 $"Add argument: {argumentString}.",
                                 editor =>
                                 {
-                                    if (argumentString.Contains("BindingFlags"))
+                                    if (argumentString!.Contains("BindingFlags"))
                                     {
                                         _ = editor.AddUsing(SystemReflection);
                                     }
@@ -102,7 +102,7 @@
                             $"Add argument: {argumentString}.",
                             editor =>
                             {
-                                if (argumentString.Contains("BindingFlags"))
+                                if (argumentString!.Contains("BindingFlags"))
                                 {
                                     _ = editor.AddUsing(SystemReflection);
                                 }

@@ -69,7 +69,7 @@
                 return true;
             }
 
-            if (context.ContainingSymbol.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.SemanticModel.Compilation))
+            if (context.ContainingSymbol?.ContainingType.IsAssignableTo(member.Symbol.ContainingType, context.SemanticModel.Compilation) is true)
             {
                 targetName = member.Symbol.IsStatic ||
                              member.Symbol is ITypeSymbol ||

@@ -37,7 +37,7 @@
                             "Specify types.",
                             (editor, token) =>
                             {
-                                if (typeArrayString.Contains("Type.EmptyTypes"))
+                                if (typeArrayString!.Contains("Type.EmptyTypes"))
                                 {
                                     _ = editor.AddUsing(System);
                                 }
@@ -60,7 +60,7 @@
                                 $"Add argument: {typeArrayString}.",
                                 editor =>
                                 {
-                                    if (typeArrayString.Contains("Type.EmptyTypes"))
+                                    if (typeArrayString!.Contains("Type.EmptyTypes"))
                                     {
                                         _ = editor.AddUsing(System);
                                     }

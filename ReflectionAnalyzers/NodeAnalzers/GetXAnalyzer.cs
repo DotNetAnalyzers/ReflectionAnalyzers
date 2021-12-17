@@ -622,7 +622,7 @@
                     return $"\"{associatedSymbol.MetadataName}\"";
                 }
 
-                if (TypeSymbolComparer.Equal(context.ContainingSymbol.ContainingType, associatedSymbol.ContainingType))
+                if (TypeSymbolComparer.Equal(context.ContainingSymbol?.ContainingType, associatedSymbol.ContainingType))
                 {
                     if (associatedSymbol.IsStatic)
                     {
