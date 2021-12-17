@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CA1056 // Uri properties should not be strings
 #pragma warning disable CA1307 // Specify StringComparison for clarity
+#pragma warning disable CA1305 // Specify IFormatProvider
 namespace ReflectionAnalyzers.Test
 {
     using System;
@@ -38,7 +39,7 @@ namespace ReflectionAnalyzers.Test
                                                                                            .ToArray();
 
         private static DirectoryInfo SolutionDirectory => SolutionFile.Find("ReflectionAnalyzers.sln")
-                                                                      .Directory;
+                                                                      .Directory!;
 
         private static DirectoryInfo DocumentsDirectory => SolutionDirectory.EnumerateDirectories("documentation", SearchOption.TopDirectoryOnly)
                                                                             .Single();
@@ -127,7 +128,7 @@ namespace ReflectionAnalyzers.Test
             {
                 var start = doc.IndexOf(startToken, StringComparison.Ordinal);
                 var end = doc.IndexOf(endToken, StringComparison.Ordinal) + endToken.Length;
-                return doc.Substring(start, end - start);
+                return doc[start..end];
             }
         }
 
