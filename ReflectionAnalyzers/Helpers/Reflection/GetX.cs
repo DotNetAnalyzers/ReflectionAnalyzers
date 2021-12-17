@@ -2,7 +2,9 @@
 {
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -179,6 +181,10 @@
         {
             switch (memberAccess.Expression)
             {
+                case PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression, Operand: InvocationExpressionSyntax candidate }
+                    when candidate.TryGetTarget(expected, semanticModel, cancellationToken, out _):
+                    invocation = candidate;
+                    return true;
                 case InvocationExpressionSyntax candidate
                     when candidate.TryGetTarget(expected, semanticModel, cancellationToken, out _):
                     invocation = candidate;

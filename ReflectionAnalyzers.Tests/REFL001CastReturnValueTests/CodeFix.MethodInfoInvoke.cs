@@ -11,18 +11,57 @@
             private static readonly CastReturnValueFix Fix = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
 
+            [TestCase("typeof(C).GetMethod(nameof(M)).Invoke(null, null)")]
+            [TestCase("typeof(C).GetMethod(nameof(M))!.Invoke(null, null)")]
+            [TestCase("typeof(C).GetMethod(nameof(M))?.Invoke(null, null)")]
+            [TestCase("typeof(C).GetMethod(nameof(M))?.Invoke(null, null) ?? throw new Exception()")]
+            public static void AssigningLocal(string expression)
+            {
+                var before = @"
+#pragma warning disable CS8019, CS8602, CS8605
+namespace N
+{
+    using System;
+
+    public class C
+    {
+        public C()
+        {
+            var x = ↓typeof(C).GetMethod(nameof(M)).Invoke(null, null);
+        }
+
+        public static int M() => 0;
+    }
+}".AssertReplace("typeof(C).GetMethod(nameof(M)).Invoke(null, null)", expression);
+
+                var after = @"
+#pragma warning disable CS8019, CS8602, CS8605
+namespace N
+{
+    using System;
+
+    public class C
+    {
+        public C()
+        {
+            var x = (int)typeof(C).GetMethod(nameof(M)).Invoke(null, null);
+        }
+
+        public static int M() => 0;
+    }
+}".AssertReplace("typeof(C).GetMethod(nameof(M)).Invoke(null, null)", expression);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+            }
+
             [Test]
-            public static void AssigningLocal()
+            public static void Returning()
             {
                 var before = @"
 namespace N
 {
     public class C
     {
-        public C()
-        {
-            var value = ↓typeof(C).GetMethod(nameof(M)).Invoke(null, null);
-        }
+        public object? Get() => ↓typeof(C).GetMethod(nameof(M)).Invoke(null, null);
 
         public static int M() => 0;
     }
@@ -33,10 +72,7 @@ namespace N
 {
     public class C
     {
-        public C()
-        {
-            var value = (int)typeof(C).GetMethod(nameof(M)).Invoke(null, null);
-        }
+        public object? Get() => (int)typeof(C).GetMethod(nameof(M)).Invoke(null, null);
 
         public static int M() => 0;
     }
