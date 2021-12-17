@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -24,8 +24,7 @@ namespace N
     }
 }";
 
-                var message = "Expected attribute type.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
 
             [Test]
@@ -42,8 +41,7 @@ namespace N
     }
 }";
 
-                var message = "Expected attribute type.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
         }
     }

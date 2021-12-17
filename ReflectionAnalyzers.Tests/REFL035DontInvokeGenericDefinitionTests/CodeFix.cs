@@ -21,7 +21,7 @@ namespace N
     }
 }";
 
-            var message = "Late bound operations cannot be performed on types or methods for which ContainsGenericParameters is true.";
+            var message = "Late bound operations cannot be performed on types or methods for which ContainsGenericParameters is true";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
             RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code);
         }

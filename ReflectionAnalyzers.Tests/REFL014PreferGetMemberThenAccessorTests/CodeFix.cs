@@ -250,7 +250,7 @@ namespace N
     }
 }".AssertReplace("GetProperty(nameof(C.PublicGetSet), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", afterExpression);
 
-            var message = $"Prefer typeof(C).{afterExpression}.";
+            var message = $"Prefer typeof(C).{afterExpression}";
             RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { c, before }, after);
         }
 

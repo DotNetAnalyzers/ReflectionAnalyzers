@@ -7,7 +7,46 @@
     {
         private static readonly GetXAnalyzer Analyzer = new();
         private static readonly UseContainingTypeFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL015");
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL015UseContainingType);
+
+        [Test]
+        public static void Message()
+        {
+            var baseCode = @"
+namespace N
+{
+    class B
+    {
+        private readonly int f = 1;
+
+        public int M() => this.f;
+    }
+}";
+            var before = @"
+namespace N
+{
+    using System.Reflection;
+
+     class C : B
+    {
+        public object Get => typeof(↓C).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
+    }
+}";
+
+            var after = @"
+namespace N
+{
+    using System.Reflection;
+
+     class C : B
+    {
+        public object Get => typeof(B).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
+    }
+}";
+
+            var message = "Use the containing type B";
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, before }, after);
+        }
 
         [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
         [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
@@ -64,8 +103,7 @@ namespace N
         }
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
-            var message = "Use the containing type CBase.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { cBase, before }, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cBase, before }, after);
         }
 
         [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
@@ -123,8 +161,7 @@ namespace N
         }
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
-            var message = "Use the containing type CBase.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { cBase, before }, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cBase, before }, after);
         }
 
         [TestCase("PublicStatic")]
@@ -174,8 +211,7 @@ namespace N
         }
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
-            var message = "Use the containing type CBase.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { cbase, before }, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cbase, before }, after);
         }
 
         [TestCase("PrivateStatic")]
@@ -226,8 +262,7 @@ namespace N
     }
 }".AssertReplace("PrivateStatic", type);
 
-            var message = "Use the containing type CBase.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { cbase, before }, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cbase, before }, after);
         }
 
         [Test]
@@ -265,8 +300,7 @@ namespace N
     }
 }";
 
-            var message = "Use the containing type B.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, before }, after);
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, before }, after);
         }
     }
 }
