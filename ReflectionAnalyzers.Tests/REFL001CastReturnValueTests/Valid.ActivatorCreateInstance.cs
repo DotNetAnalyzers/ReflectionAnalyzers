@@ -26,7 +26,7 @@ namespace N
     }
 }".AssertReplace("CreateInstance<T>()", call);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code, settings: LibrarySettings.NullableEnabled);
             }
 
             [TestCase("Activator.CreateInstance(typeof(C))")]
@@ -45,7 +45,7 @@ namespace N
         public static object? M() => (C)Activator.CreateInstance(typeof(C));
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", expression);
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
+                RoslynAssert.Valid(Analyzer, Descriptor, code, settings: LibrarySettings.NullableEnabled);
             }
         }
     }

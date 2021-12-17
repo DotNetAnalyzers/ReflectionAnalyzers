@@ -25,6 +25,7 @@
         internal static void Initialize()
         {
             Settings.Default = Settings.Default
+                                       .WithCompilationOptions(x => x.WithNullableContextOptions(NullableContextOptions.Disable))
                                        .WithMetadataReferences(MetadataReferences.Transitive(typeof(LibrarySettings), typeof(System.Windows.Controls.Control), typeof(System.Windows.Forms.Control)));
         }
     }
