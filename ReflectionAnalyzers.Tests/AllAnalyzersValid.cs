@@ -32,13 +32,13 @@
         }
 
         [TestCaseSource(nameof(AllAnalyzers))]
-        public static void AnalyzersSolution(DiagnosticAnalyzer analyzer)
+        public static void ForAnalyzersProject(DiagnosticAnalyzer analyzer)
         {
             RoslynAssert.Valid(analyzer, AnalyzersProject);
         }
 
         [TestCaseSource(nameof(AllAnalyzers))]
-        public static void ValidCode(DiagnosticAnalyzer analyzer)
+        public static void ForValidCode(DiagnosticAnalyzer analyzer)
         {
             RoslynAssert.Valid(analyzer, ValidCodeProject);
         }
