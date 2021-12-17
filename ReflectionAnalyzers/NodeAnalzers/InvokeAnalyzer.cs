@@ -2,7 +2,9 @@
 {
     using System.Collections.Immutable;
     using System.Linq;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -211,23 +213,18 @@
 
         private static bool IsResultDiscarded(InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context)
         {
-            switch (invocation.Parent)
+            return invocation.Parent switch
             {
-                case ArgumentSyntax { Parent: ArgumentListSyntax { Parent: InvocationExpressionSyntax candidate } }
-                    when IsAssert(candidate):
-                    return true;
-                case ArgumentSyntax _:
-                case MemberAccessExpressionSyntax _:
-                case CastExpressionSyntax _:
-                case BinaryExpressionSyntax _:
-                    return false;
-                case AssignmentExpressionSyntax assignment:
-                    return assignment.Left is IdentifierNameSyntax identifierName && IsDiscardName(identifierName.Identifier.ValueText);
-                case EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax variableDeclarator }:
-                    return IsDiscardName(variableDeclarator.Identifier.ValueText);
-                default:
-                    return true;
-            }
+                ArgumentSyntax { Parent: ArgumentListSyntax { Parent: InvocationExpressionSyntax candidate } }
+                    when IsAssert(candidate) => true,
+                ArgumentSyntax => false,
+                MemberAccessExpressionSyntax => false,
+                CastExpressionSyntax => false,
+                BinaryExpressionSyntax => false,
+                AssignmentExpressionSyntax assignment => assignment.Left is IdentifierNameSyntax identifierName && IsDiscardName(identifierName.Identifier.ValueText),
+                EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax variableDeclarator } => IsDiscardName(variableDeclarator.Identifier.ValueText),
+                _ => true,
+            };
 
             bool IsAssert(InvocationExpressionSyntax candidate)
             {
