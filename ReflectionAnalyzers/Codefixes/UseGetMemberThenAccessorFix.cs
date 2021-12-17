@@ -33,7 +33,7 @@
                         (editor, _) => editor.AddUsing(SystemReflection)
                                              .ReplaceNode(
                                                  old,
-                                                 x => SyntaxFactory.ParseExpression(expressionString)
+                                                 x => SyntaxFactory.ParseExpression(expressionString!)
                                                                    .WithTriviaFrom(x)),
                         nameof(UseGetMemberThenAccessorFix),
                         diagnostic);

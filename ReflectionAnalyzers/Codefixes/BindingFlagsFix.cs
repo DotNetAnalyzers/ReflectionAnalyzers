@@ -126,7 +126,7 @@
                         $"Change to: {expressionString}.",
                         (editor, _) => editor.ReplaceNode(
                             argument.Expression,
-                            SyntaxFactory.ParseExpression(expressionString).WithTriviaFrom(argument.Expression)),
+                            SyntaxFactory.ParseExpression(expressionString!).WithTriviaFrom(argument.Expression)),
                         nameof(BindingFlagsFix),
                         diagnostic);
                 }

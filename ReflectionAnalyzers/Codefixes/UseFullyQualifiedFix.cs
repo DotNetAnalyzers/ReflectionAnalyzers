@@ -29,7 +29,7 @@
                         $"Use fully qualified name: {text}.",
                         (editor, _) => editor.ReplaceNode(
                             literal,
-                            x => x.WithToken(SyntaxFactory.Literal(text))),
+                            x => x.WithToken(SyntaxFactory.Literal(text!))),
                         nameof(UseFullyQualifiedFix),
                         diagnostic);
                 }
@@ -41,7 +41,7 @@
                         $"Use fully qualified name: {name}.",
                         (editor, _) => editor.ReplaceNode(
                             identifierName,
-                            x => x.WithIdentifier(SyntaxFactory.Identifier(name))),
+                            x => x.WithIdentifier(SyntaxFactory.Identifier(name!))),
                         nameof(UseFullyQualifiedFix),
                         diagnostic);
                 }

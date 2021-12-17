@@ -36,7 +36,7 @@
                         (editor, _) => editor.AddUsing(SystemReflection)
                                              .ReplaceNode(
                                                  cast,
-                                                 SyntaxFactory.ParseExpression(call)
+                                                 SyntaxFactory.ParseExpression(call!)
                                                               .WithTriviaFrom(cast)),
                         nameof(UseGenericGetCustomAttributeFix),
                         diagnostic);

@@ -33,7 +33,7 @@
                             $"Use containing type: {typeName}.",
                             (editor, _) => editor.ReplaceNode(
                                 type,
-                                x => SyntaxFactory.ParseTypeName(typeName)
+                                x => SyntaxFactory.ParseTypeName(typeName!)
                                                   .WithTriviaFrom(x)),
                             nameof(UseContainingTypeFix),
                             diagnostic);

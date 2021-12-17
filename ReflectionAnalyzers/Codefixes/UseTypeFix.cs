@@ -29,7 +29,7 @@
                         $"Change to: {typeText}.",
                         (editor, _) => editor.ReplaceNode(
                             type,
-                            x => SyntaxFactory.ParseTypeName(typeText)
+                            x => SyntaxFactory.ParseTypeName(typeText!)
                                               .WithSimplifiedNames()
                                               .WithTriviaFrom(x)),
                         nameof(UseTypeFix),

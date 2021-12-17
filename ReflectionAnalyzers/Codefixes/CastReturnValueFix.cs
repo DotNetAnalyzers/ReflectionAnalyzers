@@ -33,7 +33,7 @@
                             $"Cast to {typeString}.",
                             (editor, _) => editor.ReplaceNode(
                                 typeSyntax,
-                                x => SyntaxFactory.ParseTypeName(typeString)),
+                                x => SyntaxFactory.ParseTypeName(typeString!)),
                             nameof(CastReturnValueFix),
                             diagnostic);
                     }
@@ -43,7 +43,7 @@
                             $"Cast to {typeString}.",
                             (editor, _) => editor.ReplaceNode(
                                 invocation,
-                                x => SyntaxFactory.CastExpression(SyntaxFactory.ParseTypeName(typeString), x)),
+                                x => SyntaxFactory.CastExpression(SyntaxFactory.ParseTypeName(typeString!), x)),
                             nameof(CastReturnValueFix),
                             diagnostic);
                     }
