@@ -14,20 +14,6 @@
     /// </summary>
     internal static class GetX
     {
-        internal static bool TryGetConstructorInfo(MemberAccessExpressionSyntax memberAccess, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out IMethodSymbol? constructor)
-        {
-            if (TryFindInvocation(memberAccess, KnownSymbol.Type.GetConstructor, semanticModel, cancellationToken, out var invocation) &&
-                TryMatchGetConstructor(invocation, semanticModel, cancellationToken, out var member, out _, out _) &&
-                member is { Match: FilterMatch.Single, Symbol: IMethodSymbol match })
-            {
-                constructor = match;
-                return true;
-            }
-
-            constructor = null;
-            return false;
-        }
-
         internal static bool TryGetNestedType(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out INamedTypeSymbol? type)
         {
             if (expression is MemberAccessExpressionSyntax memberAccess &&
