@@ -33,7 +33,7 @@
         private static void Handle(SyntaxNodeAnalysisContext context)
         {
             if (!context.IsExcludedFromAnalysis() &&
-                context.Node is InvocationExpressionSyntax { ArgumentList: { }, Expression: MemberAccessExpressionSyntax memberAccess } invocation &&
+                context.Node is InvocationExpressionSyntax { ArgumentList: { } } invocation &&
                 invocation.TryGetMethodName(out var name) &&
                 name == "Invoke" &&
                 context.SemanticModel.TryGetSymbol(invocation, context.CancellationToken, out var invoke) &&
@@ -140,7 +140,7 @@
                         }
                     }
                 }
-                else if (GetX.TryGetConstructorInfo(memberAccess, context.SemanticModel, context.CancellationToken, out var ctor))
+                else if (GetConstructor.Match(invocation.Expression, context.SemanticModel, context.CancellationToken) is { Single: { } ctor })
                 {
                     if (ReturnValue.ShouldCast(invocation, ctor.ReturnType, context.SemanticModel))
                     {

@@ -675,7 +675,7 @@
 
                 for (var i = 0; i < method.Parameters.Length; i++)
                 {
-                    if (!TypeSymbolComparer.Equal(types.Symbols[i], Effective(method.Parameters[i].Type)) &&
+                    if (!TypeSymbolComparer.Equal(types.Symbols[i], EffectiveType(method.Parameters[i].Type)) &&
                         context.SemanticModel.IsAccessible(context.Node.SpanStart, method.Parameters[i].Type))
                     {
                         typeText = method.Parameters[i].Type.ToString(context);
@@ -688,7 +688,7 @@
                         return true;
                     }
 
-                    ITypeSymbol Effective(ITypeSymbol t) =>
+                    static ITypeSymbol EffectiveType(ITypeSymbol t) =>
                         t.NullableAnnotation == NullableAnnotation.Annotated
                             ? t.WithNullableAnnotation(NullableAnnotation.None)
                             : t;
