@@ -1,6 +1,5 @@
 ﻿namespace ReflectionAnalyzers
 {
-    using System.Diagnostics.CodeAnalysis;
     using System.Threading;
 
     using Gu.Roslyn.AnalyzerExtensions;
@@ -14,51 +13,6 @@
     /// </summary>
     internal static class GetX
     {
-        internal static bool TryGetNestedType(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out INamedTypeSymbol? type)
-        {
-            if (expression is MemberAccessExpressionSyntax memberAccess &&
-                TryFindInvocation(memberAccess, KnownSymbol.Type.GetNestedType, semanticModel, cancellationToken, out var invocation) &&
-                TryMatchGetNestedType(invocation, semanticModel, cancellationToken, out var nestedType, out _, out _) &&
-                nestedType is { Match: FilterMatch.Single, Symbol: INamedTypeSymbol namedNested })
-            {
-                type = namedNested;
-                return true;
-            }
-
-            type = null;
-            return false;
-        }
-
-        /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
-        /// </summary>
-        internal static bool TryMatchGetConstructor(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Flags flags, out Types types)
-        {
-            if (invocation.TryGetTarget(KnownSymbol.Type.GetConstructor, semanticModel, cancellationToken, out var getX))
-            {
-                if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
-                    IsKnownSignature(invocation, getX) &&
-                    Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
-                    Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types))
-                {
-                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, Name.Ctor, flags.Effective, types, semanticModel.Compilation, out member);
-                }
-
-                if (Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
-                    flags.AreInSufficient)
-                {
-                    member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
-                    _ = Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types);
-                    return true;
-                }
-            }
-
-            member = default;
-            flags = default;
-            types = default;
-            return false;
-        }
-
         /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetEvent.
         /// </summary>
@@ -113,30 +67,6 @@
             flags = default;
             name = default;
             types = default;
-            return false;
-        }
-
-        private static bool TryFindInvocation(MemberAccessExpressionSyntax memberAccess, QualifiedMethod expected, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out InvocationExpressionSyntax? invocation)
-        {
-            switch (memberAccess.Expression)
-            {
-                case PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression, Operand: InvocationExpressionSyntax candidate }
-                    when candidate.TryGetTarget(expected, semanticModel, cancellationToken, out _):
-                    invocation = candidate;
-                    return true;
-                case InvocationExpressionSyntax candidate
-                    when candidate.TryGetTarget(expected, semanticModel, cancellationToken, out _):
-                    invocation = candidate;
-                    return true;
-                case IdentifierNameSyntax identifierName
-                    when semanticModel.TryGetSymbol(identifierName, cancellationToken, out ILocalSymbol? local) &&
-                         AssignedValue.FindSingle(local, semanticModel, cancellationToken) is InvocationExpressionSyntax candidate &&
-                         candidate.TryGetTarget(expected, semanticModel, cancellationToken, out _):
-                    invocation = candidate;
-                    return true;
-            }
-
-            invocation = null;
             return false;
         }
 
