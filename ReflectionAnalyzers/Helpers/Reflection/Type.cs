@@ -160,13 +160,8 @@
         {
             switch (expression)
             {
-                case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "ReturnType" } } } memberAccess
-                    when GetMethod.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
-                    source = memberAccess;
-                    result = single.ReturnType;
-                    return true;
                 case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "FieldType" } } } memberAccess
-                    when GetField.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single:{} single }:
+                    when GetField.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
                     source = memberAccess;
                     result = single.Type;
                     return true;
@@ -176,6 +171,11 @@
                          reflectedMember.Symbol is IPropertySymbol field:
                     source = memberAccess;
                     result = field.Type;
+                    return true;
+                case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "ReturnType" } } } memberAccess
+                    when GetMethod.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
+                    source = memberAccess;
+                    result = single.ReturnType;
                     return true;
                 case TypeOfExpressionSyntax typeOf:
                     source = typeOf;

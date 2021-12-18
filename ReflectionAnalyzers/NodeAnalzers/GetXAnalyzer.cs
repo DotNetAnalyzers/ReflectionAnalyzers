@@ -256,12 +256,12 @@
             name = default;
             if (context.Node is InvocationExpressionSyntax candidate)
             {
-                if (GetMethod.Match(candidate, context.SemanticModel, context.CancellationToken) is { } getMethod)
+                if (GetField.Match(candidate, context.SemanticModel, context.CancellationToken) is { } getField)
                 {
-                    member = getMethod.Member;
-                    name = getMethod.Name;
-                    flags = getMethod.Flags;
-                    types = getMethod.Types;
+                    member = getField.Member;
+                    name = getField.Name;
+                    flags = getField.Flags;
+                    types = default;
                     return true;
                 }
 
@@ -274,9 +274,17 @@
                     return true;
                 }
 
+                if (GetMethod.Match(candidate, context.SemanticModel, context.CancellationToken) is { } getMethod)
+                {
+                    member = getMethod.Member;
+                    name = getMethod.Name;
+                    flags = getMethod.Flags;
+                    types = getMethod.Types;
+                    return true;
+                }
+
                 types = default;
                 return GetX.TryMatchGetEvent(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags) ||
-                       GetX.TryMatchGetField(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags) ||
                        GetX.TryMatchGetNestedType(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags) ||
                        GetX.TryMatchGetProperty(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags, out types);
             }
