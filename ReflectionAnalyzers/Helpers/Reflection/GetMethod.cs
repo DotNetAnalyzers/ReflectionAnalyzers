@@ -62,11 +62,10 @@ internal readonly struct GetMethod
             if (ReflectedMember.TryGetType(candidate, semanticModel, cancellationToken, out var type, out var typeSource) &&
                 Name.TryCreate(candidate, target, semanticModel, cancellationToken, out var name) &&
                 Flags.TryCreate(candidate, target, semanticModel, cancellationToken, out var flags) &&
-                Types.TryCreate(candidate, target, semanticModel, cancellationToken, out var types))
+                Types.TryCreate(candidate, target, semanticModel, cancellationToken, out var types) &&
+                ReflectedMember.TryCreate(target, candidate, type, typeSource, name, flags.Effective, types, semanticModel.Compilation, out var member))
             {
-                return ReflectedMember.TryCreate(target, candidate, type, typeSource, name, flags.Effective, types, semanticModel.Compilation, out var member)
-                    ? new GetMethod(candidate, target, member, name, flags, types)
-                    : null;
+                return new GetMethod(candidate, target, member, name, flags, types);
             }
 
             if (Flags.TryCreate(candidate, target, semanticModel, cancellationToken, out flags) &&
@@ -74,7 +73,7 @@ internal readonly struct GetMethod
             {
                 _ = Name.TryCreate(candidate, target, semanticModel, cancellationToken, out name);
                 _ = Types.TryCreate(candidate, target, semanticModel, cancellationToken, out types);
-                var member = new ReflectedMember(type, typeSource, null, target, candidate, FilterMatch.InSufficientFlags);
+                member = new ReflectedMember(type, typeSource, null, target, candidate, FilterMatch.InSufficientFlags);
                 return new GetMethod(candidate, target, member, name, flags, types);
             }
         }

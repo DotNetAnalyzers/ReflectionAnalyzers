@@ -59,17 +59,16 @@ internal readonly struct GetConstructor
         {
             if (ReflectedMember.TryGetType(candidate, semanticModel, cancellationToken, out var type, out var typeSource) &&
                 Flags.TryCreate(candidate, target, semanticModel, cancellationToken, out var flags) &&
-                Types.TryCreate(candidate, target, semanticModel, cancellationToken, out var types))
+                Types.TryCreate(candidate, target, semanticModel, cancellationToken, out var types) &&
+                ReflectedMember.TryCreate(target, candidate, type, typeSource, Name.Ctor, flags.Effective, types, semanticModel.Compilation, out var member))
             {
-                return ReflectedMember.TryCreate(target, candidate, type, typeSource, Name.Ctor, flags.Effective, types, semanticModel.Compilation, out var member)
-                    ? new GetConstructor(candidate, target, member, flags, types)
-                    : null;
+                return new GetConstructor(candidate, target, member, flags, types);
             }
 
             if (Flags.TryCreate(candidate, target, semanticModel, cancellationToken, out flags) &&
                 flags.AreInSufficient)
             {
-                var member = new ReflectedMember(type, typeSource, null, target, candidate, FilterMatch.InSufficientFlags);
+                member = new ReflectedMember(type, typeSource, null, target, candidate, FilterMatch.InSufficientFlags);
                 _ = Types.TryCreate(candidate, target, semanticModel, cancellationToken, out types);
                 return new GetConstructor(candidate, target, member, flags, types);
             }
