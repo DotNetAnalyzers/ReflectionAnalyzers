@@ -24,8 +24,7 @@
             return expression switch
             {
                 InvocationExpressionSyntax invocation
-                    when GetX.TryMatchGetField(invocation, semanticModel, cancellationToken, out var member, out _, out _) &&
-                         member is { ReflectedType: { } reflectedType, Symbol: IFieldSymbol field }
+                    when GetField.Match(invocation, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IFieldSymbol field } }
                     => new FieldInfo(reflectedType, field),
                 IdentifierNameSyntax identifierName => FindAssigned(identifierName),
                 MemberAccessExpressionSyntax memberAccess => FindAssigned(memberAccess),
