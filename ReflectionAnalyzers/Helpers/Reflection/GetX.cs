@@ -90,39 +90,6 @@
         }
 
         /// <summary>
-        /// Check if <paramref name="invocation"/> is a call to Type.GetMethod.
-        /// </summary>
-        internal static bool TryMatchGetMethod(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags, out Types types)
-        {
-            if (invocation.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, cancellationToken, out var getX))
-            {
-                if (ReflectedMember.TryGetType(invocation, semanticModel, cancellationToken, out var type, out var typeSource) &&
-                    IsKnownSignature(invocation, getX) &&
-                    Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name) &&
-                    Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
-                    Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types))
-                {
-                    return ReflectedMember.TryCreate(getX, invocation, type, typeSource, name, flags.Effective, types, semanticModel.Compilation, out member);
-                }
-
-                if (Flags.TryCreate(invocation, getX, semanticModel, cancellationToken, out flags) &&
-                    flags.AreInSufficient)
-                {
-                    _ = Name.TryCreate(invocation, getX, semanticModel, cancellationToken, out name);
-                    _ = Types.TryCreate(invocation, getX, semanticModel, cancellationToken, out types);
-                    member = new ReflectedMember(type, typeSource, null, getX, invocation, FilterMatch.InSufficientFlags);
-                    return true;
-                }
-            }
-
-            member = default;
-            flags = default;
-            name = default;
-            types = default;
-            return false;
-        }
-
-        /// <summary>
         /// Check if <paramref name="invocation"/> is a call to Type.GetNestedType.
         /// </summary>
         internal static bool TryMatchGetNestedType(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, out ReflectedMember member, out Name name, out Flags flags)

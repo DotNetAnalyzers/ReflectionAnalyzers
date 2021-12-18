@@ -55,19 +55,24 @@ internal readonly struct GetMethod
     /// </summary>
     internal static GetMethod? Match(InvocationExpressionSyntax candidate, SemanticModel semanticModel, CancellationToken cancellationToken)
     {
-        if (candidate.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, cancellationToken, out var target) &&
-            Flags.TryCreate(candidate, target, semanticModel, cancellationToken, out var flags) &&
-            ReflectedMember.TryGetType(candidate, semanticModel, cancellationToken, out var type, out var typeSource))
+        if (candidate.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, cancellationToken, out var target))
         {
-            _ = Name.TryCreate(candidate, target, semanticModel, cancellationToken, out var name);
-            _ = Types.TryCreate(candidate, target, semanticModel, cancellationToken, out var types);
-            if (flags.AreInSufficient)
+            if (ReflectedMember.TryGetType(candidate, semanticModel, cancellationToken, out var type, out var typeSource) &&
+                Name.TryCreate(candidate, target, semanticModel, cancellationToken, out var name) &&
+                Flags.TryCreate(candidate, target, semanticModel, cancellationToken, out var flags) &&
+                Types.TryCreate(candidate, target, semanticModel, cancellationToken, out var types))
             {
-                return new GetMethod(candidate, target, new ReflectedMember(type, typeSource, null, target, candidate, FilterMatch.InSufficientFlags), name, flags, types);
+                return ReflectedMember.TryCreate(target, candidate, type, typeSource, name, flags.Effective, types, semanticModel.Compilation, out var member)
+                    ? new GetMethod(candidate, target, member, name, flags, types)
+                    : null;
             }
 
-            if (ReflectedMember.TryCreate(target, candidate, type, typeSource, name, flags.Effective, types, semanticModel.Compilation, out var member))
+            if (Flags.TryCreate(candidate, target, semanticModel, cancellationToken, out flags) &&
+                flags.AreInSufficient)
             {
+                _ = Name.TryCreate(candidate, target, semanticModel, cancellationToken, out name);
+                _ = Types.TryCreate(candidate, target, semanticModel, cancellationToken, out types);
+                var member = new ReflectedMember(type, typeSource, null, target, candidate, FilterMatch.InSufficientFlags);
                 return new GetMethod(candidate, target, member, name, flags, types);
             }
         }
