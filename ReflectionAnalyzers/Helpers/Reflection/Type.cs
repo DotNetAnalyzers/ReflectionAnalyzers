@@ -166,11 +166,9 @@
                     result = single.Type;
                     return true;
                 case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "PropertyType" } } } memberAccess
-                    when GetX.TryMatchGetProperty(invocation, recursion.SemanticModel, recursion.CancellationToken, out var reflectedMember, out _, out _, out _) &&
-                         reflectedMember.Match == FilterMatch.Single &&
-                         reflectedMember.Symbol is IPropertySymbol field:
+                    when GetProperty.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
                     source = memberAccess;
-                    result = field.Type;
+                    result = single.Type;
                     return true;
                 case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "ReturnType" } } } memberAccess
                     when GetMethod.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
