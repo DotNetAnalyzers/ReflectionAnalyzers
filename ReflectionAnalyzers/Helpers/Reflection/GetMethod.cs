@@ -27,7 +27,7 @@ internal readonly struct GetMethod
         this.Types = types;
     }
 
-    internal IMethodSymbol? SingleMatch => this.Member.Match == FilterMatch.Single ? (IMethodSymbol)this.Member.Symbol! : null;
+    internal IMethodSymbol? Single => this.Member.Match == FilterMatch.Single ? (IMethodSymbol)this.Member.Symbol! : null;
 
     internal static GetMethod? Match(ExpressionSyntax candidate, SemanticModel semanticModel, CancellationToken cancellationToken)
     {

@@ -142,7 +142,7 @@
         private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
             if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, semanticModel, cancellationToken) &&
-                GetMethod.Match(invocation.Expression, semanticModel, cancellationToken) is { SingleMatch: { } method })
+                GetMethod.Match(invocation.Expression, semanticModel, cancellationToken) is { Single: { } method })
             {
                 symbol = method;
                 parameters = method.TypeParameters;
