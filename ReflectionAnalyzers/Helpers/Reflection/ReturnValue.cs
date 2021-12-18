@@ -1,6 +1,7 @@
 ﻿namespace ReflectionAnalyzers
 {
     using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     internal static class ReturnValue
@@ -20,6 +21,8 @@
                             when !IsDiscardName(variableDeclarator.Identifier.ValueText)
                             => candidate,
                         ConditionalAccessExpressionSyntax conditionalAccess => Expression(conditionalAccess),
+                        BinaryExpressionSyntax { RawKind: (int)SyntaxKind.CoalesceExpression } coalesce => Expression(coalesce),
+                        PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression } bang => Expression(bang),
                         ArrowExpressionClauseSyntax => candidate,
                         ReturnStatementSyntax => candidate,
                         _ => null,

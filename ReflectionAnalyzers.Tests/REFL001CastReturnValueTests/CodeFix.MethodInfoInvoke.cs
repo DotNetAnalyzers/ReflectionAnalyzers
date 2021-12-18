@@ -14,7 +14,8 @@
             [TestCase("typeof(C).GetMethod(nameof(M)).Invoke(null, null)")]
             [TestCase("typeof(C).GetMethod(nameof(M))!.Invoke(null, null)")]
             [TestCase("typeof(C).GetMethod(nameof(M))?.Invoke(null, null)")]
-            //[TestCase("typeof(C).GetMethod(nameof(M))?.Invoke(null, null) ?? throw new Exception()")]
+            [TestCase("typeof(C).GetMethod(nameof(M))?.Invoke(null, null)!")]
+            [TestCase("typeof(C).GetMethod(nameof(M))?.Invoke(null, null) ?? throw new Exception()")]
             public static void AssigningLocal(string expression)
             {
                 var before = @"
