@@ -49,7 +49,7 @@
                     context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL024PreferNullOverEmptyArray, parametersArg.GetLocation()));
                 }
 
-                if (GetX.TryGetMethodInfo(memberAccess, context.SemanticModel, context.CancellationToken, out var method))
+                if (GetMethod.Match(invocation.Expression, context.SemanticModel, context.CancellationToken) is { SingleMatch: { } method })
                 {
                     if (!method.ReturnsVoid &&
                         ReturnValue.ShouldCast(invocation, method.ReturnType, context.SemanticModel))

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -9,6 +9,26 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
         {
             private static readonly InvokeAnalyzer Analyzer = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
+
+            [Test]
+            public static void Simple()
+            {
+                var code = @"
+namespace N
+{
+    public class C
+    {
+        public C()
+        {
+            var value = ↓typeof(C).GetMethod(nameof(M)).Invoke(null, null);
+        }
+
+        public static int M() => 0;
+    }
+}";
+
+                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+            }
 
             [Test]
             public static void Walk()
