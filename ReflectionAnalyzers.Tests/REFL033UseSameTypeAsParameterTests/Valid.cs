@@ -20,13 +20,33 @@ namespace N
 
     class C
     {
-        public object Get => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
+        public MemberInfo? Get => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
 
         public static IComparable Static(IComparable i) => i;
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
+            RoslynAssert.Valid(Analyzer, Descriptor, code, settings: LibrarySettings.NullableEnabled);
+        }
+
+        [Test]
+        public static void NullableParameter()
+        {
+            var code = @"
+namespace N
+{
+    using System;
+    using System.Reflection;
+
+    class C
+    {
+        public MemberInfo? Get => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
+
+        public static IComparable? Static(IComparable? i) => i;
+    }
+}";
+
+            RoslynAssert.Valid(Analyzer, Descriptor, code, settings: LibrarySettings.NullableEnabled);
         }
 
         [Test]
