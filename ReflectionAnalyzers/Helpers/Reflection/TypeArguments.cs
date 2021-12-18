@@ -142,14 +142,11 @@
         private static bool TryGetMethodParameters(InvocationExpressionSyntax invocation, SemanticModel semanticModel, CancellationToken cancellationToken, [NotNullWhen(true)] out ISymbol? symbol, out ImmutableArray<ITypeParameterSymbol> parameters)
         {
             if (IsMakeGeneric(invocation, KnownSymbol.MethodInfo.MakeGenericMethod, semanticModel, cancellationToken) &&
-                invocation.Expression is MemberAccessExpressionSyntax memberAccess)
+                GetMethod.Match(invocation.Expression, semanticModel, cancellationToken) is { SingleMatch: { } method })
             {
-                if (GetX.TryGetMethodInfo(memberAccess, semanticModel, cancellationToken, out var method))
-                {
-                    symbol = method;
-                    parameters = method.TypeParameters;
-                    return true;
-                }
+                symbol = method;
+                parameters = method.TypeParameters;
+                return true;
             }
 
             symbol = null;
