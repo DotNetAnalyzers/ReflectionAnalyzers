@@ -161,11 +161,9 @@
             switch (expression)
             {
                 case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "ReturnType" } } } memberAccess
-                    when GetX.TryMatchGetMethod(invocation, recursion.SemanticModel, recursion.CancellationToken, out var reflectedMember, out _, out _, out _) &&
-                         reflectedMember.Match == FilterMatch.Single &&
-                         reflectedMember.Symbol is IMethodSymbol method:
+                    when GetMethod.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
                     source = memberAccess;
-                    result = method.ReturnType;
+                    result = single.ReturnType;
                     return true;
                 case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "FieldType" } } } memberAccess
                     when GetX.TryMatchGetField(invocation, recursion.SemanticModel, recursion.CancellationToken, out var reflectedMember, out _, out _) &&
