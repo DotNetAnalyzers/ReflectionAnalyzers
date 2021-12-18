@@ -42,6 +42,8 @@ internal readonly struct GetMethod
                 => Match(invocation, semanticModel, cancellationToken),
             MemberAccessExpressionSyntax { Expression: { } inner }
                 => Match(inner, semanticModel, cancellationToken),
+            MemberBindingExpressionSyntax { Parent.Parent: ConditionalAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation } }
+                => Match(invocation, semanticModel, cancellationToken),
             IdentifierNameSyntax identifierName
                 when semanticModel.TryGetSymbol(identifierName, cancellationToken, out ILocalSymbol? local) &&
                      AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } value
