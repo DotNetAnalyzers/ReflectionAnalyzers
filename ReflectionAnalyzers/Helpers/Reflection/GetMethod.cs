@@ -29,6 +29,9 @@ internal readonly struct GetMethod
 
     internal IMethodSymbol? Single => this.Member.Match == FilterMatch.Single ? (IMethodSymbol)this.Member.Symbol! : null;
 
+    /// <summary>
+    /// Check if <paramref name="candidate"/> is a call to Type.GetMethod.
+    /// </summary>
     internal static GetMethod? Match(ExpressionSyntax candidate, SemanticModel semanticModel, CancellationToken cancellationToken)
     {
         return candidate switch
@@ -47,6 +50,9 @@ internal readonly struct GetMethod
         };
     }
 
+    /// <summary>
+    /// Check if <paramref name="candidate"/> is a call to Type.GetMethod.
+    /// </summary>
     internal static GetMethod? Match(InvocationExpressionSyntax candidate, SemanticModel semanticModel, CancellationToken cancellationToken)
     {
         if (candidate.TryGetTarget(KnownSymbol.Type.GetMethod, semanticModel, cancellationToken, out var target) &&
