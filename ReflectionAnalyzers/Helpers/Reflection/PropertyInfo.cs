@@ -1,7 +1,9 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -22,10 +24,8 @@
             switch (expression)
             {
                 case InvocationExpressionSyntax invocation
-                    when GetX.TryMatchGetProperty(invocation, semanticModel, cancellationToken, out var member, out _, out _, out _) &&
-                         member.ReflectedType is { } &&
-                         member.Symbol is IPropertySymbol property:
-                    return new PropertyInfo(member.ReflectedType, property);
+                    when GetProperty.Match(invocation, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IPropertySymbol property } }:
+                    return new PropertyInfo(reflectedType, property);
             }
 
             if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
