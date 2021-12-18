@@ -3,7 +3,9 @@
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -33,12 +35,12 @@
                 TryGetCreatedType(createInstance, invocation, context, out var createdType, out var typeSource))
             {
                 if (!createInstance.IsGenericMethod &&
-                    ReturnValue.ShouldCast(invocation, createdType, context.SemanticModel))
+                    ReturnValue.ShouldCast(invocation, createdType, context.SemanticModel) is { } expression)
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
                             Descriptors.REFL001CastReturnValue,
-                            invocation.GetLocation(),
+                            expression.GetLocation(),
                             ImmutableDictionary<string, string?>.Empty.Add(
                                 nameof(TypeSyntax),
                                 createdType.ToString(context)),

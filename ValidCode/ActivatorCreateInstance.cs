@@ -29,9 +29,9 @@ namespace ValidCode
 
         public T Create<T>() => Activator.CreateInstance<T>();
 
-        public static object? Foo<T>(object _) => Activator.CreateInstance(typeof(T), "foo");
+        public static object? Foo<T>(object _) => (T)Activator.CreateInstance(typeof(T), "foo")!;
 
-        public static object? Foo<T>() => Activator.CreateInstance(typeof(T));
+        public static object? Foo<T>() => (T?)Activator.CreateInstance(typeof(T));
 
         public class ImplicitDefaultConstructor
         {

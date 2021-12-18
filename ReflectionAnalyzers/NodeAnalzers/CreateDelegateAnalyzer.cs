@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Immutable;
     using System.Diagnostics.CodeAnalysis;
+
     using Gu.Roslyn.AnalyzerExtensions;
+
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -36,12 +38,12 @@
                 MethodInfo.Find(methodArg.Expression, context.SemanticModel, context.CancellationToken) is { } methodInfo &&
                 context.SemanticModel.TryGetType(typeOf.Type, context.CancellationToken, out var delegateType))
             {
-                if (ReturnValue.ShouldCast(invocation, delegateType, context.SemanticModel))
+                if (ReturnValue.ShouldCast(invocation, delegateType, context.SemanticModel) is { } expression)
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
                             Descriptors.REFL001CastReturnValue,
-                            invocation.GetLocation(),
+                            expression.GetLocation(),
                             ImmutableDictionary<string, string?>.Empty.Add(
                                 nameof(TypeSyntax),
                                 delegateType.ToString(context)),

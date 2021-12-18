@@ -37,12 +37,12 @@
                             nameof(CastReturnValueFix),
                             diagnostic);
                     }
-                    else if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is InvocationExpressionSyntax invocation)
+                    else if (syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is ExpressionSyntax expression)
                     {
                         context.RegisterCodeFix(
                             $"Cast to {typeString}.",
                             (editor, _) => editor.ReplaceNode(
-                                invocation,
+                                expression,
                                 x => SyntaxFactory.CastExpression(SyntaxFactory.ParseTypeName(typeString!), x)),
                             nameof(CastReturnValueFix),
                             diagnostic);

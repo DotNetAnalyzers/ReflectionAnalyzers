@@ -52,12 +52,12 @@
                 if (GetMethod.Match(invocation.Expression, context.SemanticModel, context.CancellationToken) is { Single: { } method })
                 {
                     if (!method.ReturnsVoid &&
-                        ReturnValue.ShouldCast(invocation, method.ReturnType, context.SemanticModel))
+                        ReturnValue.ShouldCast(invocation, method.ReturnType, context.SemanticModel) is { } expression)
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 Descriptors.REFL001CastReturnValue,
-                                invocation.GetLocation(),
+                                expression.GetLocation(),
                                 ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(TypeSyntax),
                                     method.ReturnType.ToString(context)),
@@ -142,12 +142,12 @@
                 }
                 else if (GetConstructor.Match(invocation.Expression, context.SemanticModel, context.CancellationToken) is { Single: { } ctor })
                 {
-                    if (ReturnValue.ShouldCast(invocation, ctor.ReturnType, context.SemanticModel))
+                    if (ReturnValue.ShouldCast(invocation, ctor.ReturnType, context.SemanticModel) is { } expression)
                     {
                         context.ReportDiagnostic(
                             Diagnostic.Create(
                                 Descriptors.REFL001CastReturnValue,
-                                invocation.GetLocation(),
+                                expression.GetLocation(),
                                 ImmutableDictionary<string, string?>.Empty.Add(
                                     nameof(TypeSyntax),
                                     ctor.ContainingType.ToString(context)),

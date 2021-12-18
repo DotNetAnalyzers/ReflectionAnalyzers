@@ -5,20 +5,29 @@
 
     internal static class ReturnValue
     {
-        internal static bool ShouldCast(InvocationExpressionSyntax invocation, ITypeSymbol returnType, SemanticModel semanticModel)
+        internal static ExpressionSyntax? ShouldCast(InvocationExpressionSyntax invocation, ITypeSymbol returnType, SemanticModel semanticModel)
         {
             if (returnType != KnownSymbol.Object &&
                 semanticModel.IsAccessible(invocation.SpanStart, returnType))
             {
-                return invocation.Parent switch
+                return Expression(invocation);
+
+                static ExpressionSyntax? Expression(ExpressionSyntax candidate)
                 {
-                    EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax variableDeclarator }
-                        => !IsDiscardName(variableDeclarator.Identifier.ValueText),
-                    _ => false,
-                };
+                    return candidate.Parent switch
+                    {
+                        EqualsValueClauseSyntax { Parent: VariableDeclaratorSyntax variableDeclarator }
+                            when !IsDiscardName(variableDeclarator.Identifier.ValueText)
+                            => candidate,
+                        ConditionalAccessExpressionSyntax conditionalAccess => Expression(conditionalAccess),
+                        ArrowExpressionClauseSyntax => candidate,
+                        ReturnStatementSyntax => candidate,
+                        _ => null,
+                    };
+                }
             }
 
-            return false;
+            return null;
         }
 
         private static bool IsDiscardName(string text)
