@@ -29,6 +29,26 @@
             return TryMatchGetX(invocation, KnownSymbol.Type.GetNestedType, semanticModel, cancellationToken, out member, out name, out flags);
         }
 
+        internal static InvocationExpressionSyntax? FindInvocation(ExpressionSyntax candidate, SemanticModel semanticModel, CancellationToken cancellationToken)
+        {
+            return candidate switch
+            {
+                InvocationExpressionSyntax invocation
+                    => invocation,
+                PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression, Operand: InvocationExpressionSyntax invocation }
+                    => invocation,
+                MemberAccessExpressionSyntax { Expression: { } inner }
+                    => FindInvocation(inner, semanticModel, cancellationToken),
+                MemberBindingExpressionSyntax { Parent.Parent: ConditionalAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation } }
+                    => invocation,
+                IdentifierNameSyntax identifierName
+                    when semanticModel.TryGetSymbol(identifierName, cancellationToken, out ILocalSymbol? local) &&
+                         AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } value
+                    => FindInvocation(value, semanticModel, cancellationToken),
+                _ => null,
+            };
+        }
+
         /// <summary>
         /// Handles GetField, GetEvent, GetMember, GetMethod...
         /// </summary>

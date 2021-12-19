@@ -5,7 +5,6 @@ using System.Threading;
 using Gu.Roslyn.AnalyzerExtensions;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 internal readonly struct GetConstructor
@@ -32,22 +31,12 @@ internal readonly struct GetConstructor
     /// </summary>
     internal static GetConstructor? Match(ExpressionSyntax candidate, SemanticModel semanticModel, CancellationToken cancellationToken)
     {
-        return candidate switch
+        if (GetX.FindInvocation(candidate, semanticModel, cancellationToken) is { } invocation)
         {
-            InvocationExpressionSyntax invocation
-                => Match(invocation, semanticModel, cancellationToken),
-            PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression, Operand: InvocationExpressionSyntax invocation }
-                => Match(invocation, semanticModel, cancellationToken),
-            MemberAccessExpressionSyntax { Expression: { } inner }
-                => Match(inner, semanticModel, cancellationToken),
-            MemberBindingExpressionSyntax { Parent.Parent: ConditionalAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation } }
-                => Match(invocation, semanticModel, cancellationToken),
-            IdentifierNameSyntax identifierName
-                when semanticModel.TryGetSymbol(identifierName, cancellationToken, out ILocalSymbol? local) &&
-                     AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } value
-                => Match(value, semanticModel, cancellationToken),
-            _ => null,
-        };
+            return Match(invocation, semanticModel, cancellationToken);
+        }
+
+        return null;
     }
 
     /// <summary>
