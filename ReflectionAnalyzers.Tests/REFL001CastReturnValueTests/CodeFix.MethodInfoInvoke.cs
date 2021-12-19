@@ -51,7 +51,7 @@ namespace N
         public static int M() => 0;
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(M)).Invoke(null, null)", expression);
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.NullableEnabled);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [Test]
@@ -80,7 +80,7 @@ namespace N
         public static int M() => 0;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.NullableEnabled);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
             [Test]
@@ -115,7 +115,7 @@ namespace N
         public static int M() => 0;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.NullableEnabled);
+                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
         }
     }

@@ -26,7 +26,7 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code, settings: LibrarySettings.NullableEnabled);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]
@@ -46,7 +46,7 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code, settings: LibrarySettings.NullableEnabled);
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
         [Test]

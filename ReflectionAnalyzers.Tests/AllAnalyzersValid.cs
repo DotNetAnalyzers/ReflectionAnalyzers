@@ -26,8 +26,7 @@
             settings: LibrarySettings.Roslyn);
 
         private static readonly Solution ValidCodeProject = CodeFactory.CreateSolution(
-            ProjectFile.Find("ValidCode.csproj"),
-            settings: LibrarySettings.NullableEnabled);
+            ProjectFile.Find("ValidCode.csproj"));
 
         [Test]
         public static void NotEmpty()
