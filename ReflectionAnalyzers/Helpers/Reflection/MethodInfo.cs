@@ -22,9 +22,9 @@
         {
             return expression switch
             {
-                InvocationExpressionSyntax invocation
-                    when GetMethod.Match(invocation, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IMethodSymbol method } }
-                    => new MethodInfo(reflectedType, method),
+                { } candidate
+                    when GetMethod.Match(candidate, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IMethodSymbol symbol } }
+                    => new MethodInfo(reflectedType, symbol),
 
                 InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
                     when semanticModel.TryGetSymbol(invocation, KnownSymbol.PropertyInfo.GetGetMethod, cancellationToken, out _) &&
