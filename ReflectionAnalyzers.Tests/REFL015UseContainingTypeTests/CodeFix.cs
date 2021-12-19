@@ -29,7 +29,7 @@ namespace N
 
      class C : B
     {
-        public object Get => typeof(↓C).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
+        public object? Get => typeof(↓C).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 }";
 
@@ -40,7 +40,7 @@ namespace N
 
      class C : B
     {
-        public object Get => typeof(B).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
+        public object? Get => typeof(B).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 }";
 
@@ -59,6 +59,7 @@ namespace N
         public static void GetPrivateMemberTypeof(string call)
         {
             var cBase = @"
+#pragma warning disable CS8618
 namespace N
 {
     using System;
@@ -117,6 +118,7 @@ namespace N
         public static void GetPrivateMemberThisGetType(string call)
         {
             var cBase = @"
+#pragma warning disable CS8618
 namespace N
 {
     using System;
@@ -285,7 +287,7 @@ namespace N
 
      class C : B
     {
-        public object Get => typeof(↓C).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
+        public object? Get => typeof(↓C).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 }";
 
@@ -296,7 +298,7 @@ namespace N
 
      class C : B
     {
-        public object Get => typeof(B).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
+        public object? Get => typeof(B).GetField(""f"", BindingFlags.NonPublic | BindingFlags.Instance);
     }
 }";
 

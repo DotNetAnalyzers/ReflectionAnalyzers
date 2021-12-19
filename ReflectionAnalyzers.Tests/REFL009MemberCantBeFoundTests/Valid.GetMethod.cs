@@ -28,7 +28,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M() => typeof(C).GetMethod(nameof(this.ToString));
+        public MethodInfo? M() => typeof(C).GetMethod(nameof(this.ToString));
 
         public static int PublicStatic() => 0;
 
@@ -77,7 +77,7 @@ namespace N
             var methodInfo = typeof(C).GetMethod(nameof(this.ToString));
         }
 
-        public override string ToString() => base.ToString();
+        public override string? ToString() => base.ToString();
     }
 }";
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -96,7 +96,7 @@ namespace N
             var methodInfo = typeof(C).GetMethod(nameof(this.ToString));
         }
 
-        public new string ToString() => base.ToString();
+        public new string? ToString() => base.ToString();
     }
 }";
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -137,7 +137,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M() => typeof(string).GetMethod(nameof(IConvertible.ToBoolean));
+        public MethodInfo? M() => typeof(string).GetMethod(nameof(IConvertible.ToBoolean));
     }
 }".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -172,7 +172,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
+        public MethodInfo? M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
                 RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -198,7 +198,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M1<T>()
+        public MethodInfo? M1<T>()
             where T : C
         {
             return typeof(T).GetMethod(nameof(this.M1));

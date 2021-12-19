@@ -34,6 +34,7 @@ namespace N
         public static void DefaultMemberIsEvent()
         {
             var code = @"
+#pragma warning disable CS8618
 namespace N
 {
     using System;

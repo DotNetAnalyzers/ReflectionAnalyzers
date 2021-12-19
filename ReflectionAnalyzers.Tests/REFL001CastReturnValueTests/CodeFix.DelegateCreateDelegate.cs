@@ -11,10 +11,12 @@
             private static readonly CastReturnValueFix Fix = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
 
-            [Test]
-            public static void AssigningLocal()
+            [TestCase("typeof(C).GetMethod(nameof(M))")]
+            [TestCase("typeof(C).GetMethod(nameof(M))!")]
+            public static void AssigningLocal(string expression)
             {
                 var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -30,9 +32,10 @@ namespace N
 
         public static int M() => 0;
     }
-}";
+}".AssertReplace("typeof(C).GetMethod(nameof(M))", expression);
 
                 var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -48,7 +51,7 @@ namespace N
 
         public static int M() => 0;
     }
-}";
+}".AssertReplace("typeof(C).GetMethod(nameof(M))", expression);
                 RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
             }
 
@@ -56,6 +59,7 @@ namespace N
             public static void Walk()
             {
                 var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -75,6 +79,7 @@ namespace N
 }";
 
                 var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;

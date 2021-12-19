@@ -46,6 +46,7 @@ namespace N
 }";
 
             var code = @"
+#pragma warning disable CS8618
 namespace N
 {
     using System;
@@ -53,7 +54,7 @@ namespace N
 
     public sealed class C : I
     {
-        public MemberInfo Get() => typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public MemberInfo? Get() => typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         internal event EventHandler E;
 

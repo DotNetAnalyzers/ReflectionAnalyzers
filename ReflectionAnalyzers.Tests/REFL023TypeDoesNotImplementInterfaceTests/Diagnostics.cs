@@ -14,11 +14,12 @@
         public static void GetInterface(string call)
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     public class C
     {
-        public object Get() => typeof(C).GetInterface(↓""System.Collections.Generic.IEnumerable`1"");
+        public object? Get() => typeof(C).GetInterface(↓""System.Collections.Generic.IEnumerable`1"");
     }
 }".AssertReplace("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")", call);
 

@@ -84,6 +84,7 @@ namespace N
             public static void OverloadedConstructorsStringAndStringBuilder(string call)
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -111,6 +112,7 @@ namespace N
             public static void OverloadedConstructorsStringAndInt(string call)
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;

@@ -33,7 +33,7 @@ namespace N
 {
     public class C
     {
-        public object M(C c) => typeof(C).GetMethod(↓""MISSING"");
+        public object? M(C c) => typeof(C).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
@@ -52,7 +52,7 @@ namespace N
 {
     public sealed class C
     {
-        public object M(C c) => typeof(C).GetMethod(↓""MISSING"");
+        public object? M(C c) => typeof(C).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
@@ -135,7 +135,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M(Type unused) => typeof(string).GetMethod(↓""MISSING"");
+        public MethodInfo? M(Type unused) => typeof(string).GetMethod(↓""MISSING"");
     }
 }".AssertReplace("typeof(string).GetMethod(↓\"MISSING\")", type);
 

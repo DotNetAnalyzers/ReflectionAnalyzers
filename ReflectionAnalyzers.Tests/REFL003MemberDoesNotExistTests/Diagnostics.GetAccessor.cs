@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -16,13 +16,14 @@ namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
             public static void MissingGetter(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     class C
     {
         private int p;
 
-        public object Get => typeof(C).GetProperty(nameof(this.P)).↓GetMethod;
+        public object? Get => typeof(C).GetProperty(nameof(this.P)).↓GetMethod;
 
         public int P
         {
@@ -39,11 +40,12 @@ namespace N
             public static void MissingSetter(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     class C
     {
-        public object Get => typeof(C).GetProperty(nameof(P)).↓SetMethod;
+        public object? Get => typeof(C).GetProperty(nameof(P)).↓SetMethod;
 
 
         public int P { get; }

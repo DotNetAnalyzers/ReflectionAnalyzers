@@ -15,6 +15,7 @@
             public static void SingleUnconstrained()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -37,6 +38,7 @@ namespace N
             public static void ConstrainedParameter(string constraint, string arg)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -63,6 +65,7 @@ namespace N
             public static void Ternary(string condition)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;

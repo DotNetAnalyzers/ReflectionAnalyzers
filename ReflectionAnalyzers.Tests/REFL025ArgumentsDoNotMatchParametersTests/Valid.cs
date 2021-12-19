@@ -38,6 +38,7 @@ namespace N
             public static void ImplicitDefaultConstructor(string call)
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -100,6 +101,7 @@ namespace N
             public static void OneConstructorSingleStringParameter(string call)
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -143,6 +145,7 @@ namespace N
             public static void OverloadedConstructorsStringAndStringBuilder(string call)
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -172,6 +175,7 @@ namespace N
             public static void OverloadedConstructorsStringAndInt(string call)
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -200,6 +204,7 @@ namespace N
             public static void OverloadedConstructorsDifferentLength(string call)
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -230,6 +235,7 @@ namespace N
             public static void ParamsConstructor(string call)
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -282,7 +288,7 @@ namespace N
 
     public class C
     {
-        public static object M(Type type) => Activator.CreateInstance(type, ""foo"");
+        public static object? M(Type type) => Activator.CreateInstance(type, ""foo"");
     }
 }";
 
@@ -299,7 +305,7 @@ namespace N
 
     public class C
     {
-        public static object M<T>() => Activator.CreateInstance(typeof(T), ""foo"");
+        public static object? M<T>() => Activator.CreateInstance(typeof(T), ""foo"");
     }
 }";
 
@@ -310,6 +316,7 @@ namespace N
             public static void Issue202()
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     using System;

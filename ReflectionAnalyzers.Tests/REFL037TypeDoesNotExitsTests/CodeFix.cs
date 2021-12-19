@@ -26,7 +26,7 @@ namespace N
 
     public class C
     {
-        public static object Get => Type.GetType(↓""Int32"");
+        public static object? Get => Type.GetType(↓""Int32"");
     }
 }".AssertReplace("Type.GetType(↓\"Int32\")", type);
 
@@ -37,7 +37,7 @@ namespace N
 
     public class C
     {
-        public static object Get => Type.GetType(""System.Int32"");
+        public static object? Get => Type.GetType(""System.Int32"");
     }
 }".AssertReplace("Type.GetType(\"System.Int32\")", fixedType);
 
@@ -56,7 +56,7 @@ namespace N
 
     public class C
     {
-        public static object Get => typeof(int).Assembly.GetType(↓""Int32"");
+        public static object? Get => typeof(int).Assembly.GetType(↓""Int32"");
     }
 }".AssertReplace("typeof(int).Assembly.GetType(↓\"Int32\")", type);
 
@@ -67,7 +67,7 @@ namespace N
 
     public class C
     {
-        public static object Get => typeof(int).Assembly.GetType(""System.Int32"");
+        public static object? Get => typeof(int).Assembly.GetType(""System.Int32"");
     }
 }".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", fixedType);
 

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -16,6 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
         public static void Discarding(string call)
         {
             var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -40,6 +41,7 @@ namespace N
         public static void WhenUsedInAssert(string call)
         {
             var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using NUnit.Framework;
@@ -64,6 +66,7 @@ namespace N
         public static void AssigningLocal()
         {
             var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -84,6 +87,7 @@ namespace N
         public static void AssigningField()
         {
             var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -106,6 +110,7 @@ namespace N
         public static void UsingInExpression()
         {
             var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C

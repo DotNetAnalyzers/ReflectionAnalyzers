@@ -135,6 +135,7 @@ namespace N
             public static void NestedType()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -193,6 +194,7 @@ namespace N
             public static void Ternary()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -225,6 +227,7 @@ namespace N
             public static void TernaryTwoArguments()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -257,6 +260,7 @@ namespace N
             public static void IfElse()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -294,6 +298,7 @@ namespace N
             public static void IfReturn()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -329,6 +334,7 @@ namespace N
             public static void NestedIf()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -336,7 +342,7 @@ namespace N
 
     public class C
     {
-        public Type Get<T>()
+        public Type? Get<T>()
         {
             if (typeof(T).IsValueType)
             {

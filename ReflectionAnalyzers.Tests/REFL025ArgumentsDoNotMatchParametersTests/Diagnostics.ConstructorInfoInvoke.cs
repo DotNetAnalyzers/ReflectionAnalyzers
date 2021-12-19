@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -11,9 +11,12 @@ namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters);
 
             [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { ↓1.2 })")]
+            [TestCase("GetConstructor(new[] { typeof(int) })!.Invoke(new object[] { ↓1.2 })")]
+            [TestCase("GetConstructor(new[] { typeof(int) })?.Invoke(new object[] { ↓1.2 })")]
             public static void SingleIntParameter(string call)
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C

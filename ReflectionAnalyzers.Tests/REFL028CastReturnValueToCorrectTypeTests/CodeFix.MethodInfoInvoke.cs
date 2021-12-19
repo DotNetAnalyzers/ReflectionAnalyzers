@@ -15,26 +15,28 @@
             public static void WhenCastingToWrongType()
             {
                 var before = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     using System;
 
     public class C
     {
-        public static object Get => (↓string)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { 1 });
+        public static object? Get => (↓string)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { 1 });
 
         public static int M(int i) => i;
     }
 }";
 
                 var after = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     using System;
 
     public class C
     {
-        public static object Get => (int)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { 1 });
+        public static object? Get => (int)typeof(C).GetMethod(nameof(M)).Invoke(null, new object[] { 1 });
 
         public static int M(int i) => i;
     }

@@ -79,7 +79,7 @@ namespace N
 {
     public class C
     {
-        public object Get => typeof(C).GetProperty↓(""Item"");
+        public object? Get => typeof(C).GetProperty↓(""Item"");
 
         public int this[int i] => 0;
 
@@ -94,7 +94,7 @@ namespace N
 
     public class C
     {
-        public object Get => typeof(C).GetProperty(""Item"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null);
+        public object? Get => typeof(C).GetProperty(""Item"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int) }, null);
 
         public int this[int i] => 0;
 
@@ -110,7 +110,7 @@ namespace N
 
     public class C
     {
-        public object Get => typeof(C).GetProperty(""Item"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int), typeof(int) }, null);
+        public object? Get => typeof(C).GetProperty(""Item"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, typeof(int), new[] { typeof(int), typeof(int) }, null);
 
         public int this[int i] => 0;
 

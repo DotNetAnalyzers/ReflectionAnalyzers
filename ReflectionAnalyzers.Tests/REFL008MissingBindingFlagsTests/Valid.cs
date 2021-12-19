@@ -32,7 +32,7 @@ namespace N
 
     class C
     {
-        public MethodInfo Get(Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+        public MethodInfo? Get(Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
 
         public static int Static() => 0;
 
@@ -59,7 +59,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M<T>(Type unused) => typeof(T).GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance);
+        public MethodInfo? M<T>(Type unused) => typeof(T).GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance);
     }
 }".AssertReplace("GetMethod(nameof(this.GetHashCode), BindingFlags.Public | BindingFlags.Instance)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -75,7 +75,7 @@ namespace N
 
     class C
     {
-        public MethodInfo Get() => typeof(C).GetMethod(nameof(this.M));
+        public MethodInfo? Get() => typeof(C).GetMethod(nameof(this.M));
 
         public void M()
         {
@@ -107,7 +107,7 @@ namespace N
 
     class C
     {
-        public MethodInfo Get(Type type) => type.GetMethod(""M"");
+        public MethodInfo? Get(Type type) => type.GetMethod(""M"");
     }
 }".AssertReplace("GetMethod(\"M\")", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);

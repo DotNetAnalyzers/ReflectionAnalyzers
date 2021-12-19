@@ -117,7 +117,7 @@ namespace N
 
     public class C
     {
-        public PropertyInfo Get() => typeof(C).GetProperty(""Item"");
+        public PropertyInfo? Get() => typeof(C).GetProperty(""Item"");
 
         public int this[int p1] => 0;
     }
@@ -138,7 +138,7 @@ namespace N
 
     public class C
     {
-        public PropertyInfo Get() => typeof(C).GetProperty(""Bar"");
+        public PropertyInfo? Get() => typeof(C).GetProperty(""Bar"");
 
         [IndexerName(""Bar"")]
         public int this[int p1] => 0;
@@ -172,7 +172,7 @@ namespace N
         }
 
         [Test]
-        public static void GetMissingPropertyElvis()
+        public static void GetMissingPropertyConditional()
         {
             var code = @"
 namespace N
@@ -181,7 +181,7 @@ namespace N
     {
         public C(C c)
         {
-            var value = c.GetType().GetProperty(""P"")?.SetMethod.Invoke(c, null);
+            var value = c.GetType().GetProperty(""P"")?.SetMethod?.Invoke(c, null);
         }
     }
 }";

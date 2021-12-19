@@ -36,7 +36,7 @@ namespace N
 {
     public class C
     {
-        public object Get() => this.GetType().GetMethod(nameof(Add));
+        public object? Get() => this.GetType().GetMethod(nameof(Add));
 
         private static int Add(int x, int y) => x + y;
     }
@@ -54,7 +54,7 @@ namespace N
 
     public class C
     {
-        public MemberInfo M() => this.GetType().GetMethod(nameof(this.Add));
+        public MemberInfo? M() => this.GetType().GetMethod(nameof(this.Add));
 
         private int Add(int x, int y) => x + y;
     }
@@ -82,7 +82,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M1<T>(Type unused)
+        public MethodInfo? M1<T>(Type unused)
             where T : C
         {
             return typeof(T).GetMethod(nameof(this.M2));
@@ -104,15 +104,16 @@ namespace N
         public static void Operators(string call)
         {
             var code = @"
+#pragma warning disable CS8600, CS8602, CS8625
 namespace N
 {
     using System.Reflection;
 
     public class C
     {
-        public object Get(BindingFlags unused) => typeof(C).GetMethod(""op_Addition"", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null });
+        public object? Get(BindingFlags unused) => typeof(C).GetMethod(""op_Addition"", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly).Invoke(null, new object[] { null, null });
 
-        public static C operator +(C left, C right) => null;
+        public static C? operator +(C left, C right) => null;
 
         public static bool operator ==(C left, C right) => false;
 
@@ -120,9 +121,9 @@ namespace N
 
         public static explicit operator int(C c) => 0;
 
-        public static explicit operator C(int c) => null;
+        public static explicit operator C?(int c) => null;
 
-        public override bool Equals(object o) => false;
+        public override bool Equals(object? o) => false;
 
         public override int GetHashCode() => 0;
     }
@@ -226,6 +227,7 @@ namespace N
         public static void EventAccessors(string before)
         {
             var code = @"
+#pragma warning disable CS8618
 namespace N
 {
     using System;
@@ -233,7 +235,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get() => typeof(C).GetMethod(""add_E"");
+        public MemberInfo? Get() => typeof(C).GetMethod(""add_E"");
 
         public event EventHandler E;
 
@@ -255,7 +257,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get() => typeof(C).GetMethod(""get_P"");
+        public MemberInfo? Get() => typeof(C).GetMethod(""get_P"");
 
         public int P { get; set; }
     }
@@ -313,6 +315,7 @@ namespace N
         public static void IgnoresDebuggerDisplay()
         {
             var code = @"
+#pragma warning disable CS8618
 namespace N
 {
     [System.Diagnostics.DebuggerDisplay(""{Name}"")]
@@ -493,6 +496,7 @@ namespace N
         public static void MemberInBase(string call)
         {
             var cBase = @"
+#pragma warning disable CS8618
 namespace N
 {
     using System;
@@ -548,7 +552,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get => typeof(Control).GetMethod(""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+        public MemberInfo? Get => typeof(Control).GetMethod(""CreateControl"", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
 }";
 
@@ -566,7 +570,7 @@ namespace N
 
     class C : Control
     {
-        public object Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+        public object? Get => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
 }";
 

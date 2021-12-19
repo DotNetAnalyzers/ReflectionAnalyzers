@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -25,7 +25,7 @@ namespace N
 
     class C
     {
-        public static object Get(Type type) => type.GetMethod(""M"", ↓BindingFlags.Public);
+        public static object? Get(Type type) => type.GetMethod(""M"", ↓BindingFlags.Public);
     }
 }".AssertReplace("GetMethod(\"M\", ↓BindingFlags.Public)", call);
 

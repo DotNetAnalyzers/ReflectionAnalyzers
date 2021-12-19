@@ -16,6 +16,7 @@
         public static void StaticStringInt(string type)
         {
             var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -32,6 +33,7 @@ namespace N
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -58,6 +60,7 @@ namespace N
         public static void StaticVoid(string type)
         {
             var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -74,6 +77,7 @@ namespace N
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -101,6 +105,7 @@ namespace N
         public static void StaticStringVoid(string type)
         {
             var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -117,6 +122,7 @@ namespace N
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -143,6 +149,7 @@ namespace N
         public static void StaticStringVoidFirstArg(string type)
         {
             var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -160,6 +167,7 @@ namespace N
 }".AssertReplace("typeof(Action<int>)", type);
 
             var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -187,6 +195,7 @@ namespace N
         public static void StaticStringStringVoidFirstArg(string type)
         {
             var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -204,6 +213,7 @@ namespace N
 }".AssertReplace("typeof(Action<int>)", type);
 
             var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -229,6 +239,7 @@ namespace N
         public static void InstanceStringInt(string type)
         {
             var before = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -245,6 +256,7 @@ namespace N
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -271,6 +283,7 @@ namespace N
         public static void InstanceVoid(string type)
         {
             var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -287,6 +300,7 @@ namespace N
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -313,6 +327,7 @@ namespace N
         public static void InstanceVoidWithTarget(string type)
         {
             var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -330,6 +345,7 @@ namespace N
 }".AssertReplace("typeof(Func<string>)", type);
 
             var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -353,6 +369,7 @@ namespace N
         public static void StaticStringIntCustomDelegate()
         {
             var before = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -371,6 +388,7 @@ namespace N
 }";
 
             var after = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -395,6 +413,7 @@ namespace N
         public static void GetGetMethodReturnTypeInstance()
         {
             var before = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -413,6 +432,7 @@ namespace N
 }";
 
             var after = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -437,6 +457,7 @@ namespace N
         public static void GetGetMethodReturnTypeStatic()
         {
             var before = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -455,6 +476,7 @@ namespace N
 }";
 
             var after = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -479,6 +501,7 @@ namespace N
         public static void GetSetMethodReturnTypeInstance()
         {
             var before = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -497,6 +520,7 @@ namespace N
 }";
 
             var after = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -521,6 +545,7 @@ namespace N
         public static void GetSetMethodReturnTypeStatic()
         {
             var before = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -539,6 +564,7 @@ namespace N
 }";
 
             var after = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -563,6 +589,7 @@ namespace N
         public static void StaticWithContainingAsArgument()
         {
             var before = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;
@@ -581,6 +608,7 @@ namespace N
 }";
 
             var after = @"
+#pragma warning disable CS8602, CS8604
 namespace N
 {
     using System;

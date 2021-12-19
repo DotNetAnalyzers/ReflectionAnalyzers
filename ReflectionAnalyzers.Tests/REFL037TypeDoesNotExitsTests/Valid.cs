@@ -28,7 +28,7 @@ namespace N
 
     public class C
     {
-        public static object Get => Type.GetType(""System.Int32"");
+        public static Type? Get => Type.GetType(""System.Int32"");
     }
 }".AssertReplace("System.Int32", type);
 
@@ -45,7 +45,7 @@ namespace N
 
     public class C
     {
-        public static object Get => Type.GetType(""system.int32"", true, true);
+        public static object? Get => Type.GetType(""system.int32"", true, true);
     }
 }".AssertReplace("system.int32", type);
 
@@ -69,7 +69,7 @@ namespace N
 
     public class C
     {
-        public static Object Get() => typeof(int).Assembly.GetType(""System.Int32"");
+        public static Type? Get() => typeof(int).Assembly.GetType(""System.Int32"");
     }
 }".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", call);
 
@@ -90,7 +90,7 @@ namespace N
 
     public class C
     {
-        public static Object Get => typeof(FileDialog).Assembly.GetType(""System.Windows.Forms.FileDialog"");
+        public static Type? Get => typeof(FileDialog).Assembly.GetType(""System.Windows.Forms.FileDialog"");
     }
 }".AssertReplace("typeof(FileDialog).Assembly.GetType(\"System.Windows.Forms.FileDialog\")", call);
 

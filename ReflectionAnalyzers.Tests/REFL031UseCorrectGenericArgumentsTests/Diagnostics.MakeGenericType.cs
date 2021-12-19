@@ -109,6 +109,7 @@ namespace N
             public static void NestedType()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -145,6 +146,7 @@ namespace N
             public static void TernaryWrongOrder()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -177,6 +179,7 @@ namespace N
             public static void TernaryTwoArgumentsWrongOrder()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;

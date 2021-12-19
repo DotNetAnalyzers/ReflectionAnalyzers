@@ -13,6 +13,7 @@
         public static void ParameterlessGeneric()
         {
             var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -30,6 +31,7 @@ namespace N
         public static void WithAccessibleParameterSingleLine()
         {
             var before = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     class C
@@ -41,6 +43,7 @@ namespace N
 }";
 
             var after = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     class C

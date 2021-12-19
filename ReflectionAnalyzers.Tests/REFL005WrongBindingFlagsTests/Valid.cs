@@ -49,7 +49,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M() => typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public MethodInfo? M() => typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         public static int Static() => 0;
 
@@ -82,7 +82,7 @@ namespace N
 
     class C
     {
-        public MethodInfo Get() =>  typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public MethodInfo? Get() =>  typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         public new string ToString() => string.Empty;
     }
@@ -108,7 +108,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M(int i, Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        public MethodInfo? M(int i, Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static double Static(int value) => value;
 
@@ -142,7 +142,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M(Type type) => type.GetMethod(""M"");
+        public MethodInfo? M(Type type) => type.GetMethod(""M"");
     }
 }".AssertReplace("GetMethod(\"M\")", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -165,7 +165,7 @@ namespace N
 
     class C
     {
-        public MethodInfo Get() => typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
+        public MethodInfo? Get() => typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
 
         public BindingFlags M() => Static;
     }
@@ -198,7 +198,7 @@ namespace N
 
     class C
     {
-        public PropertyInfo Get() =>  typeof(C).GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public PropertyInfo? Get() =>  typeof(C).GetProperty(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         public static int Static => 0;
 
@@ -241,7 +241,7 @@ namespace N
 
     class C
     {
-        public object Get(BindingFlags unused) => typeof(C).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
+        public object? Get(BindingFlags unused) => typeof(C).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
 
         public static class PublicStatic
         {

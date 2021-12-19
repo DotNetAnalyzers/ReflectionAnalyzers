@@ -14,6 +14,7 @@
             public static void PassingNullAsObj(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -22,7 +23,7 @@ namespace N
         {
         }
 
-        public object Get() => typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 });
+        public object? Get() => typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 });
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })", call);
 
@@ -35,6 +36,7 @@ namespace N
             public static void InvokeWithGetUninitializedObjectAndArgument(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -49,7 +51,7 @@ namespace N
         {
         }
 
-        public static object Get(String text) => typeof(C).GetConstructor(Type.EmptyTypes).Invoke(text, null);
+        public static object? Get(String text) => typeof(C).GetConstructor(Type.EmptyTypes).Invoke(text, null);
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(text, null)", call);
 

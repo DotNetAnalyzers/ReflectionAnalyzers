@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
+﻿namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -14,6 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
             public static void WhenNotGeneric()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C

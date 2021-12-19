@@ -21,7 +21,7 @@ namespace N
 
     class C
     {
-        public object Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null);
+        public object? Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null);
 
         public static IComparable Static(IComparable i) => i;
 
@@ -39,7 +39,7 @@ namespace N
 
     class C
     {
-        public object Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
+        public object? Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
 
         public static IComparable Static(IComparable i) => i;
 
@@ -77,7 +77,7 @@ namespace Project2
 
     public class C2
     {
-        public object Get() => typeof(C1).GetMethod(nameof(C1.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null);
+        public object? Get() => typeof(C1).GetMethod(nameof(C1.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null);
     }
 }";
 
@@ -91,7 +91,7 @@ namespace Project2
 
     public class C2
     {
-        public object Get() => typeof(C1).GetMethod(nameof(C1.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
+        public object? Get() => typeof(C1).GetMethod(nameof(C1.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
     }
 }";
             var message = "Use the same type as the parameter. Expected: IComparable.";
@@ -109,7 +109,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof(C).GetMethod(nameof(M), new[] { typeof(Type), typeof(↓Dictionary<string, object>) });
+        public object? Get => typeof(C).GetMethod(nameof(M), new[] { typeof(Type), typeof(↓Dictionary<string, object>) });
 
         public void M(Type type, IReadOnlyDictionary<string, object> parameters)
         {
@@ -125,7 +125,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof(C).GetMethod(nameof(M), new[] { typeof(Type), typeof(IReadOnlyDictionary<string, object>) });
+        public object? Get => typeof(C).GetMethod(nameof(M), new[] { typeof(Type), typeof(IReadOnlyDictionary<string, object>) });
 
         public void M(Type type, IReadOnlyDictionary<string, object> parameters)
         {
@@ -148,7 +148,7 @@ namespace N
 
     class C
     {
-        public object Get
+        public object? Get
         {
             get
             {
@@ -171,7 +171,7 @@ namespace N
 
     class C
     {
-        public object Get
+        public object? Get
         {
             get
             {

@@ -10,10 +10,13 @@
             private static readonly InvokeAnalyzer Analyzer = new();
             private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
 
-            [Test]
-            public static void Simple()
+            [TestCase("typeof(C).GetMethod(nameof(M)).Invoke(null, null)")]
+            [TestCase("typeof(C).GetMethod(nameof(M))!.Invoke(null, null)")]
+            [TestCase("typeof(C).GetMethod(nameof(M))?.Invoke(null, null)")]
+            public static void Simple(string expression)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -25,7 +28,7 @@ namespace N
 
         public static int M() => 0;
     }
-}";
+}".AssertReplace("typeof(C).GetMethod(nameof(M)).Invoke(null, null)", expression);
 
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
             }
@@ -34,6 +37,7 @@ namespace N
             public static void Walk()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C

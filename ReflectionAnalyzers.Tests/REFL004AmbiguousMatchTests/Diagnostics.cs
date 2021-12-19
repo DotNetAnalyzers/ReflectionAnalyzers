@@ -30,7 +30,7 @@ namespace N
     {      
         public int this[int i] => 0;
 
-        public PropertyInfo M() => typeof(C).GetProperty↓(""Item"");
+        public PropertyInfo? M() => typeof(C).GetProperty↓(""Item"");
     }
 }".AssertReplace("GetProperty↓(\"Item\")", call);
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseCode, code);
@@ -44,7 +44,7 @@ namespace N
 {
     public class C
     {
-        public object Get => typeof(C).GetProperty↓(""Item"");
+        public object? Get => typeof(C).GetProperty↓(""Item"");
 
         public int this[int i] => 0;
 
@@ -64,7 +64,7 @@ namespace N
 
     public class C
     {
-        public object Get => typeof(C).GetProperty↓(""Bar"");
+        public object? Get => typeof(C).GetProperty↓(""Bar"");
 
         [IndexerName(""Bar"")]
         public int this[int i] => 0;
@@ -91,7 +91,7 @@ namespace N
         {
         }
 
-        public static object Get => typeof(C).GetConstructor↓(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, Type.EmptyTypes, null);
+        public static object? Get => typeof(C).GetConstructor↓(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, Type.EmptyTypes, null);
     }
 }";
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);

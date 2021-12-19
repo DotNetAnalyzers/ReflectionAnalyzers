@@ -15,6 +15,7 @@
             public static void SingleIntParameter()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -38,13 +39,14 @@ namespace N
             public static void NoParameter(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
 
     public class C
     {
-        public static object Get(Type unused) => typeof(C).GetMethod(nameof(M)).Invoke(null, null);
+        public static object? Get(Type unused) => typeof(C).GetMethod(nameof(M)).Invoke(null, null);
 
         public static int M() => 1;
     }
@@ -58,6 +60,7 @@ namespace N
             public static void OptionalParameter(string value)
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C

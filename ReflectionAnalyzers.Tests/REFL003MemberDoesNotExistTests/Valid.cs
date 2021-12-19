@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -164,7 +164,7 @@ namespace N
 
     public class C
     {
-        public static object Get(int? value) => value.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+        public static object? Get(int? value) => value?.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
     }
 }";
             RoslynAssert.Valid(Analyzer, code);
@@ -180,7 +180,7 @@ namespace N
 
     public class C
     {
-        public static object Get((int, int) value) => value.GetType().GetField(""Item1"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public static object? Get((int, int) value) => value.GetType().GetField(""Item1"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, testCode);

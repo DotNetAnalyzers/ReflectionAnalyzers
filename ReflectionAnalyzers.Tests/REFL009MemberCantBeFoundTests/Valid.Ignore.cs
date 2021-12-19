@@ -64,7 +64,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M() => typeof(string).GetMethod(""MISSING"");
+        public MethodInfo? M() => typeof(string).GetMethod(""MISSING"");
     }
 }".AssertReplace("typeof(string).GetMethod(\"MISSING\")", type);
                 RoslynAssert.Valid(Analyzer, Descriptor, code);

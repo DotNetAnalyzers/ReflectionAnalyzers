@@ -364,7 +364,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof(int?).GetProperty(↓""Value"");
+        public object? Get => typeof(int?).GetProperty(↓""Value"");
     }
 }";
 
@@ -376,7 +376,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof(int?).GetProperty(nameof(Nullable<int>.Value));
+        public object? Get => typeof(int?).GetProperty(nameof(Nullable<int>.Value));
     }
 }";
 
@@ -400,7 +400,7 @@ namespace N
 {
     class C : BaseClass
     {
-        public object Get => typeof(BaseClass).GetMethod(↓""ProtectedMember"");
+        public object? Get => typeof(BaseClass).GetMethod(↓""ProtectedMember"");
     }
 }";
 
@@ -409,7 +409,7 @@ namespace N
 {
     class C : BaseClass
     {
-        public object Get => typeof(BaseClass).GetMethod(nameof(this.ProtectedMember));
+        public object? Get => typeof(BaseClass).GetMethod(nameof(this.ProtectedMember));
     }
 }";
 
@@ -479,7 +479,7 @@ namespace N
 
         class Nested
         {
-            object P => typeof(C).GetMethod(↓""M1"");
+            object? P => typeof(C).GetMethod(↓""M1"");
         }
     }
 }";
@@ -493,7 +493,7 @@ namespace N
 
         class Nested
         {
-            object P => typeof(C).GetMethod(nameof(C.M1));
+            object? P => typeof(C).GetMethod(nameof(C.M1));
         }
     }
 }";
@@ -520,7 +520,7 @@ namespace N
     {
         class Nested
         {
-            object P => typeof(C).GetMethod(↓""M1"");
+            object? P => typeof(C).GetMethod(↓""M1"");
         }
     }
 }";
@@ -532,7 +532,7 @@ namespace N
     {
         class Nested
         {
-            object P => typeof(C).GetMethod(nameof(C.M1));
+            object? P => typeof(C).GetMethod(nameof(C.M1));
         }
     }
 }";
@@ -550,7 +550,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof((int, double)).GetField(↓""Item1"");
+        public object? Get => typeof((int, double)).GetField(↓""Item1"");
     }
 }";
 
@@ -561,7 +561,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof((int, double)).GetField(nameof(ValueTuple<int, double>.Item1));
+        public object? Get => typeof((int, double)).GetField(nameof(ValueTuple<int, double>.Item1));
     }
 }";
 
@@ -578,7 +578,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(↓""Rest"");
+        public object? Get => typeof((int, int, int, int, int, int, int, int)).GetField(↓""Rest"");
     }
 }";
 
@@ -589,7 +589,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof((int, int, int, int, int, int, int, int)).GetField(nameof(ValueTuple<int, int, int, int, int, int, int, ValueTuple<int>>.Rest));
+        public object? Get => typeof((int, int, int, int, int, int, int, int)).GetField(nameof(ValueTuple<int, int, int, int, int, int, int, ValueTuple<int>>.Rest));
     }
 }";
 

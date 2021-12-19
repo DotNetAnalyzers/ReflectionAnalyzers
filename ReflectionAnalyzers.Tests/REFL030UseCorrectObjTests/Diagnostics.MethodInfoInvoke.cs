@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
+﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -14,6 +14,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
             public static void Static()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -37,6 +38,7 @@ namespace N
             public static void Instance()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -57,6 +59,7 @@ namespace N
             public static void NullableInstance()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -77,6 +80,7 @@ namespace N
             public static void InstanceWrongType()
             {
                 var code = @"
+#nullable disable
 namespace N
 {
     public class C

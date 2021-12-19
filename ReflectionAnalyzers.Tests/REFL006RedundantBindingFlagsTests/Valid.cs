@@ -60,7 +60,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M(Type type) => type.GetMethod(""Bar"");
+        public MethodInfo? M(Type type) => type.GetMethod(""Bar"");
     }
 }".AssertReplace("GetMethod(\"Bar\")", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -80,7 +80,7 @@ namespace N
 
     class C
     {
-        public object M() => typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+        public MemberInfo? M() => typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
     }
 }".AssertReplace("typeof(string).GetMethod(nameof(string.Compare), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -101,7 +101,7 @@ namespace N
 
     class C
     {
-        public object M(BindingFlags unused) => typeof(C).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
+        public object? M(BindingFlags unused) => typeof(C).GetNestedType(nameof(Public), BindingFlags.Public | BindingFlags.DeclaredOnly);
 
         public static class PublicStatic
         {

@@ -217,7 +217,7 @@ namespace N
 
     public class C
     {
-        public object Get() => GetType().GetMethod(nameof(↓HashSet<string>.Add));
+        public object? Get() => GetType().GetMethod(nameof(↓HashSet<string>.Add));
 
         private int Add(int x, int y) => x + y;
     }
@@ -230,7 +230,7 @@ namespace N
 
     public class C
     {
-        public object Get() => GetType().GetMethod(nameof(Add));
+        public object? Get() => GetType().GetMethod(nameof(Add));
 
         private int Add(int x, int y) => x + y;
     }

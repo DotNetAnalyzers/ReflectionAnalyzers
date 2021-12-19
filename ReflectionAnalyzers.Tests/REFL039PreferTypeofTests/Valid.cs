@@ -13,14 +13,13 @@
         public static void AnonymousType()
         {
             var code = @"
-// ReSharper disable All
 namespace ValidCode
 {
     using System.Reflection;
 
     class C
     {
-        object M()
+        object? M()
         {
             var anon = new { C = 1 };
             return anon.GetType().GetProperty(nameof(anon.C), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -35,14 +34,13 @@ namespace ValidCode
         public static void AnonymousTypePropertyWithFlags()
         {
             var code = @"
-// ReSharper disable All
 namespace ValidCode
 {
     using System.Reflection;
 
     class C
     {
-        object M()
+        object? M()
         {
             var anon = new { C = 1 };
             return anon.GetType().GetProperty(nameof(anon.C), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -57,7 +55,6 @@ namespace ValidCode
         public static void MulticastDelegate()
         {
             var code = @"
-// ReSharper disable All
 namespace ValidCode
 {
     using System;
@@ -81,7 +78,7 @@ namespace ValidCode
 
     class C
     {
-        public object Get(Delegate m) => m.GetType();
+        public object? Get(Delegate m) => m.GetType();
     }
 }";
 
@@ -93,6 +90,7 @@ namespace ValidCode
         public static void UnknownType(string call)
         {
             var code = @"
+#pragma warning disable CS8602
 namespace ValidCode
 {
     using System;
@@ -100,7 +98,7 @@ namespace ValidCode
 
     class C
     {
-        public Object Get(PropertyInfo pi) => pi.GetValue(null).GetType();
+        public Type? Get(PropertyInfo pi) => pi.GetValue(null).GetType();
     }
 }".AssertReplace("pi.GetValue(null).GetType()", call);
 

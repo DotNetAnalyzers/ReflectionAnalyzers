@@ -12,6 +12,7 @@
         public static void AssigningLocal()
         {
             var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -34,6 +35,7 @@ namespace N
         public static void AssigningField()
         {
             var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -58,6 +60,7 @@ namespace N
         public static void UsingInExpression()
         {
             var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -81,6 +84,7 @@ namespace N
         public static void InvokeWithGetUninitializedObjectAndArgument(string call)
         {
             var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     using System;

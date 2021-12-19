@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
+﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -18,7 +18,7 @@ namespace N
 
     class C
     {
-        public static object Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        public static object? Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static int Static(int i) => i;
 
@@ -39,7 +39,7 @@ namespace N
 
     class C
     {
-        public static object Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        public static object? Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static void Static(object _) { }
 

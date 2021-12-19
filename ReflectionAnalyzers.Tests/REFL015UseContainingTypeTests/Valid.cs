@@ -36,6 +36,7 @@
         public static void GetMember(string call)
         {
             var code = @"
+#pragma warning disable CS8618
 namespace N
 {
     using System;
@@ -77,7 +78,7 @@ namespace N
 
     public class C : CBase
     {
-        public MemberInfo Get() => typeof(C).GetEvent(nameof(CBase.PublicStaticEvent));
+        public MemberInfo? Get() => typeof(C).GetEvent(nameof(CBase.PublicStaticEvent));
     }
 }".AssertReplace("typeof(C).GetEvent(nameof(CBase.PublicStaticEvent))", call);
 
@@ -102,7 +103,7 @@ namespace N
 
      class C : B
     {
-        public object Get => typeof(C).GetField(nameof(B.field), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+        public object? Get => typeof(C).GetField(nameof(B.field), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy);
     }
 }";
 

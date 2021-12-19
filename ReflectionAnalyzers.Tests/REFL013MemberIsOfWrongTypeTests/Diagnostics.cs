@@ -25,7 +25,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get() => typeof(C).↓GetMethod(nameof(this.P));
+        public MemberInfo? Get() => typeof(C).↓GetMethod(nameof(this.P));
 
         public int P { get; }
     }
@@ -51,7 +51,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get() => typeof(C).↓GetProperty(nameof(this.M));
+        public MemberInfo? Get() => typeof(C).↓GetProperty(nameof(this.M));
 
         public int M() => 0;
     }

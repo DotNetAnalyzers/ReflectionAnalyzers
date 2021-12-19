@@ -16,6 +16,7 @@
             public static void InvokeWithOneArgument(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -42,6 +43,7 @@ namespace N
             public static void InvokeWithGetUninitializedObjectAndArgument(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;

@@ -282,6 +282,7 @@ namespace N
         public static void GetMethodWhenInvocationIsArgumentIssue64()
         {
             var before = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -297,6 +298,7 @@ namespace N
 }";
 
             var after = @"
+#nullable disable
 namespace N
 {
     using System;

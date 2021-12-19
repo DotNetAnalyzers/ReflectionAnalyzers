@@ -20,7 +20,7 @@ namespace N
 
     public class C
     {
-        public static object Get => Type.GetType(↓""MISSING"");
+        public static object? Get => Type.GetType(↓""MISSING"");
     }
 }".AssertReplace("MISSING", type);
 
@@ -36,7 +36,7 @@ namespace N
 {
     public class C
     {
-        public static object Get => typeof(C).Assembly.GetType(↓""MISSING"");
+        public static object? Get => typeof(C).Assembly.GetType(↓""MISSING"");
     }
 }".AssertReplace("typeof(C).Assembly.GetType(↓\"MISSING\")", call);
 

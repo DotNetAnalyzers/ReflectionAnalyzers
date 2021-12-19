@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
+﻿namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -29,10 +29,13 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [Test]
-        public static void WhenGetCustomAttributeCast()
+        [TestCase("(ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))")]
+        [TestCase("(ObsoleteAttribute?)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))")]
+        [TestCase("(ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))!")]
+        public static void WhenGetCustomAttributeCast(string expression)
         {
             var code = @"
+#pragma warning disable CS8600
 namespace N
 {
     using System;
@@ -44,7 +47,7 @@ namespace N
             var attribute = (ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute));
         }
     }
-}";
+}".AssertReplace("(ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))", expression);
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 

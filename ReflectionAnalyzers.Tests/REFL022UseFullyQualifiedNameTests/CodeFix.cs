@@ -16,6 +16,7 @@
         public static void GetInterface(string call, string expected)
         {
             var before = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -38,6 +39,7 @@ namespace N
 }".AssertReplace("GetInterface(↓typeof(IEnumerable<>).Name)", call);
 
             var after = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;

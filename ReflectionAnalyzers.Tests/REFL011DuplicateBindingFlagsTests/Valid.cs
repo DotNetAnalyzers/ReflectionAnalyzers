@@ -25,7 +25,7 @@ namespace N
 
     class C
     {
-        public MethodInfo Get() => typeof(C).GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+        public MethodInfo? Get() => typeof(C).GetMethod(nameof(this.M), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
 
         public int M() => 0;
     }
@@ -50,7 +50,7 @@ namespace N
 
     class C
     {
-        public MethodInfo Get() => typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
+        public MethodInfo? Get() => typeof(C).GetMethod(nameof(this.M), Public | Static | DeclaredOnly);
 
         public int M() => (int)Static;
     }

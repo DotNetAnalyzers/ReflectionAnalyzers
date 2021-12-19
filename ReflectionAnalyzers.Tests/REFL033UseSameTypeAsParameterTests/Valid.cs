@@ -60,7 +60,7 @@ namespace N
 
     class C
     {
-        public object Get => typeof(Control).GetMethod(
+        public object? Get => typeof(Control).GetMethod(
             nameof(Control.CreateControl),
             BindingFlags.Instance | BindingFlags.NonPublic,
             null,

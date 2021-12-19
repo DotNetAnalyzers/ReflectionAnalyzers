@@ -29,6 +29,7 @@
         public static void InstancePropertyInSameType(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -51,6 +52,7 @@ namespace N
     }
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -89,6 +91,7 @@ namespace N
         public static void StaticPropertyInSameType(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -111,6 +114,7 @@ namespace N
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -164,6 +168,7 @@ namespace N
 }";
 
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -178,6 +183,7 @@ namespace N
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -223,6 +229,7 @@ namespace N
 }";
 
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -237,6 +244,7 @@ namespace N
 }".AssertReplace("GetMethod(\"get_PublicGetSet\")", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -259,24 +267,26 @@ namespace N
         public static async Task InvisibleProperty(string beforeExpression, string afterExpression)
         {
             var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
 
     public class C
     {
-        public object Get => typeof(BinaryReferencedAssembly.C).GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public object? Get => typeof(BinaryReferencedAssembly.C).GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }".AssertReplace("GetMethod(\"get_P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
 
     public class C
     {
-        public object Get => typeof(BinaryReferencedAssembly.C).GetProperty(""P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
+        public object? Get => typeof(BinaryReferencedAssembly.C).GetProperty(""P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
     }
 }".AssertReplace("GetProperty(\"P\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod", afterExpression);
 
@@ -313,6 +323,7 @@ namespace BinaryReferencedAssembly
         public static void InstanceEventInSameType(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602, CS8618
 namespace N
 {
     using System;
@@ -330,6 +341,7 @@ namespace N
 }".AssertReplace("GetMethod(\"add_Public\")", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602, CS8618
 namespace N
 {
     using System;
@@ -356,6 +368,7 @@ namespace N
         public static void IEnumeratorGetCurrent(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Collections;
@@ -370,6 +383,7 @@ namespace N
     }
 }".AssertReplace("GetMethod(\"get_Current\")", beforeExpression);
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Collections;
@@ -394,6 +408,7 @@ namespace N
         public static void AggregateException(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -409,6 +424,7 @@ namespace N
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -435,6 +451,7 @@ namespace N
         public static void Indexer(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -443,7 +460,7 @@ namespace N
     {
         private readonly int[] ints = System.Array.Empty<int>();
 
-        public object Get => typeof(C).GetMethod(""get_Item"");
+        public object? Get => typeof(C).GetMethod(""get_Item"");
 
         public int this[int i]
         {
@@ -454,6 +471,7 @@ namespace N
 }".AssertReplace("GetMethod(\"get_Item\")", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -462,7 +480,7 @@ namespace N
     {
         private readonly int[] ints = System.Array.Empty<int>();
 
-        public object Get => typeof(C).GetProperty(""Item"").GetMethod;
+        public object? Get => typeof(C).GetProperty(""Item"").GetMethod;
 
         public int this[int i]
         {
@@ -483,6 +501,7 @@ namespace N
         public static void IndexerPrivateSet(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -491,7 +510,7 @@ namespace N
     {
         private readonly int[] ints = System.Array.Empty<int>();
 
-        public object Get => typeof(C).GetMethod(""get_Item"");
+        public object? Get => typeof(C).GetMethod(""get_Item"");
 
         public int this[int i]
         {
@@ -502,6 +521,7 @@ namespace N
 }".AssertReplace("GetMethod(\"get_Item\")", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -510,7 +530,7 @@ namespace N
     {
         private readonly int[] ints = System.Array.Empty<int>();
 
-        public object Get => typeof(C).GetProperty(""Item"").GetMethod;
+        public object? Get => typeof(C).GetProperty(""Item"").GetMethod;
 
         public int this[int i]
         {
@@ -532,6 +552,7 @@ namespace N
         public static void NamedIndexer(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -541,7 +562,7 @@ namespace N
     {
         private readonly int[] ints = System.Array.Empty<int>();
 
-        public object Get => typeof(C).GetMethod(""get_Foo"");
+        public object? Get => typeof(C).GetMethod(""get_Foo"");
 
         [IndexerName(""Foo"")]
         public int this[int i]
@@ -553,6 +574,7 @@ namespace N
 }".AssertReplace("GetMethod(\"get_Foo\")", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -562,7 +584,7 @@ namespace N
     {
         private readonly int[] ints = System.Array.Empty<int>();
 
-        public object Get => typeof(C).GetProperty(""Item"").GetMethod;
+        public object? Get => typeof(C).GetProperty(""Item"").GetMethod;
 
         [IndexerName(""Foo"")]
         public int this[int i]
@@ -580,23 +602,25 @@ namespace N
         public static async Task ReferencesMemberThatAnalyzerCannotSee()
         {
             var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
 
     public class C2
     {
-        public object Get => typeof(BinaryReferencedAssembly.C1).GetMethod(""add_E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public object? Get => typeof(BinaryReferencedAssembly.C1).GetMethod(""add_E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
 
     public class C2
     {
-        public object Get => typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod;
+        public object? Get => typeof(BinaryReferencedAssembly.C1).GetEvent(""E"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).AddMethod;
     }
 }";
 
@@ -643,6 +667,7 @@ namespace N.BinaryReferencedAssembly
         public static void InNestedType()
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -653,12 +678,13 @@ namespace N
 
         class Nested
         {
-            object Get => typeof(C).↓GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            object? Get => typeof(C).↓GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
         }
     }
 }";
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -669,7 +695,7 @@ namespace N
 
         class Nested
         {
-            object Get => typeof(C).GetProperty(nameof(C.P), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
+            object? Get => typeof(C).GetProperty(nameof(C.P), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
         }
     }
 }";
@@ -690,6 +716,7 @@ namespace N
 }";
 
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -698,12 +725,13 @@ namespace N
     {
         class Nested
         {
-            object Get => typeof(C).↓GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance);
+            object? Get => typeof(C).↓GetMethod(""get_P"", BindingFlags.NonPublic | BindingFlags.Instance);
         }
     }
 }";
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;
@@ -712,7 +740,7 @@ namespace N
     {
         class Nested
         {
-            object Get => typeof(C).GetProperty(nameof(C.P), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
+            object? Get => typeof(C).GetProperty(nameof(C.P), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).GetMethod;
         }
     }
 }";

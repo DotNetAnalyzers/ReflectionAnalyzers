@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -43,7 +43,7 @@ namespace N
     {
         public C()
         {
-            var attribute = (ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute));
+            var attribute = (ObsoleteAttribute?)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute));
         }
     }
 }";

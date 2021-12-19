@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -20,7 +20,7 @@ namespace N
     {
         public C(int i)
         {
-            var value = ↓typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 });
+            var value = ↓typeof(C).GetConstructor(new[] { typeof(int) })?.Invoke(new object[] { 1 });
         }
     }
 }";

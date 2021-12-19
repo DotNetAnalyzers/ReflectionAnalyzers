@@ -218,7 +218,7 @@ namespace N
 
     class C
     {
-        object P => typeof(InvalidOperationException).GetConstructor(
+        object? P => typeof(InvalidOperationException).GetConstructor(
             ↓BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
             null,
             Type.EmptyTypes,
@@ -233,7 +233,7 @@ namespace N
 
     class C
     {
-        object P => typeof(InvalidOperationException).GetConstructor(
+        object? P => typeof(InvalidOperationException).GetConstructor(
             BindingFlags.Public | BindingFlags.Instance,
             null,
             Type.EmptyTypes,

@@ -14,6 +14,7 @@
         public static void StaticStringIntWithFirstArg(string text)
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -35,6 +36,7 @@ namespace N
         public static void StaticStringVoidFirstArg()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -59,6 +61,7 @@ namespace N
         public static void StaticObjectVoidFirstArg(string arg)
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -81,6 +84,7 @@ namespace N
         public static void StaticStringStringVoidFirstArg()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -103,6 +107,7 @@ namespace N
         public static void CreateDelegateParameterExpressionMake()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -124,6 +129,7 @@ namespace N
         public static void StaticStringInt()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -144,6 +150,7 @@ namespace N
         public static void StaticVoid()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -164,6 +171,7 @@ namespace N
         public static void StaticStringVoid()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -185,6 +193,7 @@ namespace N
         public static void InstanceStringInt()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -205,6 +214,7 @@ namespace N
         public static void InstanceStringIntWithTarget()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;
@@ -226,6 +236,7 @@ namespace N
         public static void StaticStringIntCustomDelegate()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;

@@ -14,6 +14,7 @@
             public static void CountError()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -32,6 +33,7 @@ namespace N
             public static void ConstraintError()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -53,6 +55,7 @@ namespace N
             public static void ConstrainedParameterWrongArguments(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -85,6 +88,7 @@ namespace N
     }
 }";
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -104,6 +108,7 @@ namespace N
             public static void TernaryWrongOrder()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System.Reflection;

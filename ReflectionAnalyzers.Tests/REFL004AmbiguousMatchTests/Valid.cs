@@ -28,7 +28,7 @@ namespace N
 
     class C
     {
-        public MethodInfo P => typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public MethodInfo? P => typeof(C).GetMethod(nameof(this.ToString), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
         public static int PublicStatic(int value) => value;
 
@@ -68,7 +68,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M(int i, Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        public MethodInfo? M(int i, Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static double Static(int value) => value;
 
@@ -92,7 +92,7 @@ namespace N
 {
     public class C
     {
-        public object Get => typeof(C).GetProperty(""Item"", typeof(int), new[] { typeof(int) });
+        public object? Get => typeof(C).GetProperty(""Item"", typeof(int), new[] { typeof(int) });
 
         public int this[int i] => 0;
 
@@ -113,7 +113,7 @@ namespace N
 
     public class C
     {
-        public object Get => typeof(C).GetProperty(""Bar"", typeof(int), new[] { typeof(int) });
+        public object? Get => typeof(C).GetProperty(""Bar"", typeof(int), new[] { typeof(int) });
 
         [IndexerName(""Bar"")]
         public int this[int i] => 0;
@@ -141,7 +141,7 @@ namespace N
         {
         }
 
-        public static object Get => typeof(C).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
+        public static object? Get => typeof(C).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null);
     }
 }".AssertReplace("GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null)", call);
             RoslynAssert.Valid(Analyzer, Descriptor, code);

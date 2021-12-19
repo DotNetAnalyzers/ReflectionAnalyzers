@@ -51,7 +51,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M() => typeof(C).GetMethod↓(nameof(this.ToString));
+        public MethodInfo? M() => typeof(C).GetMethod↓(nameof(this.ToString));
 
         public static double Static(int value) => value;
 
@@ -79,9 +79,9 @@ namespace N
     {
         public static explicit operator int(C c) => default;
 
-        public static explicit operator C(int c) => default;
+        public static explicit operator C?(int c) => default;
 
-        public MethodInfo M() => typeof(C).GetMethod↓(""op_Explicit"");
+        public MethodInfo? M() => typeof(C).GetMethod↓(""op_Explicit"");
     }
 }".AssertReplace("GetMethod↓(\"op_Explicit\")", call);
                 RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
@@ -98,7 +98,7 @@ namespace N
 
     class C
     {
-        public static object Get() => typeof(C).GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        public static object? Get() => typeof(C).GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static IComparable Static(IComparable i) => i;
 

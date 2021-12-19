@@ -31,7 +31,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get(Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+        public MemberInfo? Get(Type unused) => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
 
         public static int Static() => 0;
 
@@ -56,7 +56,7 @@ namespace N
 
     class C
     {
-        public object Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        public object? Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static int Static(int i) => i;
 
@@ -81,7 +81,7 @@ namespace N
 
     class C
     {
-        public object Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
+        public object? Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null);
 
         public static IComparable Static(IComparable i) => i;
 
@@ -111,7 +111,7 @@ namespace N
         {
         }
 
-        public MemberInfo Get(Type unused) => typeof(C).GetConstructor(new[] { typeof(int) });
+        public MemberInfo? Get(Type unused) => typeof(C).GetConstructor(new[] { typeof(int) });
     }
 }".AssertReplace("typeof(C).GetConstructor(new[] { typeof(int) })", call);
 
@@ -146,7 +146,7 @@ namespace N
         {
         }
 
-        public MemberInfo Get(Type unused) => typeof(C).GetConstructor(Type.EmptyTypes);
+        public MemberInfo? Get(Type unused) => typeof(C).GetConstructor(Type.EmptyTypes);
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes)", call);
 

@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
+﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -15,6 +15,7 @@ namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
             public static void Static()
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
@@ -37,6 +38,7 @@ namespace N
             public static void Instance()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -58,13 +60,14 @@ namespace N
             public static void Invoke(string call)
             {
                 var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
 
     public static class C
     {
-        public static object M() => typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null);
+        public static object? M() => typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null);
     }
 }".AssertReplace("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null)", call);
 

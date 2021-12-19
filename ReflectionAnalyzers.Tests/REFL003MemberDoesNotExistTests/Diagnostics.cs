@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
 {
     using Gu.Roslyn.Asserts;
     using NUnit.Framework;
@@ -137,10 +137,10 @@ namespace N
 {
     class C
     {
-        public object Get => Create().GetType().GetField(↓""a"");
+        public object? Get => Create().GetType().GetField(↓""a"");
 
 
-        static (int a, int b) Create() => default;
+        static (int a, int b) Create() => (1, 2);
     }
 }";
 
@@ -153,6 +153,7 @@ namespace N
         public static void GetTupleFieldItem7ByName(string field)
         {
             var code = @"
+#pragma warning disable CS8603
 namespace N
 {
     class C
@@ -168,6 +169,9 @@ namespace N
         }
 
         [TestCase("typeof(C).GetMethod(↓\"get_P\")")]
+        //[TestCase("typeof(C).GetProperty(nameof(P)).↓GetMethod")]
+        //[TestCase("typeof(C).GetProperty(nameof(P))!.↓GetMethod")]
+        //[TestCase("typeof(C).GetProperty(nameof(P))?.↓GetMethod")]
         public static void MissingGetter(string call)
         {
             var code = @"
@@ -175,7 +179,7 @@ namespace N
 {
     class C
     {
-        public object Get => typeof(C).GetProperty(nameof(P)).↓GetMethod;
+        public object? Get => typeof(C).GetProperty(nameof(P)).↓GetMethod;
 
 
         public int P { set { } }
@@ -186,6 +190,9 @@ namespace N
         }
 
         [TestCase("typeof(C).GetMethod(↓\"set_P\")")]
+        //[TestCase("typeof(C).GetProperty(nameof(P)).↓SetMethod")]
+        //[TestCase("typeof(C).GetProperty(nameof(P))!.↓SetMethod")]
+        //[TestCase("typeof(C).GetProperty(nameof(P))?.↓SetMethod")]
         public static void MissingSetter(string call)
         {
             var code = @"
@@ -193,7 +200,7 @@ namespace N
 {
     class C
     {
-        public object Get => typeof(C).GetProperty(nameof(P)).↓SetMethod;
+        public object? Get => typeof(C).GetProperty(nameof(P)).↓SetMethod;
 
 
         public int P { get; }

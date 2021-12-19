@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
+﻿namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -33,7 +33,8 @@ namespace N
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
 
-        [TestCase("(C)Activator.CreateInstance(typeof(C))")]
+        [TestCase("(C?)Activator.CreateInstance(typeof(C))")]
+        [TestCase("(C)Activator.CreateInstance(typeof(C))!")]
         [TestCase("Activator.CreateInstance<C>()")]
         public static void ImplicitDefaultConstructor(string call)
         {
@@ -44,7 +45,7 @@ namespace N
 
     public class C
     {
-        public static C Create() => Activator.CreateInstance<C>();
+        public static C? Create() => Activator.CreateInstance<C>();
     }
 }".AssertReplace("Activator.CreateInstance<C>()", call);
 
@@ -78,6 +79,7 @@ namespace N
         public static void OneConstructorSingleStringParameter(string call)
         {
             var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -124,7 +126,7 @@ namespace N
 
     public class C
     {
-        public static object M(Type type) => Activator.CreateInstance(type, ""foo"");
+        public static object? M(Type type) => Activator.CreateInstance(type, ""foo"");
     }
 }";
 
@@ -141,7 +143,7 @@ namespace N
 
     public class C
     {
-        public static object M<T>() => Activator.CreateInstance(typeof(T), ""foo"");
+        public static object? M<T>() => Activator.CreateInstance(typeof(T), ""foo"");
     }
 }";
 

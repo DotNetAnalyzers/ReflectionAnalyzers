@@ -59,7 +59,7 @@ namespace N
 
     sealed class C : IDisposable
     {
-        public MemberInfo Get() => typeof(C).GetMethod(nameof(IDisposable.Dispose));
+        public MemberInfo? Get() => typeof(C).GetMethod(nameof(IDisposable.Dispose));
 
         void IDisposable.Dispose()
         {
@@ -101,7 +101,7 @@ namespace N
 
     sealed class C : IDisposable
     {
-        public MemberInfo Get() => typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
+        public MemberInfo? Get() => typeof(IDisposable).GetMethod(nameof(IDisposable.Dispose));
 
         void IDisposable.Dispose()
         {
@@ -157,7 +157,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get() => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
+        public MemberInfo? Get() => typeof(Control).GetMethod(nameof(Control.CreateControl), BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool) }, null);
     }
 }";
 
@@ -192,7 +192,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
+        public MethodInfo? M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, testCode);
@@ -208,7 +208,7 @@ namespace N
 
     class C
     {
-        public MethodInfo M1<T>()
+        public MethodInfo? M1<T>()
             where T : C
         {
             return typeof(T).GetMethod(nameof(this.M1));
@@ -247,7 +247,7 @@ namespace N
 {
     public class C
     {
-        public object Get() => this.GetType().GetMethod(nameof(Add));
+        public object? Get() => this.GetType().GetMethod(nameof(Add));
 
         private static int Add(int x, int y) => x + y;
     }
@@ -263,7 +263,7 @@ namespace N
 {
     public class C
     {
-        public object Get() => this.GetType().GetMethod(nameof(this.Add));
+        public object? Get() => this.GetType().GetMethod(nameof(this.Add));
 
         private int Add(int x, int y) => x + y;
     }
@@ -320,6 +320,7 @@ namespace N
         public static void IgnoresDebuggerDisplay()
         {
             var code = @"
+#pragma warning disable CS8618
 namespace N
 {
     [System.Diagnostics.DebuggerDisplay(""{Name}"")]
@@ -476,7 +477,7 @@ namespace N
 
     public class C
     {
-        public static object Get(int? value) => value.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+        public static object? Get(int? value) => value?.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
     }
 }";
             RoslynAssert.Valid(Analyzer, code);
@@ -496,7 +497,7 @@ namespace N
         {
         }
 
-        public object P => typeof(C<>).GetMethod(nameof(M), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+        public object? P => typeof(C<>).GetMethod(nameof(M), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, code);

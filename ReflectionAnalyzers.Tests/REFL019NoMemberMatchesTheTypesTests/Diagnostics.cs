@@ -29,7 +29,7 @@ namespace N
         {
         }
 
-        public MemberInfo Get(Type unused) => typeof(C).GetConstructor(↓Type.EmptyTypes);
+        public MemberInfo? Get(Type unused) => typeof(C).GetConstructor(↓Type.EmptyTypes);
     }
 }".AssertReplace("GetConstructor(↓Type.EmptyTypes)", call);
 
@@ -48,7 +48,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(int) }, null);
+        public MemberInfo? Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(int) }, null);
 
         public static int Static() => 0;
 
@@ -74,7 +74,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(double) }, null);
+        public MemberInfo? Get() => typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, ↓new[] { typeof(double) }, null);
 
         public static int Static(int i) => i;
 
@@ -100,7 +100,7 @@ namespace N
 
     class C
     {
-        public MemberInfo Get => typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) });
+        public MemberInfo? Get => typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) });
     }
 }".AssertReplace("typeof(Array).GetMethod(nameof(Array.CreateInstance), new[] { typeof(Type), typeof(int), typeof(IEnumerable<int>) })", call);
 

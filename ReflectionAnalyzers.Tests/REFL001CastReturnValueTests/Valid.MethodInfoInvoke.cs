@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -18,6 +18,7 @@ namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
             public static void Discarding(string call)
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -40,6 +41,7 @@ namespace N
             public static void AssigningLocal()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -60,6 +62,7 @@ namespace N
             public static void IsPattern()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -71,7 +74,7 @@ namespace N
             }
         }
 
-        public static string M() => null;
+        public static string? M() => null;
     }
 }";
 
@@ -82,6 +85,7 @@ namespace N
             public static void SwitchPattern()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -95,7 +99,7 @@ namespace N
             }
         }
 
-        public static string M() => null;
+        public static string? M() => null;
     }
 }";
 
@@ -106,6 +110,7 @@ namespace N
             public static void AssigningField()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -128,6 +133,7 @@ namespace N
             public static void UsingInExpression()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -148,6 +154,7 @@ namespace N
             public static void CallingToString()
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C
@@ -170,6 +177,7 @@ namespace N
             public static void Discarded(string discard)
             {
                 var code = @"
+#pragma warning disable CS8602, CS8605
 namespace N
 {
     public class C

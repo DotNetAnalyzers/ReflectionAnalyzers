@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -16,6 +16,7 @@ namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
             public static void WhenCasting(string cast)
             {
                 var code = @"
+#pragma warning disable CS8600
 namespace N
 {
     using System;
@@ -45,7 +46,7 @@ namespace N
 
     public class C
     {
-        public static object M(Type type) => Activator.CreateInstance(type, ""foo"");
+        public static object? M(Type type) => Activator.CreateInstance(type, ""foo"");
     }
 }";
 
@@ -56,13 +57,14 @@ namespace N
             public static void WhenUnconstrainedGeneric()
             {
                 var code = @"
+#pragma warning disable CS8600
 namespace N
 {
     using System;
 
     public class C
     {
-        public static object M<T>() => (T)Activator.CreateInstance(typeof(T), ""foo"");
+        public static object? M<T>() => (T)Activator.CreateInstance(typeof(T), ""foo"");
     }
 }";
 

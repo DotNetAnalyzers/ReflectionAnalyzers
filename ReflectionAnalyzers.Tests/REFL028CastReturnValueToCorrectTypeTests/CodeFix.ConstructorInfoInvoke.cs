@@ -15,6 +15,7 @@
             public static void WhenCastingToWrongType()
             {
                 var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -29,6 +30,7 @@ namespace N
 }";
 
                 var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;

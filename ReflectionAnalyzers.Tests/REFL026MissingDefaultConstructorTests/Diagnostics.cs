@@ -46,7 +46,7 @@ namespace N
         {
         }
 
-        public object M() => Activator.CreateInstance<↓C>();
+        public object? M() => Activator.CreateInstance<↓C>();
     }
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 
@@ -69,7 +69,7 @@ namespace N
         {
         }
 
-        public object M() => Activator.CreateInstance<↓C>();
+        public object? M() => Activator.CreateInstance<↓C>();
     }
 }".AssertReplace("Activator.CreateInstance<↓C>()", call);
 

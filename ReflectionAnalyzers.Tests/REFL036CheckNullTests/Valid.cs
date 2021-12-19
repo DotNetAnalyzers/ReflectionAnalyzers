@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
+﻿namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -19,7 +19,7 @@ namespace N
 
     public class C
     {
-        public static object Get => Type.GetType(""C"")?.Assembly;
+        public static object? Get => Type.GetType(""C"")?.Assembly;
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, code);
@@ -29,13 +29,14 @@ namespace N
         public static void TypeGetTypeThrowOnErrorAssembly()
         {
             var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
 
     public class C
     {
-        public static object Get => Type.GetType(""C"", throwOnError: true).Assembly;
+        public static object? Get => Type.GetType(""C"", throwOnError: true).Assembly;
     }
 }";
             RoslynAssert.Valid(Analyzer, Descriptor, code);

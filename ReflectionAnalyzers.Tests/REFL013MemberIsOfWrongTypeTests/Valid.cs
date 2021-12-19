@@ -32,6 +32,7 @@ namespace N
         public static void Issue206WhenGettingField()
         {
             var code = @"
+#nullable disable
 namespace N
 {
     using System;
@@ -72,23 +73,23 @@ namespace N
 {
     using System.Reflection;
 
-    public delegate void EHandler(object e);
+    public delegate void EHandler(object? e);
 
     public interface I
     {
-        event EHandler E;
+        event EHandler? E;
     }
 
     public class C : I
     {
-        public event EHandler E;
+        public event EHandler? E;
 
         private void OnE() => this.E?.Invoke(null);
     }
 
     public class C1
     {
-        public static EventInfo GetOnModel(I sender)
+        public static EventInfo? GetOnModel(I sender)
         {
             return sender.GetType()
                          .GetEvent(""E"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);

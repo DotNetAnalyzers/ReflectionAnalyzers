@@ -18,6 +18,7 @@
         public static void WhenMemberAccess(string beforeExpression, string afterExpression)
         {
             var before = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;
@@ -29,6 +30,7 @@ namespace N
 }".AssertReplace("Get() => Type.GetType(\"C\").Assembly", beforeExpression);
 
             var after = @"
+#pragma warning disable CS8602
 namespace N
 {
     using System;

@@ -12,6 +12,7 @@
         public static void StaticStringVoidFirstArg()
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System;

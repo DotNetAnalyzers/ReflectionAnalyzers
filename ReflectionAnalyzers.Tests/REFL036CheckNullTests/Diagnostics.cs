@@ -17,11 +17,12 @@
         public static void WhenMemberAccess(string body)
         {
             var code = @"
+#pragma warning disable CS8602
 namespace N
 {
     public class C
     {
-        public static object Get() => Type.GetType(""C"").Assembly;
+        public static object? Get() => Type.GetType(""C"").Assembly;
     }
 }".AssertReplace("Get() => Type.GetType(\"C\").Assembly", body);
             RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);

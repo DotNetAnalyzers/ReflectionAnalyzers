@@ -1,4 +1,4 @@
-namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
+﻿namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
 {
     using Gu.Roslyn.Asserts;
     using Microsoft.CodeAnalysis;
@@ -20,6 +20,7 @@ namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
         public static void GetInterface(string call)
         {
             var code = @"
+#pragma warning disable CS8604
 namespace N
 {
     using System.Collections;
