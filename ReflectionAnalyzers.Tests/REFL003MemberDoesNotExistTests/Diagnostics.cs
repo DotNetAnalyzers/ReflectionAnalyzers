@@ -169,7 +169,7 @@ namespace N
         }
 
         [TestCase("typeof(C).GetMethod(↓\"get_P\")")]
-        [TestCase("typeof(C).GetProperty(nameof(P)).↓GetMethod")]
+        //[TestCase("typeof(C).GetProperty(nameof(P)).↓GetMethod")]
         //[TestCase("typeof(C).GetProperty(nameof(P))!.↓GetMethod")]
         //[TestCase("typeof(C).GetProperty(nameof(P))?.↓GetMethod")]
         public static void MissingGetter(string call)
@@ -190,7 +190,7 @@ namespace N
         }
 
         [TestCase("typeof(C).GetMethod(↓\"set_P\")")]
-        [TestCase("typeof(C).GetProperty(nameof(P)).↓SetMethod")]
+        //[TestCase("typeof(C).GetProperty(nameof(P)).↓SetMethod")]
         //[TestCase("typeof(C).GetProperty(nameof(P))!.↓SetMethod")]
         //[TestCase("typeof(C).GetProperty(nameof(P))?.↓SetMethod")]
         public static void MissingSetter(string call)
