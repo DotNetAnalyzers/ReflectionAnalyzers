@@ -115,7 +115,7 @@
                 return false;
             }
 
-            return this.TryMostSpecific(x as IMethodSymbol, y as IMethodSymbol, compilation, out unique);
+            return this.TryMostSpecific(Parameters(x), Parameters(y), compilation, out unique);
 
             static bool ByNull(ISymbol? first, ISymbol? other, [NotNullWhen(true)] out ISymbol? result)
             {
@@ -129,6 +129,16 @@
                 result = null;
                 return false;
             }
+
+            static ImmutableArray<IParameterSymbol> Parameters(ISymbol symbol)
+            {
+                return symbol switch
+                {
+                    IMethodSymbol method => method.Parameters,
+                    IPropertySymbol property => property.Parameters,
+                    _ => ImmutableArray<IParameterSymbol>.Empty,
+                };
+            }
         }
 
         private static bool TryGetTypesArgument(InvocationExpressionSyntax invocation, IMethodSymbol getX, [NotNullWhen(true)] out ArgumentSyntax? argument)
@@ -138,11 +148,11 @@
                    invocation.TryFindArgument(parameter, out argument);
         }
 
-        private bool TryMostSpecific(IMethodSymbol? x, IMethodSymbol? y, Compilation compilation, [NotNullWhen(true)] out ISymbol? unique)
+        private bool TryMostSpecific(ImmutableArray<IParameterSymbol> x, ImmutableArray<IParameterSymbol> y, Compilation compilation, [NotNullWhen(true)] out ISymbol? unique)
         {
             if (this.Argument is null ||
-                x is null ||
-                y is null)
+                x.IsDefaultOrEmpty ||
+                y.IsDefaultOrEmpty)
             {
                 unique = null;
                 return false;
@@ -154,8 +164,8 @@
                 return true;
             }
 
-            if (this.Matches(x.Parameters, compilation) &&
-                this.Matches(y.Parameters, compilation))
+            if (this.Matches(x, compilation) &&
+                this.Matches(y, compilation))
             {
                 var sum = 0;
                 for (var i = 0; i < this.Symbols.Length; i++)
@@ -169,50 +179,50 @@
                     return false;
                 }
 
-                unique = sum < 0 ? x : y;
+                unique = sum < 0 ? x[0].ContainingSymbol : y[0].ContainingSymbol;
                 return true;
             }
 
-            if (this.Matches(x.Parameters, compilation))
+            if (this.Matches(x, compilation))
             {
-                unique = x;
+                unique = x[0].ContainingSymbol;
                 return true;
             }
 
-            if (this.Matches(y.Parameters, compilation))
+            if (this.Matches(y, compilation))
             {
-                unique = y;
+                unique = y[0].ContainingSymbol;
                 return true;
             }
 
             unique = null;
             return false;
 
-            static bool TryExact(ImmutableArray<ITypeSymbol> symbols, IMethodSymbol method, [NotNullWhen(true)] out ISymbol? result)
+            static bool TryExact(ImmutableArray<ITypeSymbol> symbols, ImmutableArray<IParameterSymbol> parameters, [NotNullWhen(true)] out ISymbol? result)
             {
-                if (method.Parameters.Length != symbols.Length)
+                if (parameters.Length != symbols.Length)
                 {
                     result = null;
                     return false;
                 }
 
-                for (var i = 0; i < method.Parameters.Length; i++)
+                for (var i = 0; i < parameters.Length; i++)
                 {
-                    if (!TypeSymbolComparer.Equal(symbols[i], method.Parameters[i].Type))
+                    if (!TypeSymbolComparer.Equal(symbols[i], parameters[i].Type))
                     {
                         result = null;
                         return false;
                     }
                 }
 
-                result = method;
+                result = parameters[0].ContainingSymbol;
                 return true;
             }
 
             int ByIndex(int index, ImmutableArray<ITypeSymbol> symbols)
             {
-                var xt = x!.Parameters[index].Type;
-                var yt = y!.Parameters[index].Type;
+                var xt = x[index].Type;
+                var yt = y[index].Type;
                 if (TypeSymbolComparer.Equal(xt, yt))
                 {
                     return 0;

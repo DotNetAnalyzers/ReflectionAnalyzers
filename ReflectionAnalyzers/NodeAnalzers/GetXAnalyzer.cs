@@ -274,6 +274,15 @@
                     return true;
                 }
 
+                if (GetProperty.Match(candidate, context.SemanticModel, context.CancellationToken) is { } getProperty)
+                {
+                    member = getProperty.Member;
+                    name = getProperty.Name;
+                    flags = getProperty.Flags;
+                    types = getProperty.Types;
+                    return true;
+                }
+
                 if (GetMethod.Match(candidate, context.SemanticModel, context.CancellationToken) is { } getMethod)
                 {
                     member = getMethod.Member;
@@ -285,8 +294,7 @@
 
                 types = default;
                 return GetX.TryMatchGetEvent(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags) ||
-                       GetX.TryMatchGetNestedType(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags) ||
-                       GetX.TryMatchGetProperty(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags, out types);
+                       GetX.TryMatchGetNestedType(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags);
             }
 
             member = default;
