@@ -1,11 +1,7 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Threading;
-
-    using Gu.Roslyn.AnalyzerExtensions;
-
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     internal readonly struct FieldInfo
@@ -21,27 +17,12 @@
 
         internal static FieldInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            return expression switch
+            if (GetField.Match(expression, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IFieldSymbol symbol } })
             {
-                InvocationExpressionSyntax invocation
-                    when GetField.Match(invocation, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IFieldSymbol field } }
-                    => new FieldInfo(reflectedType, field),
-                IdentifierNameSyntax identifierName => FindAssigned(identifierName),
-                MemberAccessExpressionSyntax memberAccess => FindAssigned(memberAccess),
-                _ => null,
-            };
-
-            FieldInfo? FindAssigned(ExpressionSyntax member)
-            {
-                if (member.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                    semanticModel.TryGetSymbol(member, cancellationToken, out var local) &&
-                    AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } assignedValue)
-                {
-                    return Find(assignedValue, semanticModel, cancellationToken);
-                }
-
-                return null;
+                return new FieldInfo(reflectedType, symbol);
             }
+
+            return null;
         }
     }
 }

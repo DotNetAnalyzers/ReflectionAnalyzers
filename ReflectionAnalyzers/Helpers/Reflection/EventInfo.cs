@@ -2,10 +2,7 @@
 {
     using System.Threading;
 
-    using Gu.Roslyn.AnalyzerExtensions;
-
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     internal readonly struct EventInfo
@@ -21,29 +18,12 @@
 
         internal static EventInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            return expression switch
+            if (GetEvent.Match(expression, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IEventSymbol symbol } })
             {
-                InvocationExpressionSyntax invocation
-                    when GetX.TryMatchGetEvent(invocation, semanticModel, cancellationToken, out var member, out _, out _) &&
-                         member.ReflectedType is { } &&
-                         member.Symbol is IEventSymbol @event
-                    => new EventInfo(member.ReflectedType, @event),
-                IdentifierNameSyntax identifierName => FindAssigned(identifierName),
-                MemberAccessExpressionSyntax memberAccess => FindAssigned(memberAccess),
-                _ => null,
-            };
-
-            EventInfo? FindAssigned(ExpressionSyntax member)
-            {
-                if (member.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                    semanticModel.TryGetSymbol(member, cancellationToken, out var local) &&
-                    AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } assignedValue)
-                {
-                    return Find(assignedValue, semanticModel, cancellationToken);
-                }
-
-                return null;
+                return new EventInfo(reflectedType, symbol);
             }
+
+            return null;
         }
     }
 }

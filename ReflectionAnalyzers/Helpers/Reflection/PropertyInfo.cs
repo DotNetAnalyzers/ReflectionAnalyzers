@@ -1,11 +1,7 @@
 ﻿namespace ReflectionAnalyzers
 {
     using System.Threading;
-
-    using Gu.Roslyn.AnalyzerExtensions;
-
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     internal readonly struct PropertyInfo
@@ -21,18 +17,9 @@
 
         internal static PropertyInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
         {
-            switch (expression)
+            if (GetProperty.Match(expression, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IPropertySymbol symbol } })
             {
-                case InvocationExpressionSyntax invocation
-                    when GetProperty.Match(invocation, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IPropertySymbol property } }:
-                    return new PropertyInfo(reflectedType, property);
-            }
-
-            if (expression.IsEither(SyntaxKind.IdentifierName, SyntaxKind.SimpleMemberAccessExpression) &&
-                semanticModel.TryGetSymbol(expression, cancellationToken, out var local) &&
-                AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } assignedValue)
-            {
-                return Find(assignedValue, semanticModel, cancellationToken);
+                return new PropertyInfo(reflectedType, symbol);
             }
 
             return null;
