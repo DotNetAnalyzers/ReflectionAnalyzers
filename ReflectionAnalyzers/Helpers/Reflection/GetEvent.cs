@@ -42,7 +42,7 @@ internal readonly struct GetEvent
     /// </summary>
     internal static GetEvent? Match(InvocationExpressionSyntax candidate, SemanticModel semanticModel, CancellationToken cancellationToken)
     {
-        if (candidate.TryGetTarget(KnownSymbol.Type.GetField, semanticModel, cancellationToken, out var target))
+        if (candidate.TryGetTarget(KnownSymbol.Type.GetEvent, semanticModel, cancellationToken, out var target))
         {
             if (ReflectedMember.TryGetType(candidate, semanticModel, cancellationToken, out var type, out var typeSource) &&
                 Name.TryCreate(candidate, target, semanticModel, cancellationToken, out var name) &&
