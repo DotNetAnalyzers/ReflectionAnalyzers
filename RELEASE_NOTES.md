@@ -1,3 +1,9 @@
+#### 0.3.1
+* BUGFIX: Handle nullable reference types in more places.
+#### 0.3.0
+* BREAKING: For VS2022+ now.
+* BUGFIX: AD0001 -&gt; Could not load file or assembly
+
 #### 0.1.21
 * FEATURE Walk a bit more, smarter analyzers in places.
 * BUGFIX Handle nameof when open generic type.
