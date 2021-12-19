@@ -227,10 +227,10 @@
                     return true;
 
                 case InvocationExpressionSyntax invocation
-                    when GetX.TryMatchGetNestedType(invocation, recursion.SemanticModel, recursion.CancellationToken, out var reflectedMember, out _, out _):
+                    when GetNestedType.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } type }:
                     source = invocation;
-                    result = reflectedMember.Symbol as ITypeSymbol;
-                    return result != null && reflectedMember.Match == FilterMatch.Single;
+                    result = type;
+                    return true;
                 case InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax memberAccess } invocation
                     when invocation.TryGetTarget(KnownSymbol.Type.MakeGenericType, recursion.SemanticModel, recursion.CancellationToken, out _) &&
                          TypeArguments.Find(invocation, recursion.SemanticModel, recursion.CancellationToken) is { } typeArguments &&

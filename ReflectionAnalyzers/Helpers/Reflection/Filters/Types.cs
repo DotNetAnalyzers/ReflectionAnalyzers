@@ -130,7 +130,7 @@
                 return false;
             }
 
-            static ImmutableArray<IParameterSymbol> Parameters(ISymbol symbol)
+            static ImmutableArray<IParameterSymbol> Parameters(ISymbol? symbol)
             {
                 return symbol switch
                 {

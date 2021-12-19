@@ -301,8 +301,14 @@
                     return true;
                 }
 
-                types = default;
-                return GetX.TryMatchGetNestedType(candidate, context.SemanticModel, context.CancellationToken, out member, out name, out flags);
+                if (GetNestedType.Match(candidate, context.SemanticModel, context.CancellationToken) is { } getNestedType)
+                {
+                    member = getNestedType.Member;
+                    name = getNestedType.Name;
+                    flags = getNestedType.Flags;
+                    types = default;
+                    return true;
+                }
             }
 
             member = default;
