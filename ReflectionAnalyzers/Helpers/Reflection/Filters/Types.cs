@@ -105,9 +105,7 @@
             if (ByNull(x, y, out unique) ||
                 ByNull(y, x, out unique))
             {
-#pragma warning disable CS8762 // Parameter must have a non-null value when exiting in some condition.
                 return true;
-#pragma warning restore CS8762 // Parameter must have a non-null value when exiting in some condition.
             }
 
             if (this.Expressions.IsEmpty)
@@ -118,7 +116,7 @@
 
             return this.TryMostSpecific(x as IMethodSymbol, y as IMethodSymbol, compilation, out unique);
 
-            static bool ByNull(ISymbol? first, ISymbol? other, out ISymbol? result)
+            static bool ByNull(ISymbol? first, ISymbol? other, [NotNullWhen(true)] out ISymbol? result)
             {
                 if (first is null &&
                     other is not null)
