@@ -19,12 +19,22 @@
             {
                 InvocationExpressionSyntax invocation
                     => invocation,
-                PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression, Operand: InvocationExpressionSyntax invocation }
-                    => invocation,
+                PostfixUnaryExpressionSyntax { RawKind: (int)SyntaxKind.SuppressNullableWarningExpression, Operand: { } operand }
+                    => operand switch
+                    {
+                        InvocationExpressionSyntax invocation => invocation,
+                        IdentifierNameSyntax identifierName => FindInvocation(identifierName, semanticModel, cancellationToken),
+                        _ => null,
+                    },
                 MemberAccessExpressionSyntax { Expression: { } inner }
                     => FindInvocation(inner, semanticModel, cancellationToken),
-                MemberBindingExpressionSyntax { Parent.Parent: ConditionalAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation } }
-                    => invocation,
+                MemberBindingExpressionSyntax { Parent.Parent: ConditionalAccessExpressionSyntax { Expression: { } expression } }
+                    => expression switch
+                    {
+                        InvocationExpressionSyntax invocation => invocation,
+                        IdentifierNameSyntax identifierName => FindInvocation(identifierName, semanticModel, cancellationToken),
+                        _ => null,
+                    },
                 IdentifierNameSyntax identifierName
                     when semanticModel.TryGetSymbol(identifierName, cancellationToken, out ILocalSymbol? local) &&
                          AssignedValue.FindSingle(local, semanticModel, cancellationToken) is { } value

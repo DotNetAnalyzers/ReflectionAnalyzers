@@ -45,8 +45,8 @@ namespace N
             }
 
             [TestCase("info.Invoke(new object[] { 1 })")]
-            //[TestCase("info?.Invoke(new object[] { 1 })")]
-            //[TestCase("info!.Invoke(new object[] { 1 })")]
+            [TestCase("info?.Invoke(new object[] { 1 })")]
+            [TestCase("info!.Invoke(new object[] { 1 })")]
             public static void Walk(string expression)
             {
                 var code = @"
