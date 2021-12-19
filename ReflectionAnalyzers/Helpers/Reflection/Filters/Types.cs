@@ -108,7 +108,8 @@
                 return true;
             }
 
-            if (this.Expressions.IsEmpty)
+            if (this.Argument is null ||
+                this.Expressions.IsEmpty)
             {
                 unique = null;
                 return false;
@@ -150,9 +151,7 @@
             if (TryExact(this.Symbols, x, out unique) ||
                 TryExact(this.Symbols, y, out unique))
             {
-#pragma warning disable CS8762 // Parameter must have a non-null value when exiting in some condition.
                 return true;
-#pragma warning restore CS8762 // Parameter must have a non-null value when exiting in some condition.
             }
 
             if (this.Matches(x.Parameters, compilation) &&
@@ -189,7 +188,7 @@
             unique = null;
             return false;
 
-            static bool TryExact(ImmutableArray<ITypeSymbol> symbols, IMethodSymbol method, out ISymbol? result)
+            static bool TryExact(ImmutableArray<ITypeSymbol> symbols, IMethodSymbol method, [NotNullWhen(true)] out ISymbol? result)
             {
                 if (method.Parameters.Length != symbols.Length)
                 {
