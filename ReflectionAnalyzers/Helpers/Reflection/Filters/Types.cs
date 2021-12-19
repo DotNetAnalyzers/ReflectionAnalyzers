@@ -9,7 +9,7 @@
     using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     [DebuggerDisplay("{this.Argument}")]
-    internal struct Types
+    internal readonly struct Types
     {
         internal static readonly Types Any = new(null, ImmutableArray<ExpressionSyntax>.Empty, ImmutableArray<ITypeSymbol>.Empty);
         internal readonly ArgumentSyntax? Argument;
