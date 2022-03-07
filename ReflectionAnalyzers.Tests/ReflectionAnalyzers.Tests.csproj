@@ -33,6 +33,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.0.1" PrivateAssets="all" />
     <PackageReference Include="NUnit" Version="3.13.2" PrivateAssets="all" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" PrivateAssets="all" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.376" PrivateAssets="all" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.66" PrivateAssets="all" />
   </ItemGroup>
 </Project>
