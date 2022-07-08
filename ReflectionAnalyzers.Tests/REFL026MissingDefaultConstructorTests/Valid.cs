@@ -149,5 +149,32 @@ namespace N
 
             RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
+
+        [Test]
+        public static void WhenOnInterfaceTypes()
+        {
+            var code = @"
+namespace N
+{
+    using System;
+
+    public interface A { }
+
+    public class B : A
+    {
+        public B() { }
+    }
+
+    public class C
+    {
+        public C(A a)
+        {
+            var foo = (A?)Activator.CreateInstance(a.GetType());
+        }
+    }
+}";
+
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
     }
 }

@@ -104,6 +104,9 @@
 
         private static bool IsMissingDefaultConstructor(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, INamedTypeSymbol createdType)
         {
+            if (createdType.TypeKind == TypeKind.Interface)
+                return false;
+
             if (createInstance.IsGenericMethod &&
                 !HasDefaultConstructor())
             {
