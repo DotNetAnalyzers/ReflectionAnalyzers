@@ -157,15 +157,13 @@ internal class BindingFlagsAnalyzer : DiagnosticAnalyzer
                 return false;
             }
 
-            using (var walker = Borrow(flags))
+            using var walker = Borrow(flags);
+            if (walker is { isUnHandled: false, duplicate: { } })
             {
-                if (walker is { isUnHandled: false, duplicate: { } })
-                {
-                    dupe = walker.duplicate;
-                    walker.flags.RemoveAt(walker.flags.LastIndexOf(dupe));
-                    expectedFlags = Format(walker.flags);
-                    return true;
-                }
+                dupe = walker.duplicate;
+                walker.flags.RemoveAt(walker.flags.LastIndexOf(dupe));
+                expectedFlags = Format(walker.flags);
+                return true;
             }
 
             return false;
