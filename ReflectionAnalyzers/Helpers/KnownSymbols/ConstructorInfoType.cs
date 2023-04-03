@@ -1,12 +1,11 @@
-namespace ReflectionAnalyzers
-{
-    using Gu.Roslyn.AnalyzerExtensions;
+namespace ReflectionAnalyzers;
 
-    internal class ConstructorInfoType : QualifiedType
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class ConstructorInfoType : QualifiedType
+{
+    internal ConstructorInfoType()
+        : base("System.Reflection.ConstructorInfo")
     {
-        internal ConstructorInfoType()
-            : base("System.Reflection.ConstructorInfo")
-        {
-        }
     }
 }

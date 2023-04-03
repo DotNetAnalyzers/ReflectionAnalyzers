@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
+﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL009MemberCannotBeFound);
 
-    public static class Diagnostics
+    [TestCase("c.GetType().GetMethod(↓\"MISSING\")")]
+    [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]
+    [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
+    [TestCase("GetType().GetMethod(↓\"MISSING\")")]
+    public static void MissingMethod(string type)
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL009MemberCannotBeFound);
-
-        [TestCase("c.GetType().GetMethod(↓\"MISSING\")")]
-        [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]
-        [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
-        [TestCase("GetType().GetMethod(↓\"MISSING\")")]
-        public static void MissingMethod(string type)
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     public class C
@@ -23,14 +23,14 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-            var message = "The referenced member MISSING is not known to exist in N.C";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-        }
+        var message = "The referenced member MISSING is not known to exist in N.C";
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+    }
 
-        [Test]
-        public static void MissingPropertySetAccessor()
-        {
-            var code = @"
+    [Test]
+    public static void MissingPropertySetAccessor()
+    {
+        var code = @"
 namespace N
 {
     class C
@@ -40,13 +40,13 @@ namespace N
         public static object? Get(C c) => c.GetType().GetMethod(↓""set_P"");
     }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void MissingPropertyGetAccessor()
-        {
-            var code = @"
+    [Test]
+    public static void MissingPropertyGetAccessor()
+    {
+        var code = @"
 namespace N
 {
     class C
@@ -56,13 +56,13 @@ namespace N
         public static object? Get(C c) => c.GetType().GetMethod(↓""get_P"");
     }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
-        {
-            var customAggregateException = @"
+    [Test]
+    public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
+    {
+        var customAggregateException = @"
 namespace N
 {
     using System;
@@ -74,7 +74,7 @@ namespace N
         public int M() => this.f;
     }
 }";
-            var code = @"
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -86,14 +86,14 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, customAggregateException, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, customAggregateException, code);
+    }
 
-        [TestCase("GetProperty(↓\"Item\")")]
-        [TestCase("GetProperty(↓\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void NamedIndexer(string call)
-        {
-            var code = @"
+    [TestCase("GetProperty(↓\"Item\")")]
+    [TestCase("GetProperty(↓\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void NamedIndexer(string call)
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -108,7 +108,6 @@ namespace N
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

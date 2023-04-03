@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL046DefaultMemberMustExistTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly DefaultMemberAttributeAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL046DefaultMemberMustExist);
 
-    public static class Diagnostics
+    /// <summary>
+    /// Verify diagnostic is present when no such member exists.
+    /// </summary>
+    [Test]
+    public static void DefaultMemberAbsent()
     {
-        private static readonly DefaultMemberAttributeAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL046DefaultMemberMustExist);
-
-        /// <summary>
-        /// Verify diagnostic is present when no such member exists.
-        /// </summary>
-        [Test]
-        public static void DefaultMemberAbsent()
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -24,16 +24,16 @@ namespace N
         public int Value { get; set; }
     }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        /// <summary>
-        /// Verify events are not considered valid targets.
-        /// </summary>
-        [Test]
-        public static void DefaultMemberIsEvent()
-        {
-            var code = @"
+    /// <summary>
+    /// Verify events are not considered valid targets.
+    /// </summary>
+    [Test]
+    public static void DefaultMemberIsEvent()
+    {
+        var code = @"
 #pragma warning disable CS8618
 namespace N
 {
@@ -48,16 +48,16 @@ namespace N
         public void M() => this.E?.Invoke(this, EventArgs.Empty);
     }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        /// <summary>
-        /// Verify base class names are not considered valid targets.
-        /// </summary>
-        [Test]
-        public static void DefaultMemberIsBaseClass()
-        {
-            var code = @"
+    /// <summary>
+    /// Verify base class names are not considered valid targets.
+    /// </summary>
+    [Test]
+    public static void DefaultMemberIsBaseClass()
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -73,7 +73,6 @@ namespace N
     [DefaultMember(↓""Base"")]
     public class C { }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

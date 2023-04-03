@@ -1,16 +1,15 @@
-namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers;
+
+internal enum FilterMatch
 {
-    internal enum FilterMatch
-    {
-        Single,
-        NoMatch,
-        ExplicitImplementation,
-        Ambiguous,
-        WrongFlags,
-        InSufficientFlags,
-        WrongTypes,
-        WrongMemberType,
-        UseContainingType,
-        PotentiallyInvisible,
-    }
+    Single,
+    NoMatch,
+    ExplicitImplementation,
+    Ambiguous,
+    WrongFlags,
+    InSufficientFlags,
+    WrongTypes,
+    WrongMemberType,
+    UseContainingType,
+    PotentiallyInvisible,
 }

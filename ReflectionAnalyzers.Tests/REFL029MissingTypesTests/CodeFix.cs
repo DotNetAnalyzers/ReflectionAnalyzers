@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
+﻿namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly AddTypesFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL029MissingTypes);
 
-    public static class CodeFix
+    [Test]
+    public static void GetMethodNoParameter()
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly AddTypesFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL029MissingTypes);
-
-        [Test]
-        public static void GetMethodNoParameter()
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     class C
@@ -26,7 +26,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -41,13 +41,13 @@ namespace N
         public int M() => 0;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetMethodNoParameterWithFlags()
-        {
-            var before = @"
+    [Test]
+    public static void GetMethodNoParameterWithFlags()
+    {
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -63,7 +63,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -79,13 +79,13 @@ namespace N
         public int M() => 0;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetMethodOneParameter()
-        {
-            var before = @"
+    [Test]
+    public static void GetMethodOneParameter()
+    {
+        var before = @"
 namespace N
 {
     class C
@@ -99,7 +99,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     class C
@@ -112,13 +112,13 @@ namespace N
         public int M(int value) => value;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetMethodOneParameterWithFlags()
-        {
-            var before = @"
+    [Test]
+    public static void GetMethodOneParameterWithFlags()
+    {
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -134,7 +134,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -149,13 +149,13 @@ namespace N
         public int M(int value) => value;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetMethodOneParams()
-        {
-            var before = @"
+    [Test]
+    public static void GetMethodOneParams()
+    {
+        var before = @"
 namespace N
 {
     using System.Linq;
@@ -171,7 +171,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Linq;
@@ -186,13 +186,13 @@ namespace N
         public int M(params int[] values) => values.Sum();
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetMethodOneParamsWithFlags()
-        {
-            var before = @"
+    [Test]
+    public static void GetMethodOneParamsWithFlags()
+    {
+        var before = @"
 namespace N
 {
     using System.Linq;
@@ -209,7 +209,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Linq;
@@ -225,13 +225,13 @@ namespace N
         public int M(params int[] values) => values.Sum();
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetMethodTwoParameters()
-        {
-            var before = @"
+    [Test]
+    public static void GetMethodTwoParameters()
+    {
+        var before = @"
 namespace N
 {
     class C
@@ -245,7 +245,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     class C
@@ -258,13 +258,13 @@ namespace N
         public double M(int i, double d) => i + d;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetMethodTwoParameterWithFlags()
-        {
-            var before = @"
+    [Test]
+    public static void GetMethodTwoParameterWithFlags()
+    {
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -280,7 +280,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -295,7 +295,6 @@ namespace N
         public double M(int i, double d) => i + d;
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

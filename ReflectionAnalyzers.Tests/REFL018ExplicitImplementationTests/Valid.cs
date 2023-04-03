@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests
+﻿namespace ReflectionAnalyzers.Tests.REFL018ExplicitImplementationTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL018ExplicitImplementation;
 
-    public static class Valid
+    [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance)")]
+    [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void WhenExplicitImplementation(string call)
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL018ExplicitImplementation;
-
-        [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(IConvertible.ToBoolean), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void WhenExplicitImplementation(string call)
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -27,14 +27,14 @@ namespace N
     }
 }".AssertReplace("GetMethod(nameof(IConvertible.ToBoolean))", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(I).GetEvent(nameof(I.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void WhenExplicitAndExplicit(string call)
-        {
-            var iC = @"
+    [TestCase("typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    [TestCase("typeof(I).GetEvent(nameof(I.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void WhenExplicitAndExplicit(string call)
+    {
+        var iC = @"
 namespace N
 {
     using System;
@@ -45,7 +45,7 @@ namespace N
     }
 }";
 
-            var code = @"
+        var code = @"
 #pragma warning disable CS8618
 namespace N
 {
@@ -68,7 +68,6 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetEvent(nameof(this.E), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, iC, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, iC, code);
     }
 }

@@ -1,23 +1,23 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests
+﻿namespace ReflectionAnalyzers.Tests.REFL036CheckNullTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetTypeAnalyzer Analyzer = new();
+    private static readonly ThrowOnErrorFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL036CheckNull);
 
-    public static class CodeFix
+    [TestCase("Get() => Type.GetType(\"C\").Assembly",                                                                     "Get() => Type.GetType(\"C\", throwOnError: true).Assembly")]
+    [TestCase("Get() => Type.GetType(\"C\", throwOnError: false).Assembly",                                                "Get() => Type.GetType(\"C\", throwOnError: true).Assembly")]
+    [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"C\").Assembly",                                  "Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: true).Assembly")]
+    [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: false).Assembly",             "Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: true).Assembly")]
+    [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\").Assembly",                      "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: true).Assembly")]
+    [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: false).Assembly", "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: true).Assembly")]
+    public static void WhenMemberAccess(string beforeExpression, string afterExpression)
     {
-        private static readonly GetTypeAnalyzer Analyzer = new();
-        private static readonly ThrowOnErrorFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL036CheckNull);
-
-        [TestCase("Get() => Type.GetType(\"C\").Assembly",                                                                     "Get() => Type.GetType(\"C\", throwOnError: true).Assembly")]
-        [TestCase("Get() => Type.GetType(\"C\", throwOnError: false).Assembly",                                                "Get() => Type.GetType(\"C\", throwOnError: true).Assembly")]
-        [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"C\").Assembly",                                  "Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: true).Assembly")]
-        [TestCase("Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: false).Assembly",             "Get(System.Reflection.Assembly source) => source.GetType(\"C\", throwOnError: true).Assembly")]
-        [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\").Assembly",                      "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: true).Assembly")]
-        [TestCase("Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: false).Assembly", "Get(System.Reflection.Emit.AssemblyBuilder source) => source.GetType(\"C\", throwOnError: true).Assembly")]
-        public static void WhenMemberAccess(string beforeExpression, string afterExpression)
-        {
-            var before = @"
+        var before = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -29,7 +29,7 @@ namespace N
     }
 }".AssertReplace("Get() => Type.GetType(\"C\").Assembly", beforeExpression);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -40,7 +40,6 @@ namespace N
         public static object Get() => Type.GetType(""C"", throwOnError: true).Assembly;
     }
 }".AssertReplace("Get() => Type.GetType(\"C\", throwOnError: true).Assembly", afterExpression);
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

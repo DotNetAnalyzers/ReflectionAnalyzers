@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class CodeFix
+    public static class ActivatorCreateInstance
     {
-        public static class ActivatorCreateInstance
-        {
-            private static readonly ActivatorAnalyzer Analyzer = new();
-            private static readonly CastReturnValueFix Fix = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
+        private static readonly ActivatorAnalyzer Analyzer = new();
+        private static readonly CastReturnValueFix Fix = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
 
-            [Test]
-            public static void Typeof()
-            {
-                var before = @"
+        [Test]
+        public static void Typeof()
+        {
+            var before = @"
 namespace N
 {
     using System;
@@ -28,7 +28,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System;
@@ -41,13 +41,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.SuppressCs8600);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.SuppressCs8600);
+        }
 
-            [Test]
-            public static void TypeofNullableDisabled()
-            {
-                var before = @"
+        [Test]
+        public static void TypeofNullableDisabled()
+        {
+            var before = @"
 #nullable disable
 namespace N
 {
@@ -62,7 +62,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 #nullable disable
 namespace N
 {
@@ -76,13 +76,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
 
-            [Test]
-            public static void WalkType()
-            {
-                var before = @"
+        [Test]
+        public static void WalkType()
+        {
+            var before = @"
 namespace N
 {
     using System;
@@ -97,7 +97,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System;
@@ -111,16 +111,16 @@ namespace N
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.SuppressCs8600);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, settings: LibrarySettings.SuppressCs8600);
+        }
 
-            [TestCase("Activator.CreateInstance(typeof(T))")]
-            [TestCase("Activator.CreateInstance(typeof(T), true)")]
-            [TestCase("Activator.CreateInstance(typeof(T), false)")]
-            [TestCase("Activator.CreateInstance(typeof(T), \"foo\")")]
-            public static void WhenUnconstrainedGeneric(string call)
-            {
-                var code = @"
+        [TestCase("Activator.CreateInstance(typeof(T))")]
+        [TestCase("Activator.CreateInstance(typeof(T), true)")]
+        [TestCase("Activator.CreateInstance(typeof(T), false)")]
+        [TestCase("Activator.CreateInstance(typeof(T), \"foo\")")]
+        public static void WhenUnconstrainedGeneric(string call)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -134,8 +134,7 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(T))", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

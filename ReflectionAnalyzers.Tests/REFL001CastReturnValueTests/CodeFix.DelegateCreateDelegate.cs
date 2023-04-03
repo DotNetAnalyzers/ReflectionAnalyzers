@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class CodeFix
+    public static class DelegateCreateDelegate
     {
-        public static class DelegateCreateDelegate
-        {
-            private static readonly CreateDelegateAnalyzer Analyzer = new();
-            private static readonly CastReturnValueFix Fix = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
+        private static readonly CreateDelegateAnalyzer Analyzer = new();
+        private static readonly CastReturnValueFix Fix = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
 
-            [TestCase("typeof(C).GetMethod(nameof(M))")]
-            [TestCase("typeof(C).GetMethod(nameof(M))!")]
-            public static void AssigningLocal(string expression)
-            {
-                var before = @"
+        [TestCase("typeof(C).GetMethod(nameof(M))")]
+        [TestCase("typeof(C).GetMethod(nameof(M))!")]
+        public static void AssigningLocal(string expression)
+        {
+            var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -34,7 +34,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(M))", expression);
 
-                var after = @"
+            var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -52,13 +52,13 @@ namespace N
         public static int M() => 0;
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(M))", expression);
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
 
-            [Test]
-            public static void Walk()
-            {
-                var before = @"
+        [Test]
+        public static void Walk()
+        {
+            var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -78,7 +78,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -97,8 +97,7 @@ namespace N
         public static int M() => 0;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

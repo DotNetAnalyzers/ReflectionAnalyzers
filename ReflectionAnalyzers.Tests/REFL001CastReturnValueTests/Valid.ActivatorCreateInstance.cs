@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static partial class Valid
+    public static class ActivatorCreateInstance
     {
-        public static class ActivatorCreateInstance
-        {
-            private static readonly ActivatorAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL001CastReturnValue;
+        private static readonly ActivatorAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL001CastReturnValue;
 
-            [TestCase("CreateInstance<T>()")]
-            [TestCase("CreateInstance<C>()")]
-            public static void Generic(string call)
-            {
-                var code = @"
+        [TestCase("CreateInstance<T>()")]
+        [TestCase("CreateInstance<C>()")]
+        public static void Generic(string call)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -26,15 +26,15 @@ namespace N
     }
 }".AssertReplace("CreateInstance<T>()", call);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("Activator.CreateInstance(typeof(C))")]
-            [TestCase("Activator.CreateInstance(typeof(C))!")]
-            [TestCase("Activator.CreateInstance(typeof(C)) ?? throw new Exception()")]
-            public static void Typeof(string expression)
-            {
-                var code = @"
+        [TestCase("Activator.CreateInstance(typeof(C))")]
+        [TestCase("Activator.CreateInstance(typeof(C))!")]
+        [TestCase("Activator.CreateInstance(typeof(C)) ?? throw new Exception()")]
+        public static void Typeof(string expression)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -45,8 +45,7 @@ namespace N
         public static object? M() => (C)Activator.CreateInstance(typeof(C));
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", expression);
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

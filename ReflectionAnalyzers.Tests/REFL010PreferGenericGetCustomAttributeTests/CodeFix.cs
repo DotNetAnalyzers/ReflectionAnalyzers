@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL010PreferGenericGetCustomAttributeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL010PreferGenericGetCustomAttributeTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetCustomAttributeAnalyzer Analyzer = new();
+    private static readonly UseGenericGetCustomAttributeFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL010");
 
-    public static class CodeFix
+    [Test]
+    public static void WhenCast()
     {
-        private static readonly GetCustomAttributeAnalyzer Analyzer = new();
-        private static readonly UseGenericGetCustomAttributeFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL010");
-
-        [Test]
-        public static void WhenCast()
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     using System;
@@ -25,7 +25,7 @@ namespace N
         }
     }
 }";
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -39,14 +39,14 @@ namespace N
         }
     }
 }";
-            var message = "Prefer the generic extension method GetCustomAttribute<ObsoleteAttribute>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Prefer the generic extension method GetCustomAttribute<ObsoleteAttribute>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void WhenAs()
-        {
-            var before = @"
+    [Test]
+    public static void WhenAs()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -59,7 +59,7 @@ namespace N
         }
     }
 }";
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -73,7 +73,6 @@ namespace N
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

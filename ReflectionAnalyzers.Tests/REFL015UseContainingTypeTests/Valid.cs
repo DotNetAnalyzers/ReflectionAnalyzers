@@ -1,41 +1,41 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL015UseContainingType;
 
-    public static class Valid
+    [TestCase("typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(C).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(C).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(C).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(C).GetField(nameof(CBase.InternalStaticField), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(C).GetEvent(nameof(CBase.InternalStaticEvent), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(C).GetProperty(nameof(CBase.InternalStaticProperty), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(C).GetMethod(nameof(CBase.InternalStaticMethod), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static)")]
+    [TestCase("typeof(CBase).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static)")]
+    [TestCase("typeof(CBase).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static)")]
+    [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static)")]
+    [TestCase("typeof(CBase).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("typeof(CBase).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("typeof(CBase).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("typeof(CBase).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    public static void GetMember(string call)
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL015UseContainingType;
-
-        [TestCase("typeof(C).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(C).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(C).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(C).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(C).GetField(nameof(CBase.InternalStaticField), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(C).GetEvent(nameof(CBase.InternalStaticEvent), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(C).GetProperty(nameof(CBase.InternalStaticProperty), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(C).GetMethod(nameof(CBase.InternalStaticMethod), BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static)")]
-        [TestCase("typeof(CBase).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static)")]
-        [TestCase("typeof(CBase).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static)")]
-        [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static)")]
-        [TestCase("typeof(CBase).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("typeof(CBase).GetField(nameof(CBase.PublicStaticField), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(CBase).GetEvent(nameof(CBase.PublicStaticEvent), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(CBase).GetProperty(nameof(CBase.PublicStaticProperty), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("typeof(CBase).GetMethod(nameof(CBase.PublicStaticMethod), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        public static void GetMember(string call)
-        {
-            var code = @"
+        var code = @"
 #pragma warning disable CS8618
 namespace N
 {
@@ -82,13 +82,13 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetEvent(nameof(CBase.PublicStaticEvent))", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void InternalStaticFieldInBase()
-        {
-            var baseCode = @"
+    [Test]
+    public static void InternalStaticFieldInBase()
+    {
+        var baseCode = @"
 namespace N
 {
     class B
@@ -96,7 +96,7 @@ namespace N
         internal static readonly int field = 1;
     }
 }";
-            var code = @"
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -107,7 +107,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, baseCode, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, baseCode, code);
     }
 }

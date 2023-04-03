@@ -1,16 +1,16 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class NoDiagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly MakeGenericAnalyzer Analyzer = new();
 
-    public static class NoDiagnostics
+    [Test]
+    public static void Recursion()
     {
-        private static readonly MakeGenericAnalyzer Analyzer = new();
-
-        [Test]
-        public static void Recursion()
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -25,8 +25,7 @@ namespace N
         }
     }
 }";
-            var solution = CodeFactory.CreateSolution(code);
-            RoslynAssert.NoAnalyzerDiagnostics(Analyzer, solution);
-        }
+        var solution = CodeFactory.CreateSolution(code);
+        RoslynAssert.NoAnalyzerDiagnostics(Analyzer, solution);
     }
 }

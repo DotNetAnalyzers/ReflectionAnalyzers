@@ -1,15 +1,14 @@
-namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers;
+
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class MethodInfoType : QualifiedType
 {
-    using Gu.Roslyn.AnalyzerExtensions;
+    internal readonly QualifiedMethod MakeGenericMethod;
 
-    internal class MethodInfoType : QualifiedType
+    internal MethodInfoType()
+        : base("System.Reflection.MethodInfo")
     {
-        internal readonly QualifiedMethod MakeGenericMethod;
-
-        internal MethodInfoType()
-            : base("System.Reflection.MethodInfo")
-        {
-            this.MakeGenericMethod = new QualifiedMethod(this, nameof(this.MakeGenericMethod));
-        }
+        this.MakeGenericMethod = new QualifiedMethod(this, nameof(this.MakeGenericMethod));
     }
 }

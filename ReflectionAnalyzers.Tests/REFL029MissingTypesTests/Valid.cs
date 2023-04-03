@@ -1,18 +1,18 @@
-namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests
+namespace ReflectionAnalyzers.Tests.REFL029MissingTypesTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL029MissingTypes;
 
-    public static class Valid
+    [Test]
+    public static void GetMethodNoParameter()
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL029MissingTypes;
-
-        [Test]
-        public static void GetMethodNoParameter()
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -27,13 +27,13 @@ namespace N
         public int M() => 0;
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void GetMethodOneParameter()
-        {
-            var code = @"
+    [Test]
+    public static void GetMethodOneParameter()
+    {
+        var code = @"
 namespace N
 {
     class C
@@ -46,13 +46,13 @@ namespace N
         public int Id(int value) => value;
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void GetMethodOneGenericParameter()
-        {
-            var code = @"
+    [Test]
+    public static void GetMethodOneGenericParameter()
+    {
+        var code = @"
 namespace N
 {
     class C
@@ -65,7 +65,6 @@ namespace N
         public T Id<T>(T value) => value;
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

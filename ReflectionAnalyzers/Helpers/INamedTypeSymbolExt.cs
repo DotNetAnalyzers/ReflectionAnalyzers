@@ -1,23 +1,22 @@
-﻿namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers;
+
+using Microsoft.CodeAnalysis;
+
+internal static class INamedTypeSymbolExt
 {
-    using Microsoft.CodeAnalysis;
+    private static readonly SymbolDisplayFormat Format = new(
+        SymbolDisplayGlobalNamespaceStyle.Omitted,
+        SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+        miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable);
 
-    internal static class INamedTypeSymbolExt
+    internal static string QualifiedMetadataName(this INamedTypeSymbol type)
     {
-        private static readonly SymbolDisplayFormat Format = new(
-            SymbolDisplayGlobalNamespaceStyle.Omitted,
-            SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
-            miscellaneousOptions: SymbolDisplayMiscellaneousOptions.ExpandNullable);
-
-        internal static string QualifiedMetadataName(this INamedTypeSymbol type)
+        var text = type.ToDisplayString(Format);
+        if (type.IsGenericType)
         {
-            var text = type.ToDisplayString(Format);
-            if (type.IsGenericType)
-            {
-                return $"{text}`{type.Arity}";
-            }
-
-            return text;
+            return $"{text}`{type.Arity}";
         }
+
+        return text;
     }
 }

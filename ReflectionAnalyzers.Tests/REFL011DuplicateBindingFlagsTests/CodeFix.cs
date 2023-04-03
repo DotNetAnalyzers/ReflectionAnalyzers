@@ -1,22 +1,22 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL011DuplicateBindingFlagsTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly BindingFlagsAnalyzer Analyzer = new();
+    private static readonly BindingFlagsFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL011");
 
-    public static class CodeFix
+    [TestCase("BindingFlags.Public | BindingFlags.↓Public",                                                   "BindingFlags.Public")]
+    [TestCase("System.Reflection.BindingFlags.Public | BindingFlags.↓Public",                                 "System.Reflection.BindingFlags.Public")]
+    [TestCase("System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.↓Public",               "System.Reflection.BindingFlags.Public")]
+    [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.↓Public | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+    [TestCase("BindingFlags.Public | BindingFlags.↓Public | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
+    public static void GetMethod(string flags, string expected)
     {
-        private static readonly BindingFlagsAnalyzer Analyzer = new();
-        private static readonly BindingFlagsFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL011");
-
-        [TestCase("BindingFlags.Public | BindingFlags.↓Public",                                                   "BindingFlags.Public")]
-        [TestCase("System.Reflection.BindingFlags.Public | BindingFlags.↓Public",                                 "System.Reflection.BindingFlags.Public")]
-        [TestCase("System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.↓Public",               "System.Reflection.BindingFlags.Public")]
-        [TestCase("BindingFlags.Public | BindingFlags.Static | BindingFlags.↓Public | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        [TestCase("BindingFlags.Public | BindingFlags.↓Public | BindingFlags.Static | BindingFlags.DeclaredOnly", "BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly")]
-        public static void GetMethod(string flags, string expected)
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -31,7 +31,7 @@ namespace N
         public int M() => 0;
     }
 }".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly", flags);
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -47,15 +47,15 @@ namespace N
     }
 }".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
-            var message = "Duplicate flag";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Duplicate flag";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [TestCase("Public | ↓Public",                                "Public")]
-        [TestCase("System.Reflection.BindingFlags.Public | ↓Public", "System.Reflection.BindingFlags.Public")]
-        public static void GetMethodUsingStatic(string flags, string expected)
-        {
-            var before = @"
+    [TestCase("Public | ↓Public",                                "Public")]
+    [TestCase("System.Reflection.BindingFlags.Public | ↓Public", "System.Reflection.BindingFlags.Public")]
+    public static void GetMethodUsingStatic(string flags, string expected)
+    {
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -71,7 +71,7 @@ namespace N
         public int M() => 0;
     }
 }".AssertReplace("BindingFlags.Instance | BindingFlags.Public | BindingFlags.↓Public  | BindingFlags.DeclaredOnly", flags);
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -88,7 +88,6 @@ namespace N
     }
 }".AssertReplace("BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly", expected);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

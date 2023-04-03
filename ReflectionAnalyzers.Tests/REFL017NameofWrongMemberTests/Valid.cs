@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
+﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL017NameofWrongMember;
 
-    public static class Valid
+    [TestCase("Class")]
+    [TestCase("Enum")]
+    [TestCase("Interface")]
+    [TestCase("Struct")]
+    public static void GetNestedTypePrivateInOtherType(string type)
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL017NameofWrongMember;
-
-        [TestCase("Class")]
-        [TestCase("Enum")]
-        [TestCase("Interface")]
-        [TestCase("Struct")]
-        public static void GetNestedTypePrivateInOtherType(string type)
-        {
-            var c = @"
+        var c = @"
 namespace N
 {
     public class C
@@ -29,7 +29,7 @@ namespace N
         private struct Struct { }
     }
 }";
-            var c2 = @"
+        var c2 = @"
 namespace N
 {
     using System.Reflection;
@@ -43,15 +43,15 @@ namespace N
     }
 }".AssertReplace("GetNestedType(\"Class\", BindingFlags.NonPublic)", $"GetNestedType(\"{type}\", BindingFlags.NonPublic)");
 
-            RoslynAssert.Valid(Analyzer, Descriptor, c, c2);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, c, c2);
+    }
 
-        [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
-        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void WhenExplicitImplementationVisibleMembers(string call)
-        {
-            var code = @"
+    [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
+    [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance)")]
+    [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void WhenExplicitImplementationVisibleMembers(string call)
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -67,13 +67,13 @@ namespace N
     }
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void DelegateInvoke()
-        {
-            var code = @"
+    [Test]
+    public static void DelegateInvoke()
+    {
+        var code = @"
 using System;
 
 namespace TestApp.Infrastructure
@@ -84,16 +84,16 @@ namespace TestApp.Infrastructure
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
-        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.Public | BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance)")]
-        [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void InterfaceMethod(string call)
-        {
-            var code = @"
+    [TestCase("GetMethod(nameof(IDisposable.Dispose))")]
+    [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.Public | BindingFlags.Instance)")]
+    [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.NonPublic | BindingFlags.Instance)")]
+    [TestCase("GetMethod(nameof(IDisposable.Dispose), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void InterfaceMethod(string call)
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -109,20 +109,20 @@ namespace N
     }
 }".AssertReplace("GetMethod(nameof(IDisposable.Dispose))", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-        [TestCase("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
-        [TestCase("GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-        [TestCase("GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
-        [TestCase("GetMethod(nameof(this.PublicInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-        [TestCase("GetMethod(nameof(this.PublicInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
-        [TestCase("GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-        [TestCase("GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
-        public static void GetOverloadedMethod(string call)
-        {
-            var code = @"
+    [TestCase("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+    [TestCase("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
+    [TestCase("GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+    [TestCase("GetMethod(nameof(PublicStaticInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
+    [TestCase("GetMethod(nameof(this.PublicInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+    [TestCase("GetMethod(nameof(this.PublicInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
+    [TestCase("GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+    [TestCase("GetMethod(nameof(this.PublicPrivateInstance), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(double) }, null)")]
+    public static void GetOverloadedMethod(string call)
+    {
+        var code = @"
 namespace ValidCode
 {
     using System.Reflection;
@@ -143,13 +143,13 @@ namespace ValidCode
          private double PublicPrivateInstance(double value) => value;
     }
 }".AssertReplace("GetMethod(nameof(this.PublicStatic), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void SystemWindowsFormsControlCreateControl()
-        {
-            var code = @"
+    [Test]
+    public static void SystemWindowsFormsControlCreateControl()
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -161,13 +161,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void AnonymousTypeNameofInstanceProperty()
-        {
-            var testCode = @"
+    [Test]
+    public static void AnonymousTypeNameofInstanceProperty()
+    {
+        var testCode = @"
 namespace N
 {
     class C
@@ -179,13 +179,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, testCode);
+    }
 
-        [Test]
-        public static void TypeOfTGetMethodGetHashCode()
-        {
-            var testCode = @"
+    [Test]
+    public static void TypeOfTGetMethodGetHashCode()
+    {
+        var testCode = @"
 namespace N
 {
     using System.Reflection;
@@ -195,13 +195,13 @@ namespace N
         public MethodInfo? M<T>() => typeof(T).GetMethod(nameof(this.GetHashCode));
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, testCode);
+    }
 
-        [Test]
-        public static void TypeOfConstrainedTGetMethod()
-        {
-            var testCode = @"
+    [Test]
+    public static void TypeOfConstrainedTGetMethod()
+    {
+        var testCode = @"
 namespace N
 {
     using System.Reflection;
@@ -217,13 +217,13 @@ namespace N
         public int M1() => 0;
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, testCode);
+    }
 
-        [Test]
-        public static void TypeofDictionaryGetMethodAdd()
-        {
-            var testCode = @"
+    [Test]
+    public static void TypeofDictionaryGetMethodAdd()
+    {
+        var testCode = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -236,13 +236,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, testCode);
+    }
 
-        [Test]
-        public static void ThisGetTypeGetStaticMethod()
-        {
-            var testCode = @"
+    [Test]
+    public static void ThisGetTypeGetStaticMethod()
+    {
+        var testCode = @"
 namespace N
 {
     public class C
@@ -252,13 +252,13 @@ namespace N
         private static int Add(int x, int y) => x + y;
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, testCode);
+    }
 
-        [Test]
-        public static void ThisGetTypeGetInstanceMethod()
-        {
-            var testCode = @"
+    [Test]
+    public static void ThisGetTypeGetInstanceMethod()
+    {
+        var testCode = @"
 namespace N
 {
     public class C
@@ -268,13 +268,13 @@ namespace N
         private int Add(int x, int y) => x + y;
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, testCode);
+    }
 
-        [Test]
-        public static void WhenThrowingArgumentException()
-        {
-            var code = @"
+    [Test]
+    public static void WhenThrowingArgumentException()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -290,13 +290,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void ArgumentOutOfRangeException()
-        {
-            var code = @"
+    [Test]
+    public static void ArgumentOutOfRangeException()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -313,13 +313,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void IgnoresDebuggerDisplay()
-        {
-            var code = @"
+    [Test]
+    public static void IgnoresDebuggerDisplay()
+    {
+        var code = @"
 #pragma warning disable CS8618
 namespace N
 {
@@ -329,13 +329,13 @@ namespace N
         public string Name { get; }
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void IgnoresTypeName()
-        {
-            var code = @"
+    [Test]
+    public static void IgnoresTypeName()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -353,13 +353,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void IgnoresSameLocal()
-        {
-            var code = @"
+    [Test]
+    public static void IgnoresSameLocal()
+    {
+        var code = @"
 namespace N
 {
     public class C
@@ -370,13 +370,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, code, Settings.Default.WithCompilationOptions(x => x.WithSuppressedDiagnostics("CS0219")));
-        }
+        RoslynAssert.Valid(Analyzer, code, Settings.Default.WithCompilationOptions(x => x.WithSuppressedDiagnostics("CS0219")));
+    }
 
-        [Test]
-        public static void WhenUsedInDeclaration()
-        {
-            var code = @"
+    [Test]
+    public static void WhenUsedInDeclaration()
+    {
+        var code = @"
 namespace N
 {
     public class C
@@ -389,13 +389,13 @@ namespace N
         private static string Id(string value) => value;
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void WhenLocalsNotVisible()
-        {
-            var code = @"
+    [Test]
+    public static void WhenLocalsNotVisible()
+    {
+        var code = @"
 namespace N
 {
     public class C
@@ -418,13 +418,13 @@ namespace N
         private static string Id(string value) => value;
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void IgnoresNamespaceName()
-        {
-            var code = @"
+    [Test]
+    public static void IgnoresNamespaceName()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -442,13 +442,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void AggregateExceptionInnerExceptionCount()
-        {
-            var code = @"
+    [Test]
+    public static void AggregateExceptionInnerExceptionCount()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -464,13 +464,13 @@ namespace N
         public int InnerExceptionCount => 0;
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void NullableIntGetTypeGetFieldMaxValue()
-        {
-            var code = @"
+    [Test]
+    public static void NullableIntGetTypeGetFieldMaxValue()
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -480,13 +480,13 @@ namespace N
         public static object? Get(int? value) => value?.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void GenericMethodOnGenericType()
-        {
-            var code = @"
+    [Test]
+    public static void GenericMethodOnGenericType()
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -500,7 +500,6 @@ namespace N
         public object? P => typeof(C<>).GetMethod(nameof(M), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

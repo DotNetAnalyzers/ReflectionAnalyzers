@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
+﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static partial class Valid
+    public static class MethodInfoInvoke
     {
-        public static class MethodInfoInvoke
-        {
-            private static readonly InvokeAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL030UseCorrectObj;
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL030UseCorrectObj;
 
-            [Test]
-            public static void Static()
-            {
-                var code = @"
+        [Test]
+        public static void Static()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -31,13 +31,13 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void Instance()
-            {
-                var code = @"
+        [Test]
+        public static void Instance()
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -52,14 +52,14 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null)")]
-            [TestCase("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke((int?)42, null)")]
-            public static void Invoke(string call)
-            {
-                var code = @"
+        [TestCase("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null)")]
+        [TestCase("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke((int?)42, null)")]
+        public static void Invoke(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -71,8 +71,7 @@ namespace N
     }
 }".AssertReplace("typeof(int?).GetMethod(nameof(Nullable<int>.GetValueOrDefault), Type.EmptyTypes).Invoke(42, null)", call);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

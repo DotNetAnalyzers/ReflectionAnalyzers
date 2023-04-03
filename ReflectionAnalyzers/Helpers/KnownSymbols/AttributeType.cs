@@ -1,17 +1,16 @@
-namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers;
+
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class AttributeType : QualifiedType
 {
-    using Gu.Roslyn.AnalyzerExtensions;
+    internal readonly QualifiedMethod GetCustomAttribute;
+    internal readonly QualifiedMethod IsDefined;
 
-    internal class AttributeType : QualifiedType
+    internal AttributeType()
+        : base("System.Attribute")
     {
-        internal readonly QualifiedMethod GetCustomAttribute;
-        internal readonly QualifiedMethod IsDefined;
-
-        internal AttributeType()
-            : base("System.Attribute")
-        {
-            this.GetCustomAttribute = new QualifiedMethod(this, nameof(this.GetCustomAttribute));
-            this.IsDefined = new QualifiedMethod(this, nameof(this.IsDefined));
-        }
+        this.GetCustomAttribute = new QualifiedMethod(this, nameof(this.GetCustomAttribute));
+        this.IsDefined = new QualifiedMethod(this, nameof(this.IsDefined));
     }
 }

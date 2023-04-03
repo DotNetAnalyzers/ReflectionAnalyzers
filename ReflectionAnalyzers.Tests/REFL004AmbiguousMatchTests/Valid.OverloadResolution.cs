@@ -1,16 +1,16 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
-{
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests;
 
-    public static partial class Valid
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Valid
+{
+    public static class OverloadResolution
     {
-        public static class OverloadResolution
+        [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+        public static void InterfaceAndSame(string call)
         {
-            [TestCase("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-            public static void InterfaceAndSame(string call)
-            {
-                var code = @"
+            var code = @"
 namespace N
 {
     using System;
@@ -25,13 +25,13 @@ namespace N
         public static IFormattable Static(IFormattable i) => i;
     }
 }".AssertReplace("GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void ObjectAndInterface()
-            {
-                var code = @"
+        [Test]
+        public static void ObjectAndInterface()
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -46,8 +46,7 @@ namespace N
         public static void Static(IFormattable i) { }
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

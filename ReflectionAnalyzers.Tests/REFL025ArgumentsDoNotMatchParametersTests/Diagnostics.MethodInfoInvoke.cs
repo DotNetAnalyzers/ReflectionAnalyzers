@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class Diagnostics
+    public static class MethodInfoInvoke
     {
-        public static class MethodInfoInvoke
-        {
-            private static readonly InvokeAnalyzer Analyzer = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters);
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters);
 
-            [TestCase("GetMethod(nameof(this.M)).Invoke(null, new object[] { ↓1.2 })")]
-            [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1, 2 })")]
-            [TestCase("GetMethod(nameof(this.M)).Invoke(null, new object[] { ↓\"abc\" })")]
-            public static void SingleIntParameter(string call)
-            {
-                var code = @"
+        [TestCase("GetMethod(nameof(this.M)).Invoke(null, new object[] { ↓1.2 })")]
+        [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1, 2 })")]
+        [TestCase("GetMethod(nameof(this.M)).Invoke(null, new object[] { ↓\"abc\" })")]
+        public static void SingleIntParameter(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -30,15 +30,15 @@ namespace N
     }
 }".AssertReplace("GetMethod(nameof(M)).Invoke(null, new object[] { ↓1.2 })", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1.2 })")]
-            [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1, 2 })")]
-            [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { \"abc\" })")]
-            public static void NoParameter(string call)
-            {
-                var code = @"
+        [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1.2 })")]
+        [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { 1, 2 })")]
+        [TestCase("GetMethod(nameof(this.M)).Invoke(null, ↓new object[] { \"abc\" })")]
+        public static void NoParameter(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -55,13 +55,13 @@ namespace N
     }
 }".AssertReplace("GetMethod(nameof(M)).Invoke(null, new object[] { ↓1.2 })", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [Test]
-            public static void ObjectParameterMissingValue()
-            {
-                var code = @"
+        [Test]
+        public static void ObjectParameterMissingValue()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -75,14 +75,14 @@ namespace N
     }
 }";
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("new object[0]")]
-            [TestCase("null")]
-            public static void OptionalParameterMissingValue(string args)
-            {
-                var code = @"
+        [TestCase("new object[0]")]
+        [TestCase("null")]
+        public static void OptionalParameterMissingValue(string args)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -94,8 +94,7 @@ namespace N
     }
 }".AssertReplace("new object[0]", args);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

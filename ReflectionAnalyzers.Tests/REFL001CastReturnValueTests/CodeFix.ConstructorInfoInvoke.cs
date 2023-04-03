@@ -1,22 +1,22 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class CodeFix
+    public static class ConstructorInfoInvoke
     {
-        public static class ConstructorInfoInvoke
-        {
-            private static readonly InvokeAnalyzer Analyzer = new();
-            private static readonly CastReturnValueFix Fix = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly CastReturnValueFix Fix = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL001CastReturnValue);
 
-            [TestCase("typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
-            [TestCase("typeof(C).GetConstructor(new[] { typeof(int) })?.Invoke(new object[] { 1 })")]
-            [TestCase("typeof(C).GetConstructor(new[] { typeof(int) })!.Invoke(new object[] { 1 })")]
-            public static void AssigningLocal(string expression)
-            {
-                var before = @"
+        [TestCase("typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
+        [TestCase("typeof(C).GetConstructor(new[] { typeof(int) })?.Invoke(new object[] { 1 })")]
+        [TestCase("typeof(C).GetConstructor(new[] { typeof(int) })!.Invoke(new object[] { 1 })")]
+        public static void AssigningLocal(string expression)
+        {
+            var before = @"
 #pragma warning disable CS8600, CS8602
 namespace N
 {
@@ -29,7 +29,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })", expression);
 
-                var after = @"
+            var after = @"
 #pragma warning disable CS8600, CS8602
 namespace N
 {
@@ -41,15 +41,15 @@ namespace N
         }
     }
 }".AssertReplace("typeof(C).GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })", expression);
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
 
-            [TestCase("info.Invoke(new object[] { 1 })")]
-            [TestCase("info?.Invoke(new object[] { 1 })")]
-            [TestCase("info!.Invoke(new object[] { 1 })")]
-            public static void Walk(string expression)
-            {
-                var code = @"
+        [TestCase("info.Invoke(new object[] { 1 })")]
+        [TestCase("info?.Invoke(new object[] { 1 })")]
+        [TestCase("info!.Invoke(new object[] { 1 })")]
+        public static void Walk(string expression)
+        {
+            var code = @"
 #pragma warning disable CS8600, CS8602
 namespace N
 {
@@ -63,8 +63,7 @@ namespace N
     }
 }".AssertReplace("info.Invoke(new object[] { 1 })", expression);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

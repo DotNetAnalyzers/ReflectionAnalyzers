@@ -1,21 +1,21 @@
-namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
+namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static partial class Valid
+    public static class IsDefined
     {
-        public static class IsDefined
-        {
-            private static readonly IsDefinedAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL044ExpectedAttributeType;
+        private static readonly IsDefinedAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL044ExpectedAttributeType;
 
-            [TestCase("Attribute")]
-            [TestCase("ObsoleteAttribute")]
-            public static void AttributeIsDefined(string type)
-            {
-                var code = @"
+        [TestCase("Attribute")]
+        [TestCase("ObsoleteAttribute")]
+        public static void AttributeIsDefined(string type)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -26,13 +26,13 @@ namespace N
     }
 }".AssertReplace("Attribute", type);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void AttributeIsDefinedGeneric()
-            {
-                var code = @"
+        [Test]
+        public static void AttributeIsDefinedGeneric()
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -47,8 +47,7 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

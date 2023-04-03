@@ -1,12 +1,11 @@
-namespace ReflectionAnalyzers
-{
-    using Gu.Roslyn.AnalyzerExtensions;
+namespace ReflectionAnalyzers;
 
-    internal class ManifestResourceInfoType : QualifiedType
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class ManifestResourceInfoType : QualifiedType
+{
+    internal ManifestResourceInfoType()
+        : base("System.Reflection.ManifestResourceInfo")
     {
-        internal ManifestResourceInfoType()
-            : base("System.Reflection.ManifestResourceInfo")
-        {
-        }
     }
 }

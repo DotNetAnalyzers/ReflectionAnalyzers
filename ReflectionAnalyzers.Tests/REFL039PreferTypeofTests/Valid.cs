@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
+﻿namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetTypeAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL039PreferTypeof;
 
-    public static class Valid
+    [Test]
+    public static void AnonymousType()
     {
-        private static readonly GetTypeAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL039PreferTypeof;
-
-        [Test]
-        public static void AnonymousType()
-        {
-            var code = @"
+        var code = @"
 namespace ValidCode
 {
     using System.Reflection;
@@ -27,13 +27,13 @@ namespace ValidCode
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void AnonymousTypePropertyWithFlags()
-        {
-            var code = @"
+    [Test]
+    public static void AnonymousTypePropertyWithFlags()
+    {
+        var code = @"
 namespace ValidCode
 {
     using System.Reflection;
@@ -48,13 +48,13 @@ namespace ValidCode
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void MulticastDelegate()
-        {
-            var code = @"
+    [Test]
+    public static void MulticastDelegate()
+    {
+        var code = @"
 namespace ValidCode
 {
     using System;
@@ -65,13 +65,13 @@ namespace ValidCode
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void Delegate()
-        {
-            var code = @"
+    [Test]
+    public static void Delegate()
+    {
+        var code = @"
 namespace ValidCode
 {
     using System;
@@ -82,14 +82,14 @@ namespace ValidCode
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [TestCase("pi.GetValue(null).GetType()")]
-        [TestCase("pi.GetValue(null)?.GetType()")]
-        public static void UnknownType(string call)
-        {
-            var code = @"
+    [TestCase("pi.GetValue(null).GetType()")]
+    [TestCase("pi.GetValue(null)?.GetType()")]
+    public static void UnknownType(string call)
+    {
+        var code = @"
 #pragma warning disable CS8602
 namespace ValidCode
 {
@@ -102,7 +102,6 @@ namespace ValidCode
     }
 }".AssertReplace("pi.GetValue(null).GetType()", call);
 
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
     }
 }

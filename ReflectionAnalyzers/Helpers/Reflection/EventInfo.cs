@@ -1,29 +1,28 @@
-﻿namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers;
+
+using System.Threading;
+
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+internal readonly struct EventInfo
 {
-    using System.Threading;
+    internal readonly INamedTypeSymbol ReflectedType;
+    internal readonly IEventSymbol Event;
 
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-    internal readonly struct EventInfo
+    internal EventInfo(INamedTypeSymbol reflectedType, IEventSymbol @event)
     {
-        internal readonly INamedTypeSymbol ReflectedType;
-        internal readonly IEventSymbol Event;
+        this.ReflectedType = reflectedType;
+        this.Event = @event;
+    }
 
-        internal EventInfo(INamedTypeSymbol reflectedType, IEventSymbol @event)
+    internal static EventInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
+    {
+        if (GetEvent.Match(expression, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IEventSymbol symbol } })
         {
-            this.ReflectedType = reflectedType;
-            this.Event = @event;
+            return new EventInfo(reflectedType, symbol);
         }
 
-        internal static EventInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
-        {
-            if (GetEvent.Match(expression, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IEventSymbol symbol } })
-            {
-                return new EventInfo(reflectedType, symbol);
-            }
-
-            return null;
-        }
+        return null;
     }
 }

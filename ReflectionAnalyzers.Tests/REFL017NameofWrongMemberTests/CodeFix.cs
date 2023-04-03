@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
+﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class CodeFix
+    public static class WhenInAccessibleMember
     {
-        public static class WhenInAccessibleMember
-        {
-            private static readonly GetXAnalyzer Analyzer = new();
-            private static readonly NameofFix Fix = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL017NameofWrongMember);
+        private static readonly GetXAnalyzer Analyzer = new();
+        private static readonly NameofFix Fix = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL017NameofWrongMember);
 
-            [Test]
-            public static void WrongContainingTypeWhenNotAccessible()
-            {
-                var before = @"
+        [Test]
+        public static void WrongContainingTypeWhenNotAccessible()
+        {
+            var before = @"
 namespace N
 {
     using System;
@@ -31,7 +31,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System;
@@ -47,14 +47,14 @@ namespace N
         public int InnerExceptionCount => 0;
     }
 }";
-                var message = "Don't use name of wrong member. Expected: \"InnerExceptionCount\"";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Use \"InnerExceptionCount\".");
-            }
+            var message = "Don't use name of wrong member. Expected: \"InnerExceptionCount\"";
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Use \"InnerExceptionCount\".");
+        }
 
-            [Test]
-            public static void NonPublicNotVisible()
-            {
-                var customAggregateException = @"
+        [Test]
+        public static void NonPublicNotVisible()
+        {
+            var customAggregateException = @"
 namespace N
 {
     using System;
@@ -64,7 +64,7 @@ namespace N
         public int InnerExceptionCount { get; }
     }
 }";
-                var before = @"
+            var before = @"
 namespace N
 {
     using System;
@@ -78,7 +78,7 @@ namespace N
         }
     }
 }";
-                var after = @"
+            var after = @"
 namespace N
 {
     using System;
@@ -92,8 +92,7 @@ namespace N
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { customAggregateException, before }, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { customAggregateException, before }, after);
         }
     }
 }

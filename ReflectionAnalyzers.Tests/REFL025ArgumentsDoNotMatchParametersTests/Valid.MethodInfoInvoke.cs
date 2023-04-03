@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static partial class Valid
+    public static class MethodInfoInvoke
     {
-        public static class MethodInfoInvoke
-        {
-            private static readonly InvokeAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL025ArgumentsDoNotMatchParameters;
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL025ArgumentsDoNotMatchParameters;
 
-            [Test]
-            public static void SingleIntParameter()
-            {
-                var code = @"
+        [Test]
+        public static void SingleIntParameter()
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -29,16 +29,16 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("Invoke(null, null)")]
-            [TestCase("Invoke(null, new object[0])")]
-            [TestCase("Invoke(null, new object[0] { })")]
-            [TestCase("Invoke(null, Array.Empty<object>())")]
-            public static void NoParameter(string call)
-            {
-                var code = @"
+        [TestCase("Invoke(null, null)")]
+        [TestCase("Invoke(null, new object[0])")]
+        [TestCase("Invoke(null, new object[0] { })")]
+        [TestCase("Invoke(null, Array.Empty<object>())")]
+        public static void NoParameter(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -52,14 +52,14 @@ namespace N
     }
 }".AssertReplace("Invoke(null, null)", call);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("1")]
-            [TestCase("System.Reflection.Missing.Value")]
-            public static void OptionalParameter(string value)
-            {
-                var code = @"
+        [TestCase("1")]
+        [TestCase("System.Reflection.Missing.Value")]
+        public static void OptionalParameter(string value)
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -71,8 +71,7 @@ namespace N
     }
 }".AssertReplace("Missing.Value", value);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

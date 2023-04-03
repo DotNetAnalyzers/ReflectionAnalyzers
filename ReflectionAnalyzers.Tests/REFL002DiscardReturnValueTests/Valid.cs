@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly InvokeAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL002DiscardReturnValue;
 
-    public static class Valid
+    [TestCase("_ = ")]
+    [TestCase("var _ = ")]
+    [TestCase("var __ = ")]
+    [TestCase("")]
+    public static void Discarding(string call)
     {
-        private static readonly InvokeAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL002DiscardReturnValue;
-
-        [TestCase("_ = ")]
-        [TestCase("var _ = ")]
-        [TestCase("var __ = ")]
-        [TestCase("")]
-        public static void Discarding(string call)
-        {
-            var code = @"
+        var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -32,15 +32,15 @@ namespace N
     }
 }".AssertReplace("_ = ", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("Assert.Null(typeof(C).GetMethod(nameof(M)).Invoke(null, null))")]
-        [TestCase("Assert.IsNull(typeof(C).GetMethod(nameof(M)).Invoke(null, null))")]
-        [TestCase("Assert.AreEqual(null, typeof(C).GetMethod(nameof(M)).Invoke(null, null))")]
-        public static void WhenUsedInAssert(string call)
-        {
-            var code = @"
+    [TestCase("Assert.Null(typeof(C).GetMethod(nameof(M)).Invoke(null, null))")]
+    [TestCase("Assert.IsNull(typeof(C).GetMethod(nameof(M)).Invoke(null, null))")]
+    [TestCase("Assert.AreEqual(null, typeof(C).GetMethod(nameof(M)).Invoke(null, null))")]
+    public static void WhenUsedInAssert(string call)
+    {
+        var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -59,13 +59,13 @@ namespace N
     }
 }".AssertReplace("Assert.Null(typeof(C).GetMethod(nameof(M)).Invoke(null, null))", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void AssigningLocal()
-        {
-            var code = @"
+    [Test]
+    public static void AssigningLocal()
+    {
+        var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -80,13 +80,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void AssigningField()
-        {
-            var code = @"
+    [Test]
+    public static void AssigningField()
+    {
+        var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -103,13 +103,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void UsingInExpression()
-        {
-            var code = @"
+    [Test]
+    public static void UsingInExpression()
+    {
+        var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -124,7 +124,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

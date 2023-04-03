@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static class Valid
+    public static class ActivatorCreateInstance
     {
-        public static class ActivatorCreateInstance
-        {
-            private static readonly ActivatorAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL028CastReturnValueToCorrectType;
+        private static readonly ActivatorAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL028CastReturnValueToCorrectType;
 
-            [TestCase("(C)")]
-            [TestCase("(IDisposable)")]
-            public static void WhenCasting(string cast)
-            {
-                var code = @"
+        [TestCase("(C)")]
+        [TestCase("(IDisposable)")]
+        public static void WhenCasting(string cast)
+        {
+            var code = @"
 #pragma warning disable CS8600
 namespace N
 {
@@ -33,13 +33,13 @@ namespace N
         }
     }
 }".AssertReplace("(C)", cast);
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void WhenUnknown()
-            {
-                var code = @"
+        [Test]
+        public static void WhenUnknown()
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -50,13 +50,13 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void WhenUnconstrainedGeneric()
-            {
-                var code = @"
+        [Test]
+        public static void WhenUnconstrainedGeneric()
+        {
+            var code = @"
 #pragma warning disable CS8600
 namespace N
 {
@@ -68,8 +68,7 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

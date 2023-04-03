@@ -1,25 +1,25 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetTypeAnalyzer Analyzer = new();
+    private static readonly SuggestTypeFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL037TypeDoesNotExits);
 
-    public static class CodeFix
+    [TestCase("Type.GetType(↓\"Int32\")",              "Type.GetType(\"System.Int32\")")]
+    [TestCase("Type.GetType(↓\"Int32\", true)",        "Type.GetType(\"System.Int32\", true)")]
+    [TestCase("Type.GetType(↓\"Int32\", true, true)",  "Type.GetType(\"System.Int32\", true, true)")]
+    [TestCase("Type.GetType(↓\"Nullable`1\")",         "Type.GetType(\"System.Nullable`1\")")]
+    [TestCase("Type.GetType(↓\"IComparable\")",        "Type.GetType(\"System.IComparable\")")]
+    [TestCase("Type.GetType(↓\"IComparable`1\")",      "Type.GetType(\"System.IComparable`1\")")]
+    //[TestCase("Type.GetType(↓\"IEnumerable`1\")",      "Type.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
+    //[TestCase("Type.GetType(↓\"AppContextSwitches\")", "Type.GetType(\"System.AppContextSwitches\")")]
+    public static void TypeGetTypeWithFix(string type, string fixedType)
     {
-        private static readonly GetTypeAnalyzer Analyzer = new();
-        private static readonly SuggestTypeFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL037TypeDoesNotExits);
-
-        [TestCase("Type.GetType(↓\"Int32\")",              "Type.GetType(\"System.Int32\")")]
-        [TestCase("Type.GetType(↓\"Int32\", true)",        "Type.GetType(\"System.Int32\", true)")]
-        [TestCase("Type.GetType(↓\"Int32\", true, true)",  "Type.GetType(\"System.Int32\", true, true)")]
-        [TestCase("Type.GetType(↓\"Nullable`1\")",         "Type.GetType(\"System.Nullable`1\")")]
-        [TestCase("Type.GetType(↓\"IComparable\")",        "Type.GetType(\"System.IComparable\")")]
-        [TestCase("Type.GetType(↓\"IComparable`1\")",      "Type.GetType(\"System.IComparable`1\")")]
-        //[TestCase("Type.GetType(↓\"IEnumerable`1\")",      "Type.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
-        //[TestCase("Type.GetType(↓\"AppContextSwitches\")", "Type.GetType(\"System.AppContextSwitches\")")]
-        public static void TypeGetTypeWithFix(string type, string fixedType)
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     using System;
@@ -30,7 +30,7 @@ namespace N
     }
 }".AssertReplace("Type.GetType(↓\"Int32\")", type);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -41,15 +41,15 @@ namespace N
     }
 }".AssertReplace("Type.GetType(\"System.Int32\")", fixedType);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [TestCase("typeof(int).Assembly.GetType(↓\"Int32\")",                                                                             "typeof(int).Assembly.GetType(\"System.Int32\")")]
-        [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"BinaryExpression\")",                              "typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.BinaryExpression\")")]
-        [TestCase("typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"TemplatedAdorner\", throwOnError: true)", "typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"MS.Internal.Controls.TemplatedAdorner\", throwOnError: true)")]
-        public static void AssemblyGetTypeWithFix(string type, string fixedType)
-        {
-            var before = @"
+    [TestCase("typeof(int).Assembly.GetType(↓\"Int32\")",                                                                             "typeof(int).Assembly.GetType(\"System.Int32\")")]
+    [TestCase("typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"BinaryExpression\")",                              "typeof(System.Linq.Expressions.BinaryExpression).Assembly.GetType(\"System.Linq.Expressions.BinaryExpression\")")]
+    [TestCase("typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"TemplatedAdorner\", throwOnError: true)", "typeof(System.Windows.Controls.AdornedElementPlaceholder).Assembly.GetType(\"MS.Internal.Controls.TemplatedAdorner\", throwOnError: true)")]
+    public static void AssemblyGetTypeWithFix(string type, string fixedType)
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -60,7 +60,7 @@ namespace N
     }
 }".AssertReplace("typeof(int).Assembly.GetType(↓\"Int32\")", type);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -71,7 +71,6 @@ namespace N
     }
 }".AssertReplace("typeof(int).Assembly.GetType(\"System.Int32\")", fixedType);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

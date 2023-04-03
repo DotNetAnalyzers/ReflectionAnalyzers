@@ -1,23 +1,23 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static partial class Valid
+    public static class MakeGenericType
     {
-        public static class MakeGenericType
-        {
-            private static readonly MakeGenericAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL031UseCorrectGenericArguments;
+        private static readonly MakeGenericAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL031UseCorrectGenericArguments;
 
-            [TestCase("string")]
-            [TestCase("int")]
-            [TestCase("int?")]
-            [TestCase("EventArgs")]
-            public static void SingleUnconstrained(string type)
-            {
-                var code = @"
+        [TestCase("string")]
+        [TestCase("int")]
+        [TestCase("int?")]
+        [TestCase("EventArgs")]
+        public static void SingleUnconstrained(string type)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -27,19 +27,19 @@ namespace N
         public static void Get(Type unused) => typeof(C<>).MakeGenericType(typeof(int));
     }
 }".AssertReplace("int", type);
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("where T : class", "typeof(string)")]
-            [TestCase("where T : class", "typeof(Console)")]
-            [TestCase("where T : struct", "typeof(int)")]
-            [TestCase("where T : unmanaged", "typeof(int)")]
-            [TestCase("where T : IComparable", "typeof(int)")]
-            [TestCase("where T : IComparable<T>", "typeof(int)")]
-            [TestCase("where T : new()", "typeof(C<int>)")]
-            public static void ConstrainedParameter(string constraint, string arg)
-            {
-                var code = @"
+        [TestCase("where T : class", "typeof(string)")]
+        [TestCase("where T : class", "typeof(Console)")]
+        [TestCase("where T : struct", "typeof(int)")]
+        [TestCase("where T : unmanaged", "typeof(int)")]
+        [TestCase("where T : IComparable", "typeof(int)")]
+        [TestCase("where T : IComparable<T>", "typeof(int)")]
+        [TestCase("where T : new()", "typeof(C<int>)")]
+        public static void ConstrainedParameter(string constraint, string arg)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -50,15 +50,15 @@ namespace N
         public static object Get(Type unused) => typeof(C<>).MakeGenericType(typeof(int));
     }
 }".AssertReplace("where T : class", constraint)
-  .AssertReplace("typeof(int)", arg);
+.AssertReplace("typeof(int)", arg);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("where T1 : class", "where T2 : T1", "typeof(object), typeof(int)")]
-            public static void TransitiveConstraints(string where1, string where2, string types)
-            {
-                var code = @"
+        [TestCase("where T1 : class", "where T2 : T1", "typeof(object), typeof(int)")]
+        public static void TransitiveConstraints(string where1, string where2, string types)
+        {
+            var code = @"
 namespace N
 {
     public class C<T1, T2> 
@@ -68,16 +68,16 @@ namespace N
         public static object Get => typeof(C<,>).MakeGenericType(typeof(object), typeof(int));
     }
 }".AssertReplace("where T1 : class", where1)
-  .AssertReplace("where T2 : T1", where2)
-  .AssertReplace("typeof(object), typeof(int)", types);
+.AssertReplace("where T2 : T1", where2)
+.AssertReplace("typeof(object), typeof(int)", types);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void ImplicitDefaultConstructor()
-            {
-                var code = @"
+        [Test]
+        public static void ImplicitDefaultConstructor()
+        {
+            var code = @"
 namespace N
 {
     public struct S
@@ -92,18 +92,18 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("where T : Enum", "AttributeTargets")]
-            [TestCase("where T : struct, System.Enum", "AttributeTargets")]
-            [TestCase("where T : Enum", "Enum")]
-            [TestCase("where T : unmanaged", "int")]
-            [TestCase("where T : unmanaged", "Safe")]
-            [TestCase("where T : unmanaged", "AttributeTargets")]
-            public static void ConstrainedToEnum(string constraint, string arg)
-            {
-                var safeCode = @"
+        [TestCase("where T : Enum", "AttributeTargets")]
+        [TestCase("where T : struct, System.Enum", "AttributeTargets")]
+        [TestCase("where T : Enum", "Enum")]
+        [TestCase("where T : unmanaged", "int")]
+        [TestCase("where T : unmanaged", "Safe")]
+        [TestCase("where T : unmanaged", "AttributeTargets")]
+        public static void ConstrainedToEnum(string constraint, string arg)
+        {
+            var safeCode = @"
 namespace N
 {
     using System;
@@ -115,7 +115,7 @@ namespace N
     }
 }";
 
-                var code = @"
+            var code = @"
 namespace N
 {
     using System;
@@ -126,15 +126,15 @@ namespace N
         public static object Get(Type unused) => typeof(C<>).MakeGenericType(typeof(AttributeTargets));
     }
 }".AssertReplace("where T : Enum", constraint)
-  .AssertReplace("AttributeTargets", arg);
+.AssertReplace("AttributeTargets", arg);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, safeCode, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, safeCode, code);
+        }
 
-            [Test]
-            public static void NestedType()
-            {
-                var code = @"
+        [Test]
+        public static void NestedType()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -150,13 +150,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void NestedGenericInGeneric()
-            {
-                var code = @"
+        [Test]
+        public static void NestedGenericInGeneric()
+        {
+            var code = @"
 namespace N
 {
     public class C<T>
@@ -168,13 +168,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void PassingArrayOfUnknownToMakeGenericType()
-            {
-                var code = @"
+        [Test]
+        public static void PassingArrayOfUnknownToMakeGenericType()
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -187,13 +187,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void Ternary()
-            {
-                var code = @"
+        [Test]
+        public static void Ternary()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -220,13 +220,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, code);
-            }
+            RoslynAssert.Valid(Analyzer, code);
+        }
 
-            [Test]
-            public static void TernaryTwoArguments()
-            {
-                var code = @"
+        [Test]
+        public static void TernaryTwoArguments()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -253,13 +253,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, code);
-            }
+            RoslynAssert.Valid(Analyzer, code);
+        }
 
-            [Test]
-            public static void IfElse()
-            {
-                var code = @"
+        [Test]
+        public static void IfElse()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -291,13 +291,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, code);
-            }
+            RoslynAssert.Valid(Analyzer, code);
+        }
 
-            [Test]
-            public static void IfReturn()
-            {
-                var code = @"
+        [Test]
+        public static void IfReturn()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -327,13 +327,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, code);
-            }
+            RoslynAssert.Valid(Analyzer, code);
+        }
 
-            [Test]
-            public static void NestedIf()
-            {
-                var code = @"
+        [Test]
+        public static void NestedIf()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -366,8 +366,7 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, code);
-            }
+            RoslynAssert.Valid(Analyzer, code);
         }
     }
 }

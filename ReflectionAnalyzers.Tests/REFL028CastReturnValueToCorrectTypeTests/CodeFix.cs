@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL028CastReturnValueToCorrectTypeTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class CodeFix
+    public static class ActivatorCreateInstance
     {
-        public static class ActivatorCreateInstance
-        {
-            private static readonly ActivatorAnalyzer Analyzer = new();
-            private static readonly CastReturnValueFix Fix = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL028CastReturnValueToCorrectType);
+        private static readonly ActivatorAnalyzer Analyzer = new();
+        private static readonly CastReturnValueFix Fix = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL028CastReturnValueToCorrectType);
 
-            [Test]
-            public static void WhenCastingToWrongType()
-            {
-                var before = @"
+        [Test]
+        public static void WhenCastingToWrongType()
+        {
+            var before = @"
 #pragma warning disable CS8600
 namespace N
 {
@@ -33,7 +33,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 #pragma warning disable CS8600
 namespace N
 {
@@ -51,8 +51,7 @@ namespace N
         }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
         }
     }
 }

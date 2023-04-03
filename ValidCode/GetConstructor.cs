@@ -1,41 +1,40 @@
 // ReSharper disable All
-namespace ValidCode
+namespace ValidCode;
+
+using System;
+using System.Reflection;
+using NUnit.Framework;
+
+public class GetConstructor
 {
-    using System;
-    using System.Reflection;
-    using NUnit.Framework;
-
-    public class GetConstructor
+    [Test]
+    public void Valid()
     {
-        [Test]
-        public void Valid()
+        Assert.NotNull(typeof(Default).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null));
+        Assert.NotNull(typeof(Single).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null));
+        Assert.NotNull(typeof(Two).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) }, null));
+        Assert.NotNull(typeof(Two).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(double) }, null));
+    }
+
+    public class Default
+    {
+    }
+
+    public class Single
+    {
+        public Single()
         {
-            Assert.NotNull(typeof(Default).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null));
-            Assert.NotNull(typeof(Single).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, Type.EmptyTypes, null));
-            Assert.NotNull(typeof(Two).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(int) }, null));
-            Assert.NotNull(typeof(Two).GetConstructor(BindingFlags.Public | BindingFlags.Instance, null, new[] { typeof(double) }, null));
+        }
+    }
+
+    public class Two
+    {
+        public Two(int value)
+        {
         }
 
-        public class Default
+        public Two(double value)
         {
-        }
-
-        public class Single
-        {
-            public Single()
-            {
-            }
-        }
-
-        public class Two
-        {
-            public Two(int value)
-            {
-            }
-
-            public Two(double value)
-            {
-            }
         }
     }
 }

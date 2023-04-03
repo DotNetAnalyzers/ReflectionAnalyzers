@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
+﻿namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly UseParameterTypeFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL033UseSameTypeAsParameter);
 
-    public static class CodeFix
+    [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)")]
+    [TestCase("typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)")]
+    public static void GetMethodOneParameterOverloadResolution(string call)
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly UseParameterTypeFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL033UseSameTypeAsParameter);
-
-        [TestCase("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)")]
-        [TestCase("typeof(C).GetMethod(nameof(this.Public), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)")]
-        public static void GetMethodOneParameterOverloadResolution(string call)
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     using System;
@@ -31,7 +31,7 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(↓int) }, null)", call);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -49,14 +49,14 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null)", call.AssertReplace("↓int", "IComparable"));
 
-            var message = "Use the same type as the parameter. Expected: IComparable.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Use the same type as the parameter. Expected: IComparable.";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void TwoProjects()
-        {
-            var c1 = @"
+    [Test]
+    public static void TwoProjects()
+    {
+        var c1 = @"
 namespace Project1
 {
     using System;
@@ -67,7 +67,7 @@ namespace Project1
     }
 }";
 
-            var before = @"
+        var before = @"
 namespace Project2
 {
     using System;
@@ -81,7 +81,7 @@ namespace Project2
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace Project2
 {
     using System;
@@ -94,14 +94,14 @@ namespace Project2
         public object? Get() => typeof(C1).GetMethod(nameof(C1.Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(IComparable) }, null);
     }
 }";
-            var message = "Use the same type as the parameter. Expected: IComparable.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { c1, before }, after);
-        }
+        var message = "Use the same type as the parameter. Expected: IComparable.";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { c1, before }, after);
+    }
 
-        [Test]
-        public static void Issue121Inline()
-        {
-            var before = @"
+    [Test]
+    public static void Issue121Inline()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -117,7 +117,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -133,14 +133,14 @@ namespace N
     }
 }";
 
-            var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Change to: IReadOnlyDictionary<string, object>.");
-        }
+        var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Change to: IReadOnlyDictionary<string, object>.");
+    }
 
-        [Test]
-        public static void Issue121()
-        {
-            var before = @"
+    [Test]
+    public static void Issue121()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -163,7 +163,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -186,8 +186,7 @@ namespace N
     }
 }";
 
-            var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Change to: typeof(IReadOnlyDictionary<string, object>).");
-        }
+        var message = "Use the same type as the parameter. Expected: IReadOnlyDictionary<string, object>.";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Change to: typeof(IReadOnlyDictionary<string, object>).");
     }
 }

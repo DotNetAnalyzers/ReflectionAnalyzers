@@ -1,15 +1,14 @@
-namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers;
+
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class MemberInfoType : QualifiedType
 {
-    using Gu.Roslyn.AnalyzerExtensions;
+    internal readonly QualifiedMethod Invoke;
 
-    internal class MemberInfoType : QualifiedType
+    internal MemberInfoType()
+        : base("System.Reflection.MemberInfo")
     {
-        internal readonly QualifiedMethod Invoke;
-
-        internal MemberInfoType()
-            : base("System.Reflection.MemberInfo")
-        {
-            this.Invoke = new QualifiedMethod(this, nameof(this.Invoke));
-        }
+        this.Invoke = new QualifiedMethod(this, nameof(this.Invoke));
     }
 }

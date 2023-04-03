@@ -1,22 +1,22 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static partial class Valid
+    public static class ConstructorInfoInvoke
     {
-        public static class ConstructorInfoInvoke
-        {
-            private static readonly InvokeAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL025ArgumentsDoNotMatchParameters;
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL025ArgumentsDoNotMatchParameters;
 
-            [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
-            [TestCase("GetConstructor(new[] { typeof(int) })!.Invoke(new object[] { 1 })")]
-            [TestCase("GetConstructor(new[] { typeof(int) })?.Invoke(new object[] { 1 })")]
-            public static void SingleIntParameter(string call)
-            {
-                var code = @"
+        [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
+        [TestCase("GetConstructor(new[] { typeof(int) })!.Invoke(new object[] { 1 })")]
+        [TestCase("GetConstructor(new[] { typeof(int) })?.Invoke(new object[] { 1 })")]
+        public static void SingleIntParameter(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -31,8 +31,7 @@ namespace N
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })", call);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
+﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static partial class Valid
+    public static class ConstructorInfoInvoke
     {
-        public static class ConstructorInfoInvoke
-        {
-            private static readonly InvokeAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL030UseCorrectObj;
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL030UseCorrectObj;
 
-            [TestCase("GetConstructor(Type.EmptyTypes).Invoke(null)")]
-            [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
-            public static void InvokeWithOneArgument(string call)
-            {
-                var code = @"
+        [TestCase("GetConstructor(Type.EmptyTypes).Invoke(null)")]
+        [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(new object[] { 1 })")]
+        public static void InvokeWithOneArgument(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -35,14 +35,14 @@ namespace N
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(null)", call);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)")]
-            [TestCase("type.GetConstructor(new[] { typeof(int) }).Invoke(instance, new object[] { 1 })")]
-            public static void InvokeWithGetUninitializedObjectAndArgument(string call)
-            {
-                var code = @"
+        [TestCase("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)")]
+        [TestCase("type.GetConstructor(new[] { typeof(int) }).Invoke(instance, new object[] { 1 })")]
+        public static void InvokeWithGetUninitializedObjectAndArgument(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -68,8 +68,7 @@ namespace N
     }
 }".AssertReplace("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)", call);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

@@ -1,15 +1,14 @@
-namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers;
+
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class ArrayType : QualifiedType
 {
-    using Gu.Roslyn.AnalyzerExtensions;
+    internal readonly QualifiedMethod Empty;
 
-    internal class ArrayType : QualifiedType
+    internal ArrayType()
+        : base("System.Array")
     {
-        internal readonly QualifiedMethod Empty;
-
-        internal ArrayType()
-            : base("System.Array")
-        {
-            this.Empty = new QualifiedMethod(this, nameof(this.Empty));
-        }
+        this.Empty = new QualifiedMethod(this, nameof(this.Empty));
     }
 }

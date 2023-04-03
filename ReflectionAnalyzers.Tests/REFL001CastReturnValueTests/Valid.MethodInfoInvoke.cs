@@ -1,23 +1,23 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL001CastReturnValueTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static partial class Valid
+    public static class MethodInfoInvoke
     {
-        public static class MethodInfoInvoke
-        {
-            private static readonly InvokeAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL001CastReturnValue;
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL001CastReturnValue;
 
-            [TestCase("_ = ")]
-            [TestCase("var _ = ")]
-            [TestCase("var __ = ")]
-            [TestCase("")]
-            public static void Discarding(string call)
-            {
-                var code = @"
+        [TestCase("_ = ")]
+        [TestCase("var _ = ")]
+        [TestCase("var __ = ")]
+        [TestCase("")]
+        public static void Discarding(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -34,13 +34,13 @@ namespace N
     }
 }".AssertReplace("_ = ", call);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void AssigningLocal()
-            {
-                var code = @"
+        [Test]
+        public static void AssigningLocal()
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -55,13 +55,13 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void IsPattern()
-            {
-                var code = @"
+        [Test]
+        public static void IsPattern()
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -78,13 +78,13 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void SwitchPattern()
-            {
-                var code = @"
+        [Test]
+        public static void SwitchPattern()
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -103,13 +103,13 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void AssigningField()
-            {
-                var code = @"
+        [Test]
+        public static void AssigningField()
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -126,13 +126,13 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void UsingInExpression()
-            {
-                var code = @"
+        [Test]
+        public static void UsingInExpression()
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -147,13 +147,13 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void CallingToString()
-            {
-                var code = @"
+        [Test]
+        public static void CallingToString()
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -168,15 +168,15 @@ namespace N
     }
 }";
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("_ = ")]
-            [TestCase("var _ = ")]
-            [TestCase("var __ = ")]
-            public static void Discarded(string discard)
-            {
-                var code = @"
+        [TestCase("_ = ")]
+        [TestCase("var _ = ")]
+        [TestCase("var __ = ")]
+        public static void Discarded(string discard)
+        {
+            var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -191,8 +191,7 @@ namespace N
     }
 }".AssertReplace("_ = ", discard);
 
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

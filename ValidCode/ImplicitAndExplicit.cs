@@ -1,29 +1,28 @@
-﻿namespace ValidCode
-{
-    using System;
-    using System.Reflection;
-    using NUnit.Framework;
+﻿namespace ValidCode;
 
-    public interface IExplicitImplicit
+using System;
+using System.Reflection;
+using NUnit.Framework;
+
+public interface IExplicitImplicit
+{
+    event EventHandler? E;
+}
+
+public class ExplicitImplicit : IExplicitImplicit
+{
+    [Test]
+    public void Valid()
     {
-        event EventHandler? E;
+        Assert.NotNull(typeof(ExplicitImplicit).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+        Assert.NotNull(typeof(IExplicitImplicit).GetEvent(nameof(IExplicitImplicit.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
     }
 
-    public class ExplicitImplicit : IExplicitImplicit
+    internal event EventHandler? Bar;
+
+    event EventHandler? IExplicitImplicit.E
     {
-        [Test]
-        public void Valid()
-        {
-            Assert.NotNull(typeof(ExplicitImplicit).GetEvent(nameof(this.Bar), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-            Assert.NotNull(typeof(IExplicitImplicit).GetEvent(nameof(IExplicitImplicit.E), BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-        }
-
-        internal event EventHandler? Bar;
-
-        event EventHandler? IExplicitImplicit.E
-        {
-            add => this.Bar += value;
-            remove => this.Bar -= value;
-        }
+        add => this.Bar += value;
+        remove => this.Bar -= value;
     }
 }

@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests
+﻿namespace ReflectionAnalyzers.Tests.REFL017NameofWrongMemberTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class CodeFix
+    public static class WhenWrongMember
     {
-        public static class WhenWrongMember
-        {
-            private static readonly GetXAnalyzer Analyzer = new();
-            private static readonly NameofFix Fix = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL017NameofWrongMember);
+        private static readonly GetXAnalyzer Analyzer = new();
+        private static readonly NameofFix Fix = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL017NameofWrongMember);
 
-            [Test]
-            public static void TypeOfDictionaryGetMethodNameOfStaticAdd()
-            {
-                var before = @"
+        [Test]
+        public static void TypeOfDictionaryGetMethodNameOfStaticAdd()
+        {
+            var before = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -45,14 +45,14 @@ namespace N
         private static int Add(int x, int y) => x + y;
     }
 }";
-                var message = "Don't use name of wrong member. Expected: Dictionary<string, object>.Add";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Use Dictionary<string, object>.Add.");
-            }
+            var message = "Don't use name of wrong member. Expected: Dictionary<string, object>.Add";
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after, fixTitle: "Use Dictionary<string, object>.Add.");
+        }
 
-            [Test]
-            public static void TypeOfConsoleGetMethodNameOfStaticWriteLine()
-            {
-                var before = @"
+        [Test]
+        public static void TypeOfConsoleGetMethodNameOfStaticWriteLine()
+        {
+            var before = @"
 namespace N
 {
     using System;
@@ -68,7 +68,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System;
@@ -83,13 +83,13 @@ namespace N
         public bool WriteLine { get; set; }
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
 
-            [Test]
-            public static void TypeOfDictionaryGetMethodNameOfHashSetAdd()
-            {
-                var before = @"
+        [Test]
+        public static void TypeOfDictionaryGetMethodNameOfHashSetAdd()
+        {
+            var before = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -105,7 +105,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -120,13 +120,13 @@ namespace N
         private static int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
 
-            [Test]
-            public static void ThisGetTypeGetMethodNameOfHashSetAddStatic()
-            {
-                var before = @"
+        [Test]
+        public static void ThisGetTypeGetMethodNameOfHashSetAddStatic()
+        {
+            var before = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -142,7 +142,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -157,13 +157,13 @@ namespace N
         private static int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
 
-            [Test]
-            public static void ThisGetTypeGetMethodNameOfHashSetAddInstance()
-            {
-                var before = @"
+        [Test]
+        public static void ThisGetTypeGetMethodNameOfHashSetAddInstance()
+        {
+            var before = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -179,7 +179,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -194,13 +194,13 @@ namespace N
         private int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+        }
 
-            [Test]
-            public static void ThisGetTypeGetMethodNameOfHashSetAddUnderscore()
-            {
-                var c1 = @"
+        [Test]
+        public static void ThisGetTypeGetMethodNameOfHashSetAddUnderscore()
+        {
+            var c1 = @"
 namespace N
 {
     public class C1
@@ -210,7 +210,7 @@ namespace N
         public int M() => _f;
     }
 }";
-                var before = @"
+            var before = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -223,7 +223,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -235,8 +235,7 @@ namespace N
         private int Add(int x, int y) => x + y;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { c1, before }, after);
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { c1, before }, after);
         }
     }
 }

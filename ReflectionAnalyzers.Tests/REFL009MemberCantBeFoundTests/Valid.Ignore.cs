@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests
-{
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+﻿namespace ReflectionAnalyzers.Tests.REFL009MemberCantBeFoundTests;
 
-    public static partial class Valid
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Valid
+{
+    public static class Ignore
     {
-        public static class Ignore
+        [TestCase("GetNestedType(\"Generic\", BindingFlags.Public)")]
+        [TestCase("GetNestedType(nameof(Generic<int>), BindingFlags.Public)")]
+        [TestCase("GetNestedType(\"Generic`2\", BindingFlags.Public)")]
+        public static void GetNestedType(string call)
         {
-            [TestCase("GetNestedType(\"Generic\", BindingFlags.Public)")]
-            [TestCase("GetNestedType(nameof(Generic<int>), BindingFlags.Public)")]
-            [TestCase("GetNestedType(\"Generic`2\", BindingFlags.Public)")]
-            public static void GetNestedType(string call)
-            {
-                var code = @"
+            var code = @"
 namespace N
 {
     using System.Reflection;
@@ -29,13 +29,13 @@ namespace N
         }
     }
 }".AssertReplace("GetNestedType(nameof(Generic<int>), BindingFlags.Public)", call);
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void GetPropertyAnonymousType()
-            {
-                var code = @"
+        [Test]
+        public static void GetPropertyAnonymousType()
+        {
+            var code = @"
 namespace N
 {
     class C
@@ -47,17 +47,17 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [TestCase("typeof(string).GetMethod(\"MISSING\")")]
-            [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Instance)")]
-            [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-            [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Static)")]
-            [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-            public static void MissingMethodNotInSource(string type)
-            {
-                var code = @"
+        [TestCase("typeof(string).GetMethod(\"MISSING\")")]
+        [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("typeof(string).GetMethod(\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        public static void MissingMethodNotInSource(string type)
+        {
+            var code = @"
 namespace N
 {
     using System.Reflection;
@@ -67,8 +67,7 @@ namespace N
         public MethodInfo? M() => typeof(string).GetMethod(""MISSING"");
     }
 }".AssertReplace("typeof(string).GetMethod(\"MISSING\")", type);
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests
+﻿namespace ReflectionAnalyzers.Tests.REFL027PreferEmptyTypesTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly ArgumentAnalyzer Analyzer = new();
+    private static readonly PreferEmptyTypesFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL027PreferEmptyTypes);
 
-    public static class CodeFix
+    [TestCase("new Type[0]")]
+    [TestCase("Array.Empty<Type>()")]
+    [TestCase("new Type[0] { }")]
+    [TestCase("new Type[] { }")]
+    public static void GetConstructor(string emptyArray)
     {
-        private static readonly ArgumentAnalyzer Analyzer = new();
-        private static readonly PreferEmptyTypesFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL027PreferEmptyTypes);
-
-        [TestCase("new Type[0]")]
-        [TestCase("Array.Empty<Type>()")]
-        [TestCase("new Type[0] { }")]
-        [TestCase("new Type[] { }")]
-        public static void GetConstructor(string emptyArray)
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     using System;
@@ -29,7 +29,7 @@ namespace N
     }
 }".AssertReplace("new Type[0]", emptyArray);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -43,7 +43,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

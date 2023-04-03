@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
+﻿namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetCustomAttributeAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL012PreferIsDefined;
 
-    public static class Valid
+    [Test]
+    public static void WhenUsingGeneric()
     {
-        private static readonly GetCustomAttributeAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL012PreferIsDefined;
-
-        [Test]
-        public static void WhenUsingGeneric()
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -26,15 +26,15 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("(ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))")]
-        [TestCase("(ObsoleteAttribute?)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))")]
-        [TestCase("(ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))!")]
-        public static void WhenGetCustomAttributeCast(string expression)
-        {
-            var code = @"
+    [TestCase("(ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))")]
+    [TestCase("(ObsoleteAttribute?)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))")]
+    [TestCase("(ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))!")]
+    public static void WhenGetCustomAttributeCast(string expression)
+    {
+        var code = @"
 #pragma warning disable CS8600
 namespace N
 {
@@ -48,13 +48,13 @@ namespace N
         }
     }
 }".AssertReplace("(ObsoleteAttribute)Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute))", expression);
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void WhenGetCustomAttributeAs()
-        {
-            var code = @"
+    [Test]
+    public static void WhenGetCustomAttributeAs()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -68,7 +68,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

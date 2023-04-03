@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests
+﻿namespace ReflectionAnalyzers.Tests.REFL033UseSameTypeAsParameterTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL033UseSameTypeAsParameter;
 
-    public static class Valid
+    [Test]
+    public static void ExactInterfaceParameter()
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL033UseSameTypeAsParameter;
-
-        [Test]
-        public static void ExactInterfaceParameter()
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -26,13 +26,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void NullableParameter()
-        {
-            var code = @"
+    [Test]
+    public static void NullableParameter()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -46,13 +46,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void SystemWindowsFormsControlCreateControl()
-        {
-            var code = @"
+    [Test]
+    public static void SystemWindowsFormsControlCreateControl()
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -69,7 +69,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

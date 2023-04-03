@@ -1,23 +1,23 @@
-﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection
-{
-    using System;
-    using System.Threading;
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis.CSharp;
-    using NUnit.Framework;
+﻿namespace ReflectionAnalyzers.Tests.Helpers.Reflection;
 
-    public static class ReflectedMemberTests
+using System;
+using System.Threading;
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis.CSharp;
+using NUnit.Framework;
+
+public static class ReflectedMemberTests
+{
+    [TestCase("typeof(C).GetMethod(nameof(this.ToString))",                                                                               "C",           "typeof(C)")]
+    [TestCase("new C().GetType().GetMethod(nameof(this.ToString))",                                                                       "C",           "new C().GetType()")]
+    [TestCase("foo.GetType().GetMethod(nameof(this.ToString))",                                                                           "C",           "foo.GetType()")]
+    [TestCase("this.GetType().GetMethod(nameof(this.ToString))",                                                                          "C",           "this.GetType()")]
+    [TestCase("GetType().GetMethod(nameof(this.ToString))",                                                                               "C",           "GetType()")]
+    [TestCase("typeof(string).Assembly.GetType(\"System.Int32\").GetMethod(nameof(this.ToString))",                                       "Int32",         "typeof(string).Assembly.GetType(\"System.Int32\")")]
+    [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\").GetMethod(nameof(this.ToString))", "IEnumerable`1", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
+    public static void TryGetTypeFromExpression(string call, string expected, string expectedSource)
     {
-        [TestCase("typeof(C).GetMethod(nameof(this.ToString))",                                                                               "C",           "typeof(C)")]
-        [TestCase("new C().GetType().GetMethod(nameof(this.ToString))",                                                                       "C",           "new C().GetType()")]
-        [TestCase("foo.GetType().GetMethod(nameof(this.ToString))",                                                                           "C",           "foo.GetType()")]
-        [TestCase("this.GetType().GetMethod(nameof(this.ToString))",                                                                          "C",           "this.GetType()")]
-        [TestCase("GetType().GetMethod(nameof(this.ToString))",                                                                               "C",           "GetType()")]
-        [TestCase("typeof(string).Assembly.GetType(\"System.Int32\").GetMethod(nameof(this.ToString))",                                       "Int32",         "typeof(string).Assembly.GetType(\"System.Int32\")")]
-        [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\").GetMethod(nameof(this.ToString))", "IEnumerable`1", "typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")")]
-        public static void TryGetTypeFromExpression(string call, string expected, string expectedSource)
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -31,25 +31,25 @@ namespace N
         }
     }
 }".AssertReplace("typeof(C).GetMethod(nameof(this.ToString))", call);
-            var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
-            var semanticModel = compilation.GetSemanticModel(syntaxTree);
-            var node = syntaxTree.FindInvocation(call);
-            Assert.AreEqual(true, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out var type, out var source));
-            Assert.AreEqual(expected, type.MetadataName);
-            Assert.AreEqual(expectedSource, source.ToString());
-        }
+        var syntaxTree = CSharpSyntaxTree.ParseText(code);
+        var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
+        var semanticModel = compilation.GetSemanticModel(syntaxTree);
+        var node = syntaxTree.FindInvocation(call);
+        Assert.AreEqual(true, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out var type, out var source));
+        Assert.AreEqual(expected, type.MetadataName);
+        Assert.AreEqual(expectedSource, source.ToString());
+    }
 
-        [TestCase("typeof(C)", "C")]
-        [TestCase("new C().GetType()", "C")]
-        [TestCase("foo.GetType()", "C")]
-        [TestCase("this.GetType()", "C")]
-        [TestCase("GetType()", "C")]
-        [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "Int32")]
-        [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "IEnumerable`1")]
-        public static void TryGetTypeFromLocal(string typeExpression, string expected)
-        {
-            var code = @"
+    [TestCase("typeof(C)", "C")]
+    [TestCase("new C().GetType()", "C")]
+    [TestCase("foo.GetType()", "C")]
+    [TestCase("this.GetType()", "C")]
+    [TestCase("GetType()", "C")]
+    [TestCase("typeof(string).Assembly.GetType(\"System.Int32\")", "Int32")]
+    [TestCase("typeof(IEnumerable<int>).Assembly.GetType(\"System.Collections.Generic.IEnumerable`1\")", "IEnumerable`1")]
+    public static void TryGetTypeFromLocal(string typeExpression, string expected)
+    {
+        var code = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -64,19 +64,19 @@ namespace N
         }
     }
 }".AssertReplace("typeof(C)", typeExpression);
-            var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
-            var semanticModel = compilation.GetSemanticModel(syntaxTree);
-            var node = syntaxTree.FindInvocation("GetMethod");
-            Assert.AreEqual(true, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out var type, out var instance));
-            Assert.AreEqual(expected, type.MetadataName);
-            Assert.AreEqual(typeExpression, instance.ToString());
-        }
+        var syntaxTree = CSharpSyntaxTree.ParseText(code);
+        var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
+        var semanticModel = compilation.GetSemanticModel(syntaxTree);
+        var node = syntaxTree.FindInvocation("GetMethod");
+        Assert.AreEqual(true, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out var type, out var instance));
+        Assert.AreEqual(expected, type.MetadataName);
+        Assert.AreEqual(typeExpression, instance.ToString());
+    }
 
-        [Test]
-        public static void Recursion()
-        {
-            var code = @"
+    [Test]
+    public static void Recursion()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -91,17 +91,16 @@ namespace N
         }
     }
 }";
-            var syntaxTree = CSharpSyntaxTree.ParseText(code);
-            var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
-            var semanticModel = compilation.GetSemanticModel(syntaxTree);
-            var node = syntaxTree.FindInvocation("GetMethod");
-            Assert.AreEqual(false, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out _, out _));
-        }
+        var syntaxTree = CSharpSyntaxTree.ParseText(code);
+        var compilation = CSharpCompilation.Create("test", new[] { syntaxTree }, Settings.Default.MetadataReferences);
+        var semanticModel = compilation.GetSemanticModel(syntaxTree);
+        var node = syntaxTree.FindInvocation("GetMethod");
+        Assert.AreEqual(false, ReflectedMember.TryGetType(node, semanticModel, CancellationToken.None, out _, out _));
+    }
 
-        [Test]
-        public static void Dump()
-        {
-            Console.WriteLine(typeof(string).Assembly.GetType("System.Int32"));
-        }
+    [Test]
+    public static void Dump()
+    {
+        Console.WriteLine(typeof(string).Assembly.GetType("System.Int32"));
     }
 }

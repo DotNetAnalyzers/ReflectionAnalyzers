@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL043FirstArgumentTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL043FirstArgumentTypeTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly CreateDelegateAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL043FirstArgumentType;
 
-    public static class Valid
+    [TestCase("null")]
+    [TestCase("string.Empty")]
+    public static void StaticStringIntWithFirstArg(string text)
     {
-        private static readonly CreateDelegateAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL043FirstArgumentType;
-
-        [TestCase("null")]
-        [TestCase("string.Empty")]
-        public static void StaticStringIntWithFirstArg(string text)
-        {
-            var code = @"
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -29,13 +29,13 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }".AssertReplace("string.Empty", text);
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void StaticStringVoidFirstArg()
-        {
-            var code = @"
+    [Test]
+    public static void StaticStringVoidFirstArg()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -52,15 +52,15 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [TestCase("1")]
-        [TestCase("null")]
-        [TestCase("\"abc\"")]
-        public static void StaticObjectVoidFirstArg(string arg)
-        {
-            var code = @"
+    [TestCase("1")]
+    [TestCase("null")]
+    [TestCase("\"abc\"")]
+    public static void StaticObjectVoidFirstArg(string arg)
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -77,13 +77,13 @@ namespace N
     }
 }".AssertReplace("1", arg);
 
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void StaticStringStringVoidFirstArg()
-        {
-            var code = @"
+    [Test]
+    public static void StaticStringStringVoidFirstArg()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -100,13 +100,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void CreateDelegateParameterExpressionMake()
-        {
-            var code = @"
+    [Test]
+    public static void CreateDelegateParameterExpressionMake()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -122,13 +122,13 @@ namespace N
             typeof(ParameterExpression).GetMethod(""Make"", BindingFlags.Static | BindingFlags.NonPublic));
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void StaticStringInt()
-        {
-            var code = @"
+    [Test]
+    public static void StaticStringInt()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -143,13 +143,13 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void StaticVoid()
-        {
-            var code = @"
+    [Test]
+    public static void StaticVoid()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -164,13 +164,13 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void StaticStringVoid()
-        {
-            var code = @"
+    [Test]
+    public static void StaticStringVoid()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -186,13 +186,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void InstanceStringInt()
-        {
-            var code = @"
+    [Test]
+    public static void InstanceStringInt()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -207,13 +207,13 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void InstanceStringIntWithTarget()
-        {
-            var code = @"
+    [Test]
+    public static void InstanceStringIntWithTarget()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -229,13 +229,13 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void StaticStringIntCustomDelegate()
-        {
-            var code = @"
+    [Test]
+    public static void StaticStringIntCustomDelegate()
+    {
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -252,7 +252,6 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
     }
 }

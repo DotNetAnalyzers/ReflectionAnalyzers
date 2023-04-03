@@ -1,23 +1,23 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests
+﻿namespace ReflectionAnalyzers.Tests.REFL025ArgumentsDoNotMatchParametersTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class Diagnostics
+    public static class ActivatorCreateInstance
     {
-        public static class ActivatorCreateInstance
-        {
-            private static readonly ActivatorAnalyzer Analyzer = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters);
+        private static readonly ActivatorAnalyzer Analyzer = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL025ArgumentsDoNotMatchParameters);
 
-            [TestCase("Activator.CreateInstance(typeof(C), ↓new[] { 1 })")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { 1, 2 })")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓\"abc\")")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓1.0)")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓1, 2)")]
-            public static void OneConstructorSingleIntParameter(string call)
-            {
-                var code = @"
+        [TestCase("Activator.CreateInstance(typeof(C), ↓new[] { 1 })")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { 1, 2 })")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓\"abc\")")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓1.0)")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓1, 2)")]
+        public static void OneConstructorSingleIntParameter(string call)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -31,16 +31,16 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { 1, 2 })")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓\"abc\")")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓1.0)")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓1, 2)")]
-            public static void OneConstructorOptionalIntParameter(string call)
-            {
-                var code = @"
+        [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { 1, 2 })")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓\"abc\")")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓1.0)")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓1, 2)")]
+        public static void OneConstructorOptionalIntParameter(string call)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -54,13 +54,13 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
-            public static void OneConstructorOneStringParameters(string call)
-            {
-                var code = @"
+        [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
+        public static void OneConstructorOneStringParameters(string call)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -74,16 +74,16 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), ↓null)", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓(StringBuilder)null)")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { null })")]
-            public static void OverloadedConstructorsStringAndStringBuilder(string call)
-            {
-                var code = @"
+        [TestCase("Activator.CreateInstance(typeof(C), ↓null)")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓(StringBuilder)null)")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { null })")]
+        public static void OverloadedConstructorsStringAndStringBuilder(string call)
+        {
+            var code = @"
 #nullable disable
 namespace N
 {
@@ -104,14 +104,14 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), ↓(string)null)", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
-            [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { null })")]
-            public static void OverloadedConstructorsStringAndInt(string call)
-            {
-                var code = @"
+        [TestCase("Activator.CreateInstance(typeof(C), ↓(string)null)")]
+        [TestCase("Activator.CreateInstance(typeof(C), ↓new object[] { null })")]
+        public static void OverloadedConstructorsStringAndInt(string call)
+        {
+            var code = @"
 #nullable disable
 namespace N
 {
@@ -131,16 +131,16 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), ↓(string)null)", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("Activator.CreateInstance(typeof(C), 1, null)")]
-            [TestCase("Activator.CreateInstance(typeof(C), 1, new object[] { 1 })")]
-            [TestCase("Activator.CreateInstance(typeof(C), \"abc\", 2)")]
-            [TestCase("Activator.CreateInstance(typeof(C), 1, \"abc\")")]
-            public static void ParamsConstructorSecondParameter(string call)
-            {
-                var code = @"
+        [TestCase("Activator.CreateInstance(typeof(C), 1, null)")]
+        [TestCase("Activator.CreateInstance(typeof(C), 1, new object[] { 1 })")]
+        [TestCase("Activator.CreateInstance(typeof(C), \"abc\", 2)")]
+        [TestCase("Activator.CreateInstance(typeof(C), 1, \"abc\")")]
+        public static void ParamsConstructorSecondParameter(string call)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -154,8 +154,7 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), 1, null)", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

@@ -1,12 +1,11 @@
-namespace ReflectionAnalyzers
-{
-    using Gu.Roslyn.AnalyzerExtensions;
+namespace ReflectionAnalyzers;
 
-    internal class LocalVariableInfoType : QualifiedType
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class LocalVariableInfoType : QualifiedType
+{
+    internal LocalVariableInfoType()
+        : base("System.Reflection.LocalVariableInfo")
     {
-        internal LocalVariableInfoType()
-            : base("System.Reflection.LocalVariableInfo")
-        {
-        }
     }
 }

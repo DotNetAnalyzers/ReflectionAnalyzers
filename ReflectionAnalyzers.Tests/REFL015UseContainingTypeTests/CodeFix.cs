@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL015UseContainingTypeTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly UseContainingTypeFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL015UseContainingType);
 
-    public static class CodeFix
+    [Test]
+    public static void Message()
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly UseContainingTypeFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL015UseContainingType);
-
-        [Test]
-        public static void Message()
-        {
-            var baseCode = @"
+        var baseCode = @"
 namespace N
 {
     class B
@@ -22,7 +22,7 @@ namespace N
         public int M() => this.f;
     }
 }";
-            var before = @"
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -33,7 +33,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -44,21 +44,21 @@ namespace N
     }
 }";
 
-            var message = "Use the containing type B";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, before }, after);
-        }
+        var message = "Use the containing type B";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), new[] { baseCode, before }, after);
+    }
 
-        [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        public static void GetPrivateMemberTypeof(string call)
-        {
-            var cBase = @"
+    [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    public static void GetPrivateMemberTypeof(string call)
+    {
+        var cBase = @"
 #pragma warning disable CS8618
 namespace N
 {
@@ -77,7 +77,7 @@ namespace N
         private static void M() => PrivateStaticEvent?.Invoke(null, EventArgs.Empty);
     }
 }";
-            var before = @"
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -91,7 +91,7 @@ namespace N
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -104,20 +104,20 @@ namespace N
         }
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cBase, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cBase, before }, after);
+    }
 
-        [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-        [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
-        public static void GetPrivateMemberThisGetType(string call)
-        {
-            var cBase = @"
+    [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+    [TestCase("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("GetEvent(\"PrivateStaticEvent\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("GetProperty(\"PrivateStaticProperty\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    [TestCase("GetMethod(\"PrivateStaticMethod\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)")]
+    public static void GetPrivateMemberThisGetType(string call)
+    {
+        var cBase = @"
 #pragma warning disable CS8618
 namespace N
 {
@@ -136,7 +136,7 @@ namespace N
         private static void M() => PrivateStaticEvent?.Invoke(null, EventArgs.Empty);
     }
 }";
-            var before = @"
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -150,7 +150,7 @@ namespace N
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -163,14 +163,14 @@ namespace N
         }
     }
 }".AssertReplace("GetField(\"PrivateStaticField\", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.FlattenHierarchy)", call);
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cBase, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cBase, before }, after);
+    }
 
-        [TestCase("PublicStatic")]
-        [TestCase("Public")]
-        public static void GetPublicNestedType(string type)
-        {
-            var cbase = @"
+    [TestCase("PublicStatic")]
+    [TestCase("Public")]
+    public static void GetPublicNestedType(string type)
+    {
+        var cbase = @"
 namespace N
 {
     using System.Reflection;
@@ -186,7 +186,7 @@ namespace N
         }
     }
 }";
-            var before = @"
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -200,7 +200,7 @@ namespace N
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -213,14 +213,14 @@ namespace N
         }
     }
 }".AssertReplace("nameof(PublicStatic)", $"nameof({type})");
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cbase, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cbase, before }, after);
+    }
 
-        [TestCase("PrivateStatic")]
-        [TestCase("Private")]
-        public static void GetPrivateNestedType(string type)
-        {
-            var cbase = @"
+    [TestCase("PrivateStatic")]
+    [TestCase("Private")]
+    public static void GetPrivateNestedType(string type)
+    {
+        var cbase = @"
 namespace N
 {
     using System.Reflection;
@@ -236,7 +236,7 @@ namespace N
         }
     }
 }";
-            var before = @"
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -250,7 +250,7 @@ namespace N
     }
 }".AssertReplace("PrivateStatic", type);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -264,13 +264,13 @@ namespace N
     }
 }".AssertReplace("PrivateStatic", type);
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cbase, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { cbase, before }, after);
+    }
 
-        [Test]
-        public static void PrivateFieldInBase()
-        {
-            var baseCode = @"
+    [Test]
+    public static void PrivateFieldInBase()
+    {
+        var baseCode = @"
 namespace N
 {
     class B
@@ -280,7 +280,7 @@ namespace N
         public int M() => this.f;
     }
 }";
-            var before = @"
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -291,7 +291,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -302,7 +302,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseCode, before }, after);
     }
 }

@@ -1,12 +1,11 @@
-namespace ReflectionAnalyzers
-{
-    using Gu.Roslyn.AnalyzerExtensions;
+namespace ReflectionAnalyzers;
 
-    internal class EventInfoType : QualifiedType
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class EventInfoType : QualifiedType
+{
+    internal EventInfoType()
+        : base("System.Reflection.EventInfo")
     {
-        internal EventInfoType()
-            : base("System.Reflection.EventInfo")
-        {
-        }
     }
 }

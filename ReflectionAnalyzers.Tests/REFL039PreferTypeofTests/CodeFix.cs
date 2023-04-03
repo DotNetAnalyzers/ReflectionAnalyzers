@@ -1,24 +1,24 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests
+﻿namespace ReflectionAnalyzers.Tests.REFL039PreferTypeofTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetTypeAnalyzer Analyzer = new();
+    private static readonly UseTypeOfFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL039PreferTypeof);
 
-    public static class CodeFix
+    [TestCase("string", "string")]
+    [TestCase("int", "int")]
+    [TestCase("int?", "int")]
+    [TestCase("(int, int)", "(int, int)")]
+    [TestCase("(int, int)?", "(int, int)")]
+    [TestCase("StringComparison", "StringComparison")]
+    [TestCase("StringComparison?", "StringComparison")]
+    public static void WhenCallingGetType(string parameterType, string type)
     {
-        private static readonly GetTypeAnalyzer Analyzer = new();
-        private static readonly UseTypeOfFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL039PreferTypeof);
-
-        [TestCase("string", "string")]
-        [TestCase("int", "int")]
-        [TestCase("int?", "int")]
-        [TestCase("(int, int)", "(int, int)")]
-        [TestCase("(int, int)?", "(int, int)")]
-        [TestCase("StringComparison", "StringComparison")]
-        [TestCase("StringComparison?", "StringComparison")]
-        public static void WhenCallingGetType(string parameterType, string type)
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     using System;
@@ -29,7 +29,7 @@ namespace N
     }
 }".AssertReplace("int?", parameterType);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -39,9 +39,8 @@ namespace N
         public static object M(int? value) => typeof(int);
     }
 }".AssertReplace("int?", parameterType)
-  .AssertReplace("typeof(int)", $"typeof({type})");
+.AssertReplace("typeof(int)", $"typeof({type})");
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

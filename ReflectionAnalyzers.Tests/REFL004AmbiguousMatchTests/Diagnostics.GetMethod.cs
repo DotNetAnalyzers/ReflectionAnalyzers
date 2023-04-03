@@ -1,17 +1,17 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
-{
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests;
 
-    public static partial class Diagnostics
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
+{
+    public static class GetMethod
     {
-        public static class GetMethod
+        [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod↓(nameof(this.Instance), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public static void PublicPrivateOverloads(string call)
         {
-            [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-            [TestCase("GetMethod↓(nameof(this.Instance), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-            public static void PublicPrivateOverloads(string call)
-            {
-                var code = @"
+            var code = @"
 namespace N
 {
     using System.Reflection;
@@ -32,19 +32,19 @@ namespace N
         private double Instance(double value) => value;
     }
 }".AssertReplace("GetMethod↓(nameof(this.ToString))", call);
-                var message = "More than one member is matching the criteria";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            }
+            var message = "More than one member is matching the criteria";
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
 
-            [TestCase("GetMethod↓(nameof(Static))")]
-            [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static)")]
-            [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-            [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-            [TestCase("GetMethod↓(nameof(this.Instance))")]
-            [TestCase("GetMethod↓(nameof(this.Instance), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-            public static void PublicOverloads(string call)
-            {
-                var code = @"
+        [TestCase("GetMethod↓(nameof(Static))")]
+        [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("GetMethod↓(nameof(this.Instance))")]
+        [TestCase("GetMethod↓(nameof(this.Instance), BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        public static void PublicOverloads(string call)
+        {
+            var code = @"
 namespace N
 {
     using System.Reflection;
@@ -62,15 +62,15 @@ namespace N
         public double Instance(double value) => value;
     }
 }".AssertReplace("GetMethod↓(nameof(this.ToString))", call);
-                var message = "More than one member is matching the criteria";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            }
+            var message = "More than one member is matching the criteria";
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
 
-            [TestCase("GetMethod↓(\"op_Explicit\")")]
-            [TestCase("GetMethod↓(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static)")]
-            public static void OverloadedOperatorExplicit(string call)
-            {
-                var code = @"
+        [TestCase("GetMethod↓(\"op_Explicit\")")]
+        [TestCase("GetMethod↓(\"op_Explicit\", BindingFlags.Public | BindingFlags.Static)")]
+        public static void OverloadedOperatorExplicit(string call)
+        {
+            var code = @"
 namespace N
 {
     using System.Reflection;
@@ -84,13 +84,13 @@ namespace N
         public MethodInfo? M() => typeof(C).GetMethod↓(""op_Explicit"");
     }
 }".AssertReplace("GetMethod↓(\"op_Explicit\")", call);
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
-            public static void OverloadResolution(string call)
-            {
-                var code = @"
+        [TestCase("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)")]
+        public static void OverloadResolution(string call)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -105,8 +105,7 @@ namespace N
         public static IFormattable Static(IFormattable i) => i;
     }
 }".AssertReplace("GetMethod↓(nameof(Static), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, new[] { typeof(int) }, null)", call);
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

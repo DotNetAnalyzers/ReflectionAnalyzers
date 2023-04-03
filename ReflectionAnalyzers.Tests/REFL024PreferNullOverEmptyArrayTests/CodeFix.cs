@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL024PreferNullOverEmptyArrayTests
+﻿namespace ReflectionAnalyzers.Tests.REFL024PreferNullOverEmptyArrayTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly InvokeAnalyzer Analyzer = new();
+    private static readonly PreferNullFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL024PreferNullOverEmptyArray);
 
-    public static class CodeFix
+    [TestCase("Array.Empty<object>()")]
+    [TestCase("new object[0]")]
+    [TestCase("new object[0] { }")]
+    [TestCase("new object[] { }")]
+    public static void MemberInfoInvoke(string emptyArray)
     {
-        private static readonly InvokeAnalyzer Analyzer = new();
-        private static readonly PreferNullFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL024PreferNullOverEmptyArray);
-
-        [TestCase("Array.Empty<object>()")]
-        [TestCase("new object[0]")]
-        [TestCase("new object[0] { }")]
-        [TestCase("new object[] { }")]
-        public static void MemberInfoInvoke(string emptyArray)
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     using System;
@@ -30,7 +30,7 @@ namespace N
     }
 }".AssertReplace("Array.Empty<object>()", emptyArray);
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -45,7 +45,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

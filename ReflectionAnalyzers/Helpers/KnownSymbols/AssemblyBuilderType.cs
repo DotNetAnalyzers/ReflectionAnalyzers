@@ -1,15 +1,14 @@
-namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers;
+
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class AssemblyBuilderType : QualifiedType
 {
-    using Gu.Roslyn.AnalyzerExtensions;
+    internal new readonly QualifiedMethod GetType;
 
-    internal class AssemblyBuilderType : QualifiedType
+    internal AssemblyBuilderType()
+        : base("System.Reflection.Emit.AssemblyBuilder")
     {
-        internal new readonly QualifiedMethod GetType;
-
-        internal AssemblyBuilderType()
-            : base("System.Reflection.Emit.AssemblyBuilder")
-        {
-            this.GetType = new QualifiedMethod(this, nameof(this.GetType));
-        }
+        this.GetType = new QualifiedMethod(this, nameof(this.GetType));
     }
 }

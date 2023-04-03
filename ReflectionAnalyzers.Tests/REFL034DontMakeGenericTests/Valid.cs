@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests
+﻿namespace ReflectionAnalyzers.Tests.REFL034DontMakeGenericTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
-
-    public static class Valid
+    public static class MakeGenericType
     {
-        public static class MakeGenericType
-        {
-            private static readonly MakeGenericAnalyzer Analyzer = new();
-            private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL034DoNotMakeGeneric;
+        private static readonly MakeGenericAnalyzer Analyzer = new();
+        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL034DoNotMakeGeneric;
 
-            [Test]
-            public static void Vanilla()
-            {
-                var code = @"
+        [Test]
+        public static void Vanilla()
+        {
+            var code = @"
 namespace N
 {
     class C<T>
@@ -22,13 +22,13 @@ namespace N
         public object Get => typeof(C<>).MakeGenericType(typeof(int));
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void Constrained()
-            {
-                var code = @"
+        [Test]
+        public static void Constrained()
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -39,13 +39,13 @@ namespace N
         public object Get => typeof(C<>).MakeGenericType(typeof(int));
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void Nested()
-            {
-                var code = @"
+        [Test]
+        public static void Nested()
+        {
+            var code = @"
 namespace N
 {
     class C
@@ -57,13 +57,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
+        }
 
-            [Test]
-            public static void NestedInGeneric()
-            {
-                var code = @"
+        [Test]
+        public static void NestedInGeneric()
+        {
+            var code = @"
 namespace N
 {
     class C<T>
@@ -75,8 +75,7 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Valid(Analyzer, Descriptor, code);
-            }
+            RoslynAssert.Valid(Analyzer, Descriptor, code);
         }
     }
 }

@@ -1,17 +1,17 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL003MemberDoesNotExist);
 
-    public static partial class Diagnostics
+    [Test]
+    public static void GetPropertyAnonymousType()
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL003MemberDoesNotExist);
-
-        [Test]
-        public static void GetPropertyAnonymousType()
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     class C
@@ -23,13 +23,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void GetMissingPropertyThenNullCheck()
-        {
-            var code = @"
+    [Test]
+    public static void GetMissingPropertyThenNullCheck()
+    {
+        var code = @"
 namespace N
 {
     public sealed class C
@@ -44,13 +44,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
-        {
-            var customAggregateException = @"
+    [Test]
+    public static void SubclassAggregateExceptionGetFieldDeclaredOnly()
+    {
+        var customAggregateException = @"
 namespace N
 {
     using System;
@@ -62,7 +62,7 @@ namespace N
         public int M() => this.f;
     }
 }";
-            var code = @"
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -76,15 +76,15 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, customAggregateException, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, customAggregateException, code);
+    }
 
-        [TestCase("GetNestedType(↓\"Generic\", BindingFlags.Public)")]
-        [TestCase("GetNestedType(↓nameof(Generic<int>), BindingFlags.Public)")]
-        [TestCase("GetNestedType(↓\"Generic`2\", BindingFlags.Public)")]
-        public static void GetNestedType(string call)
-        {
-            var code = @"
+    [TestCase("GetNestedType(↓\"Generic\", BindingFlags.Public)")]
+    [TestCase("GetNestedType(↓nameof(Generic<int>), BindingFlags.Public)")]
+    [TestCase("GetNestedType(↓\"Generic`2\", BindingFlags.Public)")]
+    public static void GetNestedType(string call)
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -101,14 +101,14 @@ namespace N
         }
     }
 }".AssertReplace("GetNestedType(↓nameof(Generic<int>), BindingFlags.Public)", call);
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [TestCase("GetProperty(↓\"Item\")")]
-        [TestCase("GetProperty(↓\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void NamedIndexer(string call)
-        {
-            var code = @"
+    [TestCase("GetProperty(↓\"Item\")")]
+    [TestCase("GetProperty(↓\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void NamedIndexer(string call)
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -126,13 +126,13 @@ namespace N
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void GetTupleFieldItem1ByName()
-        {
-            var code = @"
+    [Test]
+    public static void GetTupleFieldItem1ByName()
+    {
+        var code = @"
 namespace N
 {
     class C
@@ -144,15 +144,15 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [TestCase("\"a1\"")]
-        [TestCase("\"a7\"")]
-        [TestCase("\"a8\"")]
-        public static void GetTupleFieldItem7ByName(string field)
-        {
-            var code = @"
+    [TestCase("\"a1\"")]
+    [TestCase("\"a7\"")]
+    [TestCase("\"a8\"")]
+    public static void GetTupleFieldItem7ByName(string field)
+    {
+        var code = @"
 #pragma warning disable CS8603
 namespace N
 {
@@ -165,16 +165,16 @@ namespace N
     }
 }".AssertReplace("\"a7\"", field);
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [TestCase("typeof(C).GetMethod(↓\"get_P\")")]
-        //[TestCase("typeof(C).GetProperty(nameof(P)).↓GetMethod")]
-        //[TestCase("typeof(C).GetProperty(nameof(P))!.↓GetMethod")]
-        //[TestCase("typeof(C).GetProperty(nameof(P))?.↓GetMethod")]
-        public static void MissingGetter(string call)
-        {
-            var code = @"
+    [TestCase("typeof(C).GetMethod(↓\"get_P\")")]
+    //[TestCase("typeof(C).GetProperty(nameof(P)).↓GetMethod")]
+    //[TestCase("typeof(C).GetProperty(nameof(P))!.↓GetMethod")]
+    //[TestCase("typeof(C).GetProperty(nameof(P))?.↓GetMethod")]
+    public static void MissingGetter(string call)
+    {
+        var code = @"
 namespace N
 {
     class C
@@ -186,16 +186,16 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetProperty(nameof(P)).↓GetMethod", call);
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [TestCase("typeof(C).GetMethod(↓\"set_P\")")]
-        //[TestCase("typeof(C).GetProperty(nameof(P)).↓SetMethod")]
-        //[TestCase("typeof(C).GetProperty(nameof(P))!.↓SetMethod")]
-        //[TestCase("typeof(C).GetProperty(nameof(P))?.↓SetMethod")]
-        public static void MissingSetter(string call)
-        {
-            var code = @"
+    [TestCase("typeof(C).GetMethod(↓\"set_P\")")]
+    //[TestCase("typeof(C).GetProperty(nameof(P)).↓SetMethod")]
+    //[TestCase("typeof(C).GetProperty(nameof(P))!.↓SetMethod")]
+    //[TestCase("typeof(C).GetProperty(nameof(P))?.↓SetMethod")]
+    public static void MissingSetter(string call)
+    {
+        var code = @"
 namespace N
 {
     class C
@@ -207,7 +207,6 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetProperty(nameof(P)).↓SetMethod", call);
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
+﻿namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetInterfaceAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL020AmbiguousMatchInterface);
 
-    public static class Diagnostics
+    [TestCase("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")")]
+    [TestCase("GetInterface(↓\"IEnumerable`1\")")]
+    [TestCase("GetInterface(typeof(IEnumerable<>).FullName)")]
+    public static void GetInterface(string call)
     {
-        private static readonly GetInterfaceAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL020AmbiguousMatchInterface);
-
-        [TestCase("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")")]
-        [TestCase("GetInterface(↓\"IEnumerable`1\")")]
-        [TestCase("GetInterface(typeof(IEnumerable<>).FullName)")]
-        public static void GetInterface(string call)
-        {
-            var code = @"
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -39,7 +39,6 @@ namespace N
     }
 }".AssertReplace("GetInterface(↓\"System.Collections.Generic.IEnumerable`1\")", call);
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

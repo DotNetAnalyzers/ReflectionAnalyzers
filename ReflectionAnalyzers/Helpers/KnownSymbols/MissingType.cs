@@ -1,15 +1,14 @@
-namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers;
+
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class MissingType : QualifiedType
 {
-    using Gu.Roslyn.AnalyzerExtensions;
+    internal readonly QualifiedField Value;
 
-    internal class MissingType : QualifiedType
+    internal MissingType()
+        : base("System.Reflection.Missing")
     {
-        internal readonly QualifiedField Value;
-
-        internal MissingType()
-            : base("System.Reflection.Missing")
-        {
-            this.Value = new QualifiedField(this, nameof(this.Value));
-        }
+        this.Value = new QualifiedField(this, nameof(this.Value));
     }
 }

@@ -1,15 +1,14 @@
-namespace ReflectionAnalyzers
+namespace ReflectionAnalyzers;
+
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class ActivatorType : QualifiedType
 {
-    using Gu.Roslyn.AnalyzerExtensions;
+    internal readonly QualifiedMethod CreateInstance;
 
-    internal class ActivatorType : QualifiedType
+    internal ActivatorType()
+        : base("System.Activator")
     {
-        internal readonly QualifiedMethod CreateInstance;
-
-        internal ActivatorType()
-            : base("System.Activator")
-        {
-            this.CreateInstance = new QualifiedMethod(this, nameof(this.CreateInstance));
-        }
+        this.CreateInstance = new QualifiedMethod(this, nameof(this.CreateInstance));
     }
 }

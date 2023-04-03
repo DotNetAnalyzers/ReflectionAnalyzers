@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
+﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL004AmbiguousMatch);
 
-    public static partial class Diagnostics
+    [TestCase("GetProperty↓(\"Item\")")]
+    [TestCase("GetProperty↓(\"Item\", BindingFlags.Public | BindingFlags.Instance)")]
+    public static void IndexerAndPropertyNamedItem(string call)
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL004AmbiguousMatch);
-
-        [TestCase("GetProperty↓(\"Item\")")]
-        [TestCase("GetProperty↓(\"Item\", BindingFlags.Public | BindingFlags.Instance)")]
-        public static void IndexerAndPropertyNamedItem(string call)
-        {
-            var baseCode = @"
+        var baseCode = @"
 namespace N
 {
     public class Base
@@ -21,7 +21,7 @@ namespace N
     }
 }";
 
-            var code = @"
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -33,13 +33,13 @@ namespace N
         public PropertyInfo? M() => typeof(C).GetProperty↓(""Item"");
     }
 }".AssertReplace("GetProperty↓(\"Item\")", call);
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseCode, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, baseCode, code);
+    }
 
-        [Test]
-        public static void TwoIndexers()
-        {
-            var code = @"
+    [Test]
+    public static void TwoIndexers()
+    {
+        var code = @"
 namespace N
 {
     public class C
@@ -51,13 +51,13 @@ namespace N
         public int this[int i1, int i2] => 0;
     }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void TwoNamedIndexers()
-        {
-            var code = @"
+    [Test]
+    public static void TwoNamedIndexers()
+    {
+        var code = @"
 namespace N
 {
     using System.Runtime.CompilerServices;
@@ -73,13 +73,13 @@ namespace N
         public int this[int i1, int i2] => 0;
     }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void StaticAndInstanceConstructor()
-        {
-            var code = @"
+    [Test]
+    public static void StaticAndInstanceConstructor()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -94,7 +94,6 @@ namespace N
         public static object? Get => typeof(C).GetConstructor↓(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, Type.EmptyTypes, null);
     }
 }";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

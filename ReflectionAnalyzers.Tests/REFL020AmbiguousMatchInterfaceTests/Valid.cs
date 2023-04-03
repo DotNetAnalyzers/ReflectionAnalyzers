@@ -1,25 +1,25 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests
+﻿namespace ReflectionAnalyzers.Tests.REFL020AmbiguousMatchInterfaceTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetInterfaceAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL020AmbiguousMatchInterface;
 
-    public static class Valid
+    [TestCase("GetInterface(\"System.Collections.Generic.IEnumerable`1\")")]
+    [TestCase("GetInterface(\"IEnumerable`1\")")]
+    [TestCase("GetInterface(typeof(IEnumerable).FullName)")]
+    [TestCase("GetInterface(typeof(IEnumerable).Name)")]
+    [TestCase("GetInterface(typeof(IEnumerable<>).FullName)")]
+    [TestCase("GetInterface(typeof(IEnumerable<>).Name)")]
+    [TestCase("GetInterface(\"IEnumerable\")")]
+    [TestCase("GetInterface(\"System.Collections.IEnumerable\")")]
+    public static void GetInterface(string call)
     {
-        private static readonly GetInterfaceAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL020AmbiguousMatchInterface;
-
-        [TestCase("GetInterface(\"System.Collections.Generic.IEnumerable`1\")")]
-        [TestCase("GetInterface(\"IEnumerable`1\")")]
-        [TestCase("GetInterface(typeof(IEnumerable).FullName)")]
-        [TestCase("GetInterface(typeof(IEnumerable).Name)")]
-        [TestCase("GetInterface(typeof(IEnumerable<>).FullName)")]
-        [TestCase("GetInterface(typeof(IEnumerable<>).Name)")]
-        [TestCase("GetInterface(\"IEnumerable\")")]
-        [TestCase("GetInterface(\"System.Collections.IEnumerable\")")]
-        public static void GetInterface(string call)
-        {
-            var code = @"
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -41,7 +41,6 @@ namespace N
     }
 }".AssertReplace("GetInterface(\"System.Collections.Generic.IEnumerable`1\")", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

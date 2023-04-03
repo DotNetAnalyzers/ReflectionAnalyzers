@@ -1,21 +1,21 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL041CreateDelegateTypeTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly CreateDelegateAnalyzer Analyzer = new();
+    private static readonly UseTypeFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL041CreateDelegateType);
 
-    public static class CodeFix
+    [TestCase("typeof(Func<string>)")]
+    [TestCase("typeof(Func<string, string>)")]
+    [TestCase("typeof(Func<string, string, int>)")]
+    [TestCase("typeof(Action<string, string>)")]
+    public static void StaticStringInt(string type)
     {
-        private static readonly CreateDelegateAnalyzer Analyzer = new();
-        private static readonly UseTypeFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL041CreateDelegateType);
-
-        [TestCase("typeof(Func<string>)")]
-        [TestCase("typeof(Func<string, string>)")]
-        [TestCase("typeof(Func<string, string, int>)")]
-        [TestCase("typeof(Action<string, string>)")]
-        public static void StaticStringInt(string type)
-        {
-            var before = @"
+        var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -32,7 +32,7 @@ namespace N
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -48,18 +48,18 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            var message = "Delegate type is not matching expected System.Func<string, int>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Func<string, int>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [TestCase("typeof(Func<string>)")]
-        [TestCase("typeof(Func<string, string>)")]
-        [TestCase("typeof(Func<string, string, int>)")]
-        [TestCase("typeof(Action<int>)")]
-        [TestCase("typeof(Action<string, string>)")]
-        public static void StaticVoid(string type)
-        {
-            var before = @"
+    [TestCase("typeof(Func<string>)")]
+    [TestCase("typeof(Func<string, string>)")]
+    [TestCase("typeof(Func<string, string, int>)")]
+    [TestCase("typeof(Action<int>)")]
+    [TestCase("typeof(Action<string, string>)")]
+    public static void StaticVoid(string type)
+    {
+        var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -76,7 +76,7 @@ namespace N
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -92,19 +92,19 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            var message = "Delegate type is not matching expected System.Action";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Action";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [TestCase("typeof(Func<string>)")]
-        [TestCase("typeof(Func<string, string>)")]
-        [TestCase("typeof(Func<string, string, int>)")]
-        [TestCase("typeof(Action)")]
-        [TestCase("typeof(Action<int>)")]
-        [TestCase("typeof(Action<string, string>)")]
-        public static void StaticStringVoid(string type)
-        {
-            var before = @"
+    [TestCase("typeof(Func<string>)")]
+    [TestCase("typeof(Func<string, string>)")]
+    [TestCase("typeof(Func<string, string, int>)")]
+    [TestCase("typeof(Action)")]
+    [TestCase("typeof(Action<int>)")]
+    [TestCase("typeof(Action<string, string>)")]
+    public static void StaticStringVoid(string type)
+    {
+        var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -121,7 +121,7 @@ namespace N
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -138,17 +138,17 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [TestCase("typeof(Func<string>)")]
-        [TestCase("typeof(Func<string, string>)")]
-        [TestCase("typeof(Func<string, string, int>)")]
-        [TestCase("typeof(Action<int>)")]
-        [TestCase("typeof(Action<string, string>)")]
-        public static void StaticStringVoidFirstArg(string type)
-        {
-            var before = @"
+    [TestCase("typeof(Func<string>)")]
+    [TestCase("typeof(Func<string, string>)")]
+    [TestCase("typeof(Func<string, string, int>)")]
+    [TestCase("typeof(Action<int>)")]
+    [TestCase("typeof(Action<string, string>)")]
+    public static void StaticStringVoidFirstArg(string type)
+    {
+        var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -166,7 +166,7 @@ namespace N
     }
 }".AssertReplace("typeof(Action<int>)", type);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -183,18 +183,18 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [TestCase("typeof(Func<string>)")]
-        [TestCase("typeof(Func<string, string>)")]
-        [TestCase("typeof(Func<string, string, int>)")]
-        [TestCase("typeof(Action)")]
-        [TestCase("typeof(Action<int>)")]
-        [TestCase("typeof(Action<string, string>)")]
-        public static void StaticStringStringVoidFirstArg(string type)
-        {
-            var before = @"
+    [TestCase("typeof(Func<string>)")]
+    [TestCase("typeof(Func<string, string>)")]
+    [TestCase("typeof(Func<string, string, int>)")]
+    [TestCase("typeof(Action)")]
+    [TestCase("typeof(Action<int>)")]
+    [TestCase("typeof(Action<string, string>)")]
+    public static void StaticStringStringVoidFirstArg(string type)
+    {
+        var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -212,7 +212,7 @@ namespace N
     }
 }".AssertReplace("typeof(Action<int>)", type);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -229,16 +229,16 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [TestCase("typeof(Func<string>)")]
-        [TestCase("typeof(Func<string, string>)")]
-        [TestCase("typeof(Func<string, string, int>)")]
-        [TestCase("typeof(Action<string, string>)")]
-        public static void InstanceStringInt(string type)
-        {
-            var before = @"
+    [TestCase("typeof(Func<string>)")]
+    [TestCase("typeof(Func<string, string>)")]
+    [TestCase("typeof(Func<string, string, int>)")]
+    [TestCase("typeof(Action<string, string>)")]
+    public static void InstanceStringInt(string type)
+    {
+        var before = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -255,7 +255,7 @@ namespace N
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -271,18 +271,18 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            var message = "Delegate type is not matching expected System.Func<C, string, int>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Func<C, string, int>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [TestCase("typeof(Func<string>)")]
-        [TestCase("typeof(Func<string, string>)")]
-        [TestCase("typeof(Func<string, string, int>)")]
-        [TestCase("typeof(Action<int>)")]
-        [TestCase("typeof(Action<string, string>)")]
-        public static void InstanceVoid(string type)
-        {
-            var before = @"
+    [TestCase("typeof(Func<string>)")]
+    [TestCase("typeof(Func<string, string>)")]
+    [TestCase("typeof(Func<string, string, int>)")]
+    [TestCase("typeof(Action<int>)")]
+    [TestCase("typeof(Action<string, string>)")]
+    public static void InstanceVoid(string type)
+    {
+        var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -299,7 +299,7 @@ namespace N
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -315,18 +315,18 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            var message = "Delegate type is not matching expected System.Action<C>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Action<C>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [TestCase("typeof(Func<string>)")]
-        [TestCase("typeof(Func<string, string>)")]
-        [TestCase("typeof(Func<string, string, int>)")]
-        [TestCase("typeof(Action<int>)")]
-        [TestCase("typeof(Action<string, string>)")]
-        public static void InstanceVoidWithTarget(string type)
-        {
-            var before = @"
+    [TestCase("typeof(Func<string>)")]
+    [TestCase("typeof(Func<string, string>)")]
+    [TestCase("typeof(Func<string, string, int>)")]
+    [TestCase("typeof(Action<int>)")]
+    [TestCase("typeof(Action<string, string>)")]
+    public static void InstanceVoidWithTarget(string type)
+    {
+        var before = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -344,7 +344,7 @@ namespace N
     }
 }".AssertReplace("typeof(Func<string>)", type);
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -361,14 +361,14 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            var message = "Delegate type is not matching expected System.Action";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Action";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void StaticStringIntCustomDelegate()
-        {
-            var before = @"
+    [Test]
+    public static void StaticStringIntCustomDelegate()
+    {
+        var before = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -387,7 +387,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -405,14 +405,14 @@ namespace N
             typeof(C).GetMethod(nameof(M)));
     }
 }";
-            var message = "Delegate type is not matching expected System.Action<string>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Action<string>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void GetGetMethodReturnTypeInstance()
-        {
-            var before = @"
+    [Test]
+    public static void GetGetMethodReturnTypeInstance()
+    {
+        var before = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -431,7 +431,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -449,14 +449,14 @@ namespace N
         public int Value { get; set; }
     }
 }";
-            var message = "Delegate type is not matching expected System.Func<C, int>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Func<C, int>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void GetGetMethodReturnTypeStatic()
-        {
-            var before = @"
+    [Test]
+    public static void GetGetMethodReturnTypeStatic()
+    {
+        var before = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -475,7 +475,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -493,14 +493,14 @@ namespace N
         public static int Value { get; set; }
     }
 }";
-            var message = "Delegate type is not matching expected System.Func<int>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Func<int>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void GetSetMethodReturnTypeInstance()
-        {
-            var before = @"
+    [Test]
+    public static void GetSetMethodReturnTypeInstance()
+    {
+        var before = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -519,7 +519,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -537,14 +537,14 @@ namespace N
         public int Value { get; set; }
     }
 }";
-            var message = "Delegate type is not matching expected System.Action<C, int>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Action<C, int>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void GetSetMethodReturnTypeStatic()
-        {
-            var before = @"
+    [Test]
+    public static void GetSetMethodReturnTypeStatic()
+    {
+        var before = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -563,7 +563,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -581,14 +581,14 @@ namespace N
         public static int Value { get; set; }
     }
 }";
-            var message = "Delegate type is not matching expected System.Action<int>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Action<int>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void StaticWithContainingAsArgument()
-        {
-            var before = @"
+    [Test]
+    public static void StaticWithContainingAsArgument()
+    {
+        var before = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -607,7 +607,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602, CS8604
 namespace N
 {
@@ -625,8 +625,7 @@ namespace N
         public static int M(C c) => c.P;
     }
 }";
-            var message = "Delegate type is not matching expected System.Func<C, int>";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Delegate type is not matching expected System.Func<C, int>";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
     }
 }

@@ -1,17 +1,16 @@
-﻿namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers;
+
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class StringType : QualifiedType
 {
-    using Gu.Roslyn.AnalyzerExtensions;
+    internal readonly QualifiedField Empty;
+    internal new readonly QualifiedMethod Equals;
 
-    internal class StringType : QualifiedType
+    internal StringType()
+        : base("System.String", "string")
     {
-        internal readonly QualifiedField Empty;
-        internal new readonly QualifiedMethod Equals;
-
-        internal StringType()
-            : base("System.String", "string")
-        {
-            this.Empty = new QualifiedField(this, nameof(this.Empty));
-            this.Equals = new QualifiedMethod(this, nameof(this.Equals));
-        }
+        this.Empty = new QualifiedField(this, nameof(this.Empty));
+        this.Equals = new QualifiedMethod(this, nameof(this.Equals));
     }
 }

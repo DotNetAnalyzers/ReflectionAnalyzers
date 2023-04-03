@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL037TypeDoesNotExitsTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class NoFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetTypeAnalyzer Analyzer = new();
+    private static readonly SuggestTypeFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL037TypeDoesNotExits);
 
-    public static class NoFix
+    [TestCase("MISSING")]
+    //// [TestCase("N.MISSING")]
+    public static void TypeGetTypeNoFix(string type)
     {
-        private static readonly GetTypeAnalyzer Analyzer = new();
-        private static readonly SuggestTypeFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL037TypeDoesNotExits);
-
-        [TestCase("MISSING")]
-        //// [TestCase("N.MISSING")]
-        public static void TypeGetTypeNoFix(string type)
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -24,14 +24,14 @@ namespace N
     }
 }".AssertReplace("MISSING", type);
 
-            RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
+    }
 
-        [TestCase("typeof(C).Assembly.GetType(↓\"MISSING\")")]
-        [TestCase("typeof(C).Assembly.GetType(↓\"N.MISSING\")")]
-        public static void AssemblyGetTypeNoFix(string call)
-        {
-            var code = @"
+    [TestCase("typeof(C).Assembly.GetType(↓\"MISSING\")")]
+    [TestCase("typeof(C).Assembly.GetType(↓\"N.MISSING\")")]
+    public static void AssemblyGetTypeNoFix(string call)
+    {
+        var code = @"
 namespace N
 {
     public class C
@@ -40,7 +40,6 @@ namespace N
     }
 }".AssertReplace("typeof(C).Assembly.GetType(↓\"MISSING\")", call);
 
-            RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic, code);
     }
 }

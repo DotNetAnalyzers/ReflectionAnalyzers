@@ -1,20 +1,20 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests
+﻿namespace ReflectionAnalyzers.Tests.REFL004AmbiguousMatchTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static class CodeFix
+    public static class GetMethod
     {
-        public static class GetMethod
-        {
-            private static readonly GetXAnalyzer Analyzer = new();
-            private static readonly DisambiguateFix Fix = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL004AmbiguousMatch);
+        private static readonly GetXAnalyzer Analyzer = new();
+        private static readonly DisambiguateFix Fix = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL004AmbiguousMatch);
 
-            [Test]
-            public static void PublicOverloads()
-            {
-                var before = @"
+        [Test]
+        public static void PublicOverloads()
+        {
+            var before = @"
 namespace N
 {
     using System.Reflection;
@@ -32,7 +32,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System.Reflection;
@@ -49,9 +49,9 @@ namespace N
         public static double Static(double value) => value;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int) }.");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int) }.");
 
-                after = @"
+            after = @"
 namespace N
 {
     using System.Reflection;
@@ -68,13 +68,13 @@ namespace N
         public static double Static(double value) => value;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(double) }.");
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(double) }.");
+        }
 
-            [Test]
-            public static void TwoIndexers()
-            {
-                var before = @"
+        [Test]
+        public static void TwoIndexers()
+        {
+            var before = @"
 namespace N
 {
     public class C
@@ -87,7 +87,7 @@ namespace N
     }
 }";
 
-                var after = @"
+            var after = @"
 namespace N
 {
     using System.Reflection;
@@ -101,9 +101,9 @@ namespace N
         public int this[int i1, int i2] => 0;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int) }.");
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int) }.");
 
-                after = @"
+            after = @"
 namespace N
 {
     using System.Reflection;
@@ -117,8 +117,7 @@ namespace N
         public int this[int i1, int i2] => 0;
     }
 }";
-                RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int), typeof(int) }.");
-            }
+            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use: new[] { typeof(int), typeof(int) }.");
         }
     }
 }

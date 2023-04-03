@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests
+﻿namespace ReflectionAnalyzers.Tests.REFL012PreferIsDefinedTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetCustomAttributeAnalyzer Analyzer = new();
+    private static readonly UseIsDefinedFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL012PreferIsDefined);
 
-    public static class CodeFix
+    [Test]
+    public static void Message()
     {
-        private static readonly GetCustomAttributeAnalyzer Analyzer = new();
-        private static readonly UseIsDefinedFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL012PreferIsDefined);
-
-        [Test]
-        public static void Message()
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     using System;
@@ -22,7 +22,7 @@ namespace N
         public static bool M() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) == null;
     }
 }";
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -32,14 +32,14 @@ namespace N
         public static bool M() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
-            var message = "Prefer Attribute.IsDefined()";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
-        }
+        var message = "Prefer Attribute.IsDefined()";
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), before, after);
+    }
 
-        [Test]
-        public static void AttributeGetCustomAttributeEqualsNull()
-        {
-            var before = @"
+    [Test]
+    public static void AttributeGetCustomAttributeEqualsNull()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -49,7 +49,7 @@ namespace N
         public static bool M() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) == null;
     }
 }";
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -59,13 +59,13 @@ namespace N
         public static bool M() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void AttributeGetCustomAttributeEqualsNullExplicitInherit()
-        {
-            var before = @"
+    [Test]
+    public static void AttributeGetCustomAttributeEqualsNullExplicitInherit()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -75,7 +75,7 @@ namespace N
         public static bool M() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute), true) == null;
     }
 }";
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -85,13 +85,13 @@ namespace N
         public static bool M() => !Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute), true);
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void AttributeGetCustomAttributeNotEqualsNull()
-        {
-            var before = @"
+    [Test]
+    public static void AttributeGetCustomAttributeNotEqualsNull()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -101,7 +101,7 @@ namespace N
         public static bool M() => ↓Attribute.GetCustomAttribute(typeof(C), typeof(ObsoleteAttribute)) != null;
     }
 }";
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -111,14 +111,14 @@ namespace N
         public static bool M() => Attribute.IsDefined(typeof(C), typeof(ObsoleteAttribute));
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [TestCase(" == null")]
-        [TestCase(" is null")]
-        public static void IfGetCustomAttributeIsNull(string isNull)
-        {
-            var before = @"
+    [TestCase(" == null")]
+    [TestCase(" is null")]
+    public static void IfGetCustomAttributeIsNull(string isNull)
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -134,7 +134,7 @@ namespace N
         }
     }
 }".AssertReplace(" == null", isNull);
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -150,13 +150,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void IfGetCustomAttributeNotNull()
-        {
-            var before = @"
+    [Test]
+    public static void IfGetCustomAttributeNotNull()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -172,7 +172,7 @@ namespace N
         }
     }
 }";
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -188,7 +188,6 @@ namespace N
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

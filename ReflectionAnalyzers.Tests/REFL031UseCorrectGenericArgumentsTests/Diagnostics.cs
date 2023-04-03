@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL031UseCorrectGenericArgumentsTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class Diagnostics
+    public static class MakeGenericMethod
     {
-        public static class MakeGenericMethod
-        {
-            private static readonly MakeGenericAnalyzer Analyzer = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL031UseCorrectGenericArguments);
+        private static readonly MakeGenericAnalyzer Analyzer = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL031UseCorrectGenericArguments);
 
-            [Test]
-            public static void CountError()
-            {
-                var code = @"
+        [Test]
+        public static void CountError()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -25,14 +25,14 @@ namespace N
         }
     }
 }";
-                var message = "The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has 1 parameter but 2 arguments are passed in.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            }
+            var message = "The number of generic arguments provided doesn't equal the arity of the generic type definition. The member has 1 parameter but 2 arguments are passed in.";
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
 
-            [Test]
-            public static void ConstraintError()
-            {
-                var code = @"
+        [Test]
+        public static void ConstraintError()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -45,16 +45,16 @@ namespace N
         }
     }
 }";
-                var message = "The argument typeof(string), on 'N.C.M<T>()' violates the constraint of type 'T'.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            }
+            var message = "The argument typeof(string), on 'N.C.M<T>()' violates the constraint of type 'T'.";
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
 
-            [TestCase("MakeGenericMethod↓(new[] { typeof(int), typeof(double) })")]
-            [TestCase("MakeGenericMethod(↓typeof(string))")]
-            [TestCase("MakeGenericMethod(new[] { ↓typeof(string) })")]
-            public static void ConstrainedParameterWrongArguments(string call)
-            {
-                var code = @"
+        [TestCase("MakeGenericMethod↓(new[] { typeof(int), typeof(double) })")]
+        [TestCase("MakeGenericMethod(↓typeof(string))")]
+        [TestCase("MakeGenericMethod(new[] { ↓typeof(string) })")]
+        public static void ConstrainedParameterWrongArguments(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -68,16 +68,16 @@ namespace N
     }
 }".AssertReplace("MakeGenericMethod(↓typeof(string))", call);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("where T : class", "typeof(int)")]
-            [TestCase("where T : struct", "typeof(string)")]
-            [TestCase("where T : System.IComparable", "typeof(C)")]
-            [TestCase("where T : new()", "typeof(C1)")]
-            public static void Constraints(string constraint, string arg)
-            {
-                var c1 = @"
+        [TestCase("where T : class", "typeof(int)")]
+        [TestCase("where T : struct", "typeof(string)")]
+        [TestCase("where T : System.IComparable", "typeof(C)")]
+        [TestCase("where T : new()", "typeof(C1)")]
+        public static void Constraints(string constraint, string arg)
+        {
+            var c1 = @"
 namespace N
 {
     public class C1
@@ -87,7 +87,7 @@ namespace N
         }
     }
 }";
-                var code = @"
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -100,14 +100,14 @@ namespace N
         }
     }
 }".AssertReplace("where T : class", constraint)
-  .AssertReplace("typeof(int)", arg);
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, c1, code);
-            }
+.AssertReplace("typeof(int)", arg);
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, c1, code);
+        }
 
-            [Test]
-            public static void TernaryWrongOrder()
-            {
-                var code = @"
+        [Test]
+        public static void TernaryWrongOrder()
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -135,8 +135,7 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

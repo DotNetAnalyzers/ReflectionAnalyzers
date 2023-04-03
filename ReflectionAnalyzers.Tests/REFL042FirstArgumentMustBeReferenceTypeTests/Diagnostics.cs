@@ -1,17 +1,17 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL042FirstArgumentMustBeReferenceTypeTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly CreateDelegateAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL042FirstArgumentIsReferenceType);
 
-    public static class Diagnostics
+    [Test]
+    public static void StaticStringVoidFirstArg()
     {
-        private static readonly CreateDelegateAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL042FirstArgumentIsReferenceType);
-
-        [Test]
-        public static void StaticStringVoidFirstArg()
-        {
-            var code = @"
+        var code = @"
 #pragma warning disable CS8604
 namespace N
 {
@@ -28,7 +28,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

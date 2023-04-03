@@ -1,17 +1,16 @@
-﻿namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers;
+
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+internal readonly struct ArgumentAndValue<T>
 {
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
+    internal readonly ArgumentSyntax Argument;
 
-    internal readonly struct ArgumentAndValue<T>
+    internal readonly T Value;
+
+    internal ArgumentAndValue(ArgumentSyntax argument, T value)
     {
-        internal readonly ArgumentSyntax Argument;
-
-        internal readonly T Value;
-
-        internal ArgumentAndValue(ArgumentSyntax argument, T value)
-        {
-            this.Argument = argument;
-            this.Value = value;
-        }
+        this.Argument = argument;
+        this.Value = value;
     }
 }

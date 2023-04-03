@@ -1,12 +1,11 @@
-namespace ReflectionAnalyzers
-{
-    using Gu.Roslyn.AnalyzerExtensions;
+namespace ReflectionAnalyzers;
 
-    internal class RuntimeParameterInfoType : QualifiedType
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class RuntimeParameterInfoType : QualifiedType
+{
+    internal RuntimeParameterInfoType()
+        : base("System.Reflection.RuntimeParameterInfo")
     {
-        internal RuntimeParameterInfoType()
-            : base("System.Reflection.RuntimeParameterInfo")
-        {
-        }
     }
 }

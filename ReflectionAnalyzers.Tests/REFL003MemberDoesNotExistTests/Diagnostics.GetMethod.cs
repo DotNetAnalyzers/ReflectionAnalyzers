@@ -1,16 +1,16 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
-{
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests;
 
-    public static partial class Diagnostics
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
+{
+    public static class GetMethod
     {
-        public static class GetMethod
+        [Test]
+        public static void Message()
         {
-            [Test]
-            public static void Message()
-            {
-                var code = @"
+            var code = @"
 namespace N
 {
     public struct C
@@ -21,14 +21,14 @@ namespace N
         }
     }
 }";
-                var message = "The type N.C does not have a member named MISSING";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            }
+            var message = "The type N.C does not have a member named MISSING";
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
 
-            [TestCase("typeof(C).GetMethod(↓\"MISSING\")")]
-            public static void MissingMethodWhenKnownExactType(string type)
-            {
-                var code = @"
+        [TestCase("typeof(C).GetMethod(↓\"MISSING\")")]
+        public static void MissingMethodWhenKnownExactType(string type)
+        {
+            var code = @"
 namespace N
 {
     public class C
@@ -37,17 +37,17 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [TestCase("typeof(C).GetMethod(↓\"MISSING\")")]
-            [TestCase("c.GetType().GetMethod(↓\"MISSING\")")]
-            [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]
-            [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
-            [TestCase("GetType().GetMethod(↓\"MISSING\")")]
-            public static void MissingMethodWhenSealed(string type)
-            {
-                var code = @"
+        [TestCase("typeof(C).GetMethod(↓\"MISSING\")")]
+        [TestCase("c.GetType().GetMethod(↓\"MISSING\")")]
+        [TestCase("new C().GetType().GetMethod(↓\"MISSING\")")]
+        [TestCase("this.GetType().GetMethod(↓\"MISSING\")")]
+        [TestCase("GetType().GetMethod(↓\"MISSING\")")]
+        public static void MissingMethodWhenSealed(string type)
+        {
+            var code = @"
 namespace N
 {
     public sealed class C
@@ -56,13 +56,13 @@ namespace N
     }
 }".AssertReplace("typeof(C).GetMethod(↓\"MISSING\")", type);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [Test]
-            public static void MissingMethodWhenStruct()
-            {
-                var code = @"
+        [Test]
+        public static void MissingMethodWhenStruct()
+        {
+            var code = @"
 namespace N
 {
     public struct C
@@ -73,13 +73,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [Test]
-            public static void MissingMethodWhenStatic()
-            {
-                var code = @"
+        [Test]
+        public static void MissingMethodWhenStatic()
+        {
+            var code = @"
 namespace N
 {
     public static class C
@@ -90,13 +90,13 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [Test]
-            public static void MissingMethodWhenInterface()
-            {
-                var iC = @"
+        [Test]
+        public static void MissingMethodWhenInterface()
+        {
+            var iC = @"
 namespace N
 {
     public interface IC
@@ -104,7 +104,7 @@ namespace N
     }
 }";
 
-                var code = @"
+            var code = @"
 namespace N
 {
     public class C
@@ -115,19 +115,19 @@ namespace N
         }
     }
 }";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, iC, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, iC, code);
+        }
 
-            [TestCase("typeof(string).GetMethod(↓\"MISSING\")")]
-            [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Instance)")]
-            [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-            [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static)")]
-            [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
-            [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
-            [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, Type.DefaultBinder, Type.EmptyTypes, null)")]
-            public static void MissingMethodNotInSource(string type)
-            {
-                var code = @"
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\")")]
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Instance)")]
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static)")]
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)")]
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null)")]
+        [TestCase("typeof(string).GetMethod(↓\"MISSING\", BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly, Type.DefaultBinder, Type.EmptyTypes, null)")]
+        public static void MissingMethodNotInSource(string type)
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -139,13 +139,13 @@ namespace N
     }
 }".AssertReplace("typeof(string).GetMethod(↓\"MISSING\")", type);
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [Test]
-            public static void MissingPropertySetAccessor()
-            {
-                var code = @"
+        [Test]
+        public static void MissingPropertySetAccessor()
+        {
+            var code = @"
 namespace N
 {
     public sealed class C
@@ -158,13 +158,13 @@ namespace N
         public int P { get; }
     }
 }";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+        }
 
-            [Test]
-            public static void MissingPropertyGetAccessor()
-            {
-                var code = @"
+        [Test]
+        public static void MissingPropertyGetAccessor()
+        {
+            var code = @"
 namespace N
 {
     public sealed class C
@@ -177,8 +177,7 @@ namespace N
         public int P { set { } }
     }
 }";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

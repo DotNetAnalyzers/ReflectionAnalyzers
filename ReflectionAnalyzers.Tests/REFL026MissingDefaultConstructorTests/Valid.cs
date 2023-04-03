@@ -1,22 +1,22 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests
+﻿namespace ReflectionAnalyzers.Tests.REFL026MissingDefaultConstructorTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly ActivatorAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL026NoDefaultConstructor;
 
-    public static class Valid
+    [TestCase("Activator.CreateInstance(typeof(C))")]
+    [TestCase("Activator.CreateInstance(typeof(C), true)")]
+    [TestCase("Activator.CreateInstance(typeof(C), false)")]
+    [TestCase("Activator.CreateInstance(this.GetType())")]
+    [TestCase("Activator.CreateInstance<C>()")]
+    public static void ExplicitDefaultConstructor(string call)
     {
-        private static readonly ActivatorAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL026NoDefaultConstructor;
-
-        [TestCase("Activator.CreateInstance(typeof(C))")]
-        [TestCase("Activator.CreateInstance(typeof(C), true)")]
-        [TestCase("Activator.CreateInstance(typeof(C), false)")]
-        [TestCase("Activator.CreateInstance(this.GetType())")]
-        [TestCase("Activator.CreateInstance<C>()")]
-        public static void ExplicitDefaultConstructor(string call)
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -30,15 +30,15 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("(C?)Activator.CreateInstance(typeof(C))")]
-        [TestCase("(C)Activator.CreateInstance(typeof(C))!")]
-        [TestCase("Activator.CreateInstance<C>()")]
-        public static void ImplicitDefaultConstructor(string call)
-        {
-            var code = @"
+    [TestCase("(C?)Activator.CreateInstance(typeof(C))")]
+    [TestCase("(C)Activator.CreateInstance(typeof(C))!")]
+    [TestCase("Activator.CreateInstance<C>()")]
+    public static void ImplicitDefaultConstructor(string call)
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -49,14 +49,14 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance<C>()", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("Activator.CreateInstance(typeof(C), 1)")]
-        [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
-        public static void OneConstructorSingleIntParameter(string call)
-        {
-            var code = @"
+    [TestCase("Activator.CreateInstance(typeof(C), 1)")]
+    [TestCase("Activator.CreateInstance(typeof(C), new object[] { 1 })")]
+    public static void OneConstructorSingleIntParameter(string call)
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -70,15 +70,15 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C))", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
-        [TestCase("Activator.CreateInstance(typeof(C), new object[] { null })")]
-        [TestCase("Activator.CreateInstance(typeof(C), (string)null)")]
-        public static void OneConstructorSingleStringParameter(string call)
-        {
-            var code = @"
+    [TestCase("Activator.CreateInstance(typeof(C), \"abc\")")]
+    [TestCase("Activator.CreateInstance(typeof(C), new object[] { null })")]
+    [TestCase("Activator.CreateInstance(typeof(C), (string)null)")]
+    public static void OneConstructorSingleStringParameter(string call)
+    {
+        var code = @"
 #nullable disable
 namespace N
 {
@@ -93,13 +93,13 @@ namespace N
     }
 }".AssertReplace("Activator.CreateInstance(typeof(C), \"abc\")", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void PrivateConstructor()
-        {
-            var code = @"
+    [Test]
+    public static void PrivateConstructor()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -113,13 +113,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void WhenUnknown()
-        {
-            var code = @"
+    [Test]
+    public static void WhenUnknown()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -130,13 +130,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void WhenUnconstrainedGeneric()
-        {
-            var code = @"
+    [Test]
+    public static void WhenUnconstrainedGeneric()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -147,13 +147,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void WhenOnInterfaceTypes()
-        {
-            var code = @"
+    [Test]
+    public static void WhenOnInterfaceTypes()
+    {
+        var code = @"
 namespace N
 {
     using System;
@@ -174,7 +174,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

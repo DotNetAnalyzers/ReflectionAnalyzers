@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests
+﻿namespace ReflectionAnalyzers.Tests.REFL016UseNameofTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly NameofFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL016");
 
-    public static class CodeFix
+    [Test]
+    public static void GetPropertyInstance()
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly NameofFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL016");
-
-        [Test]
-        public static void GetPropertyInstance()
-        {
-            var before = @"
+        var before = @"
 namespace N
 {
     class C
@@ -26,7 +26,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     class C
@@ -39,13 +39,13 @@ namespace N
          public int P { get; }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetPropertyInstanceWithTrivia()
-        {
-            var before = @"
+    [Test]
+    public static void GetPropertyInstanceWithTrivia()
+    {
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -63,7 +63,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -80,13 +80,13 @@ namespace N
          public int P { get; }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void GetPropertyStatic()
-        {
-            var before = @"
+    [Test]
+    public static void GetPropertyStatic()
+    {
+        var before = @"
 namespace N
 {
     class C
@@ -100,7 +100,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     class C
@@ -113,13 +113,13 @@ namespace N
          public static int P { get; }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void AnonymousType()
-        {
-            var before = @"
+    [Test]
+    public static void AnonymousType()
+    {
+        var before = @"
 namespace N
 {
     class C
@@ -132,7 +132,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     class C
@@ -144,13 +144,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use nameof(anon.C).");
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use nameof(anon.C).");
+    }
 
-        [Test]
-        public static void TypeofDictionaryGetMethodStringLiteral()
-        {
-            var before = @"
+    [Test]
+    public static void TypeofDictionaryGetMethodStringLiteral()
+    {
+        var before = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -164,7 +164,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Collections.Generic;
@@ -177,16 +177,16 @@ namespace N
         }
     }
 }";
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use nameof(Dictionary<string, object>.Add).");
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after, fixTitle: "Use nameof(Dictionary<string, object>.Add).");
+    }
 
-        [TestCase("Class")]
-        [TestCase("Enum")]
-        [TestCase("Interface")]
-        [TestCase("Struct")]
-        public static void GetNestedTypePrivateInSameType(string type)
-        {
-            var before = @"
+    [TestCase("Class")]
+    [TestCase("Enum")]
+    [TestCase("Interface")]
+    [TestCase("Struct")]
+    public static void GetNestedTypePrivateInSameType(string type)
+    {
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -208,7 +208,7 @@ namespace N
     }
 }".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.NonPublic)", $"GetNestedType(↓\"{type}\", BindingFlags.NonPublic)");
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -230,16 +230,16 @@ namespace N
     }
 }".AssertReplace("nameof(Class)", $"nameof({type})");
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [TestCase("Class")]
-        [TestCase("Enum")]
-        [TestCase("Interface")]
-        [TestCase("Struct")]
-        public static void GetNestedTypePublicInOtherType(string type)
-        {
-            var c = @"
+    [TestCase("Class")]
+    [TestCase("Enum")]
+    [TestCase("Interface")]
+    [TestCase("Struct")]
+    public static void GetNestedTypePublicInOtherType(string type)
+    {
+        var c = @"
 namespace N
 {
     using System.Reflection;
@@ -255,7 +255,7 @@ namespace N
         public struct Struct { }
     }
 }";
-            var before = @"
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -269,7 +269,7 @@ namespace N
     }
 }".AssertReplace("GetNestedType(↓\"Class\", BindingFlags.Public)", $"GetNestedType(↓\"{type}\", BindingFlags.Public)");
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -283,13 +283,13 @@ namespace N
     }
 }".AssertReplace("nameof(C.Class)", $"nameof(C.{type})");
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { c, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { c, before }, after);
+    }
 
-        [Test]
-        public static void AggregateExceptionMessage()
-        {
-            var before = @"
+    [Test]
+    public static void AggregateExceptionMessage()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -304,7 +304,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -319,14 +319,14 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Ignore("No fix when we don't know if it is visible due to ref assemblies.")]
-        [Test]
-        public static void SystemWindowsFormsControlCreateControl()
-        {
-            var before = @"
+    [Ignore("No fix when we don't know if it is visible due to ref assemblies.")]
+    [Test]
+    public static void SystemWindowsFormsControlCreateControl()
+    {
+        var before = @"
 namespace N
 {
     using System.Reflection;
@@ -338,7 +338,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System.Reflection;
@@ -350,13 +350,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void NullableGetProperty()
-        {
-            var before = @"
+    [Test]
+    public static void NullableGetProperty()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -368,7 +368,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -380,13 +380,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void ProtectedMemberInBase()
-        {
-            var baseClass = @"
+    [Test]
+    public static void ProtectedMemberInBase()
+    {
+        var baseClass = @"
 namespace N
 {
     class BaseClass
@@ -395,7 +395,7 @@ namespace N
     }
 }";
 
-            var before = @"
+        var before = @"
 namespace N
 {
     class C : BaseClass
@@ -404,7 +404,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     class C : BaseClass
@@ -413,13 +413,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseClass, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { baseClass, before }, after);
+    }
 
-        [Test]
-        public static void InNestedTypeWhenPublicInherited()
-        {
-            var @base = @"
+    [Test]
+    public static void InNestedTypeWhenPublicInherited()
+    {
+        var @base = @"
 namespace N
 {
     class Base
@@ -428,7 +428,7 @@ namespace N
     }
 }";
 
-            var before = @"
+        var before = @"
 namespace N
 {
     using System;
@@ -446,7 +446,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -464,13 +464,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
+    }
 
-        [Test]
-        public static void InNestedType()
-        {
-            var before = @"
+    [Test]
+    public static void InNestedType()
+    {
+        var before = @"
 namespace N
 {
     class C
@@ -484,7 +484,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     class C
@@ -498,13 +498,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void InNestedTypeWhenInheritance()
-        {
-            var @base = @"
+    [Test]
+    public static void InNestedTypeWhenInheritance()
+    {
+        var @base = @"
 namespace N
 {
     class Base
@@ -513,7 +513,7 @@ namespace N
     }
 }";
 
-            var before = @"
+        var before = @"
 namespace N
 {
     class C : Base
@@ -525,7 +525,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     class C : Base
@@ -537,13 +537,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, new[] { @base, before }, after);
+    }
 
-        [Test]
-        public static void ValueTupleGetFieldItem1()
-        {
-            var before = @"
+    [Test]
+    public static void ValueTupleGetFieldItem1()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -554,7 +554,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -565,13 +565,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
+    }
 
-        [Test]
-        public static void ValueTupleGetFieldRest()
-        {
-            var before = @"
+    [Test]
+    public static void ValueTupleGetFieldRest()
+    {
+        var before = @"
 namespace N
 {
     using System;
@@ -582,7 +582,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 namespace N
 {
     using System;
@@ -593,7 +593,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }

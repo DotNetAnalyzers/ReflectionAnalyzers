@@ -1,20 +1,19 @@
-namespace ReflectionAnalyzers.Tests.REFL032DependencyMustExistTests
+namespace ReflectionAnalyzers.Tests.REFL032DependencyMustExistTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly DependencyAttributeAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL032DependencyMustExist);
 
-    public static class Diagnostics
+    [Test]
+    public static void GetMethodNoParameter()
     {
-        private static readonly DependencyAttributeAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL032DependencyMustExist);
-
-        [Test]
-        public static void GetMethodNoParameter()
-        {
-            var code = @"
+        var code = @"
 using System.Runtime.CompilerServices;
 [assembly: Dependency(↓""MISSING_DEPENDENCY"", LoadHint.Always)] ";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests
+﻿namespace ReflectionAnalyzers.Tests.REFL030UseCorrectObjTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
-
-    public static partial class Diagnostics
+    public static class ConstructorInfoInvoke
     {
-        public static class ConstructorInfoInvoke
-        {
-            private static readonly InvokeAnalyzer Analyzer = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL030UseCorrectObj);
+        private static readonly InvokeAnalyzer Analyzer = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL030UseCorrectObj);
 
-            [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })")]
-            public static void PassingNullAsObj(string call)
-            {
-                var code = @"
+        [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })")]
+        public static void PassingNullAsObj(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -27,15 +27,15 @@ namespace N
     }
 }".AssertReplace("GetConstructor(new[] { typeof(int) }).Invoke(null, new object[] { 1 })", call);
 
-                var message = "Use overload of Invoke without obj parameter.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            }
+            var message = "Use overload of Invoke without obj parameter.";
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
 
-            [TestCase("GetConstructor(Type.EmptyTypes).Invoke(text, null)")]
-            [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(text, new object[] { 1 })")]
-            public static void InvokeWithGetUninitializedObjectAndArgument(string call)
-            {
-                var code = @"
+        [TestCase("GetConstructor(Type.EmptyTypes).Invoke(text, null)")]
+        [TestCase("GetConstructor(new[] { typeof(int) }).Invoke(text, new object[] { 1 })")]
+        public static void InvokeWithGetUninitializedObjectAndArgument(string call)
+        {
+            var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -55,9 +55,8 @@ namespace N
     }
 }".AssertReplace("GetConstructor(Type.EmptyTypes).Invoke(text, null)", call);
 
-                var message = "Use an instance of type N.C.";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            }
+            var message = "Use an instance of type N.C.";
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
         }
     }
 }

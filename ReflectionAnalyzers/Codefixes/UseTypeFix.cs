@@ -1,40 +1,39 @@
-﻿namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers;
+
+using System.Collections.Immutable;
+using System.Composition;
+using System.Threading.Tasks;
+using Gu.Roslyn.CodeFixExtensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(UseTypeFix))]
+[Shared]
+internal class UseTypeFix : DocumentEditorCodeFixProvider
 {
-    using System.Collections.Immutable;
-    using System.Composition;
-    using System.Threading.Tasks;
-    using Gu.Roslyn.CodeFixExtensions;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CodeFixes;
-    using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
+    public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
+        Descriptors.REFL041CreateDelegateType.Id);
 
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(UseTypeFix))]
-    [Shared]
-    internal class UseTypeFix : DocumentEditorCodeFixProvider
+    protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
     {
-        public override ImmutableArray<string> FixableDiagnosticIds { get; } = ImmutableArray.Create(
-            Descriptors.REFL041CreateDelegateType.Id);
-
-        protected override async Task RegisterCodeFixesAsync(DocumentEditorCodeFixContext context)
+        var syntaxRoot = await context.Document.GetSyntaxRootAsync(context.CancellationToken)
+                                      .ConfigureAwait(false);
+        foreach (var diagnostic in context.Diagnostics)
         {
-            var syntaxRoot = await context.Document.GetSyntaxRootAsync(context.CancellationToken)
-                                          .ConfigureAwait(false);
-            foreach (var diagnostic in context.Diagnostics)
+            if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText) &&
+                syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is TypeSyntax type)
             {
-                if (diagnostic.Properties.TryGetValue(nameof(TypeSyntax), out var typeText) &&
-                    syntaxRoot?.FindNode(diagnostic.Location.SourceSpan) is TypeSyntax type)
-                {
-                    context.RegisterCodeFix(
-                        $"Change to: {typeText}.",
-                        (editor, _) => editor.ReplaceNode(
-                            type,
-                            x => SyntaxFactory.ParseTypeName(typeText!)
-                                              .WithSimplifiedNames()
-                                              .WithTriviaFrom(x)),
-                        nameof(UseTypeFix),
-                        diagnostic);
-                }
+                context.RegisterCodeFix(
+                    $"Change to: {typeText}.",
+                    (editor, _) => editor.ReplaceNode(
+                        type,
+                        x => SyntaxFactory.ParseTypeName(typeText!)
+                                          .WithSimplifiedNames()
+                                          .WithTriviaFrom(x)),
+                    nameof(UseTypeFix),
+                    diagnostic);
             }
         }
     }

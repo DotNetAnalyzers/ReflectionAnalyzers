@@ -1,28 +1,27 @@
-﻿namespace ReflectionAnalyzers
+﻿namespace ReflectionAnalyzers;
+
+using System.Threading;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+internal readonly struct PropertyInfo
 {
-    using System.Threading;
-    using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
+    internal readonly INamedTypeSymbol ReflectedType;
+    internal readonly IPropertySymbol Property;
 
-    internal readonly struct PropertyInfo
+    internal PropertyInfo(INamedTypeSymbol reflectedType, IPropertySymbol property)
     {
-        internal readonly INamedTypeSymbol ReflectedType;
-        internal readonly IPropertySymbol Property;
+        this.ReflectedType = reflectedType;
+        this.Property = property;
+    }
 
-        internal PropertyInfo(INamedTypeSymbol reflectedType, IPropertySymbol property)
+    internal static PropertyInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
+    {
+        if (GetProperty.Match(expression, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IPropertySymbol symbol } })
         {
-            this.ReflectedType = reflectedType;
-            this.Property = property;
+            return new PropertyInfo(reflectedType, symbol);
         }
 
-        internal static PropertyInfo? Find(ExpressionSyntax expression, SemanticModel semanticModel, CancellationToken cancellationToken)
-        {
-            if (GetProperty.Match(expression, semanticModel, cancellationToken) is { Member: { ReflectedType: { } reflectedType, Symbol: IPropertySymbol symbol } })
-            {
-                return new PropertyInfo(reflectedType, symbol);
-            }
-
-            return null;
-        }
+        return null;
     }
 }

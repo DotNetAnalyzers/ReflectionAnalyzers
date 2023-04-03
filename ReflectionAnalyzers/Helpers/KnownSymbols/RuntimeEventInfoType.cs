@@ -1,12 +1,11 @@
-namespace ReflectionAnalyzers
-{
-    using Gu.Roslyn.AnalyzerExtensions;
+namespace ReflectionAnalyzers;
 
-    internal class RuntimeEventInfoType : QualifiedType
+using Gu.Roslyn.AnalyzerExtensions;
+
+internal class RuntimeEventInfoType : QualifiedType
+{
+    internal RuntimeEventInfoType()
+        : base("System.Reflection.RuntimeEventInfo")
     {
-        internal RuntimeEventInfoType()
-            : base("System.Reflection.RuntimeEventInfo")
-        {
-        }
     }
 }

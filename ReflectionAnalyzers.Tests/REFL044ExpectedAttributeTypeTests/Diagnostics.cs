@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests
-{
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+﻿namespace ReflectionAnalyzers.Tests.REFL044ExpectedAttributeTypeTests;
 
-    public static partial class Diagnostics
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static partial class Diagnostics
+{
+    public static class GetCustomAttribute
     {
-        public static class GetCustomAttribute
+        private static readonly GetCustomAttributeAnalyzer Analyzer = new();
+        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL044");
+
+        [Test]
+        public static void Message()
         {
-            private static readonly GetCustomAttributeAnalyzer Analyzer = new();
-            private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create("REFL044");
-
-            [Test]
-            public static void Message()
-            {
-                var code = @"
+            var code = @"
 namespace N
 {
     using System;
@@ -24,14 +24,14 @@ namespace N
     }
 }";
 
-                var message = "Expected attribute type";
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            }
+            var message = "Expected attribute type";
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        }
 
-            [Test]
-            public static void AttributeGetCustomAttribute()
-            {
-                var code = @"
+        [Test]
+        public static void AttributeGetCustomAttribute()
+        {
+            var code = @"
 namespace N
 {
     using System;
@@ -42,8 +42,7 @@ namespace N
     }
 }";
 
-                RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-            }
+            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
         }
     }
 }

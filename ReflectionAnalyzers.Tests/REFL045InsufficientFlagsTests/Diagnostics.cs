@@ -1,24 +1,24 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests
+﻿namespace ReflectionAnalyzers.Tests.REFL045InsufficientFlagsTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL045InsufficientFlags);
 
-    public static class Diagnostics
+    [TestCase("GetField(\"F\", ↓BindingFlags.Instance)")]
+    [TestCase("GetConstructor(↓BindingFlags.Static, null, Type.EmptyTypes, null)")]
+    [TestCase("GetEvent(\"F\", ↓BindingFlags.Instance)")]
+    [TestCase("GetProperty(\"P\", ↓BindingFlags.Instance)")]
+    [TestCase("GetMethod(\"M\", ↓BindingFlags.Public)")]
+    [TestCase("GetMethod(\"M\", ↓BindingFlags.Public | BindingFlags.NonPublic)")]
+    [TestCase("GetMethod(\"M\", ↓BindingFlags.Static)")]
+    [TestCase("GetMethod(\"M\", ↓BindingFlags.Instance)")]
+    public static void GetX(string call)
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL045InsufficientFlags);
-
-        [TestCase("GetField(\"F\", ↓BindingFlags.Instance)")]
-        [TestCase("GetConstructor(↓BindingFlags.Static, null, Type.EmptyTypes, null)")]
-        [TestCase("GetEvent(\"F\", ↓BindingFlags.Instance)")]
-        [TestCase("GetProperty(\"P\", ↓BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"M\", ↓BindingFlags.Public)")]
-        [TestCase("GetMethod(\"M\", ↓BindingFlags.Public | BindingFlags.NonPublic)")]
-        [TestCase("GetMethod(\"M\", ↓BindingFlags.Static)")]
-        [TestCase("GetMethod(\"M\", ↓BindingFlags.Instance)")]
-        public static void GetX(string call)
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -30,7 +30,6 @@ namespace N
     }
 }".AssertReplace("GetMethod(\"M\", ↓BindingFlags.Public)", call);
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

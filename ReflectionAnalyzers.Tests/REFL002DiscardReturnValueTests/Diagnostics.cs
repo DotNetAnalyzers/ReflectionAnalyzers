@@ -1,17 +1,17 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests
+﻿namespace ReflectionAnalyzers.Tests.REFL002DiscardReturnValueTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class Diagnostics
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly InvokeAnalyzer Analyzer = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL002DiscardReturnValue);
 
-    public static class Diagnostics
+    [Test]
+    public static void AssigningLocal()
     {
-        private static readonly InvokeAnalyzer Analyzer = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL002DiscardReturnValue);
-
-        [Test]
-        public static void AssigningLocal()
-        {
-            var code = @"
+        var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -28,13 +28,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void AssigningField()
-        {
-            var code = @"
+    [Test]
+    public static void AssigningField()
+    {
+        var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -53,13 +53,13 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [Test]
-        public static void UsingInExpression()
-        {
-            var code = @"
+    [Test]
+    public static void UsingInExpression()
+    {
+        var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -76,14 +76,14 @@ namespace N
     }
 }";
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
+    }
 
-        [TestCase("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)")]
-        [TestCase("type.GetConstructor(new[] { typeof(int) }).Invoke(instance, new object[] { 1 })")]
-        public static void InvokeWithGetUninitializedObjectAndArgument(string call)
-        {
-            var code = @"
+    [TestCase("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)")]
+    [TestCase("type.GetConstructor(new[] { typeof(int) }).Invoke(instance, new object[] { 1 })")]
+    public static void InvokeWithGetUninitializedObjectAndArgument(string call)
+    {
+        var code = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -113,7 +113,6 @@ namespace N
     }
 }".AssertReplace("type.GetConstructor(Type.EmptyTypes).Invoke(instance, null)", call);
 
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
-        }
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic, code);
     }
 }

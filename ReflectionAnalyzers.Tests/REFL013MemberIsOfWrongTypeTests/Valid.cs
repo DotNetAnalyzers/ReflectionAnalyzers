@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests
+﻿namespace ReflectionAnalyzers.Tests.REFL013MemberIsOfWrongTypeTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL013MemberIsOfWrongType;
 
-    public static class Valid
+    [Test]
+    public static void PassingArrayToMakeGenericType()
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL013MemberIsOfWrongType;
-
-        [Test]
-        public static void PassingArrayToMakeGenericType()
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -25,13 +25,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void Issue206WhenGettingField()
-        {
-            var code = @"
+    [Test]
+    public static void Issue206WhenGettingField()
+    {
+        var code = @"
 #nullable disable
 namespace N
 {
@@ -62,13 +62,13 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void Issue206WhenGettingEvent()
-        {
-            var code = @"
+    [Test]
+    public static void Issue206WhenGettingEvent()
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -96,7 +96,6 @@ namespace N
         }
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

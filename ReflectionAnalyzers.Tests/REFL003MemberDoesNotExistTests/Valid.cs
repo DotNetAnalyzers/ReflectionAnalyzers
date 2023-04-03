@@ -1,19 +1,19 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests
+﻿namespace ReflectionAnalyzers.Tests.REFL003MemberDoesNotExistTests;
+
+using Gu.Roslyn.Asserts;
+using Microsoft.CodeAnalysis;
+using NUnit.Framework;
+
+public static partial class Valid
 {
-    using Gu.Roslyn.Asserts;
-    using Microsoft.CodeAnalysis;
-    using NUnit.Framework;
+    private static readonly GetXAnalyzer Analyzer = new();
+    private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL003MemberDoesNotExist;
 
-    public static partial class Valid
+    [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+    [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void AggregateExceptionGetInnerExceptionCount(string call)
     {
-        private static readonly GetXAnalyzer Analyzer = new();
-        private static readonly DiagnosticDescriptor Descriptor = Descriptors.REFL003MemberDoesNotExist;
-
-        [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
-        [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void AggregateExceptionGetInnerExceptionCount(string call)
-        {
-            var code = @"
+        var code = @"
 namespace N
 {
     using System;
@@ -28,13 +28,13 @@ namespace N
     }
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
-        public static void SubclassAggregateExceptionGetInnerExceptionCount(string call)
-        {
-            var customAggregateException = @"
+    [TestCase("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)")]
+    public static void SubclassAggregateExceptionGetInnerExceptionCount(string call)
+    {
+        var customAggregateException = @"
 namespace N
 {
     using System;
@@ -46,7 +46,7 @@ namespace N
         public int M() => this.f;
     }
 }";
-            var code = @"
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -60,17 +60,17 @@ namespace N
     }
 }".AssertReplace("GetMethod(\"get_InnerExceptionCount\", BindingFlags.NonPublic | BindingFlags.Instance)", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, customAggregateException, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, customAggregateException, code);
+    }
 
-        [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public)")]
-        [TestCase("GetNestedType(\"Generic`1\", BindingFlags.Public)")]
-        [TestCase("GetNestedType(nameof(Public), BindingFlags.Public)")]
-        [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic)")]
-        [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic)")]
-        public static void GetNestedType(string call)
-        {
-            var code = @"
+    [TestCase("GetNestedType(nameof(PublicStatic), BindingFlags.Public)")]
+    [TestCase("GetNestedType(\"Generic`1\", BindingFlags.Public)")]
+    [TestCase("GetNestedType(nameof(Public), BindingFlags.Public)")]
+    [TestCase("GetNestedType(nameof(PrivateStatic), BindingFlags.NonPublic)")]
+    [TestCase("GetNestedType(nameof(Private), BindingFlags.NonPublic)")]
+    public static void GetNestedType(string call)
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -103,14 +103,14 @@ namespace N
         }
     }
 }".AssertReplace("GetNestedType(nameof(Public), BindingFlags.Public)", call);
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("GetProperty(\"Item\")")]
-        [TestCase("GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void Indexer(string call)
-        {
-            var code = @"
+    [TestCase("GetProperty(\"Item\")")]
+    [TestCase("GetProperty(\"Item\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void Indexer(string call)
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -126,14 +126,14 @@ namespace N
     }
 }".AssertReplace("GetProperty(\"Item\")", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [TestCase("GetProperty(\"Bar\")")]
-        [TestCase("GetProperty(\"Bar\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
-        public static void NamedIndexer(string call)
-        {
-            var code = @"
+    [TestCase("GetProperty(\"Bar\")")]
+    [TestCase("GetProperty(\"Bar\", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)")]
+    public static void NamedIndexer(string call)
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -151,13 +151,13 @@ namespace N
     }
 }".AssertReplace("GetProperty(\"Bar\")", call);
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
+    }
 
-        [Test]
-        public static void NullableIntGetTypeGetFieldMaxValue()
-        {
-            var code = @"
+    [Test]
+    public static void NullableIntGetTypeGetFieldMaxValue()
+    {
+        var code = @"
 namespace N
 {
     using System.Reflection;
@@ -167,13 +167,13 @@ namespace N
         public static object? Get(int? value) => value?.GetType().GetField(nameof(int.MaxValue), BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
     }
 }";
-            RoslynAssert.Valid(Analyzer, code);
-        }
+        RoslynAssert.Valid(Analyzer, code);
+    }
 
-        [Test]
-        public static void TupleGetFieldItem1()
-        {
-            var testCode = @"
+    [Test]
+    public static void TupleGetFieldItem1()
+    {
+        var testCode = @"
 namespace N
 {
     using System.Reflection;
@@ -183,13 +183,13 @@ namespace N
         public static object? Get((int, int) value) => value.GetType().GetField(""Item1"", BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
     }
 }";
-            RoslynAssert.Valid(Analyzer, Descriptor, testCode);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, testCode);
+    }
 
-        [Test]
-        public static void GetMissingPropertyThenNullCheck()
-        {
-            var code = @"
+    [Test]
+    public static void GetMissingPropertyThenNullCheck()
+    {
+        var code = @"
 namespace N
 {
     public class C
@@ -204,7 +204,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.Valid(Analyzer, Descriptor, code);
-        }
+        RoslynAssert.Valid(Analyzer, Descriptor, code);
     }
 }

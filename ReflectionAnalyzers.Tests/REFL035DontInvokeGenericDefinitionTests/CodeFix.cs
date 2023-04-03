@@ -1,18 +1,18 @@
-﻿namespace ReflectionAnalyzers.Tests.REFL035DontInvokeGenericDefinitionTests
+﻿namespace ReflectionAnalyzers.Tests.REFL035DontInvokeGenericDefinitionTests;
+
+using Gu.Roslyn.Asserts;
+using NUnit.Framework;
+
+public static class CodeFix
 {
-    using Gu.Roslyn.Asserts;
-    using NUnit.Framework;
+    private static readonly InvokeAnalyzer Analyzer = new();
+    private static readonly CallMakeGenericMethodFix Fix = new();
+    private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL035DoNotInvokeGenericDefinition);
 
-    public static class CodeFix
+    [Test]
+    public static void ParameterlessGeneric()
     {
-        private static readonly InvokeAnalyzer Analyzer = new();
-        private static readonly CallMakeGenericMethodFix Fix = new();
-        private static readonly ExpectedDiagnostic ExpectedDiagnostic = ExpectedDiagnostic.Create(Descriptors.REFL035DoNotInvokeGenericDefinition);
-
-        [Test]
-        public static void ParameterlessGeneric()
-        {
-            var code = @"
+        var code = @"
 #pragma warning disable CS8602
 namespace N
 {
@@ -22,15 +22,15 @@ namespace N
     }
 }";
 
-            var message = "Late bound operations cannot be performed on types or methods for which ContainsGenericParameters is true";
-            RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
-            RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code);
-        }
+        var message = "Late bound operations cannot be performed on types or methods for which ContainsGenericParameters is true";
+        RoslynAssert.Diagnostics(Analyzer, ExpectedDiagnostic.WithMessage(message), code);
+        RoslynAssert.NoFix(Analyzer, Fix, ExpectedDiagnostic.WithMessage(message), code);
+    }
 
-        [Test]
-        public static void WithAccessibleParameterSingleLine()
-        {
-            var before = @"
+    [Test]
+    public static void WithAccessibleParameterSingleLine()
+    {
+        var before = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -42,7 +42,7 @@ namespace N
     }
 }";
 
-            var after = @"
+        var after = @"
 #pragma warning disable CS8602, CS8605
 namespace N
 {
@@ -54,7 +54,6 @@ namespace N
     }
 }";
 
-            RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
-        }
+        RoslynAssert.CodeFix(Analyzer, Fix, ExpectedDiagnostic, before, after);
     }
 }
