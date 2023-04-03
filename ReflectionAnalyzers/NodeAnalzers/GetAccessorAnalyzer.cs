@@ -29,12 +29,12 @@ internal class GetAccessorAnalyzer : DiagnosticAnalyzer
             context.Node is InvocationExpressionSyntax { Expression: MemberAccessExpressionSyntax propertyInfoAccess } invocation)
         {
             if (invocation.TryGetTarget(KnownSymbol.PropertyInfo.GetGetMethod, context.SemanticModel, context.CancellationToken, out _) &&
-                PropertyInfo.Find(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken) is { Property: { GetMethod: null } })
+                PropertyInfo.Find(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken) is { Property.GetMethod: null })
             {
                 context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, invocation.GetNameLocation()));
             }
             else if (invocation.TryGetTarget(KnownSymbol.PropertyInfo.GetSetMethod, context.SemanticModel, context.CancellationToken, out _) &&
-                     PropertyInfo.Find(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken) is { Property: { SetMethod: null } })
+                     PropertyInfo.Find(propertyInfoAccess.Expression, context.SemanticModel, context.CancellationToken) is { Property.SetMethod: null })
             {
                 context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, invocation.GetNameLocation()));
             }
@@ -47,12 +47,12 @@ internal class GetAccessorAnalyzer : DiagnosticAnalyzer
             context.Node is MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation } memberAccess)
         {
             if (IsProperty(memberAccess, KnownSymbol.PropertyInfo.GetMethod, context) &&
-                PropertyInfo.Find(invocation, context.SemanticModel, context.CancellationToken) is { Property: { GetMethod: null } })
+                PropertyInfo.Find(invocation, context.SemanticModel, context.CancellationToken) is { Property.GetMethod: null })
             {
                 context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, memberAccess.Name.GetLocation()));
             }
             else if (IsProperty(memberAccess, KnownSymbol.PropertyInfo.SetMethod, context) &&
-                     PropertyInfo.Find(invocation, context.SemanticModel, context.CancellationToken) is { Property: { SetMethod: null } })
+                     PropertyInfo.Find(invocation, context.SemanticModel, context.CancellationToken) is { Property.SetMethod: null })
             {
                 context.ReportDiagnostic(Diagnostic.Create(Descriptors.REFL003MemberDoesNotExist, memberAccess.Name.GetLocation()));
             }

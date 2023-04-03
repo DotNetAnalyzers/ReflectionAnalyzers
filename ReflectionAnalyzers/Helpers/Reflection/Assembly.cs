@@ -24,9 +24,9 @@ internal static class Assembly
     {
         return expression switch
         {
-            MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "GetType" } } } candidate
+            MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier.ValueText: "GetType" } } candidate
                 => Find(candidate.Expression, semanticModel, cancellationToken),
-            MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier: { ValueText: "Assembly" } } } candidate
+            MemberAccessExpressionSyntax { Name: IdentifierNameSyntax { Identifier.ValueText: "Assembly" } } candidate
                 when Type.TryGet(candidate.Expression, semanticModel, cancellationToken, out var typeInAssembly, out _)
                 => typeInAssembly.ContainingAssembly,
             _ => null,

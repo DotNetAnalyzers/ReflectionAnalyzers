@@ -36,7 +36,7 @@ internal static class NameOf
             return false;
         }
 
-        if (member.Symbol is { ContainingType: { IsAnonymousType: true } })
+        if (member.Symbol is { ContainingType.IsAnonymousType: true })
         {
             if (member.TypeSource is InvocationExpressionSyntax getType &&
                 getType.TryGetTarget(KnownSymbol.Object.GetType, context.SemanticModel, context.CancellationToken, out _) &&
@@ -86,7 +86,7 @@ internal static class NameOf
 
     internal static bool IsNameOf(ArgumentSyntax argument, [NotNullWhen(true)] out ExpressionSyntax? expression)
     {
-        if (argument.Expression is InvocationExpressionSyntax { Expression: IdentifierNameSyntax { Identifier: { ValueText: "nameof" } }, ArgumentList: { Arguments: { Count: 1 } arguments } } &&
+        if (argument.Expression is InvocationExpressionSyntax { Expression: IdentifierNameSyntax { Identifier.ValueText: "nameof" }, ArgumentList.Arguments: { Count: 1 } arguments } &&
             arguments.TrySingle(out var arg))
         {
             expression = arg.Expression;

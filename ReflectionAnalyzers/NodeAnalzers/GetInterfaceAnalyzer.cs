@@ -57,7 +57,7 @@ internal class GetInterfaceAnalyzer : DiagnosticAnalyzer
                                     $"{match.ContainingNamespace}.{match.MetadataName}")));
                         break;
                     default:
-                        if (maybeNameSyntax is { HasValue: true, Value: { Identifier: { ValueText: "Name" } } })
+                        if (maybeNameSyntax is { HasValue: true, Value.Identifier.ValueText: "Name" })
                         {
                             context.ReportDiagnostic(
                                 Diagnostic.Create(

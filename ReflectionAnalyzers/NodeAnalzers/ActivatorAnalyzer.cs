@@ -77,7 +77,7 @@ internal class ActivatorAnalyzer : DiagnosticAnalyzer
     private static bool TryGetCreatedType(IMethodSymbol createInstance, InvocationExpressionSyntax invocation, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out ITypeSymbol? createdType, [NotNullWhen(true)] out ExpressionSyntax? typeSource)
     {
         if (createInstance.IsGenericMethod &&
-            invocation.Expression is MemberAccessExpressionSyntax { Name: GenericNameSyntax { TypeArgumentList: { Arguments: { Count: 1 } typeArguments } } } &&
+            invocation.Expression is MemberAccessExpressionSyntax { Name: GenericNameSyntax { TypeArgumentList.Arguments: { Count: 1 } typeArguments } } &&
             typeArguments.TrySingle(out var typeArgument) &&
             context.SemanticModel.TryGetType(typeArgument, context.CancellationToken, out createdType))
         {
@@ -131,7 +131,7 @@ internal class ActivatorAnalyzer : DiagnosticAnalyzer
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.TrueLiteralExpression) &&
                                                           Type.HasVisibleNonPublicMembers(createdType, recursive: false) &&
                                                           !createdType.Constructors.TrySingle(
-                                                              x => x is { IsStatic: false, Parameters: { Length: 0 } },
+                                                              x => x is { IsStatic: false, Parameters.Length: 0 },
                                                               out _):
                     return true;
                 case LiteralExpressionSyntax literal when literal.IsKind(SyntaxKind.FalseLiteralExpression) &&
@@ -145,7 +145,7 @@ internal class ActivatorAnalyzer : DiagnosticAnalyzer
         bool HasDefaultConstructor()
         {
             return createdType.Constructors.TrySingle(
-                x => x is { DeclaredAccessibility: Accessibility.Public, IsStatic: false, Parameters: { Length: 0 } },
+                x => x is { DeclaredAccessibility: Accessibility.Public, IsStatic: false, Parameters.Length: 0 },
                 out _);
         }
     }
@@ -180,7 +180,7 @@ internal class ActivatorAnalyzer : DiagnosticAnalyzer
                 values = default;
                 return false;
             case { } expression when semanticModel.TryGetType(expression, cancellationToken, out var type) &&
-                                     type is IArrayTypeSymbol { ElementType: { SpecialType: SpecialType.System_Object } }:
+                                     type is IArrayTypeSymbol { ElementType.SpecialType: SpecialType.System_Object }:
                 return Array.TryGetValues(expression, semanticModel, cancellationToken, out values);
         }
 

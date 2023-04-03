@@ -160,17 +160,17 @@ internal static class Type
     {
         switch (expression)
         {
-            case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "FieldType" } } } memberAccess
+            case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name.Identifier.ValueText: "FieldType" } memberAccess
                 when GetField.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
                 source = memberAccess;
                 result = single.Type;
                 return true;
-            case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "PropertyType" } } } memberAccess
+            case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name.Identifier.ValueText: "PropertyType" } memberAccess
                 when GetProperty.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
                 source = memberAccess;
                 result = single.Type;
                 return true;
-            case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name: { Identifier: { ValueText: "ReturnType" } } } memberAccess
+            case MemberAccessExpressionSyntax { Expression: InvocationExpressionSyntax invocation, Name.Identifier.ValueText: "ReturnType" } memberAccess
                 when GetMethod.Match(invocation, recursion.SemanticModel, recursion.CancellationToken) is { Single: { } single }:
                 source = memberAccess;
                 result = single.ReturnType;
@@ -178,7 +178,7 @@ internal static class Type
             case TypeOfExpressionSyntax typeOf:
                 source = typeOf;
                 return recursion.SemanticModel.TryGetType(typeOf.Type, recursion.CancellationToken, out result);
-            case InvocationExpressionSyntax { ArgumentList: { Arguments: { Count: 0 } } } invocation
+            case InvocationExpressionSyntax { ArgumentList.Arguments.Count: 0 } invocation
                 when invocation.TryGetMethodName(out var name) &&
                      name == "GetType":
                 switch (invocation.Expression)
@@ -187,7 +187,7 @@ internal static class Type
                         source = invocation;
                         if (recursion.SemanticModel.TryGetType(typeAccess.Expression, recursion.CancellationToken, out result))
                         {
-                            if (result is INamedTypeSymbol { TypeArguments: { Length: 1 } typeArguments, ConstructedFrom: { SpecialType: SpecialType.System_Nullable_T } })
+                            if (result is INamedTypeSymbol { TypeArguments: { Length: 1 } typeArguments, ConstructedFrom.SpecialType: SpecialType.System_Nullable_T })
                             {
                                 result = typeArguments[0];
                             }
@@ -200,7 +200,7 @@ internal static class Type
                         when expression.TryFirstAncestor(out TypeDeclarationSyntax? containingType):
                         source = invocation;
                         return recursion.SemanticModel.TryGetSymbol(containingType, recursion.CancellationToken, out result);
-                    case MemberBindingExpressionSyntax { Parent: { Parent: ConditionalAccessExpressionSyntax { Expression: { } } conditionalAccess } }:
+                    case MemberBindingExpressionSyntax { Parent.Parent: ConditionalAccessExpressionSyntax { Expression: { } } conditionalAccess }:
                         source = invocation;
                         return recursion.SemanticModel.TryGetType(conditionalAccess.Expression, recursion.CancellationToken, out result);
                 }

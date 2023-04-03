@@ -525,7 +525,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
 
     private static bool IsPreferGetMemberThenAccessor(ReflectedMember member, Name name, Flags flags, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? callText)
     {
-        if (member is { ReflectedType: { }, Invocation: { Expression: MemberAccessExpressionSyntax memberAccess } })
+        if (member is { ReflectedType: { }, Invocation.Expression: MemberAccessExpressionSyntax memberAccess })
         {
             if (member is { Match: FilterMatch.Single, Symbol: IMethodSymbol method })
             {
