@@ -7,21 +7,9 @@ dotnet_diagnostic.SA0001.severity = none
 # Default severity for analyzer diagnostics with category 'Style'
 dotnet_analyzer_diagnostic.category-Style.severity = none
 
-dotnet_diagnostic.CS0067.severity = none
-dotnet_diagnostic.CS0169.severity = none
-dotnet_diagnostic.CS0660.severity = none
-dotnet_diagnostic.CS0661.severity = none
-# CS8618: Non-nullable field is uninitialized. Consider declaring as nullable.
-dotnet_diagnostic.CS8618.severity = none
-
-# CA1822: Mark members as static
 dotnet_diagnostic.CA1822.severity = none
-# CA2211: Non-constant fields should not be visible
 dotnet_diagnostic.CA2211.severity = none
 
-# IDE0051: Remove unused private members
 dotnet_diagnostic.IDE0051.severity = none
-# IDE0052: Remove unread private members
 dotnet_diagnostic.IDE0052.severity = none
-# IDE0079: Remove unnecessary suppression
 dotnet_diagnostic.IDE0079.severity = none
