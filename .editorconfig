@@ -191,3 +191,5 @@ csharp_preserve_single_line_statements = true
 
 dotnet_diagnostic.CA1303.severity = none # Do not pass literals as localized parameters
 
+# CA5403: Do not hard code certificate insanely slow analyzer adding 30 s to build time
+dotnet_diagnostic.CA5403.severity = none
