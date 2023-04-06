@@ -65,8 +65,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
                     }
                 }
 
-                if (member.Match == FilterMatch.Ambiguous &&
-                    member.ReflectedType is { })
+                if (member is { Match: FilterMatch.Ambiguous, ReflectedType: not null })
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -108,8 +107,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
                             $" Expected: {flagsText}."));
                 }
 
-                if (member.Match == FilterMatch.WrongMemberType &&
-                    member.Symbol is { })
+                if (member is { Match: FilterMatch.WrongMemberType, Symbol: not null })
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -132,8 +130,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
                             callText));
                 }
 
-                if (member.Match == FilterMatch.UseContainingType &&
-                    member.Symbol is { })
+                if (member is { Match: FilterMatch.UseContainingType, Symbol: not null })
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -164,8 +161,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
                             nameText));
                 }
 
-                if (member.Match == FilterMatch.ExplicitImplementation &&
-                    member.Symbol is { })
+                if (member is { Match: FilterMatch.ExplicitImplementation, Symbol: not null })
                 {
                     context.ReportDiagnostic(
                         Diagnostic.Create(
@@ -319,8 +315,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
 
     private static bool HasMissingFlags(ReflectedMember member, Flags flags, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? flagsText)
     {
-        if (member.Symbol is { } symbol &&
-            member.ReflectedType is { } &&
+        if (member is { Symbol: { } symbol, ReflectedType: not null } &&
             Flags.TryGetExpectedBindingFlags(member.ReflectedType, symbol, out var correctFlags) &&
             member.Invocation?.ArgumentList is { } argumentList &&
             (member.Match == FilterMatch.Single || member.Match == FilterMatch.WrongFlags))
@@ -367,9 +362,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
 
     private static bool HasWrongFlags(ReflectedMember member, Flags flags, [NotNullWhen(true)] out Location? location, [NotNullWhen(true)] out string? flagText)
     {
-        if (member.Match == FilterMatch.WrongFlags &&
-            member.Symbol is { } &&
-            member.ReflectedType is { } &&
+        if (member is { Symbol: { }, ReflectedType: not null, Match: FilterMatch.WrongFlags } &&
             Flags.TryGetExpectedBindingFlags(member.ReflectedType, member.Symbol, out var correctFlags))
         {
             flagText = correctFlags.ToDisplayString(flags.Argument);
@@ -491,8 +484,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
             NameOf.IsNameOf(argument, out var expression))
         {
             if (member.Match == FilterMatch.NoMatch ||
-                (member.Match == FilterMatch.PotentiallyInvisible &&
-                 member.Symbol is not IMethodSymbol))
+                member is { Match: FilterMatch.PotentiallyInvisible, Symbol: not IMethodSymbol })
             {
                 nameText = $"\"{name.MetadataName}\"";
                 location = argument.GetLocation();
@@ -541,8 +533,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
                     return TryGetEventAccessor(MemberName(eventSymbol), bindingFlags, out callText);
                 }
             }
-            else if (member.Match == FilterMatch.PotentiallyInvisible &&
-                     member.ReflectedType is { } &&
+            else if (member is { Match: FilterMatch.PotentiallyInvisible, ReflectedType: not null } &&
                      types.Argument is null &&
                      flags.Explicit.HasFlagFast(BindingFlags.NonPublic))
             {
@@ -683,7 +674,7 @@ internal class GetXAnalyzer : DiagnosticAnalyzer
 
     private static bool HasMissingTypes(ReflectedMember member, Types types, SyntaxNodeAnalysisContext context, [NotNullWhen(true)] out string? typesArrayText)
     {
-        if ((member.Symbol as IMethodSymbol)?.AssociatedSymbol != null)
+        if (member.Symbol is IMethodSymbol { AssociatedSymbol: not null })
         {
             typesArrayText = null;
             return false;

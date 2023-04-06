@@ -84,8 +84,7 @@ internal static class Arguments
 
             if (conversion.IsIdentity || conversion.IsImplicit)
             {
-                if (values[i] is MemberAccessExpressionSyntax memberAccess &&
-                    memberAccess.Name.Identifier.ValueText == "Value" &&
+                if (values[i] is MemberAccessExpressionSyntax { Name.Identifier.ValueText: "Value" } &&
                     semanticModel.TryGetSymbol(values[i], cancellationToken, out field) &&
                     field == KnownSymbol.Missing.Value)
                 {
@@ -95,8 +94,7 @@ internal static class Arguments
                 continue;
             }
 
-            if (conversion.IsExplicit &&
-                conversion.IsReference)
+            if (conversion is { IsExplicit: true, IsReference: true })
             {
                 continue;
             }

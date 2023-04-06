@@ -158,8 +158,7 @@ internal readonly struct TypeArguments
     {
         return invocation.TryGetTarget(expected, semanticModel, cancellationToken, out var makeGeneric) &&
                makeGeneric.Parameters.TrySingle(out var parameter) &&
-               parameter.IsParams &&
-               parameter.Type is IArrayTypeSymbol arrayType &&
+               parameter is { IsParams: true, Type: IArrayTypeSymbol arrayType } &&
                arrayType.ElementType == KnownSymbol.Type;
     }
 
@@ -172,7 +171,7 @@ internal readonly struct TypeArguments
                 switch (type)
                 {
                     case INamedTypeSymbol namedType
-                        when !namedType.Constructors.TryFirst(x => x.DeclaredAccessibility == Accessibility.Public && x.Parameters.IsEmpty, out _):
+                        when !namedType.Constructors.TryFirst(x => x is { DeclaredAccessibility: Accessibility.Public, Parameters.IsEmpty: true }, out _):
                     case ITypeParameterSymbol { HasConstructorConstraint: false }:
                         return false;
                 }
@@ -278,9 +277,7 @@ internal readonly struct TypeArguments
             {
                 switch (condition)
                 {
-                    case MemberAccessExpressionSyntax { Expression: TypeOfExpressionSyntax { Type: IdentifierNameSyntax identifierName } } memberAccess
-                        when memberAccess.Name.Identifier.Text == "IsValueType" &&
-                             identifierName.Identifier.Text == candidate.Name:
+                    case MemberAccessExpressionSyntax { Expression: TypeOfExpressionSyntax { Type: IdentifierNameSyntax identifierName }, Name.Identifier.Text: "IsValueType" } when identifierName.Identifier.Text == candidate.Name:
                         result = true;
                         return true;
                     case PrefixUnaryExpressionSyntax prefixUnary

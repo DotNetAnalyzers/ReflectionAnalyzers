@@ -16,8 +16,7 @@ internal readonly struct GenericTypeName
 
     internal static GenericTypeName? TryParse(string text)
     {
-        if (text.IndexOf('[') is var index &&
-            index > 0)
+        if (text.IndexOf('[') is var index and > 0)
         {
             var metadataName = text.Substring(0, index);
             if (TryParseArity(metadataName, out var arity) &&
@@ -34,8 +33,7 @@ internal readonly struct GenericTypeName
     private static bool TryParseArity(string metadataName, out int result)
     {
         result = -1;
-        return metadataName.IndexOf('`') is var i &&
-               i > 0 &&
+        return metadataName.IndexOf('`') is var i and > 0 &&
                i < metadataName.Length - 1 &&
                metadataName.Substring(i + 1) is { } substring &&
                !substring.EndsWith(" ", StringComparison.OrdinalIgnoreCase) &&

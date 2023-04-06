@@ -89,8 +89,7 @@ internal static class BindingFlagsExt
         static bool IsBindingFlags(UsingDirectiveSyntax @using)
         {
             return @using.StaticKeyword.IsKind(SyntaxKind.StaticKeyword) &&
-                   @using.Name is QualifiedNameSyntax qn &&
-                   qn.Right.Identifier.ValueText == "BindingFlags";
+                   @using.Name is QualifiedNameSyntax { Right.Identifier.ValueText: "BindingFlags" };
         }
     }
 

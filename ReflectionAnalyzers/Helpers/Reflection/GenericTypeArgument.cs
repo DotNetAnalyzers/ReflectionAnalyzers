@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 [DebuggerDisplay("{this.MetadataName}")]
-internal struct GenericTypeArgument
+internal readonly struct GenericTypeArgument
 {
     internal readonly string MetadataName;
     internal readonly IReadOnlyList<GenericTypeArgument>? TypeArguments;
